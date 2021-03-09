@@ -3,8 +3,6 @@ from pybricksdev.ble import find_device
 
 import asyncio
 
-
-
 async def main():
     address = await find_device("Pybricks Hub")
     hub = BLEPUPConnection()
