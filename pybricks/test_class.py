@@ -5,3 +5,4 @@ class TestClass(Node):
 
 	def _ready(self):
 		print("hello world")
+

@@ -1,0 +1,27 @@
+# Pybrickdev rules for LEGO programmable bricks
+
+# MINDSTORMS NXT brick 
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0002", MODE="0666"
+
+# MINDSTORMS NXT brick in firmware update mode (Atmel SAM-BA mode)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", MODE="0666"
+
+# MINDSTORMS EV3 brick
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0005", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0005", MODE="0666"
+
+# MINDSTORMS EV3 brick in firmware update mode
+SUBSYSTEM=="hidraw", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0006", MODE="0666"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0006", MODE="0666"
+
+# SPIKE Prime hub in firmware update mode (DFU mode)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0008", MODE="0666"
+
+# SPIKE Prime hub
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0009", MODE="0666"
+
+# MINDSTORMS Inventor hub
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0010", MODE="0666"
+
+# MINDSTORMS Inventor hub in firmware update mode (DFU mode)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0011", MODE="0666"
