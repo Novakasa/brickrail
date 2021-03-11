@@ -32,8 +32,9 @@ class TrainController(Node):
 			address = await find_device("Pybricks Hub")
 			await self.hub.connect(address)
 			await self.hub.run("train_colors.py")
-
-		asyncio.run(main())
+		loop = asyncio.get_event_loop()
+		loop.run_until_complete(main())
+		# maintask = asyncio.create_task(main)
 	
 	async def _discover_address(self, device="Pybricks Hub"):
 		self.address = await find_device(device)
