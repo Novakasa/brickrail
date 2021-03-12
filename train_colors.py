@@ -1,7 +1,15 @@
+from pybricks.hubs import CityHub
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
+from pybricks.experimental import getchar
 
+# from uselect import poll
+# from usys import stdin
+
+# loop_poll = poll()
+# loop_poll.register(stdin)
+hub = CityHub()
 sensor = ColorDistanceSensor(Port.B)
 red_marker = Color(h=357, s=96, v=80) #measured in dark room
 blue_marker = Color(h=219, s=94, v=75) #measured in dark room
@@ -101,14 +109,28 @@ def motor_update():
         # print("breaking!!")
         motor.brake()
 
-while True:
+def input_handler(char):
+    print(repr(char))
+    if char == "l":
+        hub.light.on(Color.GREEN)
+    if char == "o":
+        hub.light.on(Color.RED)
+        
 
-    wait(int(delta*1000))
-    
+def control_loop():
     #debug_hsv()
-    #continue
-    
     sensor_update()
     timer_update()
     speed_update()
     motor_update()
+
+hub.light.on(Color.YELLOW)
+while True:
+    timeout = int(delta*1000)
+    wait(timeout)
+    char = getchar()
+    #if loop_poll.poll(timeout):
+    if char is not None:
+        char = chr(char)
+        input_handler(char)
+    control_loop()
