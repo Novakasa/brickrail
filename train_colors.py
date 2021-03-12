@@ -178,6 +178,14 @@ def timer_update():
 
 def input_handler(char):
     print(repr(char))
+    if char == "s":
+        train.stop()
+    if char == "l":
+        train.slow()
+    if char == "h":
+        train.start()
+    if char == "w":
+        train.wait()
     
 
 def control_loop():

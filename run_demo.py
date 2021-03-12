@@ -13,11 +13,13 @@ async def main():
 
     await asyncio.sleep(1)
     await hub.write(b"l")
-    await asyncio.sleep(1)
-    await hub.write(b"o")
-    await asyncio.sleep(1)
+    await asyncio.sleep(5)
+    await hub.write(b"h")
+    await asyncio.sleep(5)
     await hub.write(b"l")
-    await asyncio.sleep(1)
+    await asyncio.sleep(5)
+    await hub.write(b"s")
+    await asyncio.sleep(5)
     print("done with main!")
 
     await hub.wait_until_state(hub.IDLE)
