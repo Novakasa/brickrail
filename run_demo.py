@@ -20,4 +20,7 @@ async def main():
     await asyncio.sleep(1)
     print("done with main!")
 
+    await hub.wait_until_state(hub.IDLE)
+
+
 asyncio.run(main())
