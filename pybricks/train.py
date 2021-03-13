@@ -1,4 +1,7 @@
 import sys
+import threading
+import multiprocessing
+
 for path in sys.path:
 	print(path)
 
@@ -18,13 +21,8 @@ import asyncio
 @exposed
 class TrainController(Node):
 
-	def __init__(self, address = None):
-		self.hub = BLEPUPConnection()
-		self.address = address
-	
-	def _ready(self):
-		self.hub = BLEPUPConnection()
-		self.address = None
+
+	def asyncio_thread(self):
 		async def main():
 			#await self._discover_address()
 			#await self._connect()
@@ -32,9 +30,15 @@ class TrainController(Node):
 			address = await find_device("Pybricks Hub")
 			await self.hub.connect(address)
 			await self.hub.run("train_colors.py")
-		loop = asyncio.get_event_loop()
+		loop = asyncio.new_event_loop()
 		loop.run_until_complete(main())
-		# maintask = asyncio.create_task(main)
+	
+	def _ready(self):
+		self.hub = BLEPUPConnection()
+		self.address = None
+		# threading.Thread(target = self.asyncio_thread).start()
+		multiprocessing.Process(target = self.asyncio_thread).start()
+
 	
 	async def _discover_address(self, device="Pybricks Hub"):
 		self.address = await find_device(device)
