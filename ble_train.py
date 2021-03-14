@@ -38,26 +38,27 @@ class BLETrain:
     
     async def start(self):
         assert self.running
-        await self.hub.write(b"h")
+        await self.hub.write(b"train.start()")
     
     async def stop(self):
         assert self.running
-        await self.hub.write(b"s")
+        await self.hub.write(b"train.stop()")
     
     async def slow(self):
         assert self.running
-        await self.hub.write(b"l")
+        await self.hub.write(b"train.slow()")
     
     async def wait(self):
         assert self.running
-        await self.hub.write(b"w")
+        await self.hub.write(b"train.wait()")
 
 async def main():
 
     train = BLETrain("white train")
     await train.connect()
     await train.run()
-    
+
+    """
     await asyncio.sleep(1)
     await train.slow()
     await asyncio.sleep(5)
@@ -67,6 +68,10 @@ async def main():
     await asyncio.sleep(5)
     await train.stop()
     await asyncio.sleep(5)
+    """
+
+    await train.hub.write(b"xd some message lol")
+
     print("done with main!")
 
     await train.hub.wait_until_state(train.hub.IDLE)

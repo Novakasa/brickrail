@@ -4,6 +4,8 @@ from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
 from pybricks.experimental import getchar
 
+# from usys import stdin
+
 # from uselect import poll
 # from usys import stdin
 
@@ -177,16 +179,12 @@ def timer_update():
     for timer in Timer.timers:
         timer.update()
 
-def input_handler(char):
-    print(repr(char))
-    if char == "s":
-        train.stop()
-    if char == "l":
-        train.slow()
-    if char == "h":
-        train.start()
-    if char == "w":
-        train.wait()
+def input_handler(message):
+    print(repr(message))
+    try:
+        eval(message)
+    except SyntaxError as e:
+        print(e)
     
 
 def control_loop():
@@ -197,9 +195,13 @@ def control_loop():
 while True:
     timeout = int(delta*1000)
     wait(timeout)
-    char = getchar()
+    message = ""
     #if loop_poll.poll(timeout):
-    if char is not None:
+    char = getchar()
+    while char is not None:
         char = chr(char)
-        input_handler(char)
+        message += char
+        char = getchar()
+    if message:
+        input_handler(message)
     control_loop()
