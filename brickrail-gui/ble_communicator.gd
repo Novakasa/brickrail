@@ -11,7 +11,7 @@ func _exit_tree():
 func _ready():
 	
 	# OS.execute("cmd", ["start cmd /K"], false)
-	$ble_process.start_process()
+	$BLEProcess.start_process()
 
 	_client.connect("connection_closed", self, "_closed")
 	_client.connect("connection_error", self, "_closed")
@@ -29,9 +29,12 @@ func _closed(was_clean = false):
 
 func _connected(proto = ""):
 	print("Connected with protocol: ", proto)
-	_client.get_peer(1).put_packet("print('test command successful1!')".to_utf8())
-	_client.get_peer(1).put_packet("print(project.hubs)".to_utf8())
-	_client.get_peer(1).put_packet('ReturnData("test_return",project.hubs)'.to_utf8())
+	send_command("print('test command successful1!')")
+	send_command("print(project.hubs)")
+	send_command('ReturnData("test_return",project.hubs)')
+
+func send_command(command):
+	_client.get_peer(1).put_packet(command.to_utf8())
 	
 
 func _on_data():
