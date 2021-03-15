@@ -2,3 +2,5 @@ __pycache__/
 *import/
 .envs/
 *.mpy
+addons/pythonscript
+brickrail-gui/addons/pythonscript

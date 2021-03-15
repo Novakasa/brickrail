@@ -1,4 +1,4 @@
 {
-    "python.pythonPath": "addons\\pythonscript\\windows-64\\python.exe",
+    "python.pythonPath": "C:\\Users\\lolli\\miniconda3\\envs\\brickrail\\python.exe",
     "godot_tools.editor_path": "c:\\Godot\\Godot_v3.2.4-rc4_win64.exe"
 }
