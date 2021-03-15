@@ -1,10 +1,11 @@
-from ble_train import BLETrain
+import json
+
+from ble_hub import BLEHub
 
 class BLEProject:
 
     def __init__(self):
-
-        self.trains = {}
+        self.hubs = {}
     
-    def add_train(self, name, address=None):
-        self.trains[name] = BLETrain(name, address)
+    def add_hub(self, name, script_path, address=None):
+        self.hubs[name] = BLEHub(name, script_path, address)
