@@ -76,5 +76,5 @@ async def main():
 
     await train.hub.wait_until_state(train.hub.IDLE)
 
-
-asyncio.run(main())
+if __name__ == "__main__":
+    asyncio.run(main())
