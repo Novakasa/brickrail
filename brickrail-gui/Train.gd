@@ -17,3 +17,6 @@ func ble_run():
 
 func ble_start():
 	ble_communicator.send_command(name, "pipe_command", ["train.start()"], null)
+
+func ble_stop():
+	ble_communicator.send_command(name, "pipe_command", ["train.stop()"], null)
