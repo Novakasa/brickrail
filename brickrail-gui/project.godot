@@ -8,6 +8,16 @@
 
 config_version=4
 
+_global_script_classes=[ {
+"base": "Reference",
+"class": "BLECommand",
+"language": "GDScript",
+"path": "res://ble_command.gd"
+} ]
+_global_script_class_icons={
+"BLECommand": ""
+}
+
 [application]
 
 config/name="brickrail-gui"

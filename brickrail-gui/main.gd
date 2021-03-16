@@ -16,4 +16,4 @@ func _on_RunTrain_pressed():
 
 
 func _on_StartTrain_pressed():
-	pass # Replace with function body.
+	get_node(project).trains["test"].ble_start()

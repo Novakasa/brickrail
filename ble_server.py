@@ -7,15 +7,40 @@ from ble_project import BLEProject
 CHUNK_SIZE = 1000
 PORT = 64569
 
-class ReturnData:
+class Command:
 
-    def __init__(self, id, data):
-        self.id = id
-        self.data = data
+    @classmethod
+    def from_json(cls, str):
+        data = json.loads(str)
+        hub = data["hub"]
+        funcname = data["func"]
+        args = data["args"]
+        return_id = data["return_id"]
+        return cls(hub, funcname, args, return_id)
     
-    def serialize(self):
-        send_data = {"id": self.id, "data": self.data}
-        return json.dumps(send_data)
+    def __init__(self, hub, funcname, args, return_id=None):
+        self.hub = hub
+        self.funcname = funcname
+        self.args = args
+        self.return_id = return_id
+    
+    async def commit(self, project, websocket):
+        if self.hub is None:
+            func = getattr(project, self.funcname)
+        else:
+            func = getattr(project.hubs[self.hub], self.funcname)
+
+        if asyncio.iscoroutinefunction(func):
+            print(f"awaiting coroutine: {func}")
+            result = await func(*self.args)
+        else:
+            print(f"executing func: {func}")
+            result = func(*self.args)
+        
+        if self.return_id is not None:
+            send_data = {"id": self.return_id, "data": result}
+            send_data_msg = json.dumps(send_data)
+            await websocket.send(send_data_msg)
 
 
 class BLEServer:
@@ -27,9 +52,8 @@ class BLEServer:
 
     async def evaluate_command(self, str, websocket):
 
-        result = eval(str)
-        if isinstance(result, ReturnData):
-            await websocket.send(result.serialize())
+        command = Command.from_json(str)
+        await command.commit(project, websocket)
 
     async def command_receiver(self, websocket, path):
         self.connected = True
