@@ -18,11 +18,29 @@ class BLEHub:
             self.address = await find_device("Pybricks Hub")
         await self.hub.connect(self.address)
     
+    async def handle_output(self, line):
+        if line.find("data::") == 0:
+            print("got return data from hub!", line)
+            data = eval(line.split("data::")[1])
+            print(f"data: {data}")
+            return
+        print(line)
+    
     async def run(self):
         print("initiating run!")
         async def hub_run():
             print(f"hub {self.name} run start!")
-            await self.hub.run(self.script_path)
+            await self.hub.run(self.script_path, wait=False, print_output=False)
+            await self.hub.wait_until_state(self.hub.RUNNING)
+
+            print("starting output handler loop")
+
+            while self.hub.state == self.hub.RUNNING:
+                while self.hub.output:
+                    line = self.hub.output.pop(0).decode()
+                    await self.handle_output(line)
+                await asyncio.sleep(0.05)
+
             print(f"hub {self.name} run complete!")
             self.run_task = None
 

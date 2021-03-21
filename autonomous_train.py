@@ -185,12 +185,18 @@ def input_handler(message):
         eval(message)
     except SyntaxError as e:
         print(e)
-    
+
+def send_data(return_id, data):
+    msg = "data::"+repr(data)
+    print(msg)
 
 def control_loop():
     timer_update()
     train.update(delta)
 
+
+test_data = {"xd": ["some", "strings"], "lol": [None]}
+send_data("test_id", test_data)
 
 while True:
     timeout = int(delta*1000)
