@@ -91,21 +91,21 @@ class TrainMotor:
         self.acceleration = 40
         self.deceleration = 90
         self.motor = DCMotor(Port.A)
-        self.motor_brake = False
+        self.braking = False
     
     def set_target(self, speed):
         self.target_speed = speed
-        self.motor_brake = False
+        self.braking = False
     
     def set_speed(self, speed):
         self.target_speed = speed
         self.speed = speed
-        self.motor_brake = False
+        self.braking = False
     
     def brake(self):
         self.target_speed = 0
         self.speed = 0
-        self.motor_brake = True
+        self.braking = True
     
     def update(self, delta):
 
@@ -117,7 +117,7 @@ class TrainMotor:
             self.speed = max(self.speed-speed_delta, self.target_speed)
         # print(speed, speed_delta)
 
-        if self.motor_brake:
+        if self.braking:
             self.motor.brake()
             return
         self.motor.dc(self.speed)
