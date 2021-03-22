@@ -186,8 +186,9 @@ def input_handler(message):
     except SyntaxError as e:
         print(e)
 
-def send_data(return_id, data):
-    msg = "data::"+repr(data)
+def send_data(key, data):
+    obj = {"key": key, "data": data}
+    msg = "data::"+repr(obj)
     print(msg)
 
 def control_loop():

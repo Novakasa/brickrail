@@ -8,8 +8,8 @@ func ble_connect():
 	ble_communicator.send_command(name, "connect", [], null)
 
 func ble_add():
-	var script_path = "E:/repos/brickrail/autonomous_train.py"
-	ble_communicator.send_command(null, "add_hub", [name, script_path, address], null)
+	var program = "train"
+	ble_communicator.send_command(null, "add_hub", [name, program, address], null)
 
 func ble_run():
 	# var command = "await project.hubs['" + name + "'].run()"

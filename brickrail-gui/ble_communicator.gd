@@ -1,12 +1,14 @@
+class_name BLECommunicator
 extends Node
 
 
 export var websocket_url = "ws://localhost:64569"
 var _client = WebSocketClient.new()
 
+signal data_received(data)
+
 func _exit_tree():
 	_client.disconnect_from_host()
-
 
 func _ready():
 	
@@ -40,7 +42,10 @@ func send_command(hub, funcname, args, return_id=null):
 	
 
 func _on_data():
-	print("Got data from server: ", _client.get_peer(1).get_packet().get_string_from_utf8())
+	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()
+	print("Got data from server: ", msg)
+	var data = JSON.parse(msg)
+	emit_signal("data_received", data)
 
-func _process(delta):
+func _process(_delta):
 	_client.poll()

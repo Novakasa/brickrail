@@ -3,14 +3,21 @@ from pybricksdev.ble import find_device
 
 import asyncio
 
+from serial_data import SerialData
+
+def get_script_path(program):
+    if program == "train":
+        return "E:/repos/brickrail/autonomous_train.py"
+
 class BLEHub:
     
-    def __init__(self, name, script_path, address=None):
+    def __init__(self, name, program, out_queue=None, address=None):
 
         self.hub = BLEPUPConnection()
         self.name = name
-        self.script_path = script_path
+        self.program = program
         self.address = address
+        self.out_queue = out_queue
         self.run_task = None
     
     async def connect(self):
@@ -21,25 +28,28 @@ class BLEHub:
     async def handle_output(self, line):
         if line.find("data::") == 0:
             print("got return data from hub!", line)
-            data = eval(line.split("data::")[1])
-            print(f"data: {data}")
+            data = SerialData.from_hub_msg(line)
+            await self.out_queue.put(data)
             return
         print(line)
+    
+    async def output_loop(self):
+        print("starting output handler loop")
+        while self.hub.state == self.hub.RUNNING:
+            while self.hub.output:
+                line = self.hub.output.pop(0).decode()
+                await self.handle_output(line)
+            await asyncio.sleep(0.05)
     
     async def run(self):
         print("initiating run!")
         async def hub_run():
             print(f"hub {self.name} run start!")
-            await self.hub.run(self.script_path, wait=False, print_output=False)
+            script_path = get_script_path(self.program)
+            await self.hub.run(script_path, wait=False, print_output=False)
             await self.hub.wait_until_state(self.hub.RUNNING)
 
-            print("starting output handler loop")
-
-            while self.hub.state == self.hub.RUNNING:
-                while self.hub.output:
-                    line = self.hub.output.pop(0).decode()
-                    await self.handle_output(line)
-                await asyncio.sleep(0.05)
+            await self.output_loop()
 
             print(f"hub {self.name} run complete!")
             self.run_task = None
@@ -48,7 +58,6 @@ class BLEHub:
         await self.hub.wait_until_state(self.hub.RUNNING)
         print(f"hub {self.name} is running now!")
 
-    
     @property
     def running(self):
         assert self.connected

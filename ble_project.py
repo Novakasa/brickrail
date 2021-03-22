@@ -1,3 +1,4 @@
+import asyncio
 import json
 
 from ble_hub import BLEHub, main as hub_demo
@@ -6,9 +7,10 @@ class BLEProject:
 
     def __init__(self):
         self.hubs = {}
+        self.out_queue = asyncio.Queue()
     
     def add_hub(self, name, script_path, address=None):
-        self.hubs[name] = BLEHub(name, script_path, address)
+        self.hubs[name] = BLEHub(name, script_path, self.out_queue, address)
     
     def print(self, str):
         print(str)
