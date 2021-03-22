@@ -5,6 +5,7 @@ var funcname
 var args
 var return_id
 
+
 func _init(p_hub, p_funcname, p_args, p_return_id):
 	hub = p_hub
 	funcname = p_funcname

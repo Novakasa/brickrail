@@ -13,14 +13,39 @@ _global_script_classes=[ {
 "class": "BLECommand",
 "language": "GDScript",
 "path": "res://ble_command.gd"
+}, {
+"base": "Node",
+"class": "BLECommunicator",
+"language": "GDScript",
+"path": "res://ble_communicator.gd"
+}, {
+"base": "Node",
+"class": "BLEController",
+"language": "GDScript",
+"path": "res://ble_controller.gd"
+}, {
+"base": "Reference",
+"class": "BLEHub",
+"language": "GDScript",
+"path": "res://ble_hub.gd"
+}, {
+"base": "Reference",
+"class": "BLETrain",
+"language": "GDScript",
+"path": "res://train_hub.gd"
 } ]
 _global_script_class_icons={
-"BLECommand": ""
+"BLECommand": "",
+"BLECommunicator": "",
+"BLEController": "",
+"BLEHub": "",
+"BLETrain": ""
 }
 
 [application]
 
 config/name="brickrail-gui"
+run/main_scene="res://main.tscn"
 config/icon="res://icon.png"
 
 [display]
