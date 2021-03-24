@@ -5,7 +5,7 @@ extends Node
 export var websocket_url = "ws://localhost:64569"
 var _client = WebSocketClient.new()
 
-signal data_received(data)
+signal message_received(message)
 
 func _exit_tree():
 	_client.disconnect_from_host()
@@ -31,21 +31,16 @@ func _closed(was_clean = false):
 
 func _connected(proto = ""):
 	print("Connected with protocol: ", proto)
-	send_command(null, "print", ['test command successful1!'])
-	send_command(null, "print", ['project.hubs'])
-	send_command(null, "get_hubnames", [], "hubnames")
 	# send_command(null, "hub_demo", [], null)
 
-func send_command(hub, funcname, args, return_id=null):
-	var command = BLECommand.new(hub, funcname, args, return_id)
-	_client.get_peer(1).put_packet(command.to_json().to_utf8())
+func send_message(message):
+	_client.get_peer(1).put_packet(message.to_utf8())
 	
 
 func _on_data():
 	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()
 	print("Got data from server: ", msg)
-	var data = JSON.parse(msg)
-	emit_signal("data_received", data)
+	emit_signal("message_received", msg)
 
 func _process(_delta):
 	_client.poll()

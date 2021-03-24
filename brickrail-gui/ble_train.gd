@@ -16,9 +16,8 @@ func _init(p_name, p_address):
 	hub = BLEHub.new(p_name, "train", p_address)
 	hub.connect("data_received", self, "_on_data_received")
 
-func _on_data_received(data):
-	assert(data.hub == hub.name)
-	if data.return_id == "state_changed":
+func _on_data_received(key, data):
+	if key == "state_changed":
 		set_state(data.state)
 
 func set_state(p_state):
@@ -32,6 +31,12 @@ func set_target(value):
 func set_speed(value):
 	var cmd = "train.set_speed(" + str(value) + ")"
 	hub.hub_command(cmd)
+
+func connect_hub():
+	hub.connect_hub()
+
+func run_program():
+	hub.run_program()
 
 func brake():
 	hub.hub_command("train.brake()")

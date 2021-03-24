@@ -15,9 +15,9 @@ func _init(p_name, p_program, p_address):
 	# communicator = p_communicator
 	address = p_address
 
-func _on_data_received(data):
+func _on_data_received(key, data):
 	prints("hub", name, "received data:", data)
-	emit_signal("data_received", data)
+	emit_signal("data_received", key, data)
 
 func send_command(command, args, return_id=null):
 	# communicator.send_command(name, command, args, return_id)

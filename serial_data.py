@@ -7,12 +7,14 @@ class SerialData:
         obj = eval(msg.split("data::")[1])
         key = obj["key"]
         data = obj["data"]
-        return cls(key, data)
+        hub = obj.get("hub", None)
+        return cls(key, hub, data)
 
-    def __init__(self, key, data):
+    def __init__(self, key, hub, data):
         self.key = key
+        self.hub = hub
         self.data = data
     
     def to_json(self):
-        obj = {"key": self.key, "data": self.data}
+        obj = {"key": self.key, "hub": self.hub, "data": self.data}
         return json.dumps(obj)

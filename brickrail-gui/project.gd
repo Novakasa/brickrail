@@ -1,18 +1,17 @@
 extends Node2D
 
 var trains: Dictionary
-var Train = preload("res://train.tscn")
 
-func _ready():
-	$BLECommunicator.connect("data_received", self, "_on_data_received")
-
-func _on_data_received(data):
+func _on_train_state_changed(name, state):
 	pass
 
 func add_train(name, address=null):
-	var train = Train.instance()
-	train.ble_communicator = $BLECommunicator
-	train.name = name
-	train.address = address
-	self.trains[name] = train
-	train.ble_add()
+	var train = BLETrain.new(name, address)
+	print(get_children()[0].name)
+	get_node("BLEController").add_hub(train.hub)
+	trains[name] = train
+
+func commit_action(action):
+	var train = trains[action.train]
+	prints("[project] calling method", action.function, "on train", action.train, "with args", action.args)
+	train.callv(action.function, action.args)

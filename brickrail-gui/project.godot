@@ -32,14 +32,20 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "BLETrain",
 "language": "GDScript",
-"path": "res://train_hub.gd"
+"path": "res://ble_train.gd"
+}, {
+"base": "Reference",
+"class": "TrainCommand",
+"language": "GDScript",
+"path": "res://train_command.gd"
 } ]
 _global_script_class_icons={
 "BLECommand": "",
 "BLECommunicator": "",
 "BLEController": "",
 "BLEHub": "",
-"BLETrain": ""
+"BLETrain": "",
+"TrainCommand": ""
 }
 
 [application]

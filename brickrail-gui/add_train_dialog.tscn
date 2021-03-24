@@ -1,0 +1,100 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://add_train_dialog.gd" type="Script" id=1]
+
+[node name="AddTrainDialog" type="WindowDialog"]
+margin_left = 322.997
+margin_top = 118.621
+margin_right = 522.997
+margin_bottom = 207.4
+window_title = "create train"
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+address_input = NodePath("VBoxContainer/GridContainer/HBoxContainer/AddressInput")
+name_input = NodePath("VBoxContainer/GridContainer/NameInput")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+anchor_right = 1.0
+anchor_bottom = 1.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+alignment = 1
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
+margin_top = 10.0
+margin_right = 200.0
+margin_bottom = 54.0
+columns = 2
+
+[node name="NameLabel" type="Label" parent="VBoxContainer/GridContainer"]
+margin_top = 3.0
+margin_right = 50.0
+margin_bottom = 17.0
+text = "name"
+
+[node name="NameInput" type="TextEdit" parent="VBoxContainer/GridContainer"]
+margin_left = 54.0
+margin_right = 200.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddressLabel" type="Label" parent="VBoxContainer/GridContainer"]
+margin_top = 27.0
+margin_right = 50.0
+margin_bottom = 41.0
+text = "address"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
+margin_left = 54.0
+margin_top = 24.0
+margin_right = 200.0
+margin_bottom = 44.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="AddressInput" type="TextEdit" parent="VBoxContainer/GridContainer/HBoxContainer"]
+margin_right = 101.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ScanButton" type="Button" parent="VBoxContainer/GridContainer/HBoxContainer"]
+margin_left = 105.0
+margin_right = 146.0
+margin_bottom = 20.0
+text = "scan"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 58.0
+margin_right = 200.0
+margin_bottom = 78.0
+alignment = 2
+
+[node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+margin_left = 72.0
+margin_right = 126.0
+margin_bottom = 20.0
+text = "Cancel"
+
+[node name="AddButton" type="Button" parent="VBoxContainer/HBoxContainer"]
+margin_left = 130.0
+margin_right = 200.0
+margin_bottom = 20.0
+text = "Add train"
+
+[connection signal="pressed" from="VBoxContainer/GridContainer/HBoxContainer/ScanButton" to="." method="_on_ScanButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/CancelButton" to="." method="_on_CancelButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/AddButton" to="." method="_on_AddButton_pressed"]

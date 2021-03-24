@@ -29,6 +29,7 @@ class BLEHub:
         if line.find("data::") == 0:
             print("got return data from hub!", line)
             data = SerialData.from_hub_msg(line)
+            data.hub = self.name
             await self.out_queue.put(data)
             return
         print(line)
