@@ -3,6 +3,8 @@ extends Node
 
 var hubs = {}
 
+signal data_received(key, data)
+
 func _ready():
 	$BLECommunicator.connect("message_received", self, "_on_message_received")
 
@@ -18,6 +20,8 @@ func _on_message_received(message):
 	var hubname = obj.hub
 	if hubname != null:
 		hubs[hubname]._on_data_received(key, obj.data)
+		return
+	emit_signal("data_received", key, obj.data)
 
 func send_command(hub, funcname, args, return_key):
 	var command = BLECommand.new(hub, funcname, args, return_key)

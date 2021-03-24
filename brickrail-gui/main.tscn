@@ -30,6 +30,8 @@ margin_left = 6.0
 margin_top = 4.0
 margin_right = 1018.0
 margin_bottom = 596.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -37,6 +39,7 @@ __meta__ = {
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 1012.0
 margin_bottom = 22.0
+size_flags_horizontal = 3
 
 [node name="AddTrain" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
 margin_right = 68.0
@@ -45,30 +48,6 @@ text = "add train"
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="ConnectTrain" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
-margin_left = 72.0
-margin_right = 168.0
-margin_bottom = 22.0
-text = "connect train"
-
-[node name="RunTrain" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
-margin_left = 172.0
-margin_right = 238.0
-margin_bottom = 22.0
-text = "run train"
-
-[node name="StartTrain" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
-margin_left = 242.0
-margin_right = 316.0
-margin_bottom = 22.0
-text = "start train"
-
-[node name="StopTrain" type="ToolButton" parent="VBoxContainer/HBoxContainer"]
-margin_left = 320.0
-margin_right = 393.0
-margin_bottom = 22.0
-text = "stop train"
 
 [node name="VBoxContainer" type="HSplitContainer" parent="VBoxContainer"]
 margin_top = 26.0
@@ -102,8 +81,6 @@ render_target_update_mode = 3
 [node name="AddTrainDialog" parent="." instance=ExtResource( 4 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/ConnectTrain" to="." method="_on_ConnectTrain_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/RunTrain" to="." method="_on_RunTrain_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/StartTrain" to="." method="_on_StartTrain_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/StopTrain" to="." method="_on_StopTrain_pressed"]
+[connection signal="data_received" from="VBoxContainer/VBoxContainer/ViewportContainer/Viewport/Project" to="." method="_on_Project_data_received"]
 [connection signal="add_train" from="AddTrainDialog" to="." method="_on_AddTrainDialog_add_train"]
+[connection signal="scan_device" from="AddTrainDialog" to="." method="_on_AddTrainDialog_scan_device"]

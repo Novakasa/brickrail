@@ -21,3 +21,14 @@ func _on_AddTrainDialog_add_train(p_name, p_address):
 func _on_train_action(action):
 	print("[main] forwarding train action")
 	get_node(project).commit_action(action)
+
+
+func _on_Project_data_received(key, data):
+	prints("[main] data received", key, data)
+	if key == "find_device_address":
+		var address = data
+		$AddTrainDialog.insert_address(address)
+
+
+func _on_AddTrainDialog_scan_device():
+	get_node(project).find_device()

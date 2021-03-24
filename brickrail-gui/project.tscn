@@ -7,3 +7,5 @@
 script = ExtResource( 3 )
 
 [node name="BLEController" parent="." instance=ExtResource( 1 )]
+
+[connection signal="data_received" from="BLEController" to="." method="_on_data_received"]

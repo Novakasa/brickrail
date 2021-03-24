@@ -40,7 +40,7 @@ class ClientCommand:
             result = func(*self.args)
         
         if self.return_key is not None:
-            send_data = SerialData(self.return_key, result)
+            send_data = SerialData(self.return_key, None, result)
             await project.out_queue.put(send_data)
 
 
