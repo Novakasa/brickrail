@@ -12,6 +12,16 @@ func add_hub(hub):
 	send_command(null, "add_hub", [hub.name, hub.program, hub.address], null)
 	hubs[hub.name] = hub
 	hub.connect("ble_command", self, "_on_hub_command")
+	hub.connect("name_changed", self, "_on_hub_name_changed")
+
+func _on_hub_name_changed(hubname, new_hubname):
+	rename_hub(hubname, new_hubname)
+
+func rename_hub(p_name, p_new_name):
+	var hub = hubs[p_name]
+	hubs.erase(p_name)
+	hubs[p_new_name] = hub
+	send_command(null, "rename_hub", [p_name, p_new_name], null)
 
 func _on_message_received(message):
 	var obj = JSON.parse(message).result

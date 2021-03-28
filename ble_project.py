@@ -14,6 +14,12 @@ class BLEProject:
     def add_hub(self, name, script_path, address=None):
         self.hubs[name] = BLEHub(name, script_path, self.out_queue, address)
     
+    def rename_hub(self, name, new_name):
+        hub = self.hubs[name]
+        del self.hubs[name]
+        self.hubs[new_name] = hub
+        hub.set_name(new_name)
+    
     async def find_device(self, devicename="Pybricks Hub"):
         device =  await find_device(devicename)
         return device.address

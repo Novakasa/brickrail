@@ -1,9 +1,9 @@
 [gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://train_control_gui.gd" type="Script" id=1]
-[ext_resource path="res://TrainSettingsDialog.tscn" type="PackedScene" id=2]
+[ext_resource path="res://layout_controller_gui.gd" type="Script" id=1]
+[ext_resource path="res://layout_controller_settings_dialog.tscn" type="PackedScene" id=2]
 
-[node name="TrainControlGui" type="Panel"]
+[node name="LayoutControllerGui" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -787.0
@@ -14,7 +14,7 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-train_label = NodePath("VBoxContainer/HBoxContainer2/Label")
+controller_label = NodePath("VBoxContainer/HBoxContainer2/Label")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -29,59 +29,44 @@ __meta__ = {
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 237.0
 margin_bottom = 20.0
-size_flags_horizontal = 3
-
-[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2"]
-margin_right = 71.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-text = "train_name"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Container" type="Control" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 75.0
+[node name="Label" type="Label" parent="VBoxContainer/HBoxContainer2"]
+margin_right = 149.0
+margin_bottom = 20.0
+rect_min_size = Vector2( 0, 20 )
+text = "layout_controller_name"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
+margin_left = 153.0
 margin_right = 170.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 174.0
 margin_right = 237.0
 margin_bottom = 20.0
-text = "Settings"
+text = "settings"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 24.0
 margin_right = 237.0
 margin_bottom = 44.0
-size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="start_button" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_right = 41.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 0, 20 )
-text = "start"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="stop_button" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 45.0
-margin_right = 85.0
-margin_bottom = 20.0
-text = "stop"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="connect_button" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 89.0
-margin_right = 152.0
+margin_right = 63.0
 margin_bottom = 20.0
 text = "connect"
 __meta__ = {
@@ -89,18 +74,16 @@ __meta__ = {
 }
 
 [node name="run_button" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 156.0
-margin_right = 189.0
+margin_left = 67.0
+margin_right = 100.0
 margin_bottom = 20.0
 text = "run"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TrainSettingsDialog" parent="." instance=ExtResource( 2 )]
+[node name="LayoutControllerSettingsDialog" parent="." instance=ExtResource( 2 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/start_button" to="." method="_on_start_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/connect_button" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/run_button" to="." method="_on_run_button_pressed"]

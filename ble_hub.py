@@ -8,6 +8,8 @@ from serial_data import SerialData
 def get_script_path(program):
     if program == "train":
         return "E:/repos/brickrail/autonomous_train.py"
+    if program == "layout_controller":
+        return "E:/repos/brickrail/layout_controller.py"
 
 class BLEHub:
     
@@ -19,6 +21,12 @@ class BLEHub:
         self.address = address
         self.out_queue = out_queue
         self.run_task = None
+    
+    def set_name(self, name):
+        self.name = name
+    
+    def set_address(self, address):
+        self.address = address
     
     async def connect(self):
         if self.address is None:
@@ -47,8 +55,11 @@ class BLEHub:
         async def hub_run():
             print(f"hub {self.name} run start!")
             script_path = get_script_path(self.program)
+            print("initiating run!")
             await self.hub.run(script_path, wait=False, print_output=False)
+            print("waiting for running state!")
             await self.hub.wait_until_state(self.hub.RUNNING)
+            print("hub is now running!")
 
             await self.output_loop()
 
@@ -75,8 +86,7 @@ class BLEHub:
 
 async def main():
 
-    trainpath = "E:/repos/brickrail/autonomous_train.py"
-    train = BLEHub("white train", trainpath, None)
+    train = BLEHub("white train", "train", None)
     await train.connect()
     await train.run()
 

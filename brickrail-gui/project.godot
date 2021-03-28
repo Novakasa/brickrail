@@ -35,6 +35,16 @@ _global_script_classes=[ {
 "path": "res://ble_train.gd"
 }, {
 "base": "Reference",
+"class": "LayoutController",
+"language": "GDScript",
+"path": "res://layout_controller.gd"
+}, {
+"base": "Reference",
+"class": "PhysicalSwitch",
+"language": "GDScript",
+"path": "res://PhysicalSwitch.gd"
+}, {
+"base": "Reference",
 "class": "TrainCommand",
 "language": "GDScript",
 "path": "res://train_command.gd"
@@ -45,6 +55,8 @@ _global_script_class_icons={
 "BLEController": "",
 "BLEHub": "",
 "BLETrain": "",
+"LayoutController": "",
+"PhysicalSwitch": "",
 "TrainCommand": ""
 }
 

@@ -1,27 +1,36 @@
 extends Panel
 
-var train setget set_train
+var train_name
+var project
 export(NodePath) var train_label
 
-signal train_action(train, action)
+func setup(p_project, p_train_name):
+	project = p_project
+	set_train_name(p_train_name)
+	get_train().connect("name_changed", self, "_on_train_name_changed")
+	$TrainSettingsDialog.setup(p_project, p_train_name)
 
-func set_train(p_train):
-	train = p_train
-	get_node(train_label).text = train
+func _on_train_name_changed(old_name, new_name):
+	set_train_name(new_name)
+
+func set_train_name(p_train_name):
+	train_name = p_train_name
+	get_node(train_label).text = train_name
+
+func get_train():
+	return project.trains[train_name]
 
 func _on_run_button_pressed():
-	var action = TrainCommand.new(train, "run_program", [])
-	emit_signal("train_action", action)
+	get_train().run_program()
 
 func _on_connect_button_pressed():
-	var action = TrainCommand.new(train, "connect_hub", [])
-	print("connection action signal sent!")
-	emit_signal("train_action", action)
-
+	get_train().connect_hub()
+	
 func _on_start_button_pressed():
-	var action = TrainCommand.new(train, "start", [])
-	emit_signal("train_action", action)
-
+	get_train().start()
+	
 func _on_stop_button_pressed():
-	var action = TrainCommand.new(train, "stop", [])
-	emit_signal("train_action", action)
+	get_train().stop()
+
+func _on_settings_button_pressed():
+	$TrainSettingsDialog.show()
