@@ -21,6 +21,9 @@ func _on_data_received(key, data):
 		var devdata = data.data
 		devices[devname]._on_data_received(devkey, devdata)
 
+func _on_device_hub_command(cmd):
+	hub.hub_command(cmd)
+
 func set_name(p_new_name):
 	var old_name = name
 	name = p_new_name
@@ -42,9 +45,18 @@ func run_program():
 		device.setup_on_hub()
 
 func attach_device(device):
-	device.controller = self
 	assert(device.port <= 3)
 	devices[device.name] = device
+	device.connect("hub_command", self, "_on_device_hub_command")
+	device.connect("name_changed", self, "_on_device_name_changed")
+
+func _on_device_name_changed(p_old_name, p_name):
+	var device = devices[p_old_name]
+	devices.erase(p_old_name)
+	devices[p_name] = device
+
+func remove_device(devicename):
+	devices.erase(devicename)
 
 func attached_ports():
 	var ports = []

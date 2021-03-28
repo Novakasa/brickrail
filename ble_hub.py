@@ -86,11 +86,11 @@ class BLEHub:
 
 async def main():
 
-    train = BLEHub("white train", "train", None)
+    train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
-
-    await train.hub.write(b"xd some message lol")
+    await train.hub.write(b"123456789")
+    await train.hub.write(b"xd some mess")
 
     print("done with main!")
 
