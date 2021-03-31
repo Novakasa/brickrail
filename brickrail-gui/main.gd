@@ -15,7 +15,7 @@ func _on_AddTrain_pressed():
 	add_train(trainname, null)
 	
 func _on_AddLayoutController_pressed():
-	var controllernum = len(get_node(project).trains)
+	var controllernum = len(get_node(project).layout_controllers)
 	var controllername = "controller"+str(controllernum)
 	add_layout_controller(controllername, null)
 

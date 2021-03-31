@@ -53,7 +53,7 @@ class Switch:
         if position == self.position:
             return
         sdir = -1
-        if position == "left":
+        if position == "right":
             sdir = 1
         print("starting motor with speed", 100*sdir)
         self.motor.dc(100*sdir)
