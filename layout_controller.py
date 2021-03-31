@@ -35,7 +35,7 @@ class Timer:
             self.callback = None
 
 class Switch:
-    def __init__(self, name, port, pulse_duration = 0.2):
+    def __init__(self, name, port, pulse_duration = 300):
         self.name = name
         self.motor = Motor(port)
         self.position = "unknown"
@@ -55,7 +55,8 @@ class Switch:
         sdir = -1
         if position == "left":
             sdir = 1
-        self.motor.run(100*sdir)
+        print("starting motor with speed", 100*sdir)
+        self.motor.dc(100*sdir)
         self.switch_timer.arm(self.pulse_duration, self.on_switch_timer)
         self.position = "switching_"+position
     
@@ -63,7 +64,7 @@ class Switch:
         
         if self.position == "switching_left":
             self.position = "left"
-        elif self.position == "switing_right":
+        elif self.position == "switching_right":
             self.position = "right"
         else:
             print("Controller device", self.name, "got a problem!! self.position=",self.position)
@@ -83,10 +84,12 @@ class Controller:
         ports = []
         for dev in self.devices.values():
             ports.append(dev.port)
+        return ports
     
     def attach_device(self, device):
-        assert device.port not in self.attached_ports
-        assert device.port<=Port.D
+        print(self.attached_ports(), device.port)
+        assert device.port not in self.attached_ports()
+        # assert int(device.port)<=3
 
         self.devices[device.name] = device
     
@@ -101,11 +104,19 @@ def timer_update():
         timer.update()
 
 def input_handler(message):
-    print(repr(message))
-    try:
-        eval(message)
-    except SyntaxError as e:
-        print(e)
+    print("interpreting message:", message)
+    if message.find("cmd::") == 0:
+        lmsg = list(message)
+        for n in range(5):
+            del lmsg[0]
+        code = "".join(lmsg)
+        print("evaluating:", code)
+        try:
+            eval(code)
+        except SyntaxError as e:
+            print(e)
+    else:
+        print(message)
 
 def send_data(key, data):
     obj = {"key": key, "data": data}
@@ -120,16 +131,19 @@ def control_loop():
 test_data = {"xd": ["some", "strings"], "lol": [None]}
 send_data("test_id", test_data)
 
+input_buffer = ""
+
 while True:
     timeout = int(delta*1000)
     wait(timeout)
-    message = ""
     #if loop_poll.poll(timeout):
     char = getchar()
     while char is not None:
         char = chr(char)
-        message += char
+        if char == "$":
+            input_handler(input_buffer)
+            input_buffer = ""
+        else:
+            input_buffer += char
         char = getchar()
-    if message:
-        input_handler(message)
     control_loop()

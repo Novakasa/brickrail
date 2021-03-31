@@ -81,20 +81,37 @@ class BLEHub:
     
     async def pipe_command(self, cmdstr):
         assert self.running
-        await self.hub.write(bytearray(cmdstr, encoding='utf8'))
+        message = "cmd::" + cmdstr + "$"
+        await self.hub.write(bytearray(message, encoding='utf8'))
 
 
 async def main():
 
+    """
     train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
-    await train.hub.write(b"123456789")
+    await train.hub.write(b"ewe 12345678933333333333333333333333333333333333$")
     await train.hub.write(b"xd some mess")
 
     print("done with main!")
 
     await train.hub.wait_until_state(train.hub.IDLE)
+    """
+
+    controller = BLEHub("layout_controller", "layout_controller", asyncio.Queue())
+    await controller.connect()
+    await controller.run()
+    await controller.pipe_command("controller.attach_device(Switch('switch0', Port.A))")
+    await asyncio.sleep(1)
+    await controller.pipe_command("controller.devices['switch0'].switch('left')")
+    await asyncio.sleep(2)
+    await controller.pipe_command("controller.devices['switch0'].switch('right')")
+
+    print("done with main!")
+
+    await controller.hub.wait_until_state(controller.hub.IDLE)
+    print(controller.hub.output)
 
 if __name__ == "__main__":
     asyncio.run(main())

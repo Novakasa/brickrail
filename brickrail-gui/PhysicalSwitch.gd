@@ -14,12 +14,20 @@ func _init(p_name, p_controller, p_port):
 	port = p_port
 	controller = p_controller
 
+func _on_data_received(key, data):
+	print("switch got data", key)
+	if key == "position_changed":
+		var new_pos = data
+		prints("position change confirmed!", new_pos)
+
 func setup_on_hub():
-	var cmd = "controller.add_device(Switch('"+name+"', "+str(port)+"))"
+	var portstr = ["A", "B", "C", "D"][port]
+	var cmd = "controller.attach_device(Switch('"+name+"', Port."+portstr+"))"
+	# var cmd = "add_switch('"+name+"', "+str(port)+"))"
 	emit_signal("hub_command", cmd)
 
 func switch(position):
-	var cmd = "controller.devices["+self.name+"].switch("+position+")"
+	var cmd = "controller.devices['"+self.name+"'].switch('"+position+"')"
 	emit_signal("hub_command", cmd)
 
 func set_name(p_name):

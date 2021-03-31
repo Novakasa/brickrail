@@ -180,11 +180,19 @@ def timer_update():
         timer.update()
 
 def input_handler(message):
-    print(repr(message))
-    try:
-        eval(message)
-    except SyntaxError as e:
-        print(e)
+    print("interpreting message:", message)
+    if message.find("cmd::") == 0:
+        lmsg = list(message)
+        for n in range(5):
+            del lmsg[0]
+        code = "".join(lmsg)
+        print("evaluating:", code)
+        try:
+            eval(code)
+        except SyntaxError as e:
+            print(e)
+    else:
+        print(message)
 
 def send_data(key, data):
     obj = {"key": key, "data": data}
@@ -199,6 +207,8 @@ def control_loop():
 test_data = {"xd": ["some", "strings"], "lol": [None]}
 send_data("test_id", test_data)
 
+input_buffer = ""
+
 while True:
     timeout = int(delta*1000)
     wait(timeout)
@@ -209,6 +219,11 @@ while True:
         char = chr(char)
         message += char
         char = getchar()
-    if message:
-        input_handler(message)
+    input_buffer += message
+    if input_buffer and input_buffer[-1] == "$":
+        msg = list(input_buffer)
+        del msg[-1]
+        msg = "".join(msg)
+        input_handler(msg)
+        input_buffer = ""
     control_loop()
