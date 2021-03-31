@@ -34,10 +34,20 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://ble_train.gd"
 }, {
+"base": "Node2D",
+"class": "LayoutCell",
+"language": "GDScript",
+"path": "res://layout_cell.gd"
+}, {
 "base": "Reference",
 "class": "LayoutController",
 "language": "GDScript",
 "path": "res://layout_controller.gd"
+}, {
+"base": "Node2D",
+"class": "LayoutTrack",
+"language": "GDScript",
+"path": "res://layout_track.gd"
 }, {
 "base": "Reference",
 "class": "PhysicalSwitch",
@@ -55,7 +65,9 @@ _global_script_class_icons={
 "BLEController": "",
 "BLEHub": "",
 "BLETrain": "",
+"LayoutCell": "",
 "LayoutController": "",
+"LayoutTrack": "",
 "PhysicalSwitch": "",
 "TrainCommand": ""
 }
@@ -74,10 +86,15 @@ window/dpi/allow_hidpi=true
 
 singletons=[ "res://pythonscript.gdnlib" ]
 
+[global]
+
+clear=false
+
 [physics]
 
 common/enable_pause_aware_picking=true
 
 [rendering]
 
+environment/default_clear_color=Color( 0.152941, 0.152941, 0.164706, 1 )
 environment/default_environment="res://default_env.tres"

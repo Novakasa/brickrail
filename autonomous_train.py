@@ -217,13 +217,10 @@ while True:
     char = getchar()
     while char is not None:
         char = chr(char)
-        message += char
+        if char == "$":
+            input_handler(input_buffer)
+            input_buffer = ""
+        else:
+            input_buffer += char
         char = getchar()
-    input_buffer += message
-    if input_buffer and input_buffer[-1] == "$":
-        msg = list(input_buffer)
-        del msg[-1]
-        msg = "".join(msg)
-        input_handler(msg)
-        input_buffer = ""
     control_loop()
