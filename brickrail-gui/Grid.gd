@@ -1,6 +1,6 @@
 extends Node2D
 
-export var spacing = 20.0
+export var spacing = 64.0
 export var nx = 60
 export var ny = 60
 export(Color) var grid_line_color
@@ -12,8 +12,10 @@ func setup_grid():
 	for i in range(nx):
 		cells.append([])
 		for j in range(ny):
-			cells[i].append(null)
-			
+			cells[i].append(LayoutCell.new(i, j, spacing))
+
+func _ready():
+	setup_grid()
 
 func _draw():
 	
