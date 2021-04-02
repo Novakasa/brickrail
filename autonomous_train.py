@@ -46,6 +46,38 @@ class Timer:
             self.time = None
             self.callback = None
 
+class SleeperCounter:
+    def __init__(self):
+        self.last_color = "sleeper"
+        self.transition_times = []
+        self.watch = StopWatch()
+        self.max_period = 5000
+    
+    def on_colorname(self, name):
+        for color in ["sleeper", "floor"]:
+            if color not in name:
+                continue
+            if self.last_color == color:
+                return
+            self.last_color = color
+            if len(self.transition_times) > 50:
+                del self.transition_times[0]
+            self.transition_times.append(self.watch.time())
+            return
+    
+    def get_speed(self, period=1000):
+        current_time = self.watch.time()
+        count = 0
+        i = -1
+        t = self.transition_times[i]
+        while current_time-t<period:
+            count +=1
+            i-=1
+            t = self.transition_times[i]
+        count = len([True for transition in self.transition_times if current_time-transition<period])
+        return count
+
+
 class TrainSensor:
 
     def __init__(self, marker_colors, marker_callback):
@@ -55,6 +87,7 @@ class TrainSensor:
         self.blind = False
         self.marker_colors = marker_colors
         self.marker_callback = marker_callback
+        self.sleeper_counter = SleeperCounter()
     
     def update(self, delta):
         if self.blind:
@@ -64,12 +97,17 @@ class TrainSensor:
             if color != measured_color:
                 continue
             if colorname in self.marker_colors:
-                print("detected marker!!", colorname)
+                # print("detected marker!!", colorname)
                 self.marker_callback(colorname)
                 return
+            self.sleeper_counter.on_colorname(colorname)
+
+    def estimate_speed(self, period):
+        return self.sleeper_counter.get_speed(period)
     
-    def make_blind(self, duration):
-        self.blind_timer.arm(duration, self.on_blind_timer)
+    def make_blind(self, duration=None):
+        if duration:
+            self.blind_timer.arm(duration, self.on_blind_timer)
         self.blind = True
     
     def on_blind_timer(self):
@@ -118,24 +156,33 @@ class Train:
 
     def __init__(self):
         self.wait_timer = Timer()
-
-        self.state = "stopped"
-
         self.hub = CityHub()
         self.motor = TrainMotor()
         self.sensor = TrainSensor(["red_marker", "blue_marker"], self.on_marker)
+
+        self.state = None
+        self.plan = "autonomous"
+        self.data_queue = []
+        self.set_state("stopped")
+    
+    def queue_data(self, key, data):
+        self.data_queue.append((key, data))
     
     def set_state(self, state):
         self.state = state
-        send_data("state_changed", state)
+        self.queue_data("state_changed", state)
+    
+    def report_speed(self, period=1000):
+        speed = self.sensor.estimate_speed(period)
+        self.queue_data("speed", speed)
     
     def slow(self):
-        print("slowing...")
+        # print("slowing...")
         self.motor.set_target(40)
         self.set_state("slow")
     
     def stop(self):
-        print("stopping...")
+        # print("stopping...")
         self.set_state("stopped")
         self.motor.brake()
     
@@ -146,11 +193,12 @@ class Train:
     def wait(self):
         if self.state != "stopped":
             self.stop()
-        print("waiting...")
+        # print("waiting...")
         self.set_state("waiting")
         self.wait_timer.arm(4000, self.on_wait_timer)
     
     def on_marker(self, colorname):
+        self.queue_data("detected_marker", colorname)
         if colorname == "red_marker":
             self.stop()
             self.wait()
@@ -169,6 +217,20 @@ class Train:
         self.sensor.update(delta)
         self.motor.update(delta)
 
+def send_data(key, data):
+    obj = {"key": key, "data": data}
+    msg = "data::"+repr(obj)
+    print(msg)
+
+def send_data_queue(queue):
+    if not queue:
+        return
+    msg = ""
+    for key, data in queue:
+        obj = {"key": key, "data": data}
+        msg += "data::"+repr(obj)+"$"
+    print(msg)
+
 device = train = Train()
 
 def update_timers():
@@ -176,24 +238,21 @@ def update_timers():
         timer.update()
 
 def input_handler(message):
-    print("interpreting message:", message)
+    # print("interpreting message:", message)
     if message.find("cmd::") == 0:
         lmsg = list(message)
         for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
-        print("evaluating:", code)
+        # print("evaluating:", code)
         try:
             eval(code)
         except SyntaxError as e:
             print(e)
+        # send_data("ran_command", code)
     else:
         print(message)
 
-def send_data(key, data):
-    obj = {"key": key, "data": data}
-    msg = "data::"+repr(obj)
-    print(msg)
 
 input_buffer = ""
 
@@ -213,11 +272,13 @@ def update():
     update_timers()
     update_input()
     device.update(delta)
+    send_data_queue(device.data_queue)
+    device.data_queue = []
 
 def main_loop():
     while True:
         wait(int(delta*1000))
-        update_input()
         update()
+        update_input()
 
 main_loop()

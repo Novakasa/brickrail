@@ -1,20 +1,24 @@
-import time
 
 import asyncio
+from ble_hub import BLEHub
 
-from pybricksdev.connections import PybricksHub, BLEPUPConnection
-from pybricksdev.ble import find_device
+async def main():
+
+    train = BLEHub("test_train", "train", asyncio.Queue())
+    await train.connect()
+    await train.run()
+
+    await train.pipe_command("train.start()")
+    
+    while True:
+        await asyncio.sleep(1)
+        await train.pipe_command("train.report_speed()")
+        # await train.hub.write(b"dsdsdsdadsdadsa$")
+        # await train.pipe_command("print(len(train.sensor.sleeper_counter.transition_times))")
+
+        # await train.pipe_command("train.slow()")
 
 
-async def main_coro():
-    device = await find_device("Pybricks Hub")
-    hub = PybricksHub()
-    # hub = BLEPUPConnection()
-    await hub.connect(device)
-    t0 = time.time()
-    # await hub.run("autonomous_train.py", wait=True)
-    await hub.run("hello_hub.py", wait=True)
-    t = time.time()-t0
-    print(f"starting program took {t} seconds!")
+    #await train.hub.wait_until_state(train.hub.IDLE)
 
-asyncio.run(main_coro())
+asyncio.run(main())
