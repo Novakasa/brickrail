@@ -51,8 +51,13 @@ class SleeperCounter:
         self.last_color = "sleeper"
         self.transition_times = []
         self.watch = StopWatch()
-        self.max_period = 5000
+        self.period = 500
     
+    def update(self):
+        current_time = self.watch.time()
+        while self.transition_times and current_time-self.transition_times[0]>self.period:
+            del self.transition_times[0]
+
     def on_colorname(self, name):
         for color in ["sleeper", "floor"]:
             if color not in name:
@@ -60,22 +65,13 @@ class SleeperCounter:
             if self.last_color == color:
                 return
             self.last_color = color
-            if len(self.transition_times) > 50:
-                del self.transition_times[0]
-            self.transition_times.append(self.watch.time())
+            current_time = self.watch.time()
+            self.transition_times.append(current_time)
+            
             return
     
     def get_speed(self, period=1000):
-        current_time = self.watch.time()
-        count = 0
-        i = -1
-        t = self.transition_times[i]
-        while current_time-t<period:
-            count +=1
-            i-=1
-            t = self.transition_times[i]
-        count = len([True for transition in self.transition_times if current_time-transition<period])
-        return count
+        return len(self.transition_times)
 
 
 class TrainSensor:
@@ -90,6 +86,7 @@ class TrainSensor:
         self.sleeper_counter = SleeperCounter()
     
     def update(self, delta):
+        self.sleeper_counter.update()
         if self.blind:
             return
         measured_color = self.sensor.color()
