@@ -4,14 +4,6 @@ from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
 from pybricks.experimental import getchar
 
-# from usys import stdin
-
-# from uselect import poll
-# from usys import stdin
-
-# loop_poll = poll()
-# loop_poll.register(stdin)
-
 CALIBRATED_COLORS = {
     "red_marker": Color(h=357, s=96, v=80), #measured in dark room
     "blue_marker": Color(h=219, s=94, v=75), #measured in dark room
@@ -133,25 +125,29 @@ class Train:
         self.motor = TrainMotor()
         self.sensor = TrainSensor(["red_marker", "blue_marker"], self.on_marker)
     
+    def set_state(self, state):
+        self.state = state
+        send_data("state_changed", state)
+    
     def slow(self):
         print("slowing...")
         self.motor.set_target(40)
-        self.state = "slow"
+        self.set_state("slow")
     
     def stop(self):
         print("stopping...")
-        self.state = "stopped"
+        self.set_state("stopped")
         self.motor.brake()
     
     def start(self):
-        self.state = "started"
+        self.set_state("started")
         self.motor.set_target(100)
     
     def wait(self):
         if self.state != "stopped":
             self.stop()
         print("waiting...")
-        self.state = "waiting"
+        self.set_state("waiting")
         self.wait_timer.arm(4000, self.on_wait_timer)
     
     def on_marker(self, colorname):
@@ -173,9 +169,9 @@ class Train:
         self.sensor.update(delta)
         self.motor.update(delta)
 
-train = Train()
+device = train = Train()
 
-def timer_update():
+def update_timers():
     for timer in Timer.timers:
         timer.update()
 
@@ -183,7 +179,7 @@ def input_handler(message):
     print("interpreting message:", message)
     if message.find("cmd::") == 0:
         lmsg = list(message)
-        for n in range(5):
+        for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
         print("evaluating:", code)
@@ -199,21 +195,10 @@ def send_data(key, data):
     msg = "data::"+repr(obj)
     print(msg)
 
-def control_loop():
-    timer_update()
-    train.update(delta)
-
-
-test_data = {"xd": ["some", "strings"], "lol": [None]}
-send_data("test_id", test_data)
-
 input_buffer = ""
 
-while True:
-    timeout = int(delta*1000)
-    wait(timeout)
-    message = ""
-    #if loop_poll.poll(timeout):
+def update_input():
+    global input_buffer
     char = getchar()
     while char is not None:
         char = chr(char)
@@ -223,4 +208,16 @@ while True:
         else:
             input_buffer += char
         char = getchar()
-    control_loop()
+
+def update():
+    update_timers()
+    update_input()
+    device.update(delta)
+
+def main_loop():
+    while True:
+        wait(int(delta*1000))
+        update_input()
+        update()
+
+main_loop()
