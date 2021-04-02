@@ -97,46 +97,42 @@ class Controller:
         for device in self.devices.values():
             device.update(delta)
 
-controller = Controller()
+device = controller = Controller()
 
-def timer_update():
+def send_data_queue(queue):
+    if not queue:
+        return
+    msg = ""
+    for key, data in queue:
+        obj = {"key": key, "data": data}
+        msg += "data::"+repr(obj)+"$"
+    print(msg)
+
+def update_timers():
     for timer in Timer.timers:
         timer.update()
 
 def input_handler(message):
-    print("interpreting message:", message)
+    # print("interpreting message:", message)
     if message.find("cmd::") == 0:
         lmsg = list(message)
-        for n in range(5):
+        for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
-        print("evaluating:", code)
+        # print("evaluating:", code)
         try:
             eval(code)
         except SyntaxError as e:
             print(e)
+        # send_data("ran_command", code)
     else:
         print(message)
 
-def send_data(key, data):
-    obj = {"key": key, "data": data}
-    msg = "data::"+repr(obj)
-    print(msg)
-
-def control_loop():
-    timer_update()
-    controller.update(delta)
-
-
-test_data = {"xd": ["some", "strings"], "lol": [None]}
-send_data("test_id", test_data)
 
 input_buffer = ""
 
-while True:
-    timeout = int(delta*1000)
-    wait(timeout)
-    #if loop_poll.poll(timeout):
+def update_input():
+    global input_buffer
     char = getchar()
     while char is not None:
         char = chr(char)
@@ -146,4 +142,18 @@ while True:
         else:
             input_buffer += char
         char = getchar()
-    control_loop()
+
+def update():
+    update_timers()
+    update_input()
+    device.update(delta)
+    send_data_queue(device.data_queue)
+    device.data_queue = []
+
+def main_loop():
+    while True:
+        wait(int(delta*1000))
+        update()
+        update_input()
+
+main_loop()

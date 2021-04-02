@@ -214,10 +214,8 @@ class Train:
         self.sensor.update(delta)
         self.motor.update(delta)
 
-def send_data(key, data):
-    obj = {"key": key, "data": data}
-    msg = "data::"+repr(obj)
-    print(msg)
+
+device = train = Train()
 
 def send_data_queue(queue):
     if not queue:
@@ -227,8 +225,6 @@ def send_data_queue(queue):
         obj = {"key": key, "data": data}
         msg += "data::"+repr(obj)+"$"
     print(msg)
-
-device = train = Train()
 
 def update_timers():
     for timer in Timer.timers:
