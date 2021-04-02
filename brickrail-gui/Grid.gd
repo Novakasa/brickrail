@@ -68,9 +68,13 @@ func _input(event):
 						if slot1 == null or slot0 == null:
 							drawing_last = cells[i][j]
 							drawing_last2 = null
+							drawing_last_track = null
 							return
 						var track = drawing_last.create_track(slot0, slot1)
-						drawing_last.add_track(track)
+						track = drawing_last.add_track(track)
+						if drawing_last_track != null:
+							track.connect_track(slot0, drawing_last_track)
+							drawing_last_track.connect_track(track.get_neighbour_slot(slot0), track)
 						drawing_last_track = track 
 					drawing_last2 = drawing_last
 					drawing_last = cells[i][j]

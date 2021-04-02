@@ -56,12 +56,22 @@ func create_track(slot0, slot1):
 func add_track(track):
 	if track.get_orientation() in tracks:
 		print("can't add track, same orientation already occupied!")
+		return tracks[track.get_orientation()]
 	tracks[track.get_orientation()] = track
+	track.connect("connections_changed", self, "_on_track_connections_changed")
+	update()
+	return track
+
+func _on_track_connections_changed(orientation):
 	update()
 
 func _draw():
 	for track in tracks.values():
 		draw_line(track.pos0*spacing, track.pos1*spacing, Color.white, 4)
+		if len(track.connections[track.slot0]) == 0:
+			draw_circle(track.pos0*spacing, spacing/10, Color.white)
+		if len(track.connections[track.slot1]) == 0:
+			draw_circle(track.pos1*spacing, spacing/10, Color.white)
 	
 	if hover_track != null:
 		draw_line(hover_track.pos0*spacing, hover_track.pos1*spacing, Color(0.4,0.4,0.4), 4)
