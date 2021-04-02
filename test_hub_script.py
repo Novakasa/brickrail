@@ -12,7 +12,10 @@ async def main():
     
     while True:
         await asyncio.sleep(1)
-        await train.pipe_command("train.report_speed()")
+        try:
+            await train.pipe_command("train.report_speed()")
+        except AssertionError:
+            print(train.hub.output)
         # await train.hub.write(b"dsdsdsdadsdadsa$")
         # await train.pipe_command("print(len(train.sensor.sleeper_counter.transition_times))")
 
