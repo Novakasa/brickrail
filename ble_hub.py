@@ -35,15 +35,15 @@ class BLEHub:
         await self.hub.connect(self.address)
     
     async def handle_output(self, msg):
-        # print("msg:", msg)
+        print("msg:", msg)
         for line in msg.split("$")[:-1]:
             if line.find("data::") == 0:
                 print("got return data from hub!", line)
                 data = SerialData.from_hub_msg(line)
                 data.hub = self.name
                 await self.out_queue.put(data)
-                return
-            print(line)
+            else:
+                print(line)
     
     async def output_loop(self):
         print("starting output handler loop")
