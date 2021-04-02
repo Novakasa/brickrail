@@ -5,19 +5,28 @@ var slot0
 var slot1
 var pos0
 var pos1
-var connections0 = []
-var connections1 = []
+var connections = {}
 var slots = ["N", "S", "E", "W"]
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
 
 func _init(p_slot0, p_slot1):
 	slot0 = p_slot0
 	slot1 = p_slot1
+	assert_slot_degeneracy()
+	connections[slot0] = []
+	connections[slot1] = []
 	pos0 = slot_positions[slot0]
 	pos1 = slot_positions[slot1]
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
+
+func assert_slot_degeneracy():
+	var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
+	if not get_orientation() in orientations:
+		var temp = slot0
+		slot0 = slot1
+		slot1 = temp
 
 func get_orientation():
 	return slot0+slot1
@@ -47,8 +56,5 @@ func get_next_tracks_from(slot):
 	return get_next_tracks_at(get_opposite_slot(slot))
 	
 func get_next_tracks_at(slot):
-	if slot == slot0:
-		return connections0
-	elif slot == slot1:
-		return connections1
+	return connections[slot]
 	push_error("[LayoutTrack.get_next_tracks_at] track doesn't contain " + slot)

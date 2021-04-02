@@ -71,7 +71,7 @@ func _input(event):
 							return
 						var track = drawing_last.create_track(slot0, slot1)
 						drawing_last.add_track(track)
-						drawing_last_track = track
+						drawing_last_track = track 
 					drawing_last2 = drawing_last
 					drawing_last = cells[i][j]
 			else:
