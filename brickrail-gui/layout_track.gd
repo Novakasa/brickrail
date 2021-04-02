@@ -22,6 +22,16 @@ func _init(p_slot0, p_slot1):
 func get_orientation():
 	return slot0+slot1
 
+func get_direction():
+	if get_orientation() in ["NS", "SN"]:
+		return 0
+	if get_orientation() in ["SE", "ES", "NW", "WN"]:
+		return 1
+	if get_orientation() in ["EW", "WE"]:
+		return 2
+	if get_orientation() in ["NE", "EN", "SW", "WS"]:
+		return 3
+
 func distance_to(pos):
 	var point = Geometry.get_closest_point_to_segment_2d(pos, pos0, pos1)
 	return (point-pos).length()

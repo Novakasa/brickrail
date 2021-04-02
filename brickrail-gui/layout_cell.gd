@@ -15,26 +15,43 @@ func _init(p_x_idx, p_y_idx, p_spacing):
 	
 	position = Vector2(x_idx, y_idx)*spacing
 
-func hover_at(pos):
-	hover_track = create_track_at(pos)
+func hover_at(pos, direction=null):
+	hover_track = create_track_at(pos, direction)
 	update()
 
 func stop_hover():
 	hover_track = null
 	update()
 
-func create_track_at(pos):
+func create_track_at(pos, direction=null):
 	var i = 0
 	var closest_dist = spacing+1
 	var closest_track = null
 	var normalized_pos = pos/spacing
 	for orientation in orientations:
 		var track = LayoutTrack.new(orientation[0], orientation[1])
+		if direction!= null:
+			if track.get_direction()!=direction:
+				continue
 		var dist = track.distance_to(normalized_pos)
 		if dist<closest_dist:
 			closest_track = track
 			closest_dist = dist
 	return closest_track
+
+func get_slot_to_cell(cell):
+	if cell.x_idx == x_idx+1 and cell.y_idx == y_idx:
+		return "E"
+	if cell.x_idx == x_idx-1 and cell.y_idx == y_idx:
+		return "W"
+	if cell.x_idx == x_idx and cell.y_idx == y_idx+1:
+		return "S"
+	if cell.x_idx == x_idx and cell.y_idx == y_idx-1:
+		return "N"
+	
+func create_track(slot0, slot1):
+	var track = LayoutTrack.new(slot0, slot1)
+	return track
 	
 func add_track(track):
 	if track.get_orientation() in tracks:
