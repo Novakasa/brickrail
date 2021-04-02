@@ -19,6 +19,9 @@ func _init(p_slot0, p_slot1):
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
 
+func get_orientation():
+	return slot0+slot1
+
 func distance_to(pos):
 	var point = Geometry.get_closest_point_to_segment_2d(pos, pos0, pos1)
 	return (point-pos).length()

@@ -36,7 +36,7 @@ func _input(event):
 		var mpos = event.position
 		var i = int(mpos.x/spacing)
 		var j = int(mpos.y/spacing)
-		if not (i>0 and i<nx and j>0 and j<ny):
+		if not (i>=0 and i<nx and j>=0 and j<ny):
 			return
 		var mpos_cell = mpos-cells[i][j].position
 		if event is InputEventMouseMotion:
@@ -44,7 +44,7 @@ func _input(event):
 				hover_cell.stop_hover()
 			hover_cell = cells[i][j]
 			hover_cell.hover_at(mpos_cell)
-		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			get_tree().set_input_as_handled()
 			var track = cells[i][j].create_track_at(mpos_cell)
 			cells[i][j].add_track(track)
