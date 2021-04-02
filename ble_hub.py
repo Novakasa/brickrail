@@ -1,4 +1,4 @@
-from pybricksdev.connections import BLEPUPConnection
+from pybricksdev.connections import PybricksHub, BLEPUPConnection
 from pybricksdev.ble import find_device
 
 import asyncio
@@ -15,6 +15,7 @@ class BLEHub:
     
     def __init__(self, name, program, out_queue=None, address=None):
 
+        # self.hub = PybricksHub()
         self.hub = BLEPUPConnection()
         self.name = name
         self.program = program
@@ -87,16 +88,15 @@ class BLEHub:
 
 async def main():
 
-    """
     train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
     await train.hub.write(b"ewe 12345678933333333333333333333333333333333333$")
-    await train.hub.write(b"xd some mess")
-
-    print("done with main!")
+    await train.hub.write(b"xd some mess$")
+    await train.pipe_command("train.start()")
 
     await train.hub.wait_until_state(train.hub.IDLE)
+    print(train.hub.output)
     """
 
     controller = BLEHub("layout_controller", "layout_controller", asyncio.Queue())
@@ -108,10 +108,10 @@ async def main():
     await asyncio.sleep(2)
     await controller.pipe_command("controller.devices['switch0'].switch('right')")
 
-    print("done with main!")
-
     await controller.hub.wait_until_state(controller.hub.IDLE)
     print(controller.hub.output)
+    """
+    print("done with main!")
 
 if __name__ == "__main__":
     asyncio.run(main())
