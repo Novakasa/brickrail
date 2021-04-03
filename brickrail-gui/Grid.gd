@@ -13,6 +13,9 @@ var direction = 0
 var drawing_last = null
 var drawing_last2 = null
 var drawing_last_track = null
+var pretty_tracks = true
+
+signal grid_view_changed(p_pretty_tracks)
 
 func setup_grid():
 	for i in range(nx):
@@ -20,6 +23,7 @@ func setup_grid():
 		for j in range(ny):
 			cells[i].append(LayoutCell.new(i, j, spacing))
 			add_child(cells[i][j])
+			connect("grid_view_changed", cells[i][j], "_on_grid_view_changed")
 
 func _ready():
 	setup_grid()
@@ -47,6 +51,10 @@ func _input(event):
 			direction -= 1
 			while direction<0:
 				direction+=4
+		
+		if event.scancode == KEY_V:
+			pretty_tracks = not pretty_tracks
+			emit_signal("grid_view_changed", pretty_tracks)
 	
 	if event is InputEventMouse:
 		var mpos = event.position
