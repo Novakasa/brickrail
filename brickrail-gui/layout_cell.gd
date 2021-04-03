@@ -67,7 +67,9 @@ func _on_track_connections_changed(orientation):
 
 func _draw():
 	for track in tracks.values():
-		draw_line(track.pos0*spacing, track.pos1*spacing, Color.white, 4)
+		#draw_line(track.pos0*spacing, track.pos1*spacing, Color.white, 4)
+		for segment in track.get_track_segments():
+			draw_line(segment[0]*spacing, segment[1]*spacing, Color.white, 4)
 		if len(track.connections[track.slot0]) == 0:
 			draw_circle(track.pos0*spacing, spacing/10, Color.white)
 		if len(track.connections[track.slot1]) == 0:

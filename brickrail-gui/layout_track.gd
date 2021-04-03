@@ -51,6 +51,9 @@ func connect_track(slot, track):
 	if not slot in connections:
 		push_error("[LayoutTrack] can't connect track to a nonexistent slot!")
 		return
+	if not get_neighbour_slot(slot) in track.connections:
+		push_error("[LayoutTrack] can't connect track with a incompatible orientation!")
+		return
 	if track == self:
 		push_error("[LayoutTrack] can't connect track to itself!")
 		return
@@ -84,3 +87,63 @@ func get_next_tracks_from(slot):
 func get_next_tracks_at(slot):
 	return connections[slot]
 	push_error("[LayoutTrack.get_next_tracks_at] track doesn't contain " + slot)
+
+func get_circle_art_segments(center, radius, num, start, end):
+	var segments = []
+	var delta = (end-start)/num
+	for i in range(num):
+		var alpha0 = start + i*delta
+		var alpha1 = alpha0 + delta
+		var p0 = center + radius*Vector2(cos(alpha0), sin(alpha0))
+		var p1 = center + radius*Vector2(cos(alpha1), sin(alpha1))
+		segments.append([p0, p1])
+	return segments
+
+func get_slot_tangent(slot):
+	if slot == slot1:
+		return pos1-pos0
+	return pos0-pos1
+
+func get_slot_pos(slot):
+	if slot == slot1:
+		return pos1
+	return pos0
+
+func get_track_segments():
+	var segments = []
+	if get_orientation() in ["NS", "EW"]:
+		segments.append([pos0 + (pos1-pos0)*0.25*sqrt(2), pos1 - (pos1-pos0)*0.25*sqrt(2)])
+	for slot in ["S", "W", "E", "N"]:
+		if not slot in connections:
+			continue
+		var tangent = get_slot_tangent(slot)
+		var normal = tangent.rotated(PI/2)
+		var pos = get_slot_pos(slot)
+		
+		for track in connections[slot]:
+			var curve = tangent.angle_to(track.get_slot_tangent(track.get_opposite_slot(track.get_neighbour_slot(slot))))
+			if curve > PI:
+				curve -= 2*PI
+				
+			if get_orientation() in ["NS", "EW"]:
+				if is_equal_approx(curve, 0.0):
+					segments.append([pos - tangent*0.25*sqrt(2), pos])
+					continue
+				if is_equal_approx(curve, PI/4) or is_equal_approx(curve, -PI/4):
+					var center = pos - tangent*(0.25*sqrt(2)) + normal*(0.5+0.25*sqrt(2))*sign(curve)
+					var radius = 0.5+0.25*sqrt(2)
+					var start = tangent.angle()-PI/2*sign(curve)
+					var arc = PI/4*sign(curve)
+					segments += get_circle_art_segments(center, radius, 6, start, start+arc)
+			
+			if get_orientation() in ["NE", "SW", "NW", "SE"]:
+				if is_equal_approx(curve, 0.0):
+					segments.append([pos - tangent*0.5, pos])
+				if is_equal_approx(curve, PI/2) or is_equal_approx(curve, -PI/2):
+					var center = pos-(tangent-normal*sign(curve))/2
+					var radius = normal.length()/2
+					var start = tangent.angle()-PI/2*sign(curve)
+					var arc = PI/4*sign(curve)
+					segments += get_circle_art_segments(center, radius, 6, start, start+arc)
+	
+	return segments

@@ -84,10 +84,11 @@ func _input(event):
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			get_tree().set_input_as_handled()
 			var track = cells[i][j].create_track_at(mpos_cell, direction)
-			cells[i][j].add_track(track)
+			track = cells[i][j].add_track(track)
 			drawing_last = cells[i][j]
 			drawing_last2 = null
 			drawing_track = true
+			drawing_last_track = track
 			
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed:
 			drawing_track = false
