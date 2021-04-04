@@ -115,6 +115,7 @@ stretch = true
 [node name="Viewport" type="Viewport" parent="VBoxContainer/VBoxContainer/ViewportContainer"]
 size = Vector2( 697, 568 )
 handle_input_locally = false
+hdr = false
 render_target_update_mode = 3
 
 [node name="Project" parent="VBoxContainer/VBoxContainer/ViewportContainer/Viewport" instance=ExtResource( 2 )]

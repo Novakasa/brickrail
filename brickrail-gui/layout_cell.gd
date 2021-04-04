@@ -77,7 +77,10 @@ func _draw():
 	for track in tracks.values():
 		if pretty_tracks:
 			for segment in track.get_track_segments():
-				draw_line(segment[0]*spacing, segment[1]*spacing, Color.white, 4)
+				var scaled_segment = PoolVector2Array()
+				for vec in segment:
+					scaled_segment.append(vec*spacing)
+				draw_polyline(scaled_segment, Color.white, 4.0, true)
 		else:
 			draw_line(track.pos0*spacing, track.pos1*spacing, Color.white, 4)
 		if len(track.connections[track.slot0]) == 0:
