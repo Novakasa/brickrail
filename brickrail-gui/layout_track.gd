@@ -190,9 +190,18 @@ func _draw():
 				var connection_segment =  get_track_connection_segment(slot, turn)
 				draw_polyline(connection_segment, Color.white, 6.0, true)
 				draw_polyline(connection_segment, Color.black, 3.0, true)
+			if len(connections[slot]) == 0:
+				var tangent = get_slot_tangent(slot)
+				var pos = get_slot_pos(slot)
+				var start = pos - tangent*0.5
+				var stop = pos-tangent*0.25
+				var normal = tangent.rotated(PI/2).normalized()
+				draw_line(start*spacing, stop*spacing, Color.white, 6.0, true)
+				draw_line(start*spacing, stop*spacing, Color.black, 3.0, true)
+				draw_line((stop*spacing+4*normal), (stop*spacing-4*normal), Color.white, 3.0, true)
 	else:
 		draw_line(pos0*spacing, pos1*spacing, Color.white, 4)
-	if len(connections[slot0]) == 0:
-		draw_circle(pos0*spacing, spacing/10, Color.white)
-	if len(connections[slot1]) == 0:
-		draw_circle(pos1*spacing, spacing/10, Color.white)
+		if len(connections[slot0]) == 0:
+			draw_circle(pos0*spacing, spacing/10, Color.white)
+		if len(connections[slot1]) == 0:
+			draw_circle(pos1*spacing, spacing/10, Color.white)
