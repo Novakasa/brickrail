@@ -15,13 +15,25 @@ func _init(p_slot0, p_slot1):
 	slot0 = p_slot0
 	slot1 = p_slot1
 	assert_slot_degeneracy()
-	connections[slot0] = []
-	connections[slot1] = []
+	connections[slot0] = {}
+	connections[slot1] = {}
 	pos0 = slot_positions[slot0]
 	pos1 = slot_positions[slot1]
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
+
+func get_turn_from(slot):
+	var center_tangent = slot_positions[get_neighbour_slot(slot)] - slot_positions[slot]
+	var tangent = get_slot_tangent(get_opposite_slot(slot))
+	var turn_angle = center_tangent.angle_to(tangent)
+	if turn_angle > PI:
+		turn_angle -= 2*PI
+	if is_equal_approx(turn_angle, 0.0):
+		return "center"
+	if turn_angle > 0.0:
+		return "right"
+	return "left"
 
 func assert_slot_degeneracy():
 	var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
@@ -57,11 +69,13 @@ func connect_track(slot, track):
 	if track == self:
 		push_error("[LayoutTrack] can't connect track to itself!")
 		return
-	if track in connections[slot]:
+	if track in connections[slot].values():
 		push_error("[LayoutTrack] track is already connected at this slot!")
 		return
 	# prints("connected a track", track.get_orientation(), "with this track", get_orientation())
-	connections[slot].append(track)
+	var turn = track.get_turn_from(get_neighbour_slot(slot))
+	connections[slot][turn] = track
+	# prints("added connection, turning:", turn)
 	emit_signal("connections_changed", get_orientation())
 
 func get_neighbour_slot(slot):
@@ -111,6 +125,8 @@ func get_slot_pos(slot):
 		return pos1
 	return pos0
 
+func get_track_connection_segments(slot, turn):
+	pass
 
 func get_track_segments():
 	var segments = []
@@ -124,7 +140,7 @@ func get_track_segments():
 		var normal = tangent.rotated(PI/2)
 		var pos = get_slot_pos(slot)
 		
-		for track in connections[slot]:
+		for track in connections[slot].values():
 			var curve = tangent.angle_to(track.get_slot_tangent(track.get_opposite_slot(track.get_neighbour_slot(slot))))
 			if curve > PI:
 				curve -= 2*PI
@@ -133,7 +149,7 @@ func get_track_segments():
 				if is_equal_approx(curve, 0.0):
 					segments.append(PoolVector2Array([pos - tangent*0.25*sqrt(2), pos]))
 					continue
-				if is_equal_approx(curve, PI/4) or is_equal_approx(curve, -PI/4):
+				if is_equal_approx(abs(curve), PI/4):
 					var center = pos - tangent*(0.25*sqrt(2)) + normal*(0.5+0.25*sqrt(2))*sign(curve)
 					var radius = 0.5+0.25*sqrt(2)
 					var start = tangent.angle()-PI/2*sign(curve)
@@ -143,7 +159,7 @@ func get_track_segments():
 			if get_orientation() in ["NE", "SW", "NW", "SE"]:
 				if is_equal_approx(curve, 0.0):
 					segments.append(PoolVector2Array([pos - tangent*0.5, pos]))
-				if is_equal_approx(curve, PI/2) or is_equal_approx(curve, -PI/2):
+				if is_equal_approx(abs(curve), PI/2):
 					var center = pos-(tangent-normal*sign(curve))/2
 					var radius = normal.length()/2
 					var start = tangent.angle()-PI/2*sign(curve)
