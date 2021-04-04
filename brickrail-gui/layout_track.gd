@@ -102,7 +102,7 @@ func get_next_tracks_at(slot):
 	return connections[slot]
 	push_error("[LayoutTrack.get_next_tracks_at] track doesn't contain " + slot)
 
-func get_circle_arc_segments(center, radius, num, start, end):
+func get_circle_arc_segment(center, radius, num, start, end):
 	var segments = PoolVector2Array()
 	var delta = (end-start)/num
 	var p1
@@ -125,45 +125,45 @@ func get_slot_pos(slot):
 		return pos1
 	return pos0
 
-func get_track_connection_segments(slot, turn):
-	pass
+func get_track_connection_segment(slot, turn):
+	var track = connections[slot][turn]
+	var tangent = get_slot_tangent(slot)
+	var normal = tangent.rotated(PI/2)
+	var pos = get_slot_pos(slot)
+	var curve = tangent.angle_to(track.get_slot_tangent(track.get_opposite_slot(track.get_neighbour_slot(slot))))
+	if curve > PI:
+		curve -= 2*PI
+		
+	if get_orientation() in ["NS", "EW"]:
+		if is_equal_approx(curve, 0.0):
+			return PoolVector2Array([pos - tangent*0.25*sqrt(2), pos])
+		if is_equal_approx(abs(curve), PI/4):
+			var radius = 0.5+0.25*sqrt(2)
+			var center = pos - tangent*(0.25*sqrt(2)) + normal*radius*sign(curve)
+			var start = tangent.angle()-PI/2*sign(curve)
+			return get_circle_arc_segment(center, radius, 6, start, start+curve)
+	
+	if get_orientation() in ["NE", "SW", "NW", "SE"]:
+		if is_equal_approx(curve, 0.0):
+			return PoolVector2Array([pos - tangent*0.5, pos])
+		if is_equal_approx(abs(curve), PI/2):
+			var center = pos-(tangent-normal*sign(curve))/2
+			var radius = normal.length()/2
+			var start = tangent.angle()-PI/2*sign(curve)
+			return get_circle_arc_segment(center, radius, 12, start, start+curve/2)
+		if is_equal_approx(abs(curve), PI/4):
+			var radius = 0.5+0.25*sqrt(2)
+			var center = pos-(tangent/2-normal.normalized()*radius*sign(curve))
+			var start = tangent.angle()-PI/2*sign(curve)
+			return get_circle_arc_segment(center, radius, 6, start, start+curve/2)
 
 func get_track_segments():
 	var segments = []
 	if get_orientation() in ["NS", "EW"]:
 		var segment = PoolVector2Array([pos0 + (pos1-pos0)*0.25*sqrt(2), pos1 - (pos1-pos0)*0.25*sqrt(2)])
 		segments.append(segment)
-	for slot in ["S", "W", "E", "N"]:
-		if not slot in connections:
-			continue
-		var tangent = get_slot_tangent(slot)
-		var normal = tangent.rotated(PI/2)
-		var pos = get_slot_pos(slot)
-		
-		for track in connections[slot].values():
-			var curve = tangent.angle_to(track.get_slot_tangent(track.get_opposite_slot(track.get_neighbour_slot(slot))))
-			if curve > PI:
-				curve -= 2*PI
-				
-			if get_orientation() in ["NS", "EW"]:
-				if is_equal_approx(curve, 0.0):
-					segments.append(PoolVector2Array([pos - tangent*0.25*sqrt(2), pos]))
-					continue
-				if is_equal_approx(abs(curve), PI/4):
-					var center = pos - tangent*(0.25*sqrt(2)) + normal*(0.5+0.25*sqrt(2))*sign(curve)
-					var radius = 0.5+0.25*sqrt(2)
-					var start = tangent.angle()-PI/2*sign(curve)
-					var arc = PI/4*sign(curve)
-					segments.append(get_circle_arc_segments(center, radius, 6, start, start+arc))
-			
-			if get_orientation() in ["NE", "SW", "NW", "SE"]:
-				if is_equal_approx(curve, 0.0):
-					segments.append(PoolVector2Array([pos - tangent*0.5, pos]))
-				if is_equal_approx(abs(curve), PI/2):
-					var center = pos-(tangent-normal*sign(curve))/2
-					var radius = normal.length()/2
-					var start = tangent.angle()-PI/2*sign(curve)
-					var arc = PI/4*sign(curve)
-					segments.append(get_circle_arc_segments(center, radius, 6, start, start+arc))
+	for slot in [slot0, slot1]:
+		for turn in connections[slot]:
+			segments.append(get_track_connection_segment(slot, turn))
 	
 	return segments
