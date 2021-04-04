@@ -86,17 +86,17 @@ func _input(event):
 						drawing_last_track = track 
 					drawing_last2 = drawing_last
 					drawing_last = cells[i][j]
-			else:
-				hover_cell = cells[i][j]
-				hover_cell.hover_at(mpos_cell, direction)
+			# else:
+			# 	hover_cell = cells[i][j]
+			# 	hover_cell.hover_at(mpos_cell, direction)
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
 			get_tree().set_input_as_handled()
-			var track = cells[i][j].create_track_at(mpos_cell, direction)
-			track = cells[i][j].add_track(track)
+			#var track = cells[i][j].create_track_at(mpos_cell, direction)
+			#track = cells[i][j].add_track(track)
 			drawing_last = cells[i][j]
 			drawing_last2 = null
 			drawing_track = true
-			drawing_last_track = track
+			drawing_last_track = null #track
 			
 		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed:
 			drawing_track = false
