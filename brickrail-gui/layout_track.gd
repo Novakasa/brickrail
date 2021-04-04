@@ -8,17 +8,23 @@ var pos1
 var connections = {}
 var slots = ["N", "S", "E", "W"]
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
+var switch_positions = {}
+var spacing
+var pretty_tracks = true
 
 signal connections_changed
 
-func _init(p_slot0, p_slot1):
+func _init(p_slot0, p_slot1, p_spacing):
 	slot0 = p_slot0
 	slot1 = p_slot1
+	spacing = p_spacing
 	assert_slot_degeneracy()
 	connections[slot0] = {}
 	connections[slot1] = {}
 	pos0 = slot_positions[slot0]
 	pos1 = slot_positions[slot1]
+	switch_positions[slot0] = null
+	switch_positions[slot1] = null
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
@@ -75,8 +81,14 @@ func connect_track(slot, track):
 	# prints("connected a track", track.get_orientation(), "with this track", get_orientation())
 	var turn = track.get_turn_from(get_neighbour_slot(slot))
 	connections[slot][turn] = track
+	switch_positions[slot] = turn
 	# prints("added connection, turning:", turn)
 	emit_signal("connections_changed", get_orientation())
+	update()
+
+func set_view(p_pretty_tracks):
+	pretty_tracks = p_pretty_tracks
+	update()
 
 func get_neighbour_slot(slot):
 	if slot == "N":
@@ -136,34 +148,51 @@ func get_track_connection_segment(slot, turn):
 		
 	if get_orientation() in ["NS", "EW"]:
 		if is_equal_approx(curve, 0.0):
-			return PoolVector2Array([pos - tangent*0.25*sqrt(2), pos])
+			return PoolVector2Array([(pos - tangent*0.25*sqrt(2))*spacing, pos*spacing])
 		if is_equal_approx(abs(curve), PI/4):
 			var radius = 0.5+0.25*sqrt(2)
 			var center = pos - tangent*(0.25*sqrt(2)) + normal*radius*sign(curve)
 			var start = tangent.angle()-PI/2*sign(curve)
-			return get_circle_arc_segment(center, radius, 6, start, start+curve)
+			return get_circle_arc_segment(center*spacing, radius*spacing, 6, start, start+curve)
 	
 	if get_orientation() in ["NE", "SW", "NW", "SE"]:
 		if is_equal_approx(curve, 0.0):
-			return PoolVector2Array([pos - tangent*0.5, pos])
+			return PoolVector2Array([(pos - tangent*0.5)*spacing, pos*spacing])
 		if is_equal_approx(abs(curve), PI/2):
 			var center = pos-(tangent-normal*sign(curve))/2
 			var radius = normal.length()/2
 			var start = tangent.angle()-PI/2*sign(curve)
-			return get_circle_arc_segment(center, radius, 12, start, start+curve/2)
+			return get_circle_arc_segment(center*spacing, radius*spacing, 12, start, start+curve/2)
 		if is_equal_approx(abs(curve), PI/4):
 			var radius = 0.5+0.25*sqrt(2)
 			var center = pos-(tangent/2-normal.normalized()*radius*sign(curve))
 			var start = tangent.angle()-PI/2*sign(curve)
-			return get_circle_arc_segment(center, radius, 6, start, start+curve/2)
+			return get_circle_arc_segment(center*spacing, radius*spacing, 6, start, start+curve/2)
 
-func get_track_segments():
+func get_track_segment():
 	var segments = []
 	if get_orientation() in ["NS", "EW"]:
-		var segment = PoolVector2Array([pos0 + (pos1-pos0)*0.25*sqrt(2), pos1 - (pos1-pos0)*0.25*sqrt(2)])
-		segments.append(segment)
-	for slot in [slot0, slot1]:
-		for turn in connections[slot]:
-			segments.append(get_track_connection_segment(slot, turn))
+		return PoolVector2Array([(pos0 + (pos1-pos0)*0.25*sqrt(2))*spacing, (pos1 - (pos1-pos0)*0.25*sqrt(2))*spacing])
+	return null
 	
 	return segments
+
+func _draw():
+
+	if pretty_tracks:
+		var track_segment = get_track_segment()
+		if track_segment != null:
+			draw_polyline(track_segment, Color.white, 6.0, true)
+			draw_polyline(track_segment, Color.black, 3.0, true)
+		
+		for slot in [slot0, slot1]:
+			for turn in connections[slot]:
+				var connection_segment =  get_track_connection_segment(slot, turn)
+				draw_polyline(connection_segment, Color.white, 6.0, true)
+				draw_polyline(connection_segment, Color.black, 3.0, true)
+	else:
+		draw_line(pos0*spacing, pos1*spacing, Color.white, 4)
+	if len(connections[slot0]) == 0:
+		draw_circle(pos0*spacing, spacing/10, Color.white)
+	if len(connections[slot1]) == 0:
+		draw_circle(pos1*spacing, spacing/10, Color.white)

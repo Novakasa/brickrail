@@ -30,7 +30,7 @@ func create_track_at(pos, direction=null):
 	var closest_track = null
 	var normalized_pos = pos/spacing
 	for orientation in orientations:
-		var track = LayoutTrack.new(orientation[0], orientation[1])
+		var track = LayoutTrack.new(orientation[0], orientation[1], spacing)
 		if direction!= null:
 			if track.get_direction()!=direction:
 				continue
@@ -51,7 +51,7 @@ func get_slot_to_cell(cell):
 		return "N"
 	
 func create_track(slot0, slot1):
-	var track = LayoutTrack.new(slot0, slot1)
+	var track = LayoutTrack.new(slot0, slot1, spacing)
 	return track
 	
 func add_track(track):
@@ -59,6 +59,7 @@ func add_track(track):
 		print("can't add track, same orientation already occupied!")
 		return tracks[track.get_orientation()]
 	tracks[track.get_orientation()] = track
+	add_child(track)
 	track.connect("connections_changed", self, "_on_track_connections_changed")
 	update()
 	return track
@@ -71,22 +72,10 @@ func _on_grid_view_changed(p_pretty_tracks):
 
 func set_view(p_pretty_tracks):
 	pretty_tracks = p_pretty_tracks
+	for child in get_children():
+		child.set_view(p_pretty_tracks)
 	update()
 
 func _draw():
-	for track in tracks.values():
-		if pretty_tracks:
-			for segment in track.get_track_segments():
-				var scaled_segment = PoolVector2Array()
-				for vec in segment:
-					scaled_segment.append(vec*spacing)
-				draw_polyline(scaled_segment, Color.white, 4.0, true)
-		else:
-			draw_line(track.pos0*spacing, track.pos1*spacing, Color.white, 4)
-		if len(track.connections[track.slot0]) == 0:
-			draw_circle(track.pos0*spacing, spacing/10, Color.white)
-		if len(track.connections[track.slot1]) == 0:
-			draw_circle(track.pos1*spacing, spacing/10, Color.white)
-	
 	if hover_track != null:
 		draw_line(hover_track.pos0*spacing, hover_track.pos1*spacing, Color(0.4,0.4,0.4), 4)
