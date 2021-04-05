@@ -1,5 +1,5 @@
 class_name LayoutTrack
-extends Node2D
+extends Reference
 
 var slot0
 var slot1
@@ -10,7 +10,6 @@ var slots = ["N", "S", "E", "W"]
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
 var switch_positions = {}
 var spacing
-var pretty_tracks = true
 
 signal connections_changed
 
@@ -84,11 +83,6 @@ func connect_track(slot, track):
 	switch_positions[slot] = turn
 	# prints("added connection, turning:", turn)
 	emit_signal("connections_changed", get_orientation())
-	update()
-
-func set_view(p_pretty_tracks):
-	pretty_tracks = p_pretty_tracks
-	update()
 
 func get_neighbour_slot(slot):
 	if slot == "N":
@@ -176,32 +170,3 @@ func get_track_segment():
 	return null
 	
 	return segments
-
-func _draw():
-
-	if pretty_tracks:
-		var track_segment = get_track_segment()
-		if track_segment != null:
-			draw_polyline(track_segment, Color.white, 6.0, true)
-			draw_polyline(track_segment, Color.black, 3.0, true)
-		
-		for slot in [slot0, slot1]:
-			for turn in connections[slot]:
-				var connection_segment =  get_track_connection_segment(slot, turn)
-				draw_polyline(connection_segment, Color.white, 6.0, true)
-				draw_polyline(connection_segment, Color.black, 3.0, true)
-			if len(connections[slot]) == 0:
-				var tangent = get_slot_tangent(slot)
-				var pos = get_slot_pos(slot)
-				var start = pos - tangent*0.5
-				var stop = pos-tangent*0.25
-				var normal = tangent.rotated(PI/2).normalized()
-				draw_line(start*spacing, stop*spacing, Color.white, 6.0, true)
-				draw_line(start*spacing, stop*spacing, Color.black, 3.0, true)
-				draw_line((stop*spacing+4*normal), (stop*spacing-4*normal), Color.white, 3.0, true)
-	else:
-		draw_line(pos0*spacing, pos1*spacing, Color.white, 4)
-		if len(connections[slot0]) == 0:
-			draw_circle(pos0*spacing, spacing/10, Color.white)
-		if len(connections[slot1]) == 0:
-			draw_circle(pos1*spacing, spacing/10, Color.white)
