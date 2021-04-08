@@ -70,6 +70,7 @@ func _input(event):
 				if not cells[i][j] == drawing_last:
 					if cells[i][j] == drawing_last2:
 						drawing_last2 = null
+						drawing_last_track = null
 					if drawing_last2 != null:
 						var slot0 = drawing_last.get_slot_to_cell(drawing_last2)
 						var slot1 = drawing_last.get_slot_to_cell(cells[i][j])
