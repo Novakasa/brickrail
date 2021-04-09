@@ -9,12 +9,16 @@ var hover_track = null
 var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
 var pretty_tracks = true
 
+onready var track_material = preload("res://track_material.tres")
+
 func _init(p_x_idx, p_y_idx, p_spacing):
 	x_idx = p_x_idx
 	y_idx = p_y_idx
 	spacing = p_spacing
 	
 	position = Vector2(x_idx, y_idx)*spacing
+	
+	material = track_material
 
 func hover_at(pos, direction=null):
 	hover_track = create_track_at(pos, direction)
