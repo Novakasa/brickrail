@@ -1,0 +1,89 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=2]
+code = "shader_type canvas_item;
+
+uniform vec4 background: hint_color;
+uniform vec4 track_base: hint_color;
+uniform vec4 track_inner: hint_color;
+
+uniform ivec4 connections_n: hint_vec4;
+uniform ivec4 connections_e: hint_vec4;
+uniform ivec4 connections_s: hint_vec4;
+uniform ivec4 connections_w: hint_vec4;
+
+float circle(vec2 position, float radius) {
+    return length(position) - radius;
+}
+
+float rectangle(vec2 position, vec2 size) {
+    vec2 component_distance = abs(position) - size;
+    float outside_distance = length(max(component_distance, 0.0));
+    float inside_distance = min(max(component_distance.x, component_distance.y), 0.0);
+    return outside_distance + inside_distance;
+	// return component_distance.x;
+}
+
+vec2 translate(vec2 position, vec2 offset) {
+	return position - offset;
+}
+
+vec2 rotate(vec2 position, float rotation) {
+    const float PI = 3.14159;
+    float angle = rotation * PI * 2.0 * -1.0;
+    float sine = sin(angle);
+	float cosine = cos(angle);
+    return vec2(cosine * position.x + sine * position.y, cosine * position.y - sine * position.x);
+}
+
+float merge(float shape1, float shape2) {
+	return min(shape1, shape2);
+}
+
+float intersect(float shape1, float shape2) {
+	return max(shape1, shape2);
+}
+
+float substract(float shape1, float shape2) {
+	return intersect(shape1, -shape2);
+}
+
+float interpolate(float shape1, float shape2, float t) {
+	return mix(shape1, shape2, t);
+}
+
+float scene(vec2 position, float time) {
+	float test = 0.0; //TIME;
+	vec2 circle_pos = translate(position, vec2(0.5,.5));
+	vec2 rect_pos = translate(position, vec2(0.3,0.3));
+	rect_pos = rotate(rect_pos, time*0.1);
+	float circle = circle(circle_pos, 0.25);
+	float rect = rectangle(rect_pos, vec2(.3,.3));
+	// float scene = substract(circle, rect);
+	float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
+	return scene;
+}
+
+void fragment() {
+	COLOR = background;
+	vec2 position = UV;
+	float dist = scene(position, TIME*5.0);
+	float dist_change = fwidth(dist)*0.5;
+	float t = smoothstep(dist_change, -dist_change, dist);
+	COLOR = mix(track_base, track_inner, t);
+	ivec4 connections[4];
+	connections[0] = connections_n;
+	connections[1] = connections_e;
+	connections[2] = connections_s;
+	connections[3] = connections_w;
+}"
+
+[resource]
+shader = SubResource( 2 )
+shader_param/background = Color( 0.286275, 0.133333, 0.133333, 1 )
+shader_param/track_base = Color( 0, 0, 0, 1 )
+shader_param/track_inner = Color( 1, 1, 1, 1 )
+shader_param/connections_n = PoolIntArray( 0, 0, 0, 0 )
+shader_param/connections_e = PoolIntArray( 0, 0, 0, 0 )
+shader_param/connections_s = PoolIntArray( 0, 0, 0, 0 )
+shader_param/connections_w = PoolIntArray( 0, 0, 0, 0 )
