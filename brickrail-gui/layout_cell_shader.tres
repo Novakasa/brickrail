@@ -1,27 +1,20 @@
 [gd_resource type="ShaderMaterial" load_steps=2 format=2]
 
-[sub_resource type="Shader" id=2]
+[sub_resource type="Shader" id=1]
 code = "shader_type canvas_item;
 
 uniform vec4 background: hint_color;
 uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
 
-uniform bool NS;
-uniform bool NE;
-uniform bool NW;
-uniform bool SE;
-uniform bool SW;
-uniform bool EW;
+uniform mat4 connections;
 
-uniform mat4 matrix;
+const float PI = 3.14159265358979323846;
 
-uniform ivec3 connections_n: hint_vec4;
-uniform ivec3 connections_e: hint_vec4;
-uniform ivec3 connections_s: hint_vec4;
-uniform ivec3 connections_w: hint_vec4;
-
-
+const int LEFT = 1;
+const int STRAIGHT = 2;
+const int RIGHT = 4;
+const int NO_CONNECT = 8;
 
 float circle(vec2 position, float radius) {
     return length(position) - radius;
@@ -35,12 +28,36 @@ float rectangle(vec2 position, vec2 size) {
 	// return component_distance.x;
 }
 
+float pie(vec2 position, vec2 aperture, float radius)
+{
+    position.x = abs(position.x);
+    float l = length(position) - radius;
+	float m = length(position - aperture*clamp(dot(position,aperture),0.0,radius) );
+    return max(l,m*sign(aperture.y*position.x-aperture.x*position.y));
+}
+
+float arc( vec2 p, float aperture, float orientation, float ra, float rb )
+{
+	vec2 scb = vec2(sin(aperture), cos(aperture));
+	vec2 sca = vec2(sin(orientation), cos(orientation));
+    p *= mat2(vec2(sca.x,sca.y), vec2(-sca.y,sca.x));
+    p.x = abs(p.x);
+    float k = (scb.y*p.x>scb.x*p.y) ? dot(p.xy,scb) : length(p);
+    return sqrt( dot(p,p) + ra*ra - 2.0*ra*k ) - rb;
+}
+
 vec2 translate(vec2 position, vec2 offset) {
 	return position - offset;
 }
 
+float track_arc( vec2 position, vec2 center, float radius, float start_angle, float delta_angle, float width) {
+	float aperture = abs(delta_angle*0.5);
+	float orientation = (-start_angle - delta_angle*0.5) + PI;
+	position = translate(position, center);
+	return arc(position, aperture, orientation, radius, width);
+}
+
 vec2 rotate(vec2 position, float rotation) {
-    const float PI = 3.14159;
     float angle = rotation;
     float sine = sin(angle);
 	float cosine = cos(angle);
@@ -74,84 +91,150 @@ float line(vec2 position, vec2 from, vec2 to, float width) {
 	return rect;
 }
 
-float track_connection(vec2 position, int from_slot, int to_slot, int turn_index) {
+float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, float width) {
 	vec2 slot_positions[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
-	return position.x;
-}
 
-float track_segment(vec2 position, int slot1, int slot2) {
-	vec2 slot_positions[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
-	vec2 pos1 = slot_positions[slot1];
-	vec2 pos2 = slot_positions[slot2];
-	vec2 margin = pos2-pos1;
-	return line(position, pos1-margin, pos2+margin, 0.03);
+	float scene = 10.0;
+	
+	vec2 from_pos = slot_positions[from_slot];
+	vec2 to_pos = slot_positions[to_slot];
+	vec2 tangent = to_pos-from_pos;
+	vec2 to_pos_opposite = slot_positions[(to_slot+2)%4];
+	vec2 aligned = to_pos - to_pos_opposite;
+	float this_angle = atan(tangent.y, tangent.x);
+	float straight_angle = atan(aligned.y, aligned.x);
+	float aligned_angle = this_angle - straight_angle;
+	while (aligned_angle > PI) {
+		aligned_angle -= 2.0*PI;
+	}
+	while (aligned_angle < -PI) {
+		aligned_angle += 2.0*PI;
+	}
+	int track_alignment = int(sign(aligned_angle));
+	// track_alignment = -1;
+	int curve_index = turn_index-track_alignment;
+	float radius;
+	float start_angle;
+	float delta_angle;
+	vec2 center;
+	start_angle = this_angle - 0.5*PI*float(sign(curve_index));
+	delta_angle = float(curve_index)*PI/4.0;
+	if (turn_index == 2) {
+		vec2 end_pos = from_pos+tangent*0.8;
+		float straight = line(position, from_pos+tangent*0.5, end_pos, width);
+		scene = merge(scene, straight);
+		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
+		float stopper = line(position, end_pos-normal*width*2.0, end_pos+normal*width*2.0, width*0.5);
+		scene = merge(scene, stopper);
+	}
+	else if (abs(curve_index)==2) {
+		radius = 0.25*sqrt(2.0);
+		center = from_pos + aligned*0.5;
+		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
+		scene = merge(scene, connection);
+	}
+	else if (abs(curve_index)==1) {
+		radius = 0.5+sqrt(2.0)*0.25;
+		float center_angle = this_angle + 0.5*PI*float(sign(curve_index));
+		center = from_pos + tangent*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
+		if (dot(tangent,aligned) > 0.99) {
+			center += tangent*0.25*(2.0-sqrt(2.0));
+			float straight = line(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0)),width);
+			scene = merge(scene, straight);
+		}
+		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
+		scene = merge(scene, connection);
+	}
+	else if (curve_index == 0) {
+		float straight = line(position, from_pos+tangent*0.5, to_pos+tangent, width);
+		scene = merge(scene, straight);
+	}
+	
+	// float center_shape = circle(position-center, 0.04);
+	// float from_shape = circle(position-from_pos, 0.02);
+	// float to_shape = circle(position-to_pos, 0.02);
+	// float start_shape = line(position, center, center+radius*vec2(cos(start_angle), sin(start_angle)), 0.01);
+	// float start_shape = line(position, center, from_pos, 0.04);
+	// scene = merge(scene, center_shape);
+	// scene = merge(scene, start_shape);
+	// scene = merge(scene, from_shape);
+	// scene = merge(scene, to_shape);
+	// float segment = line(position, from_pos, to_pos, 0.02);
+	// scene = merge(scene, segment);
+	return scene;
+	
 }
 
 float scene(vec2 position, float time) {
-	float test = 0.0; //TIME;
 	vec2 circle_pos = translate(position, vec2(0.5,.5));
 	vec2 rect_pos = translate(position, vec2(0.3,0.3));
-	rect_pos = rotate(rect_pos, time*2.0);
+	rect_pos = rotate(rect_pos, time*1.0);
 	float circle = circle(circle_pos, 0.25);
 	float rect = rectangle(rect_pos, vec2(.15,.15));
-	float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
+	// float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
 	
-	ivec3 connections[4];
-	connections[0] = connections_n;
-	connections[1] = connections_e;
-	connections[2] = connections_s;
-	connections[3] = connections_w;
-	scene = 1.0;
-	bool tracks[6] = {NS, NE, NW, SE, SW, EW};
-		
-	if (NS) {
-		float track = track_segment(position, 0, 2);
-		scene = merge(scene, track)
+	float aperture = (cos(time)+1.0)*PI;
+	float orientation = (sin(time)+1.0)*PI*0.5;
+	vec2 pie_center = vec2(0.5,0.5);
+	vec2 pie_pos = translate(position, pie_center);
+	orientation = PI/2.0;
+	float pie = pie(position, vec2(sin(aperture), cos(aperture)), 0.3);
+	// float arc = arc(pie_pos, aperture, orientation, 0.2, 0.01);
+	float arc = track_arc(position, pie_center, 0.5, orientation, aperture, 0.01);
+	
+	// float track = track_connection(position, 2, 3, 3, 0.03);
+	
+	float scene = 10.0; //merge(scene, pie);
+	
+	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
+	
+	for (int from_slot=0; from_slot<4; from_slot++) {
+		for (int to_slot=0; to_slot<3; to_slot++) {
+			vec4 from_vec = basis[from_slot];
+			vec4 to_vec = basis[to_slot];
+			int connection_flags = int(dot(to_vec, connections*from_vec));
+			// connection_flags = 0;
+			int to_slot2 = to_slot;
+			if (from_slot == to_slot) {
+				to_slot2 = 3;
+			}
+			float connection;
+			if ((connection_flags & LEFT) == LEFT) {
+				connection = track_connection(position, from_slot, to_slot2, -1, 0.03);
+				scene = merge(scene, connection);
+			}
+			if ((connection_flags & STRAIGHT) == STRAIGHT) {
+				connection = track_connection(position, from_slot, to_slot2, 0, 0.03);
+				scene = merge(scene, connection);
+			}
+			if ((connection_flags & RIGHT) == RIGHT) {
+				connection = track_connection(position, from_slot, to_slot2, 1, 0.03);
+				scene = merge(scene, connection);
+			}
+			if ((connection_flags & NO_CONNECT) == NO_CONNECT) {
+				connection = track_connection(position, from_slot, to_slot2, 2, 0.03);
+				scene = merge(scene, connection);
+			}
+		}
 	}
-	if (NE) {
-		float track = track_segment(position, 0, 1);
-		scene = merge(scene, track)
-	}
-	if (NW) {
-		float track = track_segment(position, 0, 3);
-		scene = merge(scene, track)
-	}
-	if (SE) {
-		float track = track_segment(position, 2, 1);
-		scene = merge(scene, track)
-	}
-	if (SW) {
-		float track = track_segment(position, 2, 3);
-		scene = merge(scene, track)
-	}
-	if (EW) {
-		float track = track_segment(position, 1, 3);
-		scene = merge(scene, track)
-	}
+	// scene = merge(scene, arc);
+	
+	// scene = 1.0;
+	
 	return scene;
 }
 void fragment() {
 	COLOR = background;
 	vec2 position = UV;
-	float dist = scene(position, TIME*5.0);
+	float dist = scene(position, TIME*1.0);
 	float dist_change = fwidth(dist)*0.5;
 	float t = smoothstep(dist_change, -dist_change, dist);
 	COLOR = mix(background, track_base, t);
 }"
 
 [resource]
-shader = SubResource( 2 )
+shader = SubResource( 1 )
 shader_param/background = Color( 0.286275, 0.133333, 0.133333, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
-shader_param/NS = true
-shader_param/NE = true
-shader_param/NW = true
-shader_param/SE = true
-shader_param/SW = true
-shader_param/EW = true
-shader_param/matrix = Transform( 1, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0 )
-shader_param/connections_n = PoolIntArray( 1, 0, 0 )
-shader_param/connections_e = PoolIntArray( 1, 0, 0 )
-shader_param/connections_s = PoolIntArray( 1, 0, 0 )
-shader_param/connections_w = PoolIntArray( 2, 0, 0 )
+shader_param/connections = Transform( 1.72, 1.656, 1.946, 1.952, 1.881, 1.91, 8.831, 8.848, 1.849, 1.863, 1.52, 8.353 )
