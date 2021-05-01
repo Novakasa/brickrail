@@ -7,6 +7,9 @@ uniform vec4 background: hint_color;
 uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
 
+uniform float track_width;
+uniform float inner_track_width;
+
 uniform mat4 connections;
 
 const float PI = 3.14159265358979323846;
@@ -199,20 +202,21 @@ float scene(vec2 position, float time) {
 				to_slot2 = 3;
 			}
 			float connection;
+			float width = track_width;
 			if ((connection_flags & LEFT) == LEFT) {
-				connection = track_connection(position, from_slot, to_slot2, -1, 0.03);
+				connection = track_connection(position, from_slot, to_slot2, -1, width);
 				scene = merge(scene, connection);
 			}
 			if ((connection_flags & STRAIGHT) == STRAIGHT) {
-				connection = track_connection(position, from_slot, to_slot2, 0, 0.03);
+				connection = track_connection(position, from_slot, to_slot2, 0, width);
 				scene = merge(scene, connection);
 			}
 			if ((connection_flags & RIGHT) == RIGHT) {
-				connection = track_connection(position, from_slot, to_slot2, 1, 0.03);
+				connection = track_connection(position, from_slot, to_slot2, 1, width);
 				scene = merge(scene, connection);
 			}
 			if ((connection_flags & NO_CONNECT) == NO_CONNECT) {
-				connection = track_connection(position, from_slot, to_slot2, 2, 0.03);
+				connection = track_connection(position, from_slot, to_slot2, 2, width);
 				scene = merge(scene, connection);
 			}
 		}
@@ -234,7 +238,9 @@ void fragment() {
 
 [resource]
 shader = SubResource( 1 )
-shader_param/background = Color( 0.286275, 0.133333, 0.133333, 1 )
+shader_param/background = Color( 0.129412, 0.0980392, 0.0980392, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
-shader_param/connections = Transform( 1.72, 1.656, 1.946, 1.952, 1.881, 1.91, 8.831, 8.848, 1.849, 1.863, 1.52, 8.353 )
+shader_param/track_width = 0.06
+shader_param/inner_track_width = 0.03
+shader_param/connections = Transform( 1.844, 1.656, 1.946, 3.795, 1.881, 2.778, 8.781, 8.848, 1.849, 1.863, 3.959, 8.353 )

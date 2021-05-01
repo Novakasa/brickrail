@@ -9,7 +9,9 @@ var hover_track = null
 var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
 var pretty_tracks = true
 
-onready var track_material = preload("res://track_material.tres")
+var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}
+
+onready var track_material = preload("res://layout_cell_shader.tres")
 
 func _init(p_x_idx, p_y_idx, p_spacing):
 	x_idx = p_x_idx
@@ -18,7 +20,9 @@ func _init(p_x_idx, p_y_idx, p_spacing):
 	
 	position = Vector2(x_idx, y_idx)*spacing
 	
-	material = track_material
+func _ready():
+	material = track_material.duplicate()
+	_on_track_connections_changed()
 
 func hover_at(pos, direction=null):
 	hover_track = create_track_at(pos, direction)
@@ -67,7 +71,26 @@ func add_track(track):
 	update()
 	return track
 
-func _on_track_connections_changed(orientation):
+func _on_track_connections_changed(orientation=null):
+	var vecs = []
+	for from_id in range(4):
+		vecs.append(Vector3())
+	for track in tracks.values():
+		for to_slot in [track.slot0, track.slot1]:
+			var from_slot = track.get_opposite_slot(to_slot)
+			var to_slot_id = slot_index[to_slot]
+			var from_slot_id = slot_index[from_slot]
+			var turn_flags = {"left": 1, "center": 2, "right": 4}
+			var connections = 0
+			for turn in track.connections[to_slot]:
+				connections = connections | turn_flags[turn]
+			
+			if to_slot_id == 3:
+				vecs[from_slot_id][from_slot_id] = connections
+			else:
+				vecs[from_slot_id][to_slot_id] = connections
+	var connections_matrix = Transform(vecs[0], vecs[1], vecs[2], vecs[3])
+	material.set_shader_param("connections", connections_matrix)
 	update()
 
 func _on_grid_view_changed(p_pretty_tracks):
@@ -115,6 +138,10 @@ func draw_track(track):
 			draw_circle(pos1*spacing, spacing/10, Color.white)
 
 func _draw():
+	draw_rect(Rect2(Vector2(0,0), Vector2(spacing, spacing)), Color.black)
+	return
+	
+	
 	for orientation in tracks:
 		draw_track(tracks[orientation])
 
