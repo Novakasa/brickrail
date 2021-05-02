@@ -57,6 +57,7 @@ func get_slot_to_cell(cell):
 		return "S"
 	if cell.x_idx == x_idx and cell.y_idx == y_idx-1:
 		return "N"
+	return null
 	
 func create_track(slot0, slot1):
 	var track = LayoutTrack.new(slot0, slot1, spacing)
