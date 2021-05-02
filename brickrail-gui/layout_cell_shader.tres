@@ -20,6 +20,10 @@ const int LEFT = 1;
 const int STRAIGHT = 2;
 const int RIGHT = 4;
 const int NO_CONNECT = 8;
+const int SWITCH_LEFT = 16;
+const int SWITCH_STRAIGHT = 32;
+const int SWITCH_RIGHT = 64;
+
 
 float circle(vec2 position, float radius) {
     return length(position) - radius;
@@ -128,6 +132,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		vec2 end_pos = from_pos+tangent*0.8;
 		float straight = line(position, from_pos+tangent*0.5, end_pos, width);
 		scene = merge(scene, straight);
+		float endcap = circle(position-from_pos-tangent*0.5, width);
+		scene = merge(scene, endcap);
 		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
 		float stopper = line(position, end_pos-normal*width*2.0, end_pos+normal*width*2.0, width*0.5);
 		scene = merge(scene, stopper);
@@ -147,7 +153,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			float straight = line(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0)),width);
 			scene = merge(scene, straight);
 			float endcap = circle(position-from_pos-tangent*0.5, width);
-		scene = merge(scene, endcap);
+			scene = merge(scene, endcap);
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
 		scene = merge(scene, connection);
@@ -263,4 +269,4 @@ shader_param/grid_color = Color( 0.0509804, 0.0352941, 0.0352941, 1 )
 shader_param/grid_width = 0.045
 shader_param/track_width = 0.06
 shader_param/inner_track_width = 0.03
-shader_param/connections = Transform( 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0 )
+shader_param/connections = Transform( 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 0, 0 )
