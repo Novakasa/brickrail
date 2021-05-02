@@ -76,7 +76,7 @@ _global_script_class_icons={
 
 config/name="brickrail-gui"
 run/main_scene="res://main.tscn"
-config/icon="res://icon.png"
+config/icon="res://icon1.png"
 
 [display]
 
