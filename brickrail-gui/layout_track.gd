@@ -12,6 +12,7 @@ var switch_positions = {}
 var spacing
 
 signal connections_changed
+signal connections_cleared
 
 func _init(p_slot0, p_slot1, p_spacing):
 	slot0 = p_slot0
@@ -83,6 +84,26 @@ func connect_track(slot, track):
 	switch_positions[slot] = turn
 	# prints("added connection, turning:", turn)
 	emit_signal("connections_changed", get_orientation())
+	track.connect("connections_cleared", self, "_on_track_connections_cleared")
+
+func _on_track_connections_cleared(track):
+	disconnect_track(track)
+
+func disconnect_track(track):
+	for slot in [slot0, slot1]:
+		for turn in connections[slot]:
+			if connections[slot][turn] == track:
+				disconnect_turn(slot, turn)
+
+func disconnect_turn(slot, turn):
+	connections[slot].erase(turn)
+	emit_signal("connections_changed", get_orientation())
+
+func clear_connections():
+	for slot in [slot0, slot1]:
+		for turn in connections[slot]:
+			disconnect_turn(slot, turn)
+	emit_signal("connections_cleared", self)
 
 func get_neighbour_slot(slot):
 	if slot == "N":

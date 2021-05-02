@@ -71,6 +71,12 @@ func add_track(track):
 	update()
 	return track
 
+func clear():
+	for track in tracks.values():
+		track.clear_connections()
+	tracks.clear()
+	_on_track_connections_changed()
+
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
 	for from_id in range(4):

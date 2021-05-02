@@ -14,6 +14,7 @@ var drawing_last = null
 var drawing_last2 = null
 var drawing_last_track = null
 var pretty_tracks = true
+var removing_track = false
 
 signal grid_view_changed(p_pretty_tracks)
 
@@ -66,6 +67,8 @@ func _input(event):
 		if event is InputEventMouseMotion:
 			if hover_cell != null:
 				hover_cell.stop_hover()
+			if removing_track:
+				cells[i][j].clear()
 			if drawing_track:
 				if not cells[i][j] == drawing_last:
 					if cells[i][j] == drawing_last2:
@@ -90,14 +93,21 @@ func _input(event):
 			# else:
 			# 	hover_cell = cells[i][j]
 			# 	hover_cell.hover_at(mpos_cell, direction)
-		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and event.pressed:
-			get_tree().set_input_as_handled()
-			#var track = cells[i][j].create_track_at(mpos_cell, direction)
-			#track = cells[i][j].add_track(track)
-			drawing_last = cells[i][j]
-			drawing_last2 = null
-			drawing_track = true
-			drawing_last_track = null #track
-			
-		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT and not event.pressed:
-			drawing_track = false
+		if event is InputEventMouseButton and event.button_index == BUTTON_LEFT:
+			if event.pressed:
+				get_tree().set_input_as_handled()
+				#var track = cells[i][j].create_track_at(mpos_cell, direction)
+				#track = cells[i][j].add_track(track)
+				drawing_last = cells[i][j]
+				drawing_last2 = null
+				drawing_track = true
+				drawing_last_track = null #track
+			else:
+				drawing_track = false
+		
+		if event is InputEventMouseButton and event.button_index == BUTTON_RIGHT:
+			if event.pressed:
+				removing_track = true
+				cells[i][j].clear()
+			else:
+				removing_track = false
