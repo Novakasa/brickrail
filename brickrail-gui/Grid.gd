@@ -157,6 +157,7 @@ func _input(event):
 				$Camera2D.zoom*=0.95
 			if event.button_index == BUTTON_WHEEL_DOWN:
 				$Camera2D.zoom*=1.05
+				$Camera2D.position -= event.position*0.05*$Camera2D.zoom
 		
 			
 			if event.button_index == BUTTON_MIDDLE:
