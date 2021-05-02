@@ -84,14 +84,15 @@ func _on_track_connections_changed(orientation=null):
 			var connections = 0
 			for turn in track.connections[to_slot]:
 				connections = connections | turn_flags[turn]
+			if len(track.connections[to_slot]) == 0:
+				connections = 8
 			
 			if to_slot_id == 3:
-				vecs[from_slot_id][from_slot_id] = connections
-			else:
-				vecs[from_slot_id][to_slot_id] = connections
+				to_slot_id = from_slot_id
+			vecs[from_slot_id][to_slot_id] = connections
 	var connections_matrix = Transform(vecs[0], vecs[1], vecs[2], vecs[3])
 	material.set_shader_param("connections", connections_matrix)
-	update()
+	# update()
 
 func _on_grid_view_changed(p_pretty_tracks):
 	set_view(p_pretty_tracks)

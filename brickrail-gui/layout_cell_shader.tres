@@ -6,7 +6,9 @@ code = "shader_type canvas_item;
 uniform vec4 background: hint_color;
 uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
+uniform vec4 grid_color: hint_color;
 
+uniform float grid_width;
 uniform float track_width;
 uniform float inner_track_width;
 
@@ -144,6 +146,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			center += tangent*0.25*(2.0-sqrt(2.0));
 			float straight = line(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0)),width);
 			scene = merge(scene, straight);
+			float endcap = circle(position-from_pos-tangent*0.5, width);
+		scene = merge(scene, endcap);
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
 		scene = merge(scene, connection);
@@ -151,6 +155,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	else if (curve_index == 0) {
 		float straight = line(position, from_pos+tangent*0.5, to_pos+tangent, width);
 		scene = merge(scene, straight);
+		float endcap = circle(position-from_pos-tangent*0.5, width);
+		scene = merge(scene, endcap);
 	}
 	
 	// float center_shape = circle(position-center, 0.04);
@@ -228,12 +234,24 @@ float scene(vec2 position, float time) {
 	return scene;
 }
 void fragment() {
-	COLOR = background;
+	vec4 bg = background;
 	vec2 position = UV;
+	if (position.x<grid_width*0.5 || position.x>1.0-grid_width*0.5 || position.y<grid_width*0.5 || position.y>1.0-grid_width*0.5) {
+		bg = grid_color;
+	}
 	float dist = scene(position, TIME*1.0);
 	float dist_change = fwidth(dist)*0.5;
 	float t = smoothstep(dist_change, -dist_change, dist);
-	COLOR = mix(background, track_base, t);
+	COLOR = mix(bg, track_base, t);
+	
+	/*
+	dist*=10.0;
+	vec3 col = vec3(1.0) - sign(dist)*vec3(0.1,0.4,0.7);
+	col *= 1.0 - exp(-2.0*abs(dist));
+	col *= 0.8 + 0.2*cos(128.0*abs(dist));
+	col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.015,abs(dist)) );
+	COLOR.rgb = col;
+	*/
 }"
 
 [resource]
@@ -241,6 +259,8 @@ shader = SubResource( 1 )
 shader_param/background = Color( 0.129412, 0.0980392, 0.0980392, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
+shader_param/grid_color = Color( 0.0509804, 0.0352941, 0.0352941, 1 )
+shader_param/grid_width = 0.045
 shader_param/track_width = 0.06
 shader_param/inner_track_width = 0.03
-shader_param/connections = Transform( 1.844, 1.656, 1.946, 3.795, 1.881, 2.778, 8.781, 8.848, 1.849, 1.863, 3.959, 8.353 )
+shader_param/connections = Transform( 0, 0, 1, 0, 1, 0, 1, 0, 0, 0, 1, 0 )
