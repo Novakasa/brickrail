@@ -91,8 +91,18 @@ float interpolate(float shape1, float shape2, float t) {
 	return mix(shape1, shape2, t);
 }
 
+float sdSegment( vec2 p, vec2 a, vec2 b )
+{
+    vec2 pa = p-a, ba = b-a;
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+    return length( pa - ba*h );
+}
 
-float line(vec2 position, vec2 from, vec2 to, float width) {
+float line( vec2 position, vec2 from, vec2 to, float width) {
+	return sdSegment(position, from, to) - width;
+}
+
+float line_rect(vec2 position, vec2 from, vec2 to, float width) {
 	vec2 delta = to-from;
 	float angle = atan(delta.y, delta.x);
 	vec2 rect_pos = position;
@@ -132,12 +142,12 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	delta_angle = float(curve_index)*PI/4.0;
 	if (turn_index == 2) {
 		vec2 end_pos = from_pos+tangent*0.8;
-		float straight = line(position, from_pos+tangent*0.5, end_pos, width);
+		float straight = line(position, from_pos+tangent*0.5, end_pos-normalize(tangent)*width*0.5, width);
 		scene = merge(scene, straight);
-		float endcap = circle(position-from_pos-tangent*0.5, width);
-		scene = merge(scene, endcap);
+		// float endcap = circle(position-from_pos-tangent*0.5, width);
+		// scene = merge(scene, endcap);
 		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
-		float stopper = line(position, end_pos-normal*width*2.0, end_pos+normal*width*2.0, width*0.5);
+		float stopper = line_rect(position, end_pos-normal*width*2.0, end_pos+normal*width*2.0, width*0.5);
 		scene = merge(scene, stopper);
 	}
 	else if (abs(curve_index)==2) {
@@ -154,8 +164,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			center += tangent*0.25*(2.0-sqrt(2.0));
 			float straight = line(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0)),width);
 			scene = merge(scene, straight);
-			float endcap = circle(position-from_pos-tangent*0.5, width);
-			scene = merge(scene, endcap);
+			// float endcap = circle(position-from_pos-tangent*0.5, width);
+			// scene = merge(scene, endcap);
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
 		scene = merge(scene, connection);
@@ -163,8 +173,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	else if (curve_index == 0) {
 		float straight = line(position, from_pos+tangent*0.5, to_pos+tangent, width);
 		scene = merge(scene, straight);
-		float endcap = circle(position-from_pos-tangent*0.5, width);
-		scene = merge(scene, endcap);
+		// float endcap = circle(position-from_pos-tangent*0.5, width);
+		// scene = merge(scene, endcap);
 	}
 	
 	// float center_shape = circle(position-center, 0.04);
@@ -272,4 +282,4 @@ shader_param/grid_width = 0.045
 shader_param/track_width = 0.06
 shader_param/inner_track_width = 0.03
 shader_param/contours = true
-shader_param/connections = Transform( 1.624, 0, 8, 1.738, 0, 0, 8, 0, 0, 0, 0, 0 )
+shader_param/connections = Transform( 1.624, 0, 8, 1.738, 1.668, 0, 8, 4.066, 0.474, 0, 0, 0.877 )
