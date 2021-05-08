@@ -52,7 +52,7 @@ float arc( vec2 p, float aperture, float orientation, float ra, float rb )
     p *= mat2(vec2(sca.x,sca.y), vec2(-sca.y,sca.x));
     p.x = abs(p.x);
     float k = (scb.y*p.x>scb.x*p.y) ? dot(p.xy,scb) : length(p);
-    return sqrt( dot(p,p) + ra*ra - 2.0*ra*k ) - rb;
+    return sqrt( max(0.0, dot(p,p) + ra*ra - 2.0*ra*k ) ) - rb;
 }
 
 vec2 translate(vec2 position, vec2 offset) {
