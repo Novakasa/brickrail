@@ -6,6 +6,7 @@ code = "shader_type canvas_item;
 uniform vec4 background: hint_color;
 uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
+uniform vec4 switch_color: hint_color;
 uniform vec4 grid_color: hint_color;
 
 uniform float grid_width;
@@ -192,12 +193,21 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	
 }
 
-float tracks(vec2 position, float time) {
+float tracks(vec2 position, float time, bool switch_position) {
 	vec2 circle_pos = translate(position, vec2(0.5,.5));
 	vec2 rect_pos = translate(position, vec2(0.3,0.3));
 	rect_pos = rotate(rect_pos, time*1.0);
 	float circle = circle(circle_pos, 0.25);
 	float rect = rectangle(rect_pos, vec2(.15,.15));
+	
+	int left_flag = LEFT;
+	int right_flag = RIGHT;
+	int center_flag = STRAIGHT;
+	if (switch_position) {
+		left_flag = SWITCH_LEFT;
+		right_flag = SWITCH_RIGHT;
+		center_flag = SWITCH_STRAIGHT;
+	}
 	// float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
 	
 	float aperture = (cos(time)+1.0)*PI;
@@ -227,15 +237,15 @@ float tracks(vec2 position, float time) {
 			}
 			float connection;
 			float width = track_width;
-			if ((connection_flags & LEFT) == LEFT) {
+			if ((connection_flags & left_flag) == left_flag) {
 				connection = track_connection(position, from_slot, to_slot2, -1, width);
 				scene = merge(scene, connection);
 			}
-			if ((connection_flags & STRAIGHT) == STRAIGHT) {
+			if ((connection_flags & center_flag) == center_flag) {
 				connection = track_connection(position, from_slot, to_slot2, 0, width);
 				scene = merge(scene, connection);
 			}
-			if ((connection_flags & RIGHT) == RIGHT) {
+			if ((connection_flags & right_flag) == right_flag) {
 				connection = track_connection(position, from_slot, to_slot2, 1, width);
 				scene = merge(scene, connection);
 			}
@@ -257,20 +267,27 @@ void fragment() {
 	if (position.x<grid_width*0.5 || position.x>1.0-grid_width*0.5 || position.y<grid_width*0.5 || position.y>1.0-grid_width*0.5) {
 		bg = grid_color;
 	}
-	float base = tracks(position, TIME*1.0);
+	float base = tracks(position, TIME*1.0, false);
+	float turn = tracks(position, TIME*1.0, true);
+	float turn_inner = turn+track_width*0.51;
+	float turn_outer = substract(turn, turn_inner);
 	float inner = base + track_width*0.51;
+	float switch_outer = intersect(turn_outer, inner);
 	
 	float dist = base;
 	float base_change = fwidth(base)*0.5;
 	float inner_change = fwidth(inner)*0.5;
+	float switch_outer_change = fwidth(switch_outer)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
 	vec4 bg_mix = mix(bg, track_base, t);
 	t = smoothstep(inner_change, -inner_change, inner);
-	COLOR = mix(bg_mix, track_inner, t);
+	vec4 track_mix = mix(bg_mix, track_inner, t);
+	t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
+	COLOR = mix(track_mix, switch_color, t);
 	
 	
 	if (contours) {
-		dist*=10.0;
+		dist = base;
 		vec3 col = vec3(1.0) - sign(dist)*vec3(0.1,0.4,0.7);
 		col *= 1.0 - exp(-2.0*abs(dist));
 		col *= 0.8 + 0.2*cos(128.0*abs(dist));
@@ -284,9 +301,10 @@ shader = SubResource( 1 )
 shader_param/background = Color( 0.129412, 0.0980392, 0.0980392, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
+shader_param/switch_color = Color( 0.113725, 0.501961, 0.862745, 1 )
 shader_param/grid_color = Color( 0.0509804, 0.0352941, 0.0352941, 1 )
 shader_param/grid_width = 0.045
 shader_param/track_width = 0.06
 shader_param/inner_track_width = 0.03
-shader_param/contours = true
-shader_param/connections = Transform( 1.624, 0, 8, 1.738, 1.668, 0, 8, 4.066, 0.474, 0, 0, 0.877 )
+shader_param/contours = false
+shader_param/connections = Transform( 0, 0, 67.664, 0, 0, 0, 0, 0, 0, 0, 0, 0 )

@@ -29,6 +29,12 @@ func _init(p_slot0, p_slot1, p_spacing):
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
 
+func is_switch(slot=null):
+	if slot != null:
+		return len(connections[slot]) > 1
+	
+	return len(connections[slot0]) > 1 or len(connections[slot1]) > 1
+
 func get_turn_from(slot):
 	var center_tangent = slot_positions[get_neighbour_slot(slot)] - slot_positions[slot]
 	var tangent = get_slot_tangent(get_opposite_slot(slot))

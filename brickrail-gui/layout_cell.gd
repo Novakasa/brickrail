@@ -70,6 +70,7 @@ func add_track(track):
 	tracks[track.get_orientation()] = track
 	track.connect("connections_changed", self, "_on_track_connections_changed")
 	update()
+	_on_track_connections_changed()
 	return track
 
 func clear():
@@ -88,9 +89,12 @@ func _on_track_connections_changed(orientation=null):
 			var to_slot_id = slot_index[to_slot]
 			var from_slot_id = slot_index[from_slot]
 			var turn_flags = {"left": 1, "center": 2, "right": 4}
+			var position_flags = {"left": 16, "center": 32, "right": 64}
 			var connections = 0
 			for turn in track.connections[to_slot]:
 				connections = connections | turn_flags[turn]
+			if connections != 0:
+				connections = connections | position_flags[track.switch_positions[to_slot]]
 			if len(track.connections[to_slot]) == 0:
 				connections = 8
 			
