@@ -91,7 +91,7 @@ float interpolate(float shape1, float shape2, float t) {
 	return mix(shape1, shape2, t);
 }
 
-float sdSegment( vec2 p, vec2 a, vec2 b )
+float segment( vec2 p, vec2 a, vec2 b )
 {
     vec2 pa = p-a, ba = b-a;
     float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
@@ -99,7 +99,7 @@ float sdSegment( vec2 p, vec2 a, vec2 b )
 }
 
 float line( vec2 position, vec2 from, vec2 to, float width) {
-	return sdSegment(position, from, to) - width;
+	return segment(position, from, to) - width;
 }
 
 float line_rect(vec2 position, vec2 from, vec2 to, float width) {
@@ -192,7 +192,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	
 }
 
-float scene(vec2 position, float time) {
+float tracks(vec2 position, float time) {
 	vec2 circle_pos = translate(position, vec2(0.5,.5));
 	vec2 rect_pos = translate(position, vec2(0.3,0.3));
 	rect_pos = rotate(rect_pos, time*1.0);
@@ -257,10 +257,17 @@ void fragment() {
 	if (position.x<grid_width*0.5 || position.x>1.0-grid_width*0.5 || position.y<grid_width*0.5 || position.y>1.0-grid_width*0.5) {
 		bg = grid_color;
 	}
-	float dist = scene(position, TIME*1.0);
-	float dist_change = fwidth(dist)*0.5;
-	float t = smoothstep(dist_change, -dist_change, dist);
-	COLOR = mix(bg, track_base, t);
+	float base = tracks(position, TIME*1.0);
+	float inner = base + track_width*0.51;
+	
+	float dist = base;
+	float base_change = fwidth(base)*0.5;
+	float inner_change = fwidth(inner)*0.5;
+	float t = smoothstep(base_change, -base_change, base);
+	vec4 bg_mix = mix(bg, track_base, t);
+	t = smoothstep(inner_change, -inner_change, inner);
+	COLOR = mix(bg_mix, track_inner, t);
+	
 	
 	if (contours) {
 		dist*=10.0;
