@@ -90,16 +90,30 @@ func _on_track_connections_changed(orientation=null):
 			var from_slot_id = slot_index[from_slot]
 			var turn_flags = {"left": 1, "center": 2, "right": 4}
 			var position_flags = {"left": 16, "center": 32, "right": 64}
+			var position_flags_opposite = {"right": 16, "center": 32, "left": 64}
 			var connections = 0
 			for turn in track.connections[to_slot]:
-				connections = connections | turn_flags[turn]
-			if connections != 0:
-				connections = connections | position_flags[track.switch_positions[to_slot]]
+				connections |= turn_flags[turn]
+				
+				var to_track = track.connections[to_slot][turn]
+				var to_track_from_slot = to_track.get_neighbour_slot(to_slot)
+				print(track.get_turn_from(to_slot))
+				print(to_track.switch_positions[to_track_from_slot])
+
+				if track.get_turn_from(to_slot) == to_track.switch_positions[to_track_from_slot]:
+					if to_track.is_switch(to_track_from_slot):
+						connections |= position_flags[turn]
+				prints(connections, from_slot, to_slot, turn)
+
+			if track.is_switch(to_slot):
+				connections |= position_flags[track.switch_positions[to_slot]]
+			
 			if len(track.connections[to_slot]) == 0:
 				connections = 8
 			
 			if to_slot_id == 3:
 				to_slot_id = from_slot_id
+			prints(from_slot, to_slot, "final connection:", connections, from_slot_id, to_slot_id)
 			vecs[from_slot_id][to_slot_id] = connections
 	var connections_matrix = Transform(vecs[0], vecs[1], vecs[2], vecs[3])
 	material.set_shader_param("connections", connections_matrix)

@@ -249,7 +249,7 @@ float tracks(vec2 position, float time, bool switch_position) {
 				connection = track_connection(position, from_slot, to_slot2, 1, width);
 				scene = merge(scene, connection);
 			}
-			if ((connection_flags & NO_CONNECT) == NO_CONNECT) {
+			if (!switch_position && (connection_flags & NO_CONNECT) == NO_CONNECT) {
 				connection = track_connection(position, from_slot, to_slot2, 2, width);
 				scene = merge(scene, connection);
 			}
@@ -307,4 +307,4 @@ shader_param/grid_width = 0.045
 shader_param/track_width = 0.06
 shader_param/inner_track_width = 0.03
 shader_param/contours = false
-shader_param/connections = Transform( 0, 0, 67.664, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
+shader_param/connections = Transform( 0.458, 34.491, 2, 0, 2.351, 0.754, 23.488, 1.52, 0, 0.286, 0, 1.787 )
