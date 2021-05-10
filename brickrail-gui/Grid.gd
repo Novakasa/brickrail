@@ -88,7 +88,6 @@ func draw_track(draw_track):
 		track = drawing_last.add_track(track)
 		if drawing_last_track != null:
 			track.connect_track(slot0, drawing_last_track)
-			drawing_last_track.connect_track(track.get_neighbour_slot(slot0), track)
 		drawing_last_track = track 
 	drawing_last2 = drawing_last
 	drawing_last = draw_track
