@@ -254,21 +254,16 @@ input_buffer = ""
 p = poll()
 p.register(stdin)
 
-def update_input():
+def update_input(char):
     global input_buffer
-    char = None # char = getchar()
-    while char is not None:
-        char = chr(char)
-        if char == "$":
-            input_handler(input_buffer)
-            input_buffer = ""
-        else:
-            input_buffer += char
-        char = getchar()
+    if char == "$":
+        input_handler(input_buffer)
+        input_buffer = ""
+    else:
+        input_buffer += char
 
 def update():
     update_timers()
-    update_input()
     device.update(delta)
     send_data_queue(device.data_queue)
     device.data_queue = []
@@ -276,9 +271,9 @@ def update():
 def main_loop():
     while True:
         if p.poll(int(1000*delta)):
-            print("got message")
-            print(stdin.read(1))
+            char = stdin.read(1)
+            if char is not None:
+                update_input(char)
         update()
-        # update_input()
 
 main_loop()
