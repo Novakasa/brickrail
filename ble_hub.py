@@ -56,7 +56,6 @@ class BLEHub:
         await self.hub.user_program_stopped.wait()
 
     async def handle_output(self, msg):
-        print("msg:", msg.decode())
         for line in msg.split("$")[:-1]:
             if line.find("data::") == 0:
                 print("got return data from hub!", line)
@@ -73,6 +72,7 @@ class BLEHub:
                 line = self.hub.output.pop(0).decode()
                 await self.handle_output(line)
             await asyncio.sleep(0.05)
+        print("output loop finished!")
     
     async def run(self):
         print("initiating run!")
@@ -81,6 +81,8 @@ class BLEHub:
             script_path = get_script_path(self.program)
             print("initiating run!")
             await self.hub.run(script_path, wait=False, print_output=True)
+            while not self.hub.program_running:
+                await asyncio.sleep(0.05)
             print("hub is now running!")
             data = SerialData("program_started", self.name, None)
             await self.out_queue.put(data)
@@ -97,6 +99,9 @@ class BLEHub:
             await asyncio.sleep(0.05)
         # await asyncio.sleep(1)
         print(f"hub {self.name} is running now!") 
+    
+    async def stop(self):
+        await self.send_message("stop_program")
 
     @property
     def running(self):
