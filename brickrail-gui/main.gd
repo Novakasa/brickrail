@@ -1,6 +1,7 @@
 extends Control
 
 export(NodePath) var project
+export(NodePath) var layout
 export(NodePath) var train_controller_container
 export(NodePath) var layout_controller_container
 export(NodePath) var switch_container
@@ -44,3 +45,11 @@ func add_switch(p_name, p_controller, p_port):
 
 func _on_Project_data_received(key, data):
 	pass
+
+
+
+func _on_ViewportContainer_mouse_entered():
+	get_node(layout).get_node("Grid").mouse_focus = true
+
+func _on_ViewportContainer_mouse_exited():
+	get_node(layout).get_node("Grid").mouse_focus = false

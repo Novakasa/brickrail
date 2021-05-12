@@ -14,6 +14,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 project = NodePath("VBoxContainer/VBoxContainer/ViewportContainer/Viewport/Project")
+layout = NodePath("VBoxContainer/VBoxContainer/ViewportContainer/Viewport/Layout")
 train_controller_container = NodePath("VBoxContainer/VBoxContainer/TabContainer/trains")
 layout_controller_container = NodePath("VBoxContainer/VBoxContainer/TabContainer/controllers")
 switch_container = NodePath("VBoxContainer/VBoxContainer/TabContainer/switches")
@@ -125,4 +126,6 @@ render_target_update_mode = 3
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddSwitch" to="." method="_on_AddSwitch_pressed"]
+[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer/ViewportContainer" to="." method="_on_ViewportContainer_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/VBoxContainer/ViewportContainer" to="." method="_on_ViewportContainer_mouse_exited"]
 [connection signal="data_received" from="VBoxContainer/VBoxContainer/ViewportContainer/Viewport/Project" to="." method="_on_Project_data_received"]
