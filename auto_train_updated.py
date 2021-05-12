@@ -162,12 +162,16 @@ class Train:
         self.motor = TrainMotor()
         self.sensor = TrainSensor(["red_marker", "blue_marker"], self.on_marker)
 
-        self.state = None
-        self.mode = "block"
-        self.slow_marker = "blue_marker"
-        self.stop_marker = "red_marker"
         self.data_queue = []
+        self.state = None
+        self.mode = None
+        self.slow_marker = None
+        self.stop_marker = None
+        
         self.set_state("stopped")
+        self.set_mode("block")
+        self.set_slow_marker("blue_marker")
+        self.set_stop_marker("red_marker")
     
     def set_mode(self, mode):
         self.mode = mode
