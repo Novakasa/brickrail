@@ -141,15 +141,18 @@ class TrainMotor:
         if self.speed < self.target_speed:
             speed_delta = self.acceleration*delta
             self.speed = min(self.speed+speed_delta, self.target_speed)
+            self.motor.dc(self.speed)
+            return
         if self.speed > self.target_speed:
             speed_delta = self.deceleration*delta
             self.speed = max(self.speed-speed_delta, self.target_speed)
-        # print(speed, speed_delta)
+            self.motor.dc(self.speed)
+            return
 
         if self.braking:
             self.motor.brake()
             return
-        self.motor.dc(self.speed)
+        
 
 class Train:
 
@@ -160,10 +163,24 @@ class Train:
         self.sensor = TrainSensor(["red_marker", "blue_marker"], self.on_marker)
 
         self.state = None
-        self.plan = "autonomous"
+        self.mode = "block"
+        self.slow_marker = "blue_marker"
+        self.stop_marker = "red_marker"
         self.data_queue = []
         self.set_state("stopped")
     
+    def set_mode(self, mode):
+        self.mode = mode
+        self.queue_data("mode_changed", mode)
+    
+    def set_slow_marker(self, marker):
+        self.slow_marker = marker
+        self.queue_data("slow_marker_changed", marker)
+
+    def set_stop_marker(self, marker):
+        self.stop_marker = marker
+        self.queue_data("stop_marker_changed", marker)
+
     def queue_data(self, key, data):
         self.data_queue.append((key, data))
     
@@ -189,21 +206,23 @@ class Train:
         self.set_state("started")
         self.motor.set_target(100)
     
-    def wait(self):
+    def wait(self, duration):
         if self.state != "stopped":
             self.stop()
         # print("waiting...")
         self.set_state("waiting")
-        self.wait_timer.arm(4000, self.on_wait_timer)
+        self.wait_timer.arm(duration, self.on_wait_timer)
     
     def on_marker(self, colorname):
         self.queue_data("detected_marker", colorname)
-        if colorname == "red_marker":
+        if colorname == self.stop_marker:
             self.stop()
-            self.wait()
-            self.sensor.make_blind(4000)
-            return
-        if colorname == "blue_marker":
+            if self.mode == "auto":
+                self.wait(4000)
+                return
+            else:
+                self.sensor.make_blind(400)
+        if colorname == self.slow_marker:
             self.slow()
             self.sensor.make_blind(400)
             return
@@ -213,7 +232,9 @@ class Train:
         self.start()
     
     def update(self, delta):
-        self.sensor.update(delta)
+        if self.mode in ["auto", "block"]:
+            if self.state in ["started", "slow"]:
+                self.sensor.update(delta)
         self.motor.update(delta)
 
 

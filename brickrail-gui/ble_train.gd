@@ -10,8 +10,14 @@ var acceleration = 40
 var deceleration = 90
 var braking = false
 var state = "stopped"
+var slow_marker = "blue_marker"
+var stop_marker = "red_marker"
+var mode = "block"
 
 signal state_changed(state)
+signal mode_changed(mode)
+signal slow_marker_changed(marker)
+signal stop_marker_changed(marker)
 signal name_changed(old_name, new_name)
 signal connected
 signal disconnected
@@ -26,8 +32,18 @@ func _init(p_name, p_address):
 	hub.connect("connect_error", self, "_on_hub_connect_error")
 
 func _on_data_received(key, data):
+	prints("train received:", key, data)
 	if key == "state_changed":
 		set_state(data)
+	if key == "mode_changed":
+		mode = data
+		emit_signal("mode_changed", data)
+	if key == "slow_marker_changed":
+		slow_marker = data
+		emit_signal("slow_marker_changed", data)
+	if key == "stop_marker_changed":
+		stop_marker = data
+		emit_signal("stop_marker_changed", data)
 
 func _on_hub_connected():
 	emit_signal("connected")
@@ -82,3 +98,18 @@ func wait():
 
 func slow():
 	hub.hub_command("train.slow()")
+
+func set_slow_marker(marker):
+	slow_marker = marker
+	var cmd = "train.set_slow_marker('"+marker+"')"
+	hub.hub_command(cmd)
+
+func set_stop_marker(marker):
+	stop_marker = marker
+	var cmd = "train.set_stop_marker('"+marker+"')"
+	hub.hub_command(cmd)
+
+func set_mode(p_mode):
+	mode = p_mode
+	var cmd = "train.set_mode('"+mode+"')"
+	hub.hub_command(cmd)
