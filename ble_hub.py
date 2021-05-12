@@ -32,8 +32,25 @@ class BLEHub:
     
     async def connect(self):
         if self.address is None:
-            self.address = await find_device("Pybricks Hub")
-        await self.hub.connect(self.address)
+            try:
+                self.address = await find_device("Pybricks Hub")
+            except Exception as exception:
+                data = SerialData("connect_error", self.name, repr(exception))
+                await self.out_queue.put(data)
+                return
+        try:
+            await self.hub.connect(self.address)
+        except Exception as exception:
+            data = SerialData("connect_error", self.name, repr(exception))
+            await self.out_queue.put(data)
+            return
+        data = SerialData("connected", self.name, None)
+        await self.out_queue.put(data)
+    
+    async def disconnect(self):
+        await self.hub.disconnect()
+        data = SerialData("disconnected", self.name, None)
+        await self.out_queue.put(data)
     
     async def wait_for_program_stop(self):
         await self.hub.user_program_stopped.wait()

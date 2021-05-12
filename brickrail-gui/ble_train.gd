@@ -13,15 +13,30 @@ var state = "stopped"
 
 signal state_changed(state)
 signal name_changed(old_name, new_name)
+signal connected
+signal disconnected
+signal connect_error(data)
 
 func _init(p_name, p_address):
 	name = p_name
 	hub = BLEHub.new(p_name, "train", p_address)
 	hub.connect("data_received", self, "_on_data_received")
+	hub.connect("connected", self, "_on_hub_connected")
+	hub.connect("disconnected", self, "_on_hub_disconnected")
+	hub.connect("connect_error", self, "_on_hub_connect_error")
 
 func _on_data_received(key, data):
 	if key == "state_changed":
 		set_state(data.state)
+
+func _on_hub_connected():
+	emit_signal("connected")
+
+func _on_hub_disconnected():
+	emit_signal("disconnected")
+
+func _on_hub_connect_error(data):
+	emit_signal("connect_error", data)
 
 func set_state(p_state):
 	state = p_state
@@ -46,6 +61,9 @@ func set_speed(value):
 
 func connect_hub():
 	hub.connect_hub()
+
+func disconnect_hub():
+	hub.disconnect_hub()
 
 func run_program():
 	hub.run_program()
