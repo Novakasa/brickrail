@@ -133,43 +133,45 @@ func _input(event):
 			# 	hover_cell = cells[i][j]
 			# 	hover_cell.hover_at(mpos_cell, direction)
 		if event is InputEventMouseButton:
-			if mouse_focus:
-				if event.button_index == BUTTON_WHEEL_UP:
-					$Camera2D.position += event.position*0.05*$Camera2D.zoom	
-					$Camera2D.zoom*=0.95
-					get_tree().set_input_as_handled()
-				if event.button_index == BUTTON_WHEEL_DOWN:
-					$Camera2D.zoom*=1.05
-					$Camera2D.position -= event.position*0.05*$Camera2D.zoom
-					get_tree().set_input_as_handled()
-			if not mouse_focus and event.pressed:
-				return
+			if event.button_index == BUTTON_WHEEL_UP and mouse_focus:
+				$Camera2D.position += event.position*0.05*$Camera2D.zoom	
+				$Camera2D.zoom*=0.95
+				get_tree().set_input_as_handled()
+			if event.button_index == BUTTON_WHEEL_DOWN and mouse_focus:
+				$Camera2D.zoom*=1.05
+				$Camera2D.position -= event.position*0.05*$Camera2D.zoom
+				get_tree().set_input_as_handled()
 			if event.button_index == BUTTON_LEFT:
-				if event.pressed:
+				if event.pressed and mouse_focus:
 					#var track = cells[i][j].create_track_at(mpos_cell, direction)
 					#track = cells[i][j].add_track(track)
 					drawing_last = cells[i][j]
 					drawing_last2 = null
 					drawing_track = true
 					drawing_last_track = null #track
+					get_tree().set_input_as_handled()
 				else:
-					drawing_track = false
-				get_tree().set_input_as_handled()
+					if drawing_track:
+						drawing_track = false
+						get_tree().set_input_as_handled()
 			
 			if event.button_index == BUTTON_RIGHT:
-				if event.pressed:
+				if event.pressed and mouse_focus:
 					removing_track = true
 					cells[i][j].clear()
+					get_tree().set_input_as_handled()
 				else:
-					removing_track = false
-				get_tree().set_input_as_handled()
-		
+					if removing_track:
+						removing_track = false
+						get_tree().set_input_as_handled()
 			
 			if event.button_index == BUTTON_MIDDLE:
-				if event.pressed:
+				if event.pressed and mouse_focus:
 					dragging_view = true
 					dragging_view_reference = event.position
 					dragging_view_camera_reference = $Camera2D.position
+					get_tree().set_input_as_handled()
 				else:
-					dragging_view = false
-				get_tree().set_input_as_handled()
+					if dragging_view:
+						dragging_view = false
+						get_tree().set_input_as_handled()
