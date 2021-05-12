@@ -82,10 +82,14 @@ class BLEHub:
             print("initiating run!")
             await self.hub.run(script_path, wait=False, print_output=True)
             print("hub is now running!")
+            data = SerialData("program_started", self.name, None)
+            await self.out_queue.put(data)
 
             await self.output_loop()
 
             print(f"hub {self.name} run complete!")
+            data = SerialData("program_stopped", self.name, None)
+            await self.out_queue.put(data)
             self.run_task = None
 
         self.run_task = asyncio.create_task(hub_run())
@@ -104,12 +108,12 @@ class BLEHub:
 
     async def send_message(self, message):
         if isinstance(message, str):
-            message = bytearray(message, encoding="utf8")
+            message = bytearray(message + "$", encoding="utf8")
         await self.hub.client.write_gatt_char(NUS_RX_UUID, message, False)
     
     async def pipe_command(self, cmdstr):
         assert self.running
-        message = "cmd::" + cmdstr + "$"
+        message = "cmd::" + cmdstr
         await self.send_message(message)
 
 
@@ -119,9 +123,14 @@ async def main():
     await train.connect()
     await train.run()
     await train.pipe_command("train.start()")
-
+    await asyncio.sleep(5)
+    await train.send_message("stop_program")
     await train.hub.user_program_stopped.wait()
-    await asyncio.sleep(0.3)
+    await train.run()
+    await train.pipe_command("train.start()")
+    await asyncio.sleep(5)
+    await train.send_message("stop_program")
+    await train.hub.user_program_stopped.wait()
     print(train.hub.output)
     """
 

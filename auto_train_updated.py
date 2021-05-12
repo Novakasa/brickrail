@@ -218,6 +218,7 @@ class Train:
 
 
 device = train = Train()
+running = True
 
 def send_data_queue(queue):
     if not queue:
@@ -233,7 +234,10 @@ def update_timers():
         timer.update()
 
 def input_handler(message):
+    global running
     # print("interpreting message:", message)
+    if message == "stop_program":
+        running=False
     if message.find("cmd::") == 0:
         lmsg = list(message)
         for _ in range(5):
@@ -269,7 +273,7 @@ def update():
     device.data_queue = []
 
 def main_loop():
-    while True:
+    while running:
         if p.poll(int(1000*delta)):
             char = stdin.read(1)
             if char is not None:
