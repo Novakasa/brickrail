@@ -86,5 +86,8 @@ func _on_start_button_pressed():
 func _on_stop_button_pressed():
 	get_train().stop()
 
+func _on_slow_button_pressed():
+	get_train().slow()
+
 func _on_settings_button_pressed():
 	$TrainSettingsDialog.show()
