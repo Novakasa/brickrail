@@ -15,7 +15,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 train_label = NodePath("VBoxContainer/HBoxContainer2/Label")
-connect_button = NodePath("VBoxContainer/HBoxContainer2/connect_button")
+connect_button = NodePath("VBoxContainer/HBoxContainer3/connect_button")
+run_button = NodePath("VBoxContainer/HBoxContainer3/run_button")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -43,29 +44,44 @@ __meta__ = {
 
 [node name="Container" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 75.0
-margin_right = 103.0
+margin_right = 170.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 107.0
-margin_right = 170.0
+margin_left = 174.0
+margin_right = 237.0
 margin_bottom = 20.0
 text = "Settings"
 
-[node name="connect_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 174.0
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
+margin_top = 24.0
 margin_right = 237.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+
+[node name="connect_button" type="Button" parent="VBoxContainer/HBoxContainer3"]
+margin_right = 63.0
 margin_bottom = 20.0
 text = "connect"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="run_button" type="Button" parent="VBoxContainer/HBoxContainer3"]
+margin_left = 67.0
+margin_right = 100.0
+margin_bottom = 20.0
+disabled = true
+text = "run"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 24.0
+margin_top = 48.0
 margin_right = 237.0
-margin_bottom = 44.0
+margin_bottom = 68.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
@@ -89,19 +105,10 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="run_button" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 89.0
-margin_right = 122.0
-margin_bottom = 20.0
-text = "run"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
 [node name="TrainSettingsDialog" parent="." instance=ExtResource( 2 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer2/connect_button" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer3/connect_button" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer3/run_button" to="." method="_on_run_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/run_button" to="." method="_on_run_button_pressed"]

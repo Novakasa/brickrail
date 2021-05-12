@@ -27,7 +27,7 @@ func _init(p_name, p_address):
 
 func _on_data_received(key, data):
 	if key == "state_changed":
-		set_state(data.state)
+		set_state(data)
 
 func _on_hub_connected():
 	emit_signal("connected")
