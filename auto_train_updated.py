@@ -260,7 +260,6 @@ def update_timers():
 
 def input_handler(message):
     global running
-    # print("interpreting message:", message)
     if message == "stop_program":
         running=False
     if message.find("cmd::") == 0:
@@ -268,12 +267,10 @@ def input_handler(message):
         for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
-        # print("evaluating:", code)
         try:
             eval(code)
         except SyntaxError as e:
             print(e)
-        # send_data("ran_command", code)
     else:
         print(message)
 
