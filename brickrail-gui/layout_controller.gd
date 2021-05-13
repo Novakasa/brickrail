@@ -4,8 +4,6 @@ extends Reference
 var name
 var hub
 var devices = {}
-var connected = false
-var running = false
 
 signal name_changed(p_name, p_new_name)
 
@@ -13,6 +11,7 @@ func _init(p_name, p_address):
 	name = p_name
 	hub = BLEHub.new(p_name, "layout_controller", p_address)
 	hub.connect("data_received", self, "_on_data_received")
+	hub.connect("program_started", self, "_on_hub_program_started")
 
 func _on_data_received(key, data):
 	if key == "device_data":
@@ -33,14 +32,7 @@ func set_name(p_new_name):
 func set_address(p_address):
 	hub.set_address(p_address)
 
-func connect_hub():
-	hub.connect_hub()
-	connected = true
-
-func run_program():
-	assert(connected)
-	hub.run_program()
-	running = true
+func _on_hub_program_started():
 	for device in self.devices.values():
 		device.setup_on_hub()
 
@@ -49,7 +41,7 @@ func attach_device(device):
 	devices[device.name] = device
 	device.connect("hub_command", self, "_on_device_hub_command")
 	device.connect("name_changed", self, "_on_device_name_changed")
-	if running:
+	if hub.running:
 		device.setup_on_hub()
 
 func _on_device_name_changed(p_old_name, p_name):
