@@ -209,6 +209,7 @@ class Train:
     def start(self):
         self.set_state("started")
         self.motor.set_target(100)
+        self.sensor.make_blind(1500)
     
     def wait(self, duration):
         if self.state != "stopped":
