@@ -10,7 +10,7 @@ def get_script_path(program):
     if program == "train":
         return "E:/repos/brickrail/auto_train_updated.py"
     if program == "layout_controller":
-        return "E:/repos/brickrail/layout_controller.py"
+        return "E:/repos/brickrail/layout_controller_updated.py"
 
 class BLEHub:
     
