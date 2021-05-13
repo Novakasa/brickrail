@@ -12,6 +12,7 @@ func _init(p_name, p_address):
 	hub = BLEHub.new(p_name, "layout_controller", p_address)
 	hub.connect("data_received", self, "_on_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
+	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 
 func _on_data_received(key, data):
 	if key == "device_data":
@@ -22,6 +23,10 @@ func _on_data_received(key, data):
 
 func _on_device_hub_command(cmd):
 	hub.hub_command(cmd)
+
+func _on_hub_responsiveness_changed(value):
+	for device in devices.values():
+		device._on_hub_responsiveness_changed(value)
 
 func set_name(p_new_name):
 	var old_name = name
@@ -43,6 +48,7 @@ func attach_device(device):
 	device.connect("name_changed", self, "_on_device_name_changed")
 	if hub.running:
 		device.setup_on_hub()
+		device._on_hub_responsiveness_changed(hub.responsiveness)
 
 func _on_device_name_changed(p_old_name, p_name):
 	var device = devices[p_old_name]

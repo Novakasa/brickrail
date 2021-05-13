@@ -10,6 +10,7 @@ signal hub_command(cmd)
 signal name_changed(p_old_name, p_name)
 signal controller_changed(p_old_controller, p_controller)
 signal position_changed(position)
+signal hub_responsiveness_changed(value)
 
 func _init(p_name, p_controller, p_port):
 	name = p_name
@@ -21,6 +22,9 @@ func _on_data_received(key, data):
 	if key == "position_changed":
 		position = data
 		emit_signal("position_changed", data)
+
+func _on_hub_responsiveness_changed(value):
+	emit_signal("hub_responsiveness_changed", value)
 
 func setup_on_hub():
 	var portstr = ["A", "B", "C", "D"][port]

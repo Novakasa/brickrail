@@ -12,9 +12,11 @@ func setup(p_project, p_switch_name):
 	get_switch().connect("name_changed", self, "_on_switch_name_changed")
 	get_switch().connect("position_changed", self, "_on_switch_position_changed")
 	get_switch().connect("controller_changed", self, "_on_switch_controller_changed")
+	get_switch().connect("hub_responsiveness_changed", self, "_on_hub_responsiveness_changed")
 	$SwitchSettingsDialog.setup(p_project, p_switch_name)
 	$SwitchSettingsDialog.show()
-
+	get_node(left_button).disabled=true
+	get_node(right_button).disabled=true
 
 
 func _on_switch_name_changed(p_old_name, p_new_name):
@@ -28,7 +30,7 @@ func _on_switch_position_changed(position):
 		get_node(left_button).disabled=false
 		get_node(right_button).disabled=true
 
-func _on_controller_hub_responsiveness_changed(val):
+func _on_hub_responsiveness_changed(val):
 	get_node(left_button).disabled= not val
 	get_node(right_button).disabled= not val
 
