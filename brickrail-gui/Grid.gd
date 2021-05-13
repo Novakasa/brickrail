@@ -95,18 +95,20 @@ func draw_track(draw_track):
 
 func _input(event):
 	if event is InputEventKey and event.pressed:
-		get_tree().set_input_as_handled()
 		if event.scancode == KEY_PERIOD:
+			get_tree().set_input_as_handled()
 			direction += 1
 			while direction>3:
 				direction-=4
 		
 		if event.scancode == KEY_COMMA:
+			get_tree().set_input_as_handled()
 			direction -= 1
 			while direction<0:
 				direction+=4
 		
 		if event.scancode == KEY_V:
+			get_tree().set_input_as_handled()
 			pretty_tracks = not pretty_tracks
 			emit_signal("grid_view_changed", pretty_tracks)
 	
