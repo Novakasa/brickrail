@@ -93,7 +93,10 @@ func draw_track(draw_track):
 	drawing_last2 = drawing_last
 	drawing_last = draw_track
 
-func _input(event):
+func _unhandled_input(event):
+	process_input(event)
+
+func process_input(event):
 	if event is InputEventKey and event.pressed:
 		if event.scancode == KEY_PERIOD:
 			get_tree().set_input_as_handled()
