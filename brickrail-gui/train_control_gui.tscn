@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://train_control_gui.gd" type="Script" id=1]
 [ext_resource path="res://TrainSettingsDialog.tscn" type="PackedScene" id=2]
+[ext_resource path="res://hub_control_gui.tscn" type="PackedScene" id=3]
 
 [node name="TrainControlGui" type="Panel"]
 anchor_right = 1.0
@@ -15,10 +16,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 train_label = NodePath("VBoxContainer/HBoxContainer2/Label")
-connect_button = NodePath("VBoxContainer/HBoxContainer3/connect_button")
-run_button = NodePath("VBoxContainer/HBoxContainer3/run_button")
 control_container = NodePath("VBoxContainer/HBoxContainer")
 auto_container = NodePath("VBoxContainer/GridContainer")
+hub_controls = NodePath("VBoxContainer/HubControl")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 anchor_right = 1.0
@@ -57,29 +57,7 @@ margin_right = 237.0
 margin_bottom = 20.0
 text = "Settings"
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 24.0
-margin_right = 237.0
-margin_bottom = 44.0
-size_flags_horizontal = 3
-
-[node name="connect_button" type="Button" parent="VBoxContainer/HBoxContainer3"]
-margin_right = 63.0
-margin_bottom = 20.0
-text = "connect"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="run_button" type="Button" parent="VBoxContainer/HBoxContainer3"]
-margin_left = 67.0
-margin_right = 100.0
-margin_bottom = 20.0
-disabled = true
-text = "run"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="HubControl" parent="VBoxContainer" instance=ExtResource( 3 )]
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 48.0
@@ -175,8 +153,6 @@ __meta__ = {
 [node name="TrainSettingsDialog" parent="." instance=ExtResource( 2 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer3/connect_button" to="." method="_on_connect_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer3/run_button" to="." method="_on_run_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/slow_button" to="." method="_on_slow_button_pressed"]

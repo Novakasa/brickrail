@@ -7,6 +7,7 @@ var name
 var connected = false
 var running = false
 var communicator: BLECommunicator
+var responsiveness = false
 
 signal data_received(data)
 signal ble_command(hub, command, args, return_id)
@@ -16,12 +17,17 @@ signal disconnected
 signal connect_error(data)
 signal program_started
 signal program_stopped
+signal responsiveness_changed(value)
 
 func _init(p_name, p_program, p_address):
 	name = p_name
 	program = p_program
 	# communicator = p_communicator
 	address = p_address
+
+func set_responsiveness(val):
+	responsiveness = val
+	emit_signal("responsiveness_changed", val)
 	
 func set_name(p_new_name):
 	var old_name = name
@@ -41,6 +47,7 @@ func _on_data_received(key, data):
 	if key == "disconnected":
 		connected=false
 		emit_signal("disconnected")
+		set_responsiveness(false)
 		return
 	if key == "connect_error":
 		connected=false
@@ -49,10 +56,12 @@ func _on_data_received(key, data):
 	if key == "program_started":
 		running=true
 		emit_signal("program_started")
+		set_responsiveness(true)
 		return
 	if key == "program_stopped":
 		running=false
 		emit_signal("program_stopped")
+		set_responsiveness(false)
 		return
 		
 	emit_signal("data_received", key, data)
@@ -76,6 +85,7 @@ func run_program():
 func stop_program():
 	assert(connected and running)
 	send_command("stop", [])
+	set_responsiveness(false)
 	
 func hub_command(python_expression):
 	send_command("pipe_command", [python_expression])

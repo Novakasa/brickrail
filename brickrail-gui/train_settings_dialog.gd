@@ -47,5 +47,5 @@ func _on_OKButton_pressed():
 	var train = get_train()
 	train.set_name(new_train_name)
 	train_name = new_train_name
-	train.set_address(new_address)
+	train.hub.set_address(new_address)
 	hide_and_reset()
