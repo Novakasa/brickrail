@@ -49,6 +49,8 @@ func attach_device(device):
 	devices[device.name] = device
 	device.connect("hub_command", self, "_on_device_hub_command")
 	device.connect("name_changed", self, "_on_device_name_changed")
+	if running:
+		device.setup_on_hub()
 
 func _on_device_name_changed(p_old_name, p_name):
 	var device = devices[p_old_name]
