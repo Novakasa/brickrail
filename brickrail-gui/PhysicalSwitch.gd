@@ -4,10 +4,12 @@ extends Reference
 var name
 var port
 var controller
+var position
 
 signal hub_command(cmd)
 signal name_changed(p_old_name, p_name)
 signal controller_changed(p_old_controller, p_controller)
+signal position_changed(position)
 
 func _init(p_name, p_controller, p_port):
 	name = p_name
@@ -17,8 +19,8 @@ func _init(p_name, p_controller, p_port):
 func _on_data_received(key, data):
 	print("switch got data", key)
 	if key == "position_changed":
-		var new_pos = data
-		prints("position change confirmed!", new_pos)
+		position = data
+		emit_signal("position_changed", data)
 
 func setup_on_hub():
 	var portstr = ["A", "B", "C", "D"][port]
