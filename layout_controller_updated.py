@@ -47,7 +47,7 @@ class Switch:
         self.data_queue = []
 
     def queue_data(self, key, data):
-        self.data_queue.append((key, data))
+        self.data_queue.append({"key": "device_data", "data": {"device": self.name, "key": key, "data": data}})
     
     def switch(self, position):
         assert position in ["left", "right"]
@@ -102,7 +102,7 @@ class Controller:
             device.data_queue = []
     
     def queue_data(self, key, data):
-        self.data_queue.append((key, data))
+        self.data_queue.append({"key": key, "data": data})
 
 device = controller = Controller()
 running = True
@@ -111,8 +111,7 @@ def send_data_queue(queue):
     if not queue:
         return
     msg = ""
-    for key, data in queue:
-        obj = {"key": key, "data": data}
+    for obj in queue:
         msg += "data::"+repr(obj)+"$"
     print(msg)
 
