@@ -7,8 +7,8 @@
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -787.0
-margin_bottom = -528.074
-rect_min_size = Vector2( 0, 70 )
+margin_bottom = -458.0
+rect_min_size = Vector2( 0, 142 )
 size_flags_horizontal = 3
 script = ExtResource( 1 )
 __meta__ = {
@@ -173,7 +173,6 @@ __meta__ = {
 }
 
 [node name="TrainSettingsDialog" parent="." instance=ExtResource( 2 )]
-visible = false
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer3/connect_button" to="." method="_on_connect_button_pressed"]

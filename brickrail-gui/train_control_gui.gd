@@ -85,7 +85,6 @@ func _on_program_stopped():
 	runbutton.text="run"
 	runbutton.disabled=false
 	connectbutton.disabled=false
-	set_controls_disabled(false)
 
 func _on_train_connect_error(data):
 	var button = get_node(connect_button)
