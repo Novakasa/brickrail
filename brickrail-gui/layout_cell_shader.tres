@@ -26,6 +26,9 @@ const int NO_CONNECT = 8;
 const int SWITCH_LEFT = 16;
 const int SWITCH_STRAIGHT = 32;
 const int SWITCH_RIGHT = 64;
+const int SWITCH_PRIORITY_LEFT = 128;
+const int SWITCH_PRIORITY_STRAIGHT = 256;
+const int SWITCH_PRIORITY_RIGHT = 512;
 
 
 float circle(vec2 position, float radius) {
@@ -113,7 +116,7 @@ float line_rect(vec2 position, vec2 from, vec2 to, float width) {
 	return rect;
 }
 
-float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, float width) {
+float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, float width, bool border) {
 	vec2 slot_positions[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
 
 	float scene = 10.0;
@@ -142,14 +145,15 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	start_angle = this_angle - 0.5*PI*float(sign(curve_index));
 	delta_angle = float(curve_index)*PI/4.0;
 	if (turn_index == 2) {
-		vec2 end_pos = from_pos+tangent*0.8;
-		float straight = line(position, from_pos+tangent*0.5, end_pos-normalize(tangent)*width*0.5, width);
+		vec2 end_pos = from_pos+tangent*0.7;
+		float straight = line(position, from_pos+tangent*0.5, end_pos-normalize(tangent)*width*0.5, track_width);
 		scene = merge(scene, straight);
 		// float endcap = circle(position-from_pos-tangent*0.5, width);
 		// scene = merge(scene, endcap);
 		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
-		float stopper = line_rect(position, end_pos-normal*width*2.0, end_pos+normal*width*2.0, width*0.5);
+		float stopper = line_rect(position, end_pos-normal*track_width*2.0, end_pos+normal*track_width*2.0, track_width);
 		scene = merge(scene, stopper);
+		return scene;
 	}
 	else if (abs(curve_index)==2) {
 		radius = 0.25*sqrt(2.0);
@@ -178,17 +182,19 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		// scene = merge(scene, endcap);
 	}
 	
-	// float center_shape = circle(position-center, 0.04);
-	// float from_shape = circle(position-from_pos, 0.02);
-	// float to_shape = circle(position-to_pos, 0.02);
-	// float start_shape = line(position, center, center+radius*vec2(cos(start_angle), sin(start_angle)), 0.01);
-	// float start_shape = line(position, center, from_pos, 0.04);
-	// scene = merge(scene, center_shape);
-	// scene = merge(scene, start_shape);
-	// scene = merge(scene, from_shape);
-	// scene = merge(scene, to_shape);
-	// float segment = line(position, from_pos, to_pos, 0.02);
-	// scene = merge(scene, segment);
+	if (border) {
+		float inner = scene - inner_track_width;
+		float outer = scene - track_width;
+		scene = substract(outer, inner);
+		float center_substract = line_rect(position, from_pos+tangent*0.5,from_pos, track_width);
+		if (abs(tangent.x) < 0.0005 || abs(tangent.y) < 0.0005) {
+			center_substract = line_rect(position, from_pos+tangent*(0.5+track_width),from_pos, track_width);
+		}
+		scene = substract(scene, center_substract);
+	}
+	else {
+		scene = scene - track_width;
+	}
 	return scene;
 	
 }
@@ -200,13 +206,11 @@ float tracks(vec2 position, float time, bool switch_position) {
 	float circle = circle(circle_pos, 0.25);
 	float rect = rectangle(rect_pos, vec2(.15,.15));
 	
-	int left_flag = LEFT;
-	int right_flag = RIGHT;
-	int center_flag = STRAIGHT;
+	int turn_flags[3] = {LEFT, STRAIGHT, RIGHT};
 	if (switch_position) {
-		left_flag = SWITCH_LEFT;
-		right_flag = SWITCH_RIGHT;
-		center_flag = SWITCH_STRAIGHT;
+		turn_flags[0] = SWITCH_LEFT;
+		turn_flags[1] = SWITCH_STRAIGHT;
+		turn_flags[2] = SWITCH_RIGHT;
 	}
 	// float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
 	
@@ -237,22 +241,19 @@ float tracks(vec2 position, float time, bool switch_position) {
 			}
 			float connection;
 			float width = track_width;
-			if ((connection_flags & left_flag) == left_flag) {
-				connection = track_connection(position, from_slot, to_slot2, -1, width);
+			for (int flag=0; flag<3; flag++) {
+				int turn = flag-1;
+				if ((connection_flags & turn_flags[flag]) != turn_flags[flag]) {
+					continue;
+				}
+				connection = track_connection(position, from_slot, to_slot2, turn, 0.0, switch_position);
 				scene = merge(scene, connection);
 			}
-			if ((connection_flags & center_flag) == center_flag) {
-				connection = track_connection(position, from_slot, to_slot2, 0, width);
+			if (!switch_position && ((connection_flags & NO_CONNECT) == NO_CONNECT)) {
+				connection = track_connection(position, from_slot, to_slot2, 2, 0.0, switch_position);
 				scene = merge(scene, connection);
 			}
-			if ((connection_flags & right_flag) == right_flag) {
-				connection = track_connection(position, from_slot, to_slot2, 1, width);
-				scene = merge(scene, connection);
-			}
-			if (!switch_position && (connection_flags & NO_CONNECT) == NO_CONNECT) {
-				connection = track_connection(position, from_slot, to_slot2, 2, width);
-				scene = merge(scene, connection);
-			}
+	
 		}
 	}
 	// scene = merge(scene, arc);
@@ -268,10 +269,8 @@ void fragment() {
 		bg = grid_color;
 	}
 	float base = tracks(position, TIME*1.0, false);
-	float turn = tracks(position, TIME*1.0, true);
-	float turn_inner = turn+track_width*0.51;
-	float turn_outer = substract(turn, turn_inner);
-	float inner = base + track_width*0.51;
+	float turn_outer = tracks(position, TIME*1.0, true);
+	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
 	
 	float dist = base;
@@ -303,8 +302,8 @@ shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
 shader_param/switch_color = Color( 0.113725, 0.501961, 0.862745, 1 )
 shader_param/grid_color = Color( 0.0509804, 0.0352941, 0.0352941, 1 )
-shader_param/grid_width = 0.045
+shader_param/grid_width = 0.064
 shader_param/track_width = 0.06
 shader_param/inner_track_width = 0.03
 shader_param/contours = false
-shader_param/connections = Transform( 0.458, 34.491, 2, 0, 2.351, 0.754, 23.488, 1.52, 0, 0.286, 0, 1.787 )
+shader_param/connections = Transform( 4.032, 35.245, 3.972, 8.927, 3.213, 2.327, 22.052, 1.52, 5.602, 1.569, 2.568, 1.899 )
