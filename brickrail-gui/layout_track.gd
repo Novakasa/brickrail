@@ -104,12 +104,14 @@ func set_switches():
 		if len(connections[slot])>1:
 			if switches[slot] != null:
 				switches[slot].queue_free()
+				switches[slot] = null
 			switches[slot] = LayoutSwitch.new(slot, connections[slot].keys())
 			switches[slot].connect("position_changed", self, "_on_switch_position_changed")
 			emit_signal("switch_added", switches[slot])
 		else:
 			if switches[slot] != null:
 				switches[slot].queue_free()
+				switches[slot] = null
 
 func _on_switch_position_changed(slot, pos):
 	emit_signal("switch_position_changed")
@@ -127,6 +129,8 @@ func disconnect_track(track):
 
 func disconnect_turn(slot, turn):
 	connections[slot].erase(turn)
+	if len(connections[slot]) <2:
+		set_switches()
 	emit_signal("connections_changed", get_orientation())
 
 func clear_connections():
