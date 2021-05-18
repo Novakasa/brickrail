@@ -69,6 +69,8 @@ func add_track(track):
 		return tracks[track.get_orientation()]
 	tracks[track.get_orientation()] = track
 	track.connect("connections_changed", self, "_on_track_connections_changed")
+	track.connect("switch_added", self, "_on_track_switch_added")
+	track.connect("switch_position_changed", self, "_on_track_connections_changed")
 	update()
 	_on_track_connections_changed()
 	return track
@@ -78,6 +80,9 @@ func clear():
 		track.clear_connections()
 	tracks.clear()
 	_on_track_connections_changed()
+
+func _on_track_switch_added(switch):
+	add_child(switch)
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
@@ -97,23 +102,23 @@ func _on_track_connections_changed(orientation=null):
 				
 				var to_track = track.connections[to_slot][turn]
 				var to_track_from_slot = to_track.get_neighbour_slot(to_slot)
-				print(track.get_turn_from(to_slot))
-				print(to_track.switch_positions[to_track_from_slot])
+				# print(track.get_turn_from(to_slot))
+				# print(to_track.switch_positions[to_track_from_slot])
+				if to_track.switches[to_track_from_slot] != null:
+					if track.get_turn_from(to_slot) == to_track.switches[to_track_from_slot].get_position():
+						if to_track.switches[to_track_from_slot] != null:
+							connections |= position_flags[turn]
+				# prints(connections, from_slot, to_slot, turn)
 
-				if track.get_turn_from(to_slot) == to_track.switch_positions[to_track_from_slot]:
-					if to_track.is_switch(to_track_from_slot):
-						connections |= position_flags[turn]
-				prints(connections, from_slot, to_slot, turn)
-
-			if track.is_switch(to_slot):
-				connections |= position_flags[track.switch_positions[to_slot]]
+			if track.switches[to_slot] != null:
+				connections |= position_flags[track.switches[to_slot].get_position()]
 			
 			if len(track.connections[to_slot]) == 0:
 				connections = 8
 			
 			if to_slot_id == 3:
 				to_slot_id = from_slot_id
-			prints(from_slot, to_slot, "final connection:", connections, from_slot_id, to_slot_id)
+			# prints(from_slot, to_slot, "final connection:", connections, from_slot_id, to_slot_id)
 			vecs[from_slot_id][to_slot_id] = connections
 	var connections_matrix = Transform(vecs[0], vecs[1], vecs[2], vecs[3])
 	material.set_shader_param("connections", connections_matrix)

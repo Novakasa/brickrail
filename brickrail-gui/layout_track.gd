@@ -8,11 +8,15 @@ var pos1
 var connections = {}
 var slots = ["N", "S", "E", "W"]
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
-var switch_positions = {}
+var switches = {}
 var spacing
+var route_lock=false
 
 signal connections_changed
 signal connections_cleared
+signal route_lock_changed(lock)
+signal switch_added(switch)
+signal switch_position_changed(pos)
 
 func _init(p_slot0, p_slot1, p_spacing):
 	slot0 = p_slot0
@@ -23,8 +27,8 @@ func _init(p_slot0, p_slot1, p_spacing):
 	connections[slot1] = {}
 	pos0 = slot_positions[slot0]
 	pos1 = slot_positions[slot1]
-	switch_positions[slot0] = null
-	switch_positions[slot1] = null
+	switches[slot0] = null
+	switches[slot1] = null
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
@@ -87,12 +91,30 @@ func connect_track(slot, track, initial=true):
 	# prints("connected a track", track.get_orientation(), "with this track", get_orientation())
 	var turn = track.get_turn_from(get_neighbour_slot(slot))
 	connections[slot][turn] = track
-	switch_positions[slot] = turn
 	# prints("added connection, turning:", turn)
 	track.connect("connections_cleared", self, "_on_track_connections_cleared")
+	if len(connections[slot])>1:
+		set_switches()
 	if initial:
 		track.connect_track(get_neighbour_slot(slot), self, false)
 	emit_signal("connections_changed", get_orientation())
+
+func set_switches():
+	for slot in [slot0, slot1]:
+		if len(connections[slot])>1:
+			if switches[slot] != null:
+				switches[slot].queue_free()
+			switches[slot] = LayoutSwitch.new(slot, connections[slot].keys())
+			switches[slot].connect("position_changed", self, "_on_switch_position_changed")
+			emit_signal("switch_added", switches[slot])
+		else:
+			if switches[slot] != null:
+				switches[slot].queue_free()
+
+func _on_switch_position_changed(slot, pos):
+	emit_signal("switch_position_changed")
+	for track in connections[slot].values():
+		track.emit_signal("switch_position_changed")
 
 func _on_track_connections_cleared(track):
 	disconnect_track(track)
@@ -130,8 +152,18 @@ func get_opposite_slot(slot):
 		return slot0
 	push_error("[LayoutTrack.get_opposite_slot] track doesn't contain " + slot)
 
+func get_connected_slot(track):
+	for slot in connections:
+		if track in connections[slot].values():
+			return slot
+	push_error("[LayoutTrack].get_connected_slot: Track is not connected!")
+
 func get_next_tracks_from(slot):
 	return get_next_tracks_at(get_opposite_slot(slot))
+
+func directed_iter(neighbour_to):
+	var to_slot = get_opposite_slot(get_neighbour_slot(neighbour_to))
+	return [to_slot, connections[to_slot]]
 	
 func get_next_tracks_at(slot):
 	return connections[slot]
