@@ -297,11 +297,11 @@ void fragment() {
 
 [resource]
 shader = SubResource( 1 )
-shader_param/background = Color( 0.129412, 0.0980392, 0.0980392, 1 )
+shader_param/background = Color( 0.0784314, 0.0823529, 0.0901961, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
 shader_param/switch_color = Color( 0.113725, 0.501961, 0.862745, 1 )
-shader_param/grid_color = Color( 0.0509804, 0.0352941, 0.0352941, 1 )
+shader_param/grid_color = Color( 0.0356, 0.0356, 0.04, 1 )
 shader_param/grid_width = 0.064
 shader_param/track_width = 0.15
 shader_param/inner_track_width = 0.07
