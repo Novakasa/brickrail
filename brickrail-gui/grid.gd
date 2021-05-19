@@ -1,6 +1,5 @@
 extends Node2D
 
-export var spacing = 64.0
 export var nx = 60
 export var ny = 60
 export(Color) var grid_line_color
@@ -26,7 +25,7 @@ func setup_grid():
 	for i in range(nx):
 		cells.append([])
 		for j in range(ny):
-			cells[i].append(LayoutCell.new(i, j, spacing))
+			cells[i].append(LayoutCell.new(i, j))
 			add_child(cells[i][j])
 			connect("grid_view_changed", cells[i][j], "_on_grid_view_changed")
 
@@ -63,6 +62,8 @@ func _ready():
 
 func _draw():
 	
+	var spacing = LayoutInfo.spacing
+	
 	for i in range(nx+1):
 		var start = Vector2(i*spacing, 0.0)
 		var end = Vector2(i*spacing, ny*spacing)
@@ -97,6 +98,9 @@ func _unhandled_input(event):
 	process_input(event)
 
 func process_input(event):
+	
+	var spacing = LayoutInfo.spacing
+	
 	if event is InputEventKey and event.pressed:
 		if event.scancode == KEY_PERIOD:
 			get_tree().set_input_as_handled()

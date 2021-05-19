@@ -102,6 +102,10 @@ config/name="brickrail-gui"
 run/main_scene="res://main.tscn"
 config/icon="res://icon1.png"
 
+[autoload]
+
+LayoutInfo="*res://layout_info.gd"
+
 [display]
 
 window/dpi/allow_hidpi=true

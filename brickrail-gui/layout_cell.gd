@@ -3,22 +3,16 @@ extends Node2D
 
 var x_idx
 var y_idx
-var spacing
 var tracks = {}
 var hover_track = null
-var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
-var pretty_tracks = true
-
-var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}
 
 onready var track_material = preload("res://layout_cell_shader.tres")
 
-func _init(p_x_idx, p_y_idx, p_spacing):
+func _init(p_x_idx, p_y_idx):
 	x_idx = p_x_idx
 	y_idx = p_y_idx
-	spacing = p_spacing
 	
-	position = Vector2(x_idx, y_idx)*spacing
+	position = Vector2(x_idx, y_idx)*LayoutInfo.spacing
 	
 func _ready():
 	material = track_material.duplicate()
@@ -34,11 +28,11 @@ func stop_hover():
 
 func create_track_at(pos, direction=null):
 	var i = 0
-	var closest_dist = spacing+1
+	var closest_dist = LayoutInfo.spacing+1
 	var closest_track = null
-	var normalized_pos = pos/spacing
-	for orientation in orientations:
-		var track = LayoutTrack.new(orientation[0], orientation[1], spacing)
+	var normalized_pos = pos/LayoutInfo.spacing
+	for orientation in LayoutInfo.orientations:
+		var track = LayoutTrack.new(orientation[0], orientation[1])
 		if direction!= null:
 			if track.get_direction()!=direction:
 				continue
@@ -60,7 +54,7 @@ func get_slot_to_cell(cell):
 	return null
 	
 func create_track(slot0, slot1):
-	var track = LayoutTrack.new(slot0, slot1, spacing)
+	var track = LayoutTrack.new(slot0, slot1)
 	return track
 	
 func add_track(track):
@@ -83,6 +77,7 @@ func clear():
 
 func _on_track_switch_added(switch):
 	add_child(switch)
+	switch.update()
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
@@ -91,8 +86,8 @@ func _on_track_connections_changed(orientation=null):
 	for track in tracks.values():
 		for to_slot in [track.slot0, track.slot1]:
 			var from_slot = track.get_opposite_slot(to_slot)
-			var to_slot_id = slot_index[to_slot]
-			var from_slot_id = slot_index[from_slot]
+			var to_slot_id = LayoutInfo.slot_index[to_slot]
+			var from_slot_id = LayoutInfo.slot_index[from_slot]
 			var turn_flags = {"left": 1, "center": 2, "right": 4}
 			var position_flags = {"left": 16, "center": 32, "right": 64}
 			var position_flags_opposite = {"right": 16, "center": 32, "left": 64}
@@ -124,15 +119,6 @@ func _on_track_connections_changed(orientation=null):
 	material.set_shader_param("connections", connections_matrix)
 	# update()
 
-func _on_grid_view_changed(p_pretty_tracks):
-	set_view(p_pretty_tracks)
-
-func set_view(p_pretty_tracks):
-	pretty_tracks = p_pretty_tracks
-	for child in get_children():
-		child.set_view(p_pretty_tracks)
-	update()
-
 func draw_track(track):
 	
 	var connections = track.connections
@@ -140,8 +126,10 @@ func draw_track(track):
 	var pos1 = track.pos1
 	var slot0 = track.slot0
 	var slot1 = track.slot1
+	
+	var spacing = LayoutInfo.spacing
 
-	if pretty_tracks:
+	if LayoutInfo.pretty_tracks:
 		var track_segment = track.get_track_segment()
 		if track_segment != null:
 			draw_polyline(track_segment, Color.white, 6.0, true)
@@ -169,6 +157,7 @@ func draw_track(track):
 			draw_circle(pos1*spacing, spacing/10, Color.white)
 
 func _draw():
+	var spacing = LayoutInfo.spacing
 	draw_rect(Rect2(Vector2(0,0), Vector2(spacing, spacing)), Color.black)
 	return
 	

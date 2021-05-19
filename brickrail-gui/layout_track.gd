@@ -7,9 +7,7 @@ var pos0
 var pos1
 var connections = {}
 var slots = ["N", "S", "E", "W"]
-var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
 var switches = {}
-var spacing
 var route_lock=false
 
 signal connections_changed
@@ -18,15 +16,15 @@ signal route_lock_changed(lock)
 signal switch_added(switch)
 signal switch_position_changed(pos)
 
-func _init(p_slot0, p_slot1, p_spacing):
+func _init(p_slot0, p_slot1):
 	slot0 = p_slot0
 	slot1 = p_slot1
-	spacing = p_spacing
+
 	assert_slot_degeneracy()
 	connections[slot0] = {}
 	connections[slot1] = {}
-	pos0 = slot_positions[slot0]
-	pos1 = slot_positions[slot1]
+	pos0 = LayoutInfo.slot_positions[slot0]
+	pos1 = LayoutInfo.slot_positions[slot1]
 	switches[slot0] = null
 	switches[slot1] = null
 	
@@ -40,7 +38,7 @@ func is_switch(slot=null):
 	return len(connections[slot0]) > 1 or len(connections[slot1]) > 1
 
 func get_turn_from(slot):
-	var center_tangent = slot_positions[get_neighbour_slot(slot)] - slot_positions[slot]
+	var center_tangent = LayoutInfo.slot_positions[get_neighbour_slot(slot)] - LayoutInfo.slot_positions[slot]
 	var tangent = get_slot_tangent(get_opposite_slot(slot))
 	var turn_angle = center_tangent.angle_to(tangent)
 	if turn_angle > PI:
@@ -204,6 +202,8 @@ func get_track_connection_segment(slot, turn):
 	var curve = tangent.angle_to(track.get_slot_tangent(track.get_opposite_slot(track.get_neighbour_slot(slot))))
 	if curve > PI:
 		curve -= 2*PI
+	
+	var spacing = LayoutInfo.spacing
 		
 	if get_orientation() in ["NS", "EW"]:
 		if is_equal_approx(curve, 0.0):
@@ -230,6 +230,7 @@ func get_track_connection_segment(slot, turn):
 
 func get_track_segment():
 	var segments = []
+	var spacing = LayoutInfo.spacing
 	if get_orientation() in ["NS", "EW"]:
 		return PoolVector2Array([(pos0 + (pos1-pos0)*0.25*sqrt(2))*spacing, (pos1 - (pos1-pos0)*0.25*sqrt(2))*spacing])
 	return null

@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=4 format=2]
 
 [ext_resource path="res://switch_gui.gd" type="Script" id=1]
 [ext_resource path="res://switch_settings_dialog.tscn" type="PackedScene" id=2]
+[ext_resource path="res://switch_gui_label.gd" type="Script" id=3]
 
 [node name="SwitchGui" type="Panel"]
 anchor_right = 1.0
@@ -39,7 +40,9 @@ __meta__ = {
 margin_right = 83.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
+mouse_filter = 1
 text = "switch_name"
+script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }

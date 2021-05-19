@@ -37,6 +37,7 @@ func _on_hub_responsiveness_changed(val):
 func set_switch_name(p_switch_name):
 	switch_name = p_switch_name
 	get_node(switch_label).text = switch_name
+	get_node(switch_label).switch = get_switch()
 
 func get_switch():
 	return project.switches[switch_name]
