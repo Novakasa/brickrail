@@ -1,7 +1,6 @@
 extends Panel
 
 var train_name
-var project
 export(NodePath) var train_label
 export(NodePath) var control_container
 export(NodePath) var auto_container
@@ -10,8 +9,7 @@ export(NodePath) var hub_controls
 var markers = ["blue_marker", "red_marker"]
 var modes = ["block", "auto", "manual"]
 
-func setup(p_project, p_train_name):
-	project = p_project
+func setup(p_train_name):
 	set_train_name(p_train_name)
 	get_train().connect("name_changed", self, "_on_train_name_changed")
 	get_train().connect("mode_changed", self, "_on_mode_changed")
@@ -39,7 +37,7 @@ func setup(p_project, p_train_name):
 	set_controls_disabled(true)
 	
 	get_node(hub_controls).setup(get_train().hub)
-	$TrainSettingsDialog.setup(p_project, p_train_name)
+	$TrainSettingsDialog.setup(p_train_name)
 
 func _on_hub_responsiveness_changed(val):
 	set_controls_disabled(not val)
@@ -72,7 +70,7 @@ func set_train_name(p_train_name):
 	get_node(train_label).text = train_name
 
 func get_train():
-	return project.trains[train_name]
+	return Devices.trains[train_name]
 
 func _on_start_button_pressed():
 	get_train().start()

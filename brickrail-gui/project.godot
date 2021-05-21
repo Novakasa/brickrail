@@ -105,6 +105,7 @@ config/icon="res://icon1.png"
 [autoload]
 
 LayoutInfo="*res://layout_info.gd"
+Devices="*res://devices.tscn"
 
 [display]
 

@@ -3,16 +3,14 @@ extends WindowDialog
 export(NodePath) var address_input
 export(NodePath) var name_input
 
-var project
 var controller_name
 
 func _on_CancelButton_pressed():
 	hide_and_reset()
 
-func setup(p_project, p_controller_name):
-	project = p_project
+func setup(p_controller_name):
 	controller_name = p_controller_name
-	project.connect("data_received", self, "_on_data_received")
+	Devices.connect("data_received", self, "_on_data_received")
 
 func _on_data_received(key, data):
 	if key == "find_controller_address":
@@ -20,7 +18,7 @@ func _on_data_received(key, data):
 		get_node(address_input).text = address
 	
 func get_controller():
-	return project.layout_controllers[controller_name]
+	return Devices.layout_controllers[controller_name]
 
 func show():
 	var controller = get_controller()
@@ -48,4 +46,4 @@ func _on_OKButton_pressed():
 	hide_and_reset()
 
 func _on_ScanButton_pressed():
-	project.find_device("find_controller_address")
+	Devices.find_device("find_controller_address")

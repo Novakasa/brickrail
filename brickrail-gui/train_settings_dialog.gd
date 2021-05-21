@@ -4,12 +4,10 @@ export(NodePath) var address_input
 export(NodePath) var name_input
 
 var train_name
-var project
 
-func setup(p_project, p_train_name):
-	project = p_project
+func setup(p_train_name):
 	train_name = p_train_name
-	project.connect("data_received", self, "_on_data_received")
+	Devices.connect("data_received", self, "_on_data_received")
 
 func _on_data_received(key, data):
 	if key == "find_train_address":
@@ -17,7 +15,7 @@ func _on_data_received(key, data):
 		get_node(address_input).text = address
 
 func get_train():
-	return project.trains[train_name]
+	return Devices.trains[train_name]
 
 func show():
 	popup_centered()
@@ -37,7 +35,7 @@ func hide_and_reset():
 	get_node(name_input).text = ""
 
 func _on_ScanButton_pressed():
-	project.find_device("find_train_address")
+	Devices.find_device("find_train_address")
 
 func _on_OKButton_pressed():
 	var new_train_name = get_node(name_input).text

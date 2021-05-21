@@ -1,6 +1,5 @@
 extends Control
 
-export(NodePath) var project
 export(NodePath) var layout
 export(NodePath) var train_controller_container
 export(NodePath) var layout_controller_container
@@ -10,40 +9,43 @@ onready var TrainControllerGUI = preload("res://train_control_gui.tscn")
 onready var LayoutControllerGUI = preload("res://layout_controller_gui.tscn")
 onready var SwitchGUI = preload("res://switch_gui.tscn")
 
+func _ready():
+	Devices.connect("data_received", self, "_on_devices_data_received")
+
 func _on_AddTrain_pressed():
-	var trainnum = len(get_node(project).trains)
+	var trainnum = len(Devices.trains)
 	var trainname = "train"+str(trainnum)
 	add_train(trainname, null)
 	
 func _on_AddLayoutController_pressed():
-	var controllernum = len(get_node(project).layout_controllers)
+	var controllernum = len(Devices.layout_controllers)
 	var controllername = "controller"+str(controllernum)
 	add_layout_controller(controllername, null)
 
 func _on_AddSwitch_pressed():
-	var switchnum = len(get_node(project).switches)
+	var switchnum = len(Devices.switches)
 	var switchname = "switch"+str(switchnum)
 	add_switch(switchname, null, null)
 
 func add_train(p_name, p_address):
 	var train_controller_gui = TrainControllerGUI.instance()
-	get_node(project).add_train(p_name, p_address)
-	train_controller_gui.setup(get_node(project), p_name)
+	Devices.add_train(p_name, p_address)
+	train_controller_gui.setup(p_name)
 	get_node(train_controller_container).add_child(train_controller_gui)
 
 func add_layout_controller(p_name, p_address):
 	var layout_controller_gui = LayoutControllerGUI.instance()
-	get_node(project).add_layout_controller(p_name, p_address)
-	layout_controller_gui.setup(get_node(project), p_name)
+	Devices.add_layout_controller(p_name, p_address)
+	layout_controller_gui.setup(p_name)
 	get_node(layout_controller_container).add_child(layout_controller_gui)
 
 func add_switch(p_name, p_controller, p_port):
 	var switch_gui = SwitchGUI.instance()
-	get_node(project).add_switch(p_name, p_controller, p_port)
-	switch_gui.setup(get_node(project), p_name)
+	Devices.add_switch(p_name, p_controller, p_port)
+	switch_gui.setup(p_name)
 	get_node(switch_container).add_child(switch_gui)
 
-func _on_Project_data_received(key, data):
+func _on_Devices_data_received(key, data):
 	pass
 
 func _on_ViewportContainer_mouse_entered():
