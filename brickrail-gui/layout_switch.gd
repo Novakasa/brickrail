@@ -1,6 +1,6 @@
 
 class_name LayoutSwitch
-extends Button
+extends Node2D
 
 var position_index = 0
 var ble_switch = null
@@ -16,11 +16,12 @@ func _init(p_slot, positions):
 	switch_positions = positions
 	switch_positions.sort()
 	slot = p_slot
-
-	modulate.a=0.0
-	self.connect("pressed", self, "toggle_switch")
-	rect_position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing - Vector2(0.25,0.25)*LayoutInfo.spacing
-	rect_size = Vector2(0.5,0.5)*LayoutInfo.spacing
+	
+	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
+	# modulate.a=0.0
+	# self.connect("pressed", self, "toggle_switch")
+	# rect_position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing - Vector2(0.25,0.25)*LayoutInfo.spacing
+	# rect_size = Vector2(0.5,0.5)*LayoutInfo.spacing
 
 func drop_data(position, data):
 	prints("dropping switch!", data.name)
@@ -51,10 +52,10 @@ func _unhandled_input(event):
 	if event is InputEventKey and event.pressed:
 		if event.scancode == KEY_M:
 			toggle_switch()
-	#if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-	#	var local_mouse = to_local(get_global_mouse_position())
-	#	if local_mouse.x<spacing*0.25 and local_mouse.x>-spacing*0.25 and local_mouse.y<spacing*0.25 and local_mouse.y>-spacing*0.25:
-	#		toggle_switch()
+	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
+		var local_mouse = to_local(get_global_mouse_position())
+		if local_mouse.x<spacing*0.25 and local_mouse.x>-spacing*0.25 and local_mouse.y<spacing*0.25 and local_mouse.y>-spacing*0.25:
+			toggle_switch()
 
 func _on_ble_switch_position_changed(pos):
 	position_index = switch_positions.find(pos)
