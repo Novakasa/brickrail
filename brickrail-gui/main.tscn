@@ -16,7 +16,7 @@ script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-layout = NodePath("VBoxContainer/VBoxContainer/ViewportContainer/Viewport/Layout")
+layout = NodePath("VBoxContainer/VBoxContainer/HBoxContainer/ViewportContainer/Viewport/Layout")
 train_controller_container = NodePath("VBoxContainer/VBoxContainer/TabContainer/trains")
 layout_controller_container = NodePath("VBoxContainer/VBoxContainer/TabContainer/controllers")
 switch_container = NodePath("VBoxContainer/VBoxContainer/TabContainer/switches")
@@ -32,10 +32,8 @@ __meta__ = {
 }
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 6.0
-margin_top = 4.0
-margin_right = 1018.0
-margin_bottom = 596.0
+anchor_right = 1.0
+anchor_bottom = 1.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -43,7 +41,7 @@ __meta__ = {
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 1012.0
+margin_right = 1920.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 
@@ -66,8 +64,8 @@ text = "add switch"
 
 [node name="VBoxContainer" type="HSplitContainer" parent="VBoxContainer"]
 margin_top = 26.0
-margin_right = 1012.0
-margin_bottom = 592.0
+margin_right = 1920.0
+margin_bottom = 1080.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -75,7 +73,7 @@ split_offset = 295
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/VBoxContainer"]
 margin_right = 305.0
-margin_bottom = 566.0
+margin_bottom = 1054.0
 mouse_filter = 1
 
 [node name="trains" type="VBoxContainer" parent="VBoxContainer/VBoxContainer/TabContainer"]
@@ -110,27 +108,59 @@ margin_bottom = -5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/VBoxContainer"]
+[node name="HBoxContainer" type="VBoxContainer" parent="VBoxContainer/VBoxContainer"]
 margin_left = 313.0
-margin_right = 1012.0
-margin_bottom = 566.0
+margin_right = 1920.0
+margin_bottom = 1054.0
+
+[node name="LayoutTools" type="HBoxContainer" parent="VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 1607.0
+margin_bottom = 22.0
+size_flags_horizontal = 3
+
+[node name="LayoutControl" type="Button" parent="VBoxContainer/VBoxContainer/HBoxContainer/LayoutTools"]
+margin_right = 57.0
+margin_bottom = 22.0
+toggle_mode = true
+shortcut_in_tooltip = false
+pressed = true
+text = "control"
+
+[node name="LayoutSelect" type="Button" parent="VBoxContainer/VBoxContainer/HBoxContainer/LayoutTools"]
+margin_left = 61.0
+margin_right = 112.0
+margin_bottom = 22.0
+toggle_mode = true
+text = "select"
+
+[node name="LayoutDraw" type="Button" parent="VBoxContainer/VBoxContainer/HBoxContainer/LayoutTools"]
+margin_left = 116.0
+margin_right = 158.0
+margin_bottom = 22.0
+toggle_mode = true
+text = "draw"
+
+[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/VBoxContainer/HBoxContainer"]
+margin_top = 26.0
+margin_right = 1607.0
+margin_bottom = 1054.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
 stretch = true
 script = ExtResource( 4 )
 
-[node name="Viewport" type="Viewport" parent="VBoxContainer/VBoxContainer/ViewportContainer"]
-size = Vector2( 699, 566 )
+[node name="Viewport" type="Viewport" parent="VBoxContainer/VBoxContainer/HBoxContainer/ViewportContainer"]
+size = Vector2( 1607, 1028 )
 handle_input_locally = false
 hdr = false
 usage = 0
 render_target_update_mode = 3
 
-[node name="Layout" parent="VBoxContainer/VBoxContainer/ViewportContainer/Viewport" instance=ExtResource( 1 )]
+[node name="Layout" parent="VBoxContainer/VBoxContainer/HBoxContainer/ViewportContainer/Viewport" instance=ExtResource( 1 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddSwitch" to="." method="_on_AddSwitch_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer/ViewportContainer" to="." method="_on_ViewportContainer_mouse_entered"]
-[connection signal="mouse_exited" from="VBoxContainer/VBoxContainer/ViewportContainer" to="." method="_on_ViewportContainer_mouse_exited"]
+[connection signal="mouse_entered" from="VBoxContainer/VBoxContainer/HBoxContainer/ViewportContainer" to="." method="_on_ViewportContainer_mouse_entered"]
+[connection signal="mouse_exited" from="VBoxContainer/VBoxContainer/HBoxContainer/ViewportContainer" to="." method="_on_ViewportContainer_mouse_exited"]
