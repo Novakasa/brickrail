@@ -54,7 +54,7 @@ func _unhandled_input(event):
 			toggle_switch()
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
 		var local_mouse = to_local(get_global_mouse_position())
-		if local_mouse.x<spacing*0.25 and local_mouse.x>-spacing*0.25 and local_mouse.y<spacing*0.25 and local_mouse.y>-spacing*0.25:
+		if Rect2(Vector2(-spacing*0.25, -spacing*0.25), Vector2(spacing*0.5, spacing*0.5)).has_point(local_mouse):
 			toggle_switch()
 
 func _on_ble_switch_position_changed(pos):
