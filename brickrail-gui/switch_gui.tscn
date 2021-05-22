@@ -7,8 +7,8 @@
 [node name="SwitchGui" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -787.0
-margin_bottom = -524.0
+margin_right = -1091.0
+margin_bottom = -669.0
 rect_min_size = Vector2( 0, 44 )
 size_flags_horizontal = 3
 script = ExtResource( 1 )
@@ -30,7 +30,7 @@ __meta__ = {
 }
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 237.0
+margin_right = 189.0
 margin_bottom = 20.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -49,7 +49,7 @@ __meta__ = {
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 87.0
-margin_right = 170.0
+margin_right = 122.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
@@ -57,14 +57,14 @@ __meta__ = {
 }
 
 [node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 174.0
-margin_right = 237.0
+margin_left = 126.0
+margin_right = 189.0
 margin_bottom = 20.0
 text = "settings"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 24.0
-margin_right = 237.0
+margin_right = 189.0
 margin_bottom = 44.0
 __meta__ = {
 "_edit_use_anchors_": false
