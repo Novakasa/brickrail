@@ -90,7 +90,7 @@ func _on_track_connections_changed(orientation=null):
 			var from_slot_id = LayoutInfo.slot_index[from_slot]
 			var turn_flags = {"left": 1, "center": 2, "right": 4}
 			var position_flags = {"left": 16, "center": 32, "right": 64}
-			var position_flags_opposite = {"right": 16, "center": 32, "left": 64}
+			var position_flags_priority = {"left": 128, "center": 256, "right": 512}
 			var connections = 0
 			for turn in track.connections[to_slot]:
 				connections |= turn_flags[turn]
@@ -107,6 +107,7 @@ func _on_track_connections_changed(orientation=null):
 
 			if track.switches[to_slot] != null:
 				connections |= position_flags[track.switches[to_slot].get_position()]
+				connections |= position_flags_priority[track.switches[to_slot].get_position()]
 			
 			if len(track.connections[to_slot]) == 0:
 				connections = 8

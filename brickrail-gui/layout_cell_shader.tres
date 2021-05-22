@@ -8,10 +8,14 @@ uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
 uniform vec4 switch_color: hint_color;
 uniform vec4 grid_color: hint_color;
+uniform vec4 switch_inner_color: hint_color;
 
 uniform float grid_width;
 uniform float track_width;
 uniform float inner_track_width;
+uniform float stopper_delta;
+uniform float stopper_size;
+uniform float stopper_width;
 
 uniform bool contours;
 
@@ -145,13 +149,17 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	start_angle = this_angle - 0.5*PI*float(sign(curve_index));
 	delta_angle = float(curve_index)*PI/4.0;
 	if (turn_index == 2) {
-		vec2 end_pos = from_pos+tangent*0.7;
-		float straight = line(position, from_pos+tangent*0.5, end_pos-normalize(tangent)*width*0.5, track_width);
+		vec2 end_pos = from_pos+tangent*stopper_delta;
+		vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
+		float straight = line_rect(position, from_pos+tangent*0.5, straight_end, track_width);
 		scene = merge(scene, straight);
+		float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, track_width);
+		scene = merge(scene, round_straight);
 		// float endcap = circle(position-from_pos-tangent*0.5, width);
 		// scene = merge(scene, endcap);
+		vec2 stopper_pos = end_pos;
 		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
-		float stopper = line_rect(position, end_pos-normal*track_width*2.0, end_pos+normal*track_width*2.0, track_width);
+		float stopper = line_rect(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
 		scene = merge(scene, stopper);
 		return scene;
 	}
@@ -199,7 +207,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	
 }
 
-float tracks(vec2 position, float time, bool switch_position) {
+float tracks(vec2 position, float time, bool switch_position, bool borders, bool priority) {
 	vec2 circle_pos = translate(position, vec2(0.5,.5));
 	vec2 rect_pos = translate(position, vec2(0.3,0.3));
 	rect_pos = rotate(rect_pos, time*1.0);
@@ -208,9 +216,16 @@ float tracks(vec2 position, float time, bool switch_position) {
 	
 	int turn_flags[3] = {LEFT, STRAIGHT, RIGHT};
 	if (switch_position) {
-		turn_flags[0] = SWITCH_LEFT;
-		turn_flags[1] = SWITCH_STRAIGHT;
-		turn_flags[2] = SWITCH_RIGHT;
+		if (priority) {
+			turn_flags[0] = SWITCH_PRIORITY_LEFT;
+			turn_flags[1] = SWITCH_PRIORITY_STRAIGHT;
+			turn_flags[2] = SWITCH_PRIORITY_RIGHT;
+		}
+		else {
+			turn_flags[0] = SWITCH_LEFT;
+			turn_flags[1] = SWITCH_STRAIGHT;
+			turn_flags[2] = SWITCH_RIGHT;
+		}
 	}
 	// float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
 	
@@ -246,11 +261,11 @@ float tracks(vec2 position, float time, bool switch_position) {
 				if ((connection_flags & turn_flags[flag]) != turn_flags[flag]) {
 					continue;
 				}
-				connection = track_connection(position, from_slot, to_slot2, turn, 0.0, switch_position);
+				connection = track_connection(position, from_slot, to_slot2, turn, 0.0, borders);
 				scene = merge(scene, connection);
 			}
 			if (!switch_position && ((connection_flags & NO_CONNECT) == NO_CONNECT)) {
-				connection = track_connection(position, from_slot, to_slot2, 2, 0.0, switch_position);
+				connection = track_connection(position, from_slot, to_slot2, 2, 0.0, borders);
 				scene = merge(scene, connection);
 			}
 	
@@ -268,22 +283,35 @@ void fragment() {
 	if (position.x<grid_width*0.5 || position.x>1.0-grid_width*0.5 || position.y<grid_width*0.5 || position.y>1.0-grid_width*0.5) {
 		bg = grid_color;
 	}
-	float base = tracks(position, TIME*1.0, false);
-	float turn_outer = tracks(position, TIME*1.0, true);
+	float base = tracks(position, TIME*1.0, false, false, false);
+	float turn_outer = tracks(position, TIME*1.0, true, true, false);
 	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
+	float switch_base = tracks(position, 0.0, true, false, true);
+	
+	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
+	// float arrow_modulate = 20.0*clamp(border_dist-0.05, 0.0, 1.0) * clamp(-0.5*border_dist+0.1, 0.0, 1.0);
+	float arrow_cap = clamp(24.0*(border_dist-0.02), -1.0, 1.0);
+	arrow_cap = sqrt(max(1.0-(1.0-arrow_cap)*(1.0-arrow_cap),0.0));
+	float arrow_modulate = (border_dist<0.4) ? arrow_cap : -1.0;
+	if (arrow_modulate<0.0002) {
+		arrow_modulate = -1.0;
+	}
+	float switch_arrows = switch_base + track_width - (arrow_modulate)*inner_track_width*0.5;
 	
 	float dist = base;
 	float base_change = fwidth(base)*0.5;
 	float inner_change = fwidth(inner)*0.5;
 	float switch_outer_change = fwidth(switch_outer)*0.5;
+	float switch_arrows_change = fwidth(switch_arrows)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
 	vec4 bg_mix = mix(bg, track_base, t);
 	t = smoothstep(inner_change, -inner_change, inner);
 	vec4 track_mix = mix(bg_mix, track_inner, t);
 	t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
-	COLOR = mix(track_mix, switch_color, t);
-	
+	vec4 switch_mix = mix(track_mix, switch_color, t);
+	t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
+	COLOR = mix(switch_mix, switch_inner_color, t);
 	
 	if (contours) {
 		dist = base;
@@ -297,13 +325,17 @@ void fragment() {
 
 [resource]
 shader = SubResource( 1 )
-shader_param/background = Color( 0.0784314, 0.0823529, 0.0901961, 1 )
+shader_param/background = Color( 0.105882, 0.109804, 0.121569, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
-shader_param/switch_color = Color( 0.113725, 0.501961, 0.862745, 1 )
-shader_param/grid_color = Color( 0.0356, 0.0356, 0.04, 1 )
-shader_param/grid_width = 0.064
-shader_param/track_width = 0.15
-shader_param/inner_track_width = 0.07
+shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
+shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
+shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
+shader_param/grid_width = 0.097
+shader_param/track_width = 0.126
+shader_param/inner_track_width = 0.062
+shader_param/stopper_delta = 0.722
+shader_param/stopper_size = 1.563
+shader_param/stopper_width = 0.111
 shader_param/contours = false
-shader_param/connections = Transform( 4.032, 35.245, 3.972, 8.927, 3.213, 2.327, 22.052, 1.52, 5.602, 1.569, 2.568, 1.899 )
+shader_param/connections = Transform( -0.114, 35.245, 3.972, 8.927, 3.213, 2.327, 145.159, 1.52, 5.602, 1.569, 2.568, 1.899 )
