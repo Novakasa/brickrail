@@ -130,10 +130,14 @@ float line_rect(vec2 position, vec2 from, vec2 to, float width) {
 	return rect;
 }
 
-float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, float width, int type) {
+float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, int track_type) {
 	vec2 slot_positions[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
 
 	float scene = 10.0;
+	float width = track_width;
+	if (track_type==TRACK_LINE || track_type==TRACK_BORDER) {
+		width = 0.0;
+	}
 	
 	vec2 from_pos = slot_positions[from_slot];
 	vec2 to_pos = slot_positions[to_slot];
@@ -201,7 +205,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		// scene = merge(scene, endcap);
 	}
 	
-	if (type == TRACK_BORDER) {
+	if (track_type == TRACK_BORDER) {
 		float inner = scene - inner_track_width;
 		float outer = scene - track_width;
 		scene = substract(outer, inner);
@@ -241,7 +245,6 @@ float tracks(vec2 position, int turn_type, int track_type) {
 			vec4 from_vec = basis[from_slot];
 			vec4 to_vec = basis[to_slot];
 			int connection_flags = int(dot(to_vec, connections*from_vec));
-			// connection_flags = 0;
 			int to_slot2 = to_slot;
 			if (from_slot == to_slot) {
 				to_slot2 = 3;
@@ -253,19 +256,16 @@ float tracks(vec2 position, int turn_type, int track_type) {
 				if ((connection_flags & turn_flags[flag]) != turn_flags[flag]) {
 					continue;
 				}
-				connection = track_connection(position, from_slot, to_slot2, turn, 0.0, track_type);
+				connection = track_connection(position, from_slot, to_slot2, turn, track_type);
 				scene = merge(scene, connection);
 			}
 			if (turn_type==TURN_BASE && ((connection_flags & NO_CONNECT) == NO_CONNECT)) {
-				connection = track_connection(position, from_slot, to_slot2, 2, 0.0, track_type);
+				connection = track_connection(position, from_slot, to_slot2, 2, track_type);
 				scene = merge(scene, connection);
 			}
 	
 		}
 	}
-	// scene = merge(scene, arc);
-	
-	// scene = 1.0;
 	
 	return scene;
 }
@@ -276,11 +276,11 @@ void fragment() {
 	if (border_dist<grid_width*0.5) {
 		bg = grid_color;
 	}
-	float base = tracks(position, TURN_BASE, TRACK_FULL);
+	float base = tracks(position, TURN_BASE, TRACK_LINE);
 	float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER);
 	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
-	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_FULL);
+	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE);
 	
 	// float arrow_modulate = 20.0*clamp(border_dist-0.05, 0.0, 1.0) * clamp(-0.5*border_dist+0.1, 0.0, 1.0);
 	float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
