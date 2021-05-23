@@ -151,6 +151,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	if (turn_index == 2) {
 		vec2 end_pos = from_pos+tangent*stopper_delta;
 		vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
+		straight_end = end_pos+ normalize(tangent)*stopper_width*0.5;
 		float straight = line_rect(position, from_pos+tangent*0.5, straight_end, track_width);
 		scene = merge(scene, straight);
 		float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, track_width);
@@ -159,7 +160,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		// scene = merge(scene, endcap);
 		vec2 stopper_pos = end_pos;
 		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
-		float stopper = line_rect(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
+		float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
 		scene = merge(scene, stopper);
 		return scene;
 	}
@@ -291,13 +292,15 @@ void fragment() {
 	
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
 	// float arrow_modulate = 20.0*clamp(border_dist-0.05, 0.0, 1.0) * clamp(-0.5*border_dist+0.1, 0.0, 1.0);
-	float arrow_cap = clamp(24.0*(border_dist-0.02), -1.0, 1.0);
-	arrow_cap = sqrt(max(1.0-(1.0-arrow_cap)*(1.0-arrow_cap),0.0));
+	float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
+	// arrow_cap = sqrt(max(1.0-(1.0-arrow_cap)*(1.0-arrow_cap),0.0));
 	float arrow_modulate = (border_dist<0.4) ? arrow_cap : -1.0;
-	if (arrow_modulate<0.0002) {
+	arrow_modulate = arrow_cap  * clamp(20.0*(-border_dist+0.25), -1.0, 1.0);
+	/* if (arrow_modulate<0.0002) {
 		arrow_modulate = -1.0;
-	}
-	float switch_arrows = switch_base + track_width - (arrow_modulate)*inner_track_width*0.5;
+	}*/
+	// arrow_modulate = 1.0;
+	float switch_arrows = switch_base + track_width - (arrow_modulate)*inner_track_width*0.4;
 	
 	float dist = base;
 	float base_change = fwidth(base)*0.5;
@@ -334,8 +337,8 @@ shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
 shader_param/grid_width = 0.097
 shader_param/track_width = 0.126
 shader_param/inner_track_width = 0.062
-shader_param/stopper_delta = 0.722
-shader_param/stopper_size = 1.563
+shader_param/stopper_delta = 0.648
+shader_param/stopper_size = 0.728
 shader_param/stopper_width = 0.111
 shader_param/contours = false
-shader_param/connections = Transform( -0.114, 35.245, 3.972, 8.927, 3.213, 2.327, 145.159, 1.52, 5.602, 1.569, 2.568, 1.899 )
+shader_param/connections = Transform( -0.114, 42.708, 3.972, 8.927, 3.213, 2.327, 147.648, 129.65, 5.602, 1.569, 2.568, 1.899 )
