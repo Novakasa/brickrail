@@ -92,24 +92,23 @@ func connect_track(slot, track, initial=true):
 	# prints("added connection, turning:", turn)
 	track.connect("connections_cleared", self, "_on_track_connections_cleared")
 	if len(connections[slot])>1:
-		set_switches()
+		update_switch(slot)
 	if initial:
 		track.connect_track(get_neighbour_slot(slot), self, false)
 	emit_signal("connections_changed", get_orientation())
 
-func set_switches():
-	for slot in [slot0, slot1]:
-		if len(connections[slot])>1:
-			if switches[slot] != null:
-				switches[slot].queue_free()
-				switches[slot] = null
-			switches[slot] = LayoutSwitch.new(slot, connections[slot].keys())
-			switches[slot].connect("position_changed", self, "_on_switch_position_changed")
-			emit_signal("switch_added", switches[slot])
-		else:
-			if switches[slot] != null:
-				switches[slot].queue_free()
-				switches[slot] = null
+func update_switch(slot):
+	if len(connections[slot])>1:
+		if switches[slot] != null:
+			switches[slot].queue_free()
+			switches[slot] = null
+		switches[slot] = LayoutSwitch.new(slot, connections[slot].keys())
+		switches[slot].connect("position_changed", self, "_on_switch_position_changed")
+		emit_signal("switch_added", switches[slot])
+	else:
+		if switches[slot] != null:
+			switches[slot].queue_free()
+			switches[slot] = null
 
 func _on_switch_position_changed(slot, pos):
 	emit_signal("switch_position_changed")
@@ -128,7 +127,7 @@ func disconnect_track(track):
 func disconnect_turn(slot, turn):
 	connections[slot].erase(turn)
 	if len(connections[slot]) <2:
-		set_switches()
+		update_switch(slot)
 	emit_signal("connections_changed", get_orientation())
 
 func clear_connections():
