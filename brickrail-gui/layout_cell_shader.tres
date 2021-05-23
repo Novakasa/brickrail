@@ -221,12 +221,12 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 float tracks(vec2 position, int turn_type, int track_type) {
 	
 	int turn_flags[3] = {LEFT, STRAIGHT, RIGHT};
-	if (turn_type == TURN_SWITCH_ALL) {
+	if (turn_type == TURN_SWITCH_PRIORITY) {
 		turn_flags[0] = SWITCH_PRIORITY_LEFT;
 		turn_flags[1] = SWITCH_PRIORITY_STRAIGHT;
 		turn_flags[2] = SWITCH_PRIORITY_RIGHT;
 		}
-	if (turn_type == TURN_SWITCH_PRIORITY) {
+	if (turn_type == TURN_SWITCH_ALL) {
 			turn_flags[0] = SWITCH_LEFT;
 			turn_flags[1] = SWITCH_STRAIGHT;
 			turn_flags[2] = SWITCH_RIGHT;
