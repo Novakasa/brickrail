@@ -33,6 +33,16 @@ const int SWITCH_RIGHT = 64;
 const int SWITCH_PRIORITY_LEFT = 128;
 const int SWITCH_PRIORITY_STRAIGHT = 256;
 const int SWITCH_PRIORITY_RIGHT = 512;
+const int HIGHLIGHT = 1024;
+
+const int TRACK_LINE = 0;
+const int TRACK_FULL = 1;
+const int TRACK_BORDER = 2;
+const int TRACK_ARROW = 3;
+
+const int TURN_BASE = 0;
+const int TURN_SWITCH_ALL = 1;
+const int TURN_SWITCH_PRIORITY = 2;
 
 
 float circle(vec2 position, float radius) {
@@ -120,7 +130,7 @@ float line_rect(vec2 position, vec2 from, vec2 to, float width) {
 	return rect;
 }
 
-float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, float width, bool border) {
+float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, float width, int type) {
 	vec2 slot_positions[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
 
 	float scene = 10.0;
@@ -191,7 +201,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		// scene = merge(scene, endcap);
 	}
 	
-	if (border) {
+	if (type == TRACK_BORDER) {
 		float inner = scene - inner_track_width;
 		float outer = scene - track_width;
 		scene = substract(outer, inner);
@@ -208,40 +218,21 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	
 }
 
-float tracks(vec2 position, float time, bool switch_position, bool borders, bool priority) {
-	vec2 circle_pos = translate(position, vec2(0.5,.5));
-	vec2 rect_pos = translate(position, vec2(0.3,0.3));
-	rect_pos = rotate(rect_pos, time*1.0);
-	float circle = circle(circle_pos, 0.25);
-	float rect = rectangle(rect_pos, vec2(.15,.15));
+float tracks(vec2 position, int turn_type, int track_type) {
 	
 	int turn_flags[3] = {LEFT, STRAIGHT, RIGHT};
-	if (switch_position) {
-		if (priority) {
-			turn_flags[0] = SWITCH_PRIORITY_LEFT;
-			turn_flags[1] = SWITCH_PRIORITY_STRAIGHT;
-			turn_flags[2] = SWITCH_PRIORITY_RIGHT;
+	if (turn_type == TURN_SWITCH_ALL) {
+		turn_flags[0] = SWITCH_PRIORITY_LEFT;
+		turn_flags[1] = SWITCH_PRIORITY_STRAIGHT;
+		turn_flags[2] = SWITCH_PRIORITY_RIGHT;
 		}
-		else {
+	if (turn_type == TURN_SWITCH_PRIORITY) {
 			turn_flags[0] = SWITCH_LEFT;
 			turn_flags[1] = SWITCH_STRAIGHT;
 			turn_flags[2] = SWITCH_RIGHT;
-		}
 	}
-	// float scene = interpolate(circle, rect, 0.5*(sin(time)+1.0));
 	
-	float aperture = (cos(time)+1.0)*PI;
-	float orientation = (sin(time)+1.0)*PI*0.5;
-	vec2 pie_center = vec2(0.5,0.5);
-	vec2 pie_pos = translate(position, pie_center);
-	orientation = PI/2.0;
-	float pie = pie(position, vec2(sin(aperture), cos(aperture)), 0.3);
-	// float arc = arc(pie_pos, aperture, orientation, 0.2, 0.01);
-	float arc = track_arc(position, pie_center, 0.5, orientation, aperture, 0.01);
-	
-	// float track = track_connection(position, 2, 3, 3, 0.03);
-	
-	float scene = 10.0; //merge(scene, pie);
+	float scene = 10.0;
 	
 	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
 	
@@ -262,11 +253,11 @@ float tracks(vec2 position, float time, bool switch_position, bool borders, bool
 				if ((connection_flags & turn_flags[flag]) != turn_flags[flag]) {
 					continue;
 				}
-				connection = track_connection(position, from_slot, to_slot2, turn, 0.0, borders);
+				connection = track_connection(position, from_slot, to_slot2, turn, 0.0, track_type);
 				scene = merge(scene, connection);
 			}
-			if (!switch_position && ((connection_flags & NO_CONNECT) == NO_CONNECT)) {
-				connection = track_connection(position, from_slot, to_slot2, 2, 0.0, borders);
+			if (turn_type==TURN_BASE && ((connection_flags & NO_CONNECT) == NO_CONNECT)) {
+				connection = track_connection(position, from_slot, to_slot2, 2, 0.0, track_type);
 				scene = merge(scene, connection);
 			}
 	
@@ -281,16 +272,16 @@ float tracks(vec2 position, float time, bool switch_position, bool borders, bool
 void fragment() {
 	vec4 bg = background;
 	vec2 position = UV;
-	if (position.x<grid_width*0.5 || position.x>1.0-grid_width*0.5 || position.y<grid_width*0.5 || position.y>1.0-grid_width*0.5) {
+	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
+	if (border_dist<grid_width*0.5) {
 		bg = grid_color;
 	}
-	float base = tracks(position, TIME*1.0, false, false, false);
-	float turn_outer = tracks(position, TIME*1.0, true, true, false);
+	float base = tracks(position, TURN_BASE, TRACK_FULL);
+	float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER);
 	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
-	float switch_base = tracks(position, 0.0, true, false, true);
+	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_FULL);
 	
-	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
 	// float arrow_modulate = 20.0*clamp(border_dist-0.05, 0.0, 1.0) * clamp(-0.5*border_dist+0.1, 0.0, 1.0);
 	float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
 	// arrow_cap = sqrt(max(1.0-(1.0-arrow_cap)*(1.0-arrow_cap),0.0));

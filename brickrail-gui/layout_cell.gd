@@ -77,7 +77,6 @@ func clear():
 
 func _on_track_switch_added(switch):
 	add_child(switch)
-	switch.update()
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
