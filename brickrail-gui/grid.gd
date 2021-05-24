@@ -99,88 +99,81 @@ func _unhandled_input(event):
 
 func process_input(event):
 	
-	var spacing = LayoutInfo.spacing
-	
 	if event is InputEventKey and event.pressed:
-		if event.scancode == KEY_PERIOD:
-			get_tree().set_input_as_handled()
-			direction += 1
-			while direction>3:
-				direction-=4
-		
-		if event.scancode == KEY_COMMA:
-			get_tree().set_input_as_handled()
-			direction -= 1
-			while direction<0:
-				direction+=4
-		
-		if event.scancode == KEY_V:
-			get_tree().set_input_as_handled()
-			pretty_tracks = not pretty_tracks
-			emit_signal("grid_view_changed", pretty_tracks)
+		process_key_input(event)
 	
 	if event is InputEventMouse:
-		var mpos = get_viewport_transform().affine_inverse()*event.position
-		var i = int(mpos.x/spacing)
-		var j = int(mpos.y/spacing)
-		if not (i>=0 and i<nx and j>=0 and j<ny):
-			return
-		var mpos_cell = mpos-cells[i][j].position
-		if event is InputEventMouseMotion:
-			if hover_cell != null:
-				hover_cell.stop_hover()
-			if removing_track:
-				cells[i][j].clear()
-			if dragging_view:
-				$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
+		process_mouse_input(event)
+
+func process_key_input(event):
+	pass
+
+func process_mouse_input(event):
+	var spacing = LayoutInfo.spacing
+	var mpos = get_viewport_transform().affine_inverse()*event.position
+	var i = int(mpos.x/spacing)
+	var j = int(mpos.y/spacing)
+	if not (i>=0 and i<nx and j>=0 and j<ny):
+		return
+	var mpos_cell = mpos-cells[i][j].position
+	if event is InputEventMouseMotion:
+		process_mouse_motion(event, i, j, mpos_cell)
+	if event is InputEventMouseButton:
+		process_mouse_button(event, i, j, mpos_cell)
+
+func process_mouse_motion(event, i, j, mpos_cell):
+	if hover_cell != null:
+		hover_cell.stop_hover()
+	if removing_track:
+		cells[i][j].clear()
+	if dragging_view:
+		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
+	if drawing_track:
+		if not cells[i][j] == drawing_last:
+			var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, i, j)
+			for p in line:
+				draw_track(cells[p[0]][p[1]])
+	# else:
+	# 	hover_cell = cells[i][j]
+	# 	hover_cell.hover_at(mpos_cell, direction)
+
+func process_mouse_button(event, i, j, mpos_cell):
+	if event.button_index == BUTTON_WHEEL_UP:
+		$Camera2D.position += event.position*0.05*$Camera2D.zoom	
+		$Camera2D.zoom*=0.95
+		return
+		
+	if event.button_index == BUTTON_WHEEL_DOWN:
+		$Camera2D.zoom*=1.05
+		$Camera2D.position -= event.position*0.05*$Camera2D.zoom
+		return
+
+	if event.button_index == BUTTON_LEFT:
+		if event.pressed:
+			drawing_last = cells[i][j]
+			drawing_last2 = null
+			drawing_track = true
+			drawing_last_track = null #track
+		else:
 			if drawing_track:
-				if not cells[i][j] == drawing_last:
-					var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, i, j)
-					for p in line:
-						draw_track(cells[p[0]][p[1]])
-			# else:
-			# 	hover_cell = cells[i][j]
-			# 	hover_cell.hover_at(mpos_cell, direction)
-		if event is InputEventMouseButton:
-			if event.button_index == BUTTON_WHEEL_UP and mouse_focus:
-				$Camera2D.position += event.position*0.05*$Camera2D.zoom	
-				$Camera2D.zoom*=0.95
-				get_tree().set_input_as_handled()
-			if event.button_index == BUTTON_WHEEL_DOWN and mouse_focus:
-				$Camera2D.zoom*=1.05
-				$Camera2D.position -= event.position*0.05*$Camera2D.zoom
-				get_tree().set_input_as_handled()
-			if event.button_index == BUTTON_LEFT:
-				if event.pressed and mouse_focus:
-					#var track = cells[i][j].create_track_at(mpos_cell, direction)
-					#track = cells[i][j].add_track(track)
-					drawing_last = cells[i][j]
-					drawing_last2 = null
-					drawing_track = true
-					drawing_last_track = null #track
-					get_tree().set_input_as_handled()
-				else:
-					if drawing_track:
-						drawing_track = false
-						get_tree().set_input_as_handled()
-			
-			if event.button_index == BUTTON_RIGHT:
-				if event.pressed and mouse_focus:
-					removing_track = true
-					cells[i][j].clear()
-					get_tree().set_input_as_handled()
-				else:
-					if removing_track:
-						removing_track = false
-						get_tree().set_input_as_handled()
-			
-			if event.button_index == BUTTON_MIDDLE:
-				if event.pressed and mouse_focus:
-					dragging_view = true
-					dragging_view_reference = event.position
-					dragging_view_camera_reference = $Camera2D.position
-					get_tree().set_input_as_handled()
-				else:
-					if dragging_view:
-						dragging_view = false
-						get_tree().set_input_as_handled()
+				drawing_track = false
+		return
+	
+	if event.button_index == BUTTON_RIGHT:
+		if event.pressed:
+			removing_track = true
+			cells[i][j].clear()
+		else:
+			if removing_track:
+				removing_track = false
+		return
+	
+	if event.button_index == BUTTON_MIDDLE:
+		if event.pressed:
+			dragging_view = true
+			dragging_view_reference = event.position
+			dragging_view_camera_reference = $Camera2D.position
+		else:
+			if dragging_view:
+				dragging_view = false
+		return
