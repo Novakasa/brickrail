@@ -149,7 +149,8 @@ func _on_track_connections_changed(orientation=null):
 
 			if track.switches[to_slot] != null:
 				connections |= position_flags[track.switches[to_slot].get_position()]
-				connections |= position_flags_priority[track.switches[to_slot].get_position()]
+				if not track.switches[to_slot].disabled:
+					connections |= position_flags_priority[track.switches[to_slot].get_position()]
 			
 			if len(track.connections[to_slot]) == 0:
 				connections = 8

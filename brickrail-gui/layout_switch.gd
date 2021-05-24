@@ -9,6 +9,7 @@ var switch_positions
 var button
 var hover=false
 var selected=false
+var disabled=false
 
 var SwitchInspector = preload("res://switch_inspector.tscn")
 
@@ -37,12 +38,19 @@ func can_drop_data(position, data):
 func set_ble_switch(p_ble_switch):
 	if ble_switch != null:
 		ble_switch.disconnect("position_changed", self, "_on_ble_switch_position_changed")
+		ble_switch.disconnect("hub_responsiveness_changed", self, "_on_ble_switch_responsiveness_changed")
 	ble_switch = p_ble_switch
 	if ble_switch.position != "unkown":
 		var pos = dev1_to_pos(ble_switch.position)
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", slot, pos)
 	ble_switch.connect("position_changed", self, "_on_ble_switch_position_changed")
+	ble_switch.connect("responsiveness_changed", self, "_on_ble_switch_responsiveness_changed")
+
+func _on_ble_switch_responsiveness_changed(responsiveness):
+	disabled = not responsiveness
+	prints("switch responsiveness:", responsiveness)
+	emit_signal("position_changed", slot, switch_positions[position_index])
 
 func _on_ble_switch_position_changed(ble_pos):
 	var pos = dev1_to_pos(ble_pos)

@@ -5,27 +5,35 @@ var name
 var port
 var controller
 var position
+var responsiveness
 
 signal hub_command(cmd)
 signal name_changed(p_old_name, p_name)
 signal controller_changed(p_old_controller, p_controller)
 signal position_changed(position)
-signal hub_responsiveness_changed(value)
+signal responsiveness_changed(value)
 
 func _init(p_name, p_controller, p_port):
 	name = p_name
 	port = p_port
 	controller = p_controller
-	position = "unkown"
+	position = "unknown"
+	responsiveness = false
 
 func _on_data_received(key, data):
 	print("switch got data", key)
 	if key == "position_changed":
 		position = data
+		set_responsive()
 		emit_signal("position_changed", data)
 
 func _on_hub_responsiveness_changed(value):
-	emit_signal("hub_responsiveness_changed", value)
+	if value:
+		position = "unknown"
+		set_responsive()
+		emit_signal("position_changed", position)
+	else:
+		set_unresponsive()
 
 func setup_on_hub():
 	var portstr = ["A", "B", "C", "D"][port]
@@ -33,7 +41,20 @@ func setup_on_hub():
 	# var cmd = "add_switch('"+name+"', "+str(port)+"))"
 	emit_signal("hub_command", cmd)
 
+	position = "unknown"
+	set_responsive()
+	emit_signal("position_changed", position)
+
+func set_unresponsive():
+	responsiveness = false
+	emit_signal("responsiveness_changed", false)
+
+func set_responsive():
+	responsiveness = true
+	emit_signal("responsiveness_changed", true)
+
 func switch(position):
+	set_unresponsive()
 	var cmd = "controller.devices['"+self.name+"'].switch('"+position+"')"
 	emit_signal("hub_command", cmd)
 
