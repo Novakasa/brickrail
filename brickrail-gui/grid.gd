@@ -162,8 +162,9 @@ func process_mouse_button(event, i, j, mpos_cell):
 	
 	if event.button_index == BUTTON_RIGHT:
 		if event.pressed:
-			removing_track = true
-			cells[i][j].clear()
+			if LayoutInfo.input_mode == "draw":
+				removing_track = true
+				cells[i][j].clear()
 		else:
 			if removing_track:
 				removing_track = false
