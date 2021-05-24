@@ -166,9 +166,9 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		vec2 end_pos = from_pos+tangent*stopper_delta;
 		vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
 		straight_end = end_pos+ normalize(tangent)*stopper_width*0.5;
-		float straight = line_rect(position, from_pos+tangent*0.5, straight_end, track_width);
+		float straight = line_rect(position, from_pos+tangent*0.5, straight_end, width);
 		scene = merge(scene, straight);
-		float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, track_width);
+		float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, width);
 		scene = merge(scene, round_straight);
 		// float endcap = circle(position-from_pos-tangent*0.5, width);
 		// scene = merge(scene, endcap);
@@ -214,9 +214,6 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			center_substract = line_rect(position, from_pos+tangent*(0.5+track_width),from_pos, track_width);
 		}
 		scene = substract(scene, center_substract);
-	}
-	else {
-		scene = scene - track_width;
 	}
 	return scene;
 	
@@ -276,7 +273,7 @@ void fragment() {
 	if (border_dist<grid_width*0.5) {
 		bg = grid_color;
 	}
-	float base = tracks(position, TURN_BASE, TRACK_LINE);
+	float base = tracks(position, TURN_BASE, TRACK_FULL);
 	float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER);
 	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
