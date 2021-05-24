@@ -217,7 +217,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		scene = substract(outer, inner);
 		float center_substract = line_rect(position, from_pos+tangent*0.5,from_pos, track_width);
 		if (abs(tangent.x) < 0.0005 || abs(tangent.y) < 0.0005) {
-			center_substract = line_rect(position, from_pos+tangent*(0.5+track_width),from_pos, track_width);
+			center_substract = line_rect(position, from_pos+tangent*(0.5+track_width),from_pos, track_width*1.05);
 		}
 		scene = substract(scene, center_substract);
 	}
