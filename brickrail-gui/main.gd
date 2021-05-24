@@ -48,12 +48,6 @@ func add_switch(p_name, p_controller, p_port):
 func _on_Devices_data_received(key, data):
 	pass
 
-func _on_ViewportContainer_mouse_entered():
-	get_node(layout).get_node("Grid").mouse_focus = true
-
-func _on_ViewportContainer_mouse_exited():
-	get_node(layout).get_node("Grid").mouse_focus = false
-
 
 func _on_LayoutSelect_pressed():
 	pass # Replace with function body.

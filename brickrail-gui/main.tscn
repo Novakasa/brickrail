@@ -281,5 +281,3 @@ text = "invert"
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools/LayoutControl" to="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools/LayoutSelect" to="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools/LayoutDraw" to="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]
-[connection signal="mouse_entered" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/ViewportContainer" to="." method="_on_ViewportContainer_mouse_entered"]
-[connection signal="mouse_exited" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/ViewportContainer" to="." method="_on_ViewportContainer_mouse_exited"]

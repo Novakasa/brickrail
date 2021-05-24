@@ -8,16 +8,13 @@ export(float) var grid_line_width
 var cells = []
 var hover_cell = null
 var drawing_track = false
-var direction = 0
 var drawing_last = null
 var drawing_last2 = null
 var drawing_last_track = null
-var pretty_tracks = true
 var removing_track = false
 var dragging_view = false
 var dragging_view_reference = null
 var dragging_view_camera_reference = null
-var mouse_focus=true
 
 signal grid_view_changed(p_pretty_tracks)
 
