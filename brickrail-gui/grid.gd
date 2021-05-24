@@ -155,27 +155,31 @@ func process_mouse_button(event, i, j, mpos_cell):
 				drawing_last2 = null
 				drawing_track = true
 				drawing_last_track = null #track
+				return
 		else:
 			if drawing_track:
 				drawing_track = false
-		return
+				return
 	
 	if event.button_index == BUTTON_RIGHT:
 		if event.pressed:
 			if LayoutInfo.input_mode == "draw":
 				removing_track = true
 				cells[i][j].clear()
+				return
 		else:
 			if removing_track:
 				removing_track = false
-		return
+				return
 	
 	if event.button_index == BUTTON_MIDDLE:
 		if event.pressed:
 			dragging_view = true
 			dragging_view_reference = event.position
 			dragging_view_camera_reference = $Camera2D.position
+			return
 		else:
 			if dragging_view:
 				dragging_view = false
-		return
+				return
+	cells[i][j].process_mouse_button(event, mpos_cell)

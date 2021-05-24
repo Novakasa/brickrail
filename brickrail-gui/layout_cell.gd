@@ -33,6 +33,12 @@ func stop_hover():
 		hover_track.stop_hover()
 		hover_track = null
 
+func process_mouse_button(event, pos):
+	var normalized_pos = pos/LayoutInfo.spacing
+	var track = get_track_at(normalized_pos)
+	if track != null:
+		track.process_mouse_button(event, normalized_pos)
+
 func get_track_at(normalized_pos):
 	var i = 0
 	var closest_dist = LayoutInfo.spacing+1

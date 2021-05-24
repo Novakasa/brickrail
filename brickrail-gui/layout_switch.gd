@@ -56,7 +56,7 @@ func switch(pos):
 func get_position():
 	return switch_positions[position_index]
 
-func _unhandled_input(event):
+func process_mouse_button(event, pos):
 	if LayoutInfo.input_mode != "control":
 		return
 	var spacing = LayoutInfo.spacing
@@ -64,9 +64,7 @@ func _unhandled_input(event):
 		if event.scancode == KEY_M:
 			toggle_switch()
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		var local_mouse = to_local(get_global_mouse_position())
-		if Rect2(Vector2(-spacing*0.25, -spacing*0.25), Vector2(spacing*0.5, spacing*0.5)).has_point(local_mouse):
-			toggle_switch()
+		toggle_switch()
 
 func _on_ble_switch_position_changed(pos):
 	position_index = switch_positions.find(pos)

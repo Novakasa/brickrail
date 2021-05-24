@@ -197,15 +197,19 @@ func get_slot_pos(slot):
 
 func has_point(pos):
 	pass
+	
+func get_switch_at(pos):
+	for slot in switches:
+		if switches[slot] != null:
+			if (LayoutInfo.slot_positions[slot]-pos).length() < 0.3:
+				return switches[slot]
+	return null
 
 func hover(pos):
 	if LayoutInfo.input_mode == "draw":
 		return
-	var hover_candidate = null
-	for slot in switches:
-		if switches[slot] != null:
-			if (LayoutInfo.slot_positions[slot]-pos).length() < 0.3:
-				hover_candidate = switches[slot]
+	var hover_candidate = get_switch_at(pos)
+	
 	if hover_candidate != hover_switch:
 		if hover_switch != null:
 			hover_switch.stop_hover()
@@ -227,3 +231,10 @@ func stop_hover():
 		hover_switch.stop_hover()
 		hover_switch = null
 	emit_signal("connections_changed")
+
+func process_mouse_button(event, pos):
+	prints("track received button at", pos)
+	var switch = get_switch_at(pos)
+	if switch != null:
+		print("forwarding mouse button to switch")
+		switch.process_mouse_button(event, pos)
