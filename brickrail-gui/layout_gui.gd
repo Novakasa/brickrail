@@ -15,9 +15,9 @@ func _on_input_mode_changed(mode):
 		}
 	for key in buttons:
 		if key == mode:
-			buttons[key].disabled=true
+			buttons[key].pressed=true
 		else:
-			buttons[key].disabled=false
+			buttons[key].pressed=false
 
 func _on_LayoutControl_pressed():
 	LayoutInfo.set_input_mode("control")
