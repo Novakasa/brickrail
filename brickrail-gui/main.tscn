@@ -17,7 +17,7 @@ script = ExtResource( 3 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-layout = NodePath("VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/ViewportContainer/Viewport/Layout")
+layout = NodePath("VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport/Layout")
 train_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/trains")
 layout_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/controllers")
 switch_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/switches")
@@ -109,28 +109,29 @@ margin_bottom = -5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer/HSplitContainer"]
+[node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer/HSplitContainer"]
 margin_left = 311.0
 margin_right = 1280.0
 margin_bottom = 694.0
 split_offset = -202
+script = ExtResource( 2 )
+input_control_button = NodePath("LayoutSplit/LayoutTools/LayoutControl")
+input_select_button = NodePath("LayoutSplit/LayoutTools/LayoutSelect")
+input_draw_button = NodePath("LayoutSplit/LayoutTools/LayoutDraw")
+inspector_container = NodePath("InspectorContainer")
 
-[node name="LayoutGui" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer"]
+[node name="LayoutSplit" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 759.0
 margin_bottom = 694.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
-script = ExtResource( 2 )
-input_control_button = NodePath("LayoutTools/LayoutControl")
-input_select_button = NodePath("LayoutTools/LayoutSelect")
-input_draw_button = NodePath("LayoutTools/LayoutDraw")
 
-[node name="LayoutTools" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui"]
+[node name="LayoutTools" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
 margin_right = 759.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 
-[node name="LayoutControl" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools"]
+[node name="LayoutControl" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_right = 57.0
 margin_bottom = 22.0
 focus_mode = 0
@@ -138,7 +139,7 @@ toggle_mode = true
 shortcut_in_tooltip = false
 text = "control"
 
-[node name="LayoutSelect" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools"]
+[node name="LayoutSelect" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_left = 61.0
 margin_right = 112.0
 margin_bottom = 22.0
@@ -147,7 +148,7 @@ toggle_mode = true
 pressed = true
 text = "select"
 
-[node name="LayoutDraw" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools"]
+[node name="LayoutDraw" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_left = 116.0
 margin_right = 158.0
 margin_bottom = 22.0
@@ -155,7 +156,7 @@ focus_mode = 0
 toggle_mode = true
 text = "draw"
 
-[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui"]
+[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
 margin_top = 26.0
 margin_right = 759.0
 margin_bottom = 694.0
@@ -165,16 +166,16 @@ size_flags_vertical = 3
 stretch = true
 script = ExtResource( 4 )
 
-[node name="Viewport" type="Viewport" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/ViewportContainer"]
+[node name="Viewport" type="Viewport" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer"]
 size = Vector2( 759, 668 )
 handle_input_locally = false
 hdr = false
 usage = 0
 render_target_update_mode = 3
 
-[node name="Layout" parent="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/ViewportContainer/Viewport" instance=ExtResource( 1 )]
+[node name="Layout" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport" instance=ExtResource( 1 )]
 
-[node name="Panel" type="Panel" parent="VBoxContainer/HSplitContainer/HSplitContainer"]
+[node name="InspectorContainer" type="Panel" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_left = 767.0
 margin_right = 969.0
 margin_bottom = 694.0
@@ -182,102 +183,9 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Panel" type="Panel" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-size_flags_vertical = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer"]
-margin_right = 202.0
-margin_bottom = 22.0
-text = "layout switch"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Button" type="Button" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer"]
-margin_top = 26.0
-margin_right = 202.0
-margin_bottom = 48.0
-size_flags_horizontal = 3
-text = "test"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer"]
-margin_top = 52.0
-margin_right = 202.0
-margin_bottom = 156.0
-columns = 2
-
-[node name="Device1Label" type="Label" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_right = 66.0
-margin_bottom = 22.0
-text = "device 1:"
-
-[node name="Device1Option" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_left = 70.0
-margin_right = 183.0
-margin_bottom = 22.0
-text = "select device"
-
-[node name="Control" type="Control" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_top = 26.0
-margin_right = 66.0
-margin_bottom = 50.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Device1Invert" type="CheckBox" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_left = 70.0
-margin_top = 26.0
-margin_right = 183.0
-margin_bottom = 50.0
-text = "invert"
-
-[node name="Device2Label" type="Label" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_top = 54.0
-margin_right = 66.0
-margin_bottom = 76.0
-text = "device 2:"
-
-[node name="Device2Option" type="OptionButton" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_left = 70.0
-margin_top = 54.0
-margin_right = 183.0
-margin_bottom = 76.0
-text = "select device"
-
-[node name="Control2" type="Control" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_top = 80.0
-margin_right = 66.0
-margin_bottom = 104.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Device2Invert" type="CheckBox" parent="VBoxContainer/HSplitContainer/HSplitContainer/Panel/Panel/VBoxContainer/GridContainer"]
-margin_left = 70.0
-margin_top = 80.0
-margin_right = 183.0
-margin_bottom = 104.0
-text = "invert"
-
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddSwitch" to="." method="_on_AddSwitch_pressed"]
-[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools/LayoutControl" to="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
-[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools/LayoutSelect" to="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
-[connection signal="pressed" from="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui/LayoutTools/LayoutDraw" to="VBoxContainer/HSplitContainer/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutControl" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutSelect" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutDraw" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]

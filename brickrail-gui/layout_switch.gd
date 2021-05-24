@@ -8,8 +8,13 @@ var slot
 var switch_positions
 var button
 var hover=false
+var selected=false
+
+var SwitchInspector = preload("res://switch_inspector.tscn")
 
 signal position_changed(slot, pos)
+signal selected
+signal unselected
 
 func _init(p_slot, positions):
 	# text = "switch"
@@ -34,6 +39,15 @@ func can_drop_data(position, data):
 		return true
 	return false
 
+func set_ble_switch(p_ble_switch):
+	ble_switch = p_ble_switch
+	ble_switch.connect("position_changed", self, "_on_ble_switch_position_changed")
+
+func _on_ble_switch_position_changed(ble_pos):
+	var pos = dev1_to_pos(ble_pos)
+	position_index = switch_positions.find(pos)
+	emit_signal("position_changed", slot, pos)
+
 func hover():
 	hover=true
 	emit_signal("position_changed", slot, switch_positions[position_index])
@@ -43,12 +57,27 @@ func stop_hover():
 	emit_signal("position_changed", slot, switch_positions[position_index])
 
 func toggle_switch():
-	position_index = (position_index+1) % len(switch_positions)
-	switch(switch_positions[position_index])
+	var new_index = (position_index+1) % len(switch_positions)
+	switch(switch_positions[new_index])
 
+func pos_to_dev1(pos):
+	if pos=="center":
+		if "left" in switch_positions:
+			return "right"
+		return "left"
+		
+	return pos
+
+func dev1_to_pos(ble_pos):
+	if ble_pos in switch_positions:
+		return ble_pos
+	return "center"
+	
 func switch(pos):
 	if ble_switch != null:
-		ble_switch.switch(pos)
+		var ble_pos = pos_to_dev1(pos)
+		prints("switching ble_switch:", ble_pos)
+		ble_switch.switch(ble_pos)
 	else:
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", slot, pos)
@@ -57,22 +86,27 @@ func get_position():
 	return switch_positions[position_index]
 
 func process_mouse_button(event, pos):
-	if LayoutInfo.input_mode != "control":
-		return
-	var spacing = LayoutInfo.spacing
-	if event is InputEventKey and event.pressed:
-		if event.scancode == KEY_M:
-			toggle_switch()
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		toggle_switch()
+		if LayoutInfo.input_mode == "control":
+			toggle_switch()
+		if LayoutInfo.input_mode == "select":
+			select()
 
-func _on_ble_switch_position_changed(pos):
-	position_index = switch_positions.find(pos)
-	emit_signal("position_changed", slot, pos)
+func select():
+	LayoutInfo.select(self)
+	selected=true
+	emit_signal("selected")
+	emit_signal("position_changed", slot, switch_positions[position_index])
 
-func set_ble_switch(p_switch):
-	ble_switch = p_switch
-	ble_switch.connect("on_position_changed", self, "_on_ble_switch_position_changed")
+func unselect():
+	selected=false
+	emit_signal("unselected")
+	emit_signal("position_changed", slot, switch_positions[position_index])
+
+func get_inspector():
+	var inspector = SwitchInspector.instance()
+	inspector.set_switch(self)
+	return inspector
 
 func _draw():
 	var spacing = LayoutInfo.spacing

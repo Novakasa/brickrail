@@ -1,11 +1,14 @@
-extends VBoxContainer
+extends HSplitContainer
 
 export(NodePath) var input_control_button
 export(NodePath) var input_select_button
 export(NodePath) var input_draw_button
 
+export(NodePath) var inspector_container
+
 func _ready():
 	LayoutInfo.connect("input_mode_changed", self, "_on_input_mode_changed")
+	LayoutInfo.connect("selected", self, "_on_selected")
 
 func _on_input_mode_changed(mode):
 	var buttons = {
@@ -29,3 +32,6 @@ func _on_LayoutSelect_pressed():
 
 func _on_LayoutDraw_pressed():
 	LayoutInfo.set_input_mode("draw")
+
+func _on_selected(obj):
+	get_node(inspector_container).add_child(obj.get_inspector())

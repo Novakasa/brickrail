@@ -102,7 +102,7 @@ func clear():
 	_on_track_connections_changed()
 
 func _on_track_switch_added(switch):
-	add_child(switch)
+	pass
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
@@ -132,12 +132,17 @@ func _on_track_connections_changed(orientation=null):
 					if opposite_switch.hover:
 						if track == to_track.connections[to_track_from_slot][opposite_turn]:
 							connections |= hover_flags[turn]
+					if opposite_switch.selected:
+						if track == to_track.connections[to_track_from_slot][opposite_turn]:
+							connections |= selected_flags[turn]
 					if opposite_turn == opposite_switch.get_position():
 						connections |= position_flags[turn]
 				# prints(connections, from_slot, to_slot, turn)
 				if track.switches[to_slot] != null:
 					if track.switches[to_slot].hover:
 						connections |= hover_flags[turn]
+					if track.switches[to_slot].selected:
+						connections |= selected_flags[turn]
 				
 				if track.hover:
 					connections |= hover_flags[turn]

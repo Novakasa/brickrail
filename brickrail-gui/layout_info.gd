@@ -7,9 +7,17 @@ var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
 
 var input_mode = "select"
+var selection = null
 
 signal input_mode_changed(mode)
+signal selected(obj)
 
 func set_input_mode(mode):
 	input_mode = mode
 	emit_signal("input_mode_changed", mode)
+
+func select(obj):
+	if selection != null:
+		selection.unselect()
+	selection = obj
+	emit_signal("selected", obj)
