@@ -299,7 +299,7 @@ void fragment() {
 		arrow_modulate = -1.0;
 	}*/
 	// arrow_modulate = 1.0;
-	float switch_arrows = switch_base + track_width - (arrow_modulate)*inner_track_width*0.4;
+	float switch_arrows = switch_base - (arrow_modulate)*inner_track_width*0.4;
 	
 	float dist = base;
 	float base_change = fwidth(base)*0.5;
