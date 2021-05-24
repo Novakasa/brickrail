@@ -150,10 +150,11 @@ func process_mouse_button(event, i, j, mpos_cell):
 
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
-			drawing_last = cells[i][j]
-			drawing_last2 = null
-			drawing_track = true
-			drawing_last_track = null #track
+			if LayoutInfo.input_mode == "draw":
+				drawing_last = cells[i][j]
+				drawing_last2 = null
+				drawing_track = true
+				drawing_last_track = null #track
 		else:
 			if drawing_track:
 				drawing_track = false

@@ -48,6 +48,8 @@ func get_position():
 	return switch_positions[position_index]
 
 func _unhandled_input(event):
+	if LayoutInfo.input_mode != "control":
+		return
 	var spacing = LayoutInfo.spacing
 	if event is InputEventKey and event.pressed:
 		if event.scancode == KEY_M:
