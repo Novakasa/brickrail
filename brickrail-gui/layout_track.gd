@@ -198,6 +198,8 @@ func has_point(pos):
 	pass
 
 func hover(pos):
+	if LayoutInfo.input_mode != "select":
+		return
 	hover=true
 	emit_signal("connections_changed")
 
