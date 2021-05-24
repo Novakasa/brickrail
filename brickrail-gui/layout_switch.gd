@@ -17,17 +17,12 @@ signal selected
 signal unselected
 
 func _init(p_slot, positions):
-	# text = "switch"
-	# connect("pressed", self, "toggle_switch")
 	switch_positions = positions
 	switch_positions.sort()
 	slot = p_slot
 	
 	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
-	# modulate.a=0.0
-	# self.connect("pressed", self, "toggle_switch")
-	# rect_position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing - Vector2(0.25,0.25)*LayoutInfo.spacing
-	# rect_size = Vector2(0.5,0.5)*LayoutInfo.spacing
+
 
 func drop_data(position, data):
 	prints("dropping switch!", data.name)
@@ -40,7 +35,13 @@ func can_drop_data(position, data):
 	return false
 
 func set_ble_switch(p_ble_switch):
+	if ble_switch != null:
+		ble_switch.disconnect("position_changed", self, "_on_ble_switch_position_changed")
 	ble_switch = p_ble_switch
+	if ble_switch.position != "unkown":
+		var pos = dev1_to_pos(ble_switch.position)
+		position_index = switch_positions.find(pos)
+		emit_signal("position_changed", slot, pos)
 	ble_switch.connect("position_changed", self, "_on_ble_switch_position_changed")
 
 func _on_ble_switch_position_changed(ble_pos):
@@ -107,9 +108,3 @@ func get_inspector():
 	var inspector = SwitchInspector.instance()
 	inspector.set_switch(self)
 	return inspector
-
-func _draw():
-	var spacing = LayoutInfo.spacing
-	var color = Color.red
-	color.a = 0.5
-	# draw_rect(Rect2(Vector2(-spacing*0.25, -spacing*0.25), Vector2(spacing*0.5, spacing*0.5)), color)

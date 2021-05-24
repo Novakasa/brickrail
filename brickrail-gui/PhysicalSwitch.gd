@@ -16,6 +16,7 @@ func _init(p_name, p_controller, p_port):
 	name = p_name
 	port = p_port
 	controller = p_controller
+	position = "unkown"
 
 func _on_data_received(key, data):
 	print("switch got data", key)

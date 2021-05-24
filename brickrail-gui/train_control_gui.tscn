@@ -32,7 +32,7 @@ __meta__ = {
 }
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
@@ -47,21 +47,22 @@ __meta__ = {
 
 [node name="Container" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 75.0
-margin_right = 170.0
+margin_right = 426.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 174.0
-margin_right = 237.0
+margin_left = 430.0
+margin_right = 493.0
 margin_bottom = 20.0
 text = "Settings"
 
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 3 )]
+margin_right = 493.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 48.0
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -98,7 +99,7 @@ __meta__ = {
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
 margin_top = 72.0
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 140.0
 columns = 2
 
@@ -113,7 +114,7 @@ __meta__ = {
 
 [node name="mode_select" type="OptionButton" parent="VBoxContainer/GridContainer"]
 margin_left = 86.0
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
@@ -129,7 +130,7 @@ text = "slow marker:"
 [node name="slow_marker_select" type="OptionButton" parent="VBoxContainer/GridContainer"]
 margin_left = 86.0
 margin_top = 24.0
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 44.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -144,7 +145,7 @@ text = "stop marker:"
 [node name="stop_marker_select" type="OptionButton" parent="VBoxContainer/GridContainer"]
 margin_left = 86.0
 margin_top = 48.0
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 68.0
 __meta__ = {
 "_edit_use_anchors_": false
