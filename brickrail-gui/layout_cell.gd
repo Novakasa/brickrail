@@ -18,13 +18,33 @@ func _ready():
 	material = track_material.duplicate()
 	_on_track_connections_changed()
 
-func hover_at(pos, direction=null):
-	hover_track = create_track_at(pos, direction)
-	update()
+func hover_at(pos):
+	var normalized_pos = pos/LayoutInfo.spacing
+	var hover_candidate = null
+	hover_candidate = get_track_at(normalized_pos)
+	if hover_candidate != hover_track and hover_track != null:
+		hover_track.stop_hover()
+	hover_track = hover_candidate
+	if hover_track != null:
+		hover_track.hover(normalized_pos)
 
 func stop_hover():
-	hover_track = null
-	update()
+	if hover_track != null:
+		hover_track.stop_hover()
+		hover_track = null
+
+func get_track_at(normalized_pos):
+	var i = 0
+	var closest_dist = LayoutInfo.spacing+1
+	var closest_track = null
+	for track in tracks.values():
+		var dist = track.distance_to(normalized_pos)
+		if dist<closest_dist:
+			closest_track = track
+			closest_dist = dist
+	if closest_dist > 0.2:
+		return null
+	return closest_track
 
 func create_track_at(pos, direction=null):
 	var i = 0
@@ -110,6 +130,9 @@ func _on_track_connections_changed(orientation=null):
 			
 			if len(track.connections[to_slot]) == 0:
 				connections = 8
+			
+			if track.hover:
+				connections |= 2048
 			
 			if to_slot_id == 3:
 				to_slot_id = from_slot_id

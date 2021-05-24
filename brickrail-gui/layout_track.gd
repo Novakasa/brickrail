@@ -9,6 +9,7 @@ var connections = {}
 var slots = ["N", "S", "E", "W"]
 var switches = {}
 var route_lock=false
+var hover=false
 
 signal connections_changed
 signal connections_cleared
@@ -193,45 +194,13 @@ func get_slot_pos(slot):
 		return pos1
 	return pos0
 
-func get_track_connection_segment(slot, turn):
-	var track = connections[slot][turn]
-	var tangent = get_slot_tangent(slot)
-	var normal = tangent.rotated(PI/2)
-	var pos = get_slot_pos(slot)
-	var curve = tangent.angle_to(track.get_slot_tangent(track.get_opposite_slot(track.get_neighbour_slot(slot))))
-	if curve > PI:
-		curve -= 2*PI
-	
-	var spacing = LayoutInfo.spacing
-		
-	if get_orientation() in ["NS", "EW"]:
-		if is_equal_approx(curve, 0.0):
-			return PoolVector2Array([(pos - tangent*0.25*sqrt(2))*spacing, pos*spacing])
-		if is_equal_approx(abs(curve), PI/4):
-			var radius = 0.5+0.25*sqrt(2)
-			var center = pos - tangent*(0.25*sqrt(2)) + normal*radius*sign(curve)
-			var start = tangent.angle()-PI/2*sign(curve)
-			return get_circle_arc_segment(center*spacing, radius*spacing, 6, start, start+curve)
-	
-	if get_orientation() in ["NE", "SW", "NW", "SE"]:
-		if is_equal_approx(curve, 0.0):
-			return PoolVector2Array([(pos - tangent*0.5)*spacing, pos*spacing])
-		if is_equal_approx(abs(curve), PI/2):
-			var center = pos-(tangent-normal*sign(curve))/2
-			var radius = normal.length()/2
-			var start = tangent.angle()-PI/2*sign(curve)
-			return get_circle_arc_segment(center*spacing, radius*spacing, 12, start, start+curve/2)
-		if is_equal_approx(abs(curve), PI/4):
-			var radius = 0.5+0.25*sqrt(2)
-			var center = pos-(tangent/2-normal.normalized()*radius*sign(curve))
-			var start = tangent.angle()-PI/2*sign(curve)
-			return get_circle_arc_segment(center*spacing, radius*spacing, 6, start, start+curve/2)
+func has_point(pos):
+	pass
 
-func get_track_segment():
-	var segments = []
-	var spacing = LayoutInfo.spacing
-	if get_orientation() in ["NS", "EW"]:
-		return PoolVector2Array([(pos0 + (pos1-pos0)*0.25*sqrt(2))*spacing, (pos1 - (pos1-pos0)*0.25*sqrt(2))*spacing])
-	return null
-	
-	return segments
+func hover(pos):
+	hover=true
+	emit_signal("connections_changed")
+
+func stop_hover():
+	hover=false
+	emit_signal("connections_changed")

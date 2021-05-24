@@ -122,8 +122,6 @@ func process_mouse_input(event):
 		process_mouse_button(event, i, j, mpos_cell)
 
 func process_mouse_motion(event, i, j, mpos_cell):
-	if hover_cell != null:
-		hover_cell.stop_hover()
 	if removing_track:
 		cells[i][j].clear()
 	if dragging_view:
@@ -133,9 +131,11 @@ func process_mouse_motion(event, i, j, mpos_cell):
 			var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, i, j)
 			for p in line:
 				draw_track(cells[p[0]][p[1]])
-	# else:
-	# 	hover_cell = cells[i][j]
-	# 	hover_cell.hover_at(mpos_cell, direction)
+
+	if hover_cell != null && hover_cell != cells[i][j]:
+		hover_cell.stop_hover()
+	hover_cell = cells[i][j]
+	hover_cell.hover_at(mpos_cell)
 
 func process_mouse_button(event, i, j, mpos_cell):
 	if event.button_index == BUTTON_WHEEL_UP:
