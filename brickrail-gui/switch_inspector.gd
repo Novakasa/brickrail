@@ -12,6 +12,10 @@ func _on_switch_unselected():
 	queue_free()
 
 func _ready():
+	Devices.connect("switches_changed", self, "_on_device_switches_changed")
+	set_device_labels()
+
+func _on_device_switches_changed():
 	set_device_labels()
 
 func set_device_labels():
