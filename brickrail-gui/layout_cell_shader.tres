@@ -244,11 +244,14 @@ float tracks(vec2 position, int turn_type, int track_type) {
 	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
 	
 	for (int from_slot=0; from_slot<4; from_slot++) {
+		vec4 from_vec = basis[from_slot];
 		for (int to_slot=0; to_slot<3; to_slot++) {
-			vec4 from_vec = basis[from_slot];
 			vec4 to_vec = basis[to_slot];
 			int connection_flags = int(dot(to_vec, connections*from_vec));
-			if ((connection_flags & SELECTED) != SELECTED && turn_type==TURN_SELECTED) {
+			if (turn_type==TURN_SELECTED && (connection_flags & SELECTED) != SELECTED) {
+				continue;
+			}
+			if (turn_type==TURN_HOVER && (connection_flags & HOVER) != HOVER) {
 				continue;
 			}
 			int to_slot2 = to_slot;
@@ -289,22 +292,20 @@ void fragment() {
 	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE);
 	float selected = tracks(position, TURN_SELECTED, TRACK_FULL);
 	float selected_inner = intersect(inner, selected);
+	float hover = tracks(position, TURN_HOVER, TRACK_FULL);
+	float hover_inner = intersect(inner, hover);
 	
-	// float arrow_modulate = 20.0*clamp(border_dist-0.05, 0.0, 1.0) * clamp(-0.5*border_dist+0.1, 0.0, 1.0);
 	float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
-	// arrow_cap = sqrt(max(1.0-(1.0-arrow_cap)*(1.0-arrow_cap),0.0));
 	float arrow_modulate = (border_dist<0.4) ? arrow_cap : -1.0;
 	arrow_modulate = arrow_cap  * clamp(20.0*(-border_dist+0.25), -1.0, 1.0);
-	/* if (arrow_modulate<0.0002) {
-		arrow_modulate = -1.0;
-	}*/
-	// arrow_modulate = 1.0;
+	// arrow_modulate = sqrt(max(1.0-(1.0-arrow_modulate)*(1.0-arrow_modulate),0.0));
 	float switch_arrows = switch_base - (arrow_modulate)*inner_track_width*0.4;
 	
 	float dist = base;
 	float base_change = fwidth(base)*0.5;
 	float inner_change = fwidth(inner)*0.5;
 	float selected_inner_change = fwidth(selected_inner)*0.5;
+	float hover_inner_change = fwidth(hover_inner)*0.5;
 	float switch_outer_change = fwidth(switch_outer)*0.5;
 	float switch_arrows_change = fwidth(switch_arrows)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
@@ -313,8 +314,10 @@ void fragment() {
 	vec4 track_mix = mix(bg_mix, track_inner, t);
 	t = smoothstep(selected_inner_change, -selected_inner_change, selected_inner);
 	vec4 selected_mix = mix(track_mix, selected_color, t);
+	t = smoothstep(hover_inner_change, -hover_inner_change, hover_inner);
+	vec4 hover_mix = mix(selected_mix, hover_color, t);
 	t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
-	vec4 switch_mix = mix(selected_mix, switch_color, t);
+	vec4 switch_mix = mix(hover_mix, switch_color, t);
 	t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
 	COLOR = mix(switch_mix, switch_inner_color, t);
 	
@@ -336,13 +339,13 @@ shader_param/track_inner = Color( 0, 0, 0, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
 shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
 shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
-shader_param/selected_color = Color( 1, 0, 0, 1 )
-shader_param/hover_color = Color( 0.12549, 1, 0, 1 )
+shader_param/selected_color = Color( 0.0823529, 0.329412, 0.411765, 1 )
+shader_param/hover_color = Color( 0.133333, 0.615686, 0.647059, 1 )
 shader_param/grid_width = 0.097
 shader_param/track_width = 0.126
 shader_param/inner_track_width = 0.062
-shader_param/stopper_delta = 0.648
-shader_param/stopper_size = 0.728
-shader_param/stopper_width = 0.111
+shader_param/stopper_delta = 0.677
+shader_param/stopper_size = 0.563
+shader_param/stopper_width = 0.11
 shader_param/contours = false
-shader_param/connections = Transform( -0.114, 42.708, 3.972, 8.927, 1028.64, 2.327, 147.648, 129.65, 5.602, 1.569, 2.568, 1.899 )
+shader_param/connections = Transform( 2050.37, 42.708, 3.972, 8.927, 1028.64, 2.327, 147.648, 129.65, 5.602, 1.569, 2.568, 1.899 )
