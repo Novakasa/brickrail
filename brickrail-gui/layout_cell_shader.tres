@@ -36,8 +36,12 @@ const int SWITCH_RIGHT = 64;
 const int SWITCH_PRIORITY_LEFT = 128;
 const int SWITCH_PRIORITY_STRAIGHT = 256;
 const int SWITCH_PRIORITY_RIGHT = 512;
-const int SELECTED = 1024;
-const int HOVER = 2048;
+const int SELECTED_LEFT = 1024;
+const int SELECTED_STRAIGHT = 2048;
+const int SELECTED_RIGHT = 4096;
+const int HOVER_LEFT = 8192;
+const int HOVER_STRAIGHT = 16384;
+const int HOVER_RIGHT = 32768;
 
 const int TRACK_LINE = 0;
 const int TRACK_FULL = 1;
@@ -238,6 +242,16 @@ float tracks(vec2 position, int turn_type, int track_type) {
 			turn_flags[1] = SWITCH_STRAIGHT;
 			turn_flags[2] = SWITCH_RIGHT;
 	}
+	if (turn_type == TURN_SELECTED) {
+			turn_flags[0] = SELECTED_LEFT;
+			turn_flags[1] = SELECTED_STRAIGHT;
+			turn_flags[2] = SELECTED_RIGHT;
+	}
+	if (turn_type == TURN_HOVER) {
+			turn_flags[0] = HOVER_LEFT;
+			turn_flags[1] = HOVER_STRAIGHT;
+			turn_flags[2] = HOVER_RIGHT;
+	}
 	
 	float scene = 10.0;
 	
@@ -248,12 +262,6 @@ float tracks(vec2 position, int turn_type, int track_type) {
 		for (int to_slot=0; to_slot<3; to_slot++) {
 			vec4 to_vec = basis[to_slot];
 			int connection_flags = int(dot(to_vec, connections*from_vec));
-			if (turn_type==TURN_SELECTED && (connection_flags & SELECTED) != SELECTED) {
-				continue;
-			}
-			if (turn_type==TURN_HOVER && (connection_flags & HOVER) != HOVER) {
-				continue;
-			}
 			int to_slot2 = to_slot;
 			if (from_slot == to_slot) {
 				to_slot2 = 3;
@@ -348,4 +356,4 @@ shader_param/stopper_delta = 0.677
 shader_param/stopper_size = 0.563
 shader_param/stopper_width = 0.11
 shader_param/contours = false
-shader_param/connections = Transform( 2050.37, 42.708, 3.972, 8.927, 1028.64, 2.327, 147.648, 129.65, 5.602, 1.569, 2.568, 1.899 )
+shader_param/connections = Transform( 0, 42.708, 3.972, 8.927, 2271.59, 2.327, 2052.43, 129.65, 0, 1.569, 2.568, 1.899 )

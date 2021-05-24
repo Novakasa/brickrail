@@ -110,6 +110,8 @@ func _on_track_connections_changed(orientation=null):
 			var turn_flags = {"left": 1, "center": 2, "right": 4}
 			var position_flags = {"left": 16, "center": 32, "right": 64}
 			var position_flags_priority = {"left": 128, "center": 256, "right": 512}
+			var selected_flags = {"left": 1024, "center": 2048, "right": 4096}
+			var hover_flags = {"left": 8192, "center": 16384, "right": 32768}
 			var connections = 0
 			for turn in track.connections[to_slot]:
 				connections |= turn_flags[turn]
@@ -123,22 +125,23 @@ func _on_track_connections_changed(orientation=null):
 				if opposite_switch != null:
 					if opposite_switch.hover:
 						if track == to_track.connections[to_track_from_slot][opposite_turn]:
-							connections |= 2048
+							connections |= hover_flags[turn]
 					if opposite_turn == opposite_switch.get_position():
 						connections |= position_flags[turn]
 				# prints(connections, from_slot, to_slot, turn)
+				if track.switches[to_slot] != null:
+					if track.switches[to_slot].hover:
+						connections |= hover_flags[turn]
+				
+				if track.hover:
+					connections |= hover_flags[turn]
 
 			if track.switches[to_slot] != null:
-				if track.switches[to_slot].hover:
-					connections |= 2048
 				connections |= position_flags[track.switches[to_slot].get_position()]
 				connections |= position_flags_priority[track.switches[to_slot].get_position()]
 			
 			if len(track.connections[to_slot]) == 0:
 				connections = 8
-			
-			if track.hover:
-				connections |= 2048
 			
 			if to_slot_id == 3:
 				to_slot_id = from_slot_id
