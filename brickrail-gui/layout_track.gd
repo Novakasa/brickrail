@@ -10,6 +10,7 @@ var slots = ["N", "S", "E", "W"]
 var switches = {}
 var route_lock=false
 var hover=false
+var hover_switch=null
 
 signal connections_changed
 signal connections_cleared
@@ -198,6 +199,23 @@ func has_point(pos):
 	pass
 
 func hover(pos):
+	if LayoutInfo.input_mode == "draw":
+		return
+	var hover_candidate = null
+	for slot in switches:
+		if switches[slot] != null:
+			if (LayoutInfo.slot_positions[slot]-pos).length() < 0.3:
+				hover_candidate = switches[slot]
+	if hover_candidate != hover_switch:
+		if hover_switch != null:
+			hover_switch.stop_hover()
+		hover_switch = hover_candidate
+		if hover_switch != null:
+			hover=false
+			hover_switch.hover()
+	if hover_candidate != null:
+		return
+			
 	if LayoutInfo.input_mode != "select":
 		return
 	hover=true
@@ -205,4 +223,7 @@ func hover(pos):
 
 func stop_hover():
 	hover=false
+	if hover_switch != null:
+		hover_switch.stop_hover()
+		hover_switch = null
 	emit_signal("connections_changed")

@@ -7,6 +7,7 @@ var ble_switch = null
 var slot
 var switch_positions
 var button
+var hover=false
 
 signal position_changed(slot, pos)
 
@@ -32,6 +33,14 @@ func can_drop_data(position, data):
 	if data is PhysicalSwitch:
 		return true
 	return false
+
+func hover():
+	hover=true
+	emit_signal("position_changed", slot, switch_positions[position_index])
+
+func stop_hover():
+	hover=false
+	emit_signal("position_changed", slot, switch_positions[position_index])
 
 func toggle_switch():
 	position_index = (position_index+1) % len(switch_positions)

@@ -118,13 +118,19 @@ func _on_track_connections_changed(orientation=null):
 				var to_track_from_slot = to_track.get_neighbour_slot(to_slot)
 				# print(track.get_turn_from(to_slot))
 				# print(to_track.switch_positions[to_track_from_slot])
-				if to_track.switches[to_track_from_slot] != null:
-					if track.get_turn_from(to_slot) == to_track.switches[to_track_from_slot].get_position():
-						if to_track.switches[to_track_from_slot] != null:
-							connections |= position_flags[turn]
+				var opposite_switch = to_track.switches[to_track_from_slot]
+				var opposite_turn = track.get_turn_from(to_slot)
+				if opposite_switch != null:
+					if opposite_switch.hover:
+						if track == to_track.connections[to_track_from_slot][opposite_turn]:
+							connections |= 2048
+					if opposite_turn == opposite_switch.get_position():
+						connections |= position_flags[turn]
 				# prints(connections, from_slot, to_slot, turn)
 
 			if track.switches[to_slot] != null:
+				if track.switches[to_slot].hover:
+					connections |= 2048
 				connections |= position_flags[track.switches[to_slot].get_position()]
 				connections |= position_flags_priority[track.switches[to_slot].get_position()]
 			
