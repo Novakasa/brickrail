@@ -53,3 +53,11 @@ func _on_ViewportContainer_mouse_entered():
 
 func _on_ViewportContainer_mouse_exited():
 	get_node(layout).get_node("Grid").mouse_focus = false
+
+
+func _on_LayoutSelect_pressed():
+	pass # Replace with function body.
+
+
+func _on_LayoutDraw_pressed():
+	pass # Replace with function body.
