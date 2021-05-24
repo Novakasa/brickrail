@@ -106,6 +106,12 @@ func _on_track_switch_added(switch):
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
+	var turn_flags = {"left": 1, "center": 2, "right": 4}
+	var position_flags = {"left": 16, "center": 32, "right": 64}
+	var position_flags_priority = {"left": 128, "center": 256, "right": 512}
+	var selected_flags = {"left": 1024, "center": 2048, "right": 4096}
+	var hover_flags = {"left": 8192, "center": 16384, "right": 32768}
+	
 	for from_id in range(4):
 		vecs.append(Vector3())
 	for track in tracks.values():
@@ -113,11 +119,7 @@ func _on_track_connections_changed(orientation=null):
 			var from_slot = track.get_opposite_slot(to_slot)
 			var to_slot_id = LayoutInfo.slot_index[to_slot]
 			var from_slot_id = LayoutInfo.slot_index[from_slot]
-			var turn_flags = {"left": 1, "center": 2, "right": 4}
-			var position_flags = {"left": 16, "center": 32, "right": 64}
-			var position_flags_priority = {"left": 128, "center": 256, "right": 512}
-			var selected_flags = {"left": 1024, "center": 2048, "right": 4096}
-			var hover_flags = {"left": 8192, "center": 16384, "right": 32768}
+
 			var connections = 0
 			for turn in track.connections[to_slot]:
 				connections |= turn_flags[turn]
@@ -163,52 +165,6 @@ func _on_track_connections_changed(orientation=null):
 	material.set_shader_param("connections", connections_matrix)
 	# update()
 
-func draw_track(track):
-	
-	var connections = track.connections
-	var pos0 = track.pos0
-	var pos1 = track.pos1
-	var slot0 = track.slot0
-	var slot1 = track.slot1
-	
-	var spacing = LayoutInfo.spacing
-
-	if LayoutInfo.pretty_tracks:
-		var track_segment = track.get_track_segment()
-		if track_segment != null:
-			draw_polyline(track_segment, Color.white, 6.0, true)
-			draw_polyline(track_segment, Color.black, 3.0, true)
-		
-		for slot in connections:
-			for turn in connections[slot]:
-				var connection_segment =  track.get_track_connection_segment(slot, turn)
-				draw_polyline(connection_segment, Color.white, 6.0, true)
-				draw_polyline(connection_segment, Color.black, 3.0, true)
-			if len(connections[slot]) == 0:
-				var tangent = track.get_slot_tangent(slot)
-				var pos = track.get_slot_pos(slot)
-				var start = pos - tangent*0.5
-				var stop = pos-tangent*0.25
-				var normal = tangent.rotated(PI/2).normalized()
-				draw_line(start*spacing, stop*spacing, Color.white, 6.0, true)
-				draw_line(start*spacing, stop*spacing, Color.black, 3.0, true)
-				draw_line((stop*spacing+4*normal), (stop*spacing-4*normal), Color.white, 3.0, true)
-	else:
-		draw_line(pos0*spacing, pos1*spacing, Color.white, 4)
-		if len(connections[slot0]) == 0:
-			draw_circle(pos0*spacing, spacing/10, Color.white)
-		if len(connections[slot1]) == 0:
-			draw_circle(pos1*spacing, spacing/10, Color.white)
-
 func _draw():
 	var spacing = LayoutInfo.spacing
 	draw_rect(Rect2(Vector2(0,0), Vector2(spacing, spacing)), Color.black)
-	return
-	
-	
-	for orientation in tracks:
-		draw_track(tracks[orientation])
-
-	if hover_track != null:
-		draw_line(hover_track.pos0*spacing, hover_track.pos1*spacing, Color(0.4,0.4,0.4), 4)
-	
