@@ -270,8 +270,9 @@ def input_handler(message):
         code = "".join(lmsg)
         try:
             eval(code)
-        except SyntaxError as e:
-            print(e)
+        except SyntaxError:
+            print("[ble_hub] Syntaxerror when running eval()")
+            print(code)
     else:
         print(message)
 
