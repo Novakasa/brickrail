@@ -115,6 +115,7 @@ class BLEHub:
         if isinstance(message, str):
             message = bytearray(message + "$", encoding="utf8")
         await self.hub.client.write_gatt_char(NUS_RX_UUID, message, False)
+        await asyncio.sleep(0.15)
     
     async def pipe_command(self, cmdstr):
         assert self.running

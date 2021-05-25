@@ -21,7 +21,7 @@ func _init(p_name, p_controller, p_port):
 	responsiveness = false
 
 func _on_data_received(key, data):
-	print("switch got data", key)
+	prints("switch got data", key)
 	if key == "position_changed":
 		position = data
 		set_responsive()
