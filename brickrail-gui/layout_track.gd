@@ -268,16 +268,23 @@ func unselect():
 	emit_signal("unselected")
 	emit_signal("connections_changed")
 
+func _unhandled_input(event):
+	if event is InputEventKey:
+		if event.scancode == KEY_DELETE and event.pressed:
+			if selected:
+				remove()
+
 func process_mouse_button(event, pos):
-	prints("track received button at", pos)
-	var switch = get_switch_at(pos)
-	if switch != null:
-		print("forwarding mouse button to switch")
-		switch.process_mouse_button(event, pos)
-		return
-	
-	if LayoutInfo.input_mode == "select":
-		select()
+	if event.button_index == BUTTON_LEFT and event.pressed:
+		prints("track received button at", pos)
+		var switch = get_switch_at(pos)
+		if switch != null:
+			print("forwarding mouse button to switch")
+			switch.process_mouse_button(event, pos)
+			return
+		
+		if LayoutInfo.input_mode == "select":
+			select()
 
 func get_inspector():
 	var inspector = TrackInspector.instance()
