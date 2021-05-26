@@ -12,6 +12,16 @@ var selection = null
 signal input_mode_changed(mode)
 signal selected(obj)
 
+func _unhandled_input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_Q:
+				set_input_mode("control")
+			if event.scancode == KEY_W:
+				set_input_mode("select")
+			if event.scancode == KEY_E:
+				set_input_mode("draw")
+
 func set_input_mode(mode):
 	input_mode = mode
 	emit_signal("input_mode_changed", mode)
