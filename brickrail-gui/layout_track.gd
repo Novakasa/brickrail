@@ -89,6 +89,17 @@ func distance_to(pos):
 	var point = Geometry.get_closest_point_to_segment_2d(pos, pos0, pos1)
 	return (point-pos).length()
 
+func can_connect_track(slot, track):
+	if not slot in connections:
+		return false
+	if not get_neighbour_slot(slot) in track.connections:
+		return false
+	if track == self:
+		return false
+	if track in connections[slot].values():
+		return false
+	return true
+
 func connect_track(slot, track, initial=true):
 	if not slot in connections:
 		push_error("[LayoutTrack] can't connect track to a nonexistent slot!")
@@ -142,7 +153,7 @@ func disconnect_track(track):
 
 func disconnect_turn(slot, turn):
 	connections[slot].erase(turn)
-	if len(connections[slot]) <2:
+	if len(connections[slot]) > 0:
 		update_switch(slot)
 	emit_signal("connections_changed", get_orientation())
 

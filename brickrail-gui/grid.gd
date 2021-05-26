@@ -84,9 +84,13 @@ func draw_track(draw_track):
 			drawing_last_track = null
 			return
 		var track = drawing_last.create_track(slot0, slot1)
-		track = drawing_last.add_track(track)
+		if not track.get_orientation() in drawing_last.tracks:
+			track = drawing_last.add_track(track)
+		else:
+			track = drawing_last.tracks[track.get_orientation()]
 		if drawing_last_track != null:
-			track.connect_track(slot0, drawing_last_track)
+			if track.can_connect_track(slot0, drawing_last_track):
+				track.connect_track(slot0, drawing_last_track)
 		drawing_last_track = track 
 	drawing_last2 = drawing_last
 	drawing_last = draw_track
