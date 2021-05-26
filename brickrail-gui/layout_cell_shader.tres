@@ -356,4 +356,4 @@ shader_param/stopper_delta = 0.677
 shader_param/stopper_size = 0.563
 shader_param/stopper_width = 0.11
 shader_param/contours = false
-shader_param/connections = Transform( 0, 42.708, 3.972, 8.927, 2271.59, 2.327, 2052.43, 129.65, 0, 1.569, 2.568, 1.899 )
+shader_param/connections = Transform( 0, 42.708, 3.972, 2056.09, 2271.59, 2.327, 2054.03, 129.175, 0, 1.569, 2.568, 1.899 )

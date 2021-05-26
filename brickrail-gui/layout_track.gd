@@ -272,6 +272,9 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.scancode == KEY_DELETE and event.pressed:
 			if selected:
+				for slot in connections:
+					for track in connections[slot].values():
+						track.call_deferred("select")
 				remove()
 
 func process_mouse_button(event, pos):
