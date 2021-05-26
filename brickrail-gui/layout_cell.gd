@@ -84,6 +84,7 @@ func create_track(slot0, slot1):
 	return track
 	
 func add_track(track):
+	add_child(track)
 	if track.get_orientation() in tracks:
 		print("can't add track, same orientation already occupied!")
 		return tracks[track.get_orientation()]
@@ -91,15 +92,27 @@ func add_track(track):
 	track.connect("connections_changed", self, "_on_track_connections_changed")
 	track.connect("switch_added", self, "_on_track_switch_added")
 	track.connect("switch_position_changed", self, "_on_track_connections_changed")
+	track.connect("removing", self, "_on_track_removing")
 	update()
 	_on_track_connections_changed()
 	return track
 
+func _on_track_removing(orientation):
+	var track = tracks[orientation]
+	track.disconnect("connections_changed", self, "_on_track_connections_changed")
+	track.disconnect("switch_added", self, "_on_track_switch_added")
+	track.disconnect("switch_position_changed", self, "_on_track_connections_changed")
+	track.disconnect("removing", self, "_on_track_removing")
+	remove_child(tracks[orientation])
+	tracks.erase(orientation)
+	if track == hover_track:
+		hover_track = null
+	_on_track_connections_changed()
+	
+
 func clear():
 	for track in tracks.values():
-		track.clear_connections()
-	tracks.clear()
-	_on_track_connections_changed()
+		track.remove()
 
 func _on_track_switch_added(switch):
 	add_child(switch)
@@ -148,6 +161,8 @@ func _on_track_connections_changed(orientation=null):
 				
 				if track.hover:
 					connections |= hover_flags[turn]
+				if track.selected:
+					connections |= selected_flags[turn]
 
 			if track.switches[to_slot] != null:
 				connections |= position_flags[track.switches[to_slot].get_position()]

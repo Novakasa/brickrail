@@ -1,5 +1,5 @@
 class_name LayoutTrack
-extends Reference
+extends Node
 
 var slot0
 var slot1
@@ -7,16 +7,25 @@ var pos0
 var pos1
 var connections = {}
 var slots = ["N", "S", "E", "W"]
-var switches = {}
 var route_lock=false
 var hover=false
 var hover_switch=null
+var selected=false
+
+var switches = {}
+
+var accessories = {}
+
+var TrackInspector = preload("res://track_inspector.tscn")
 
 signal connections_changed
 signal connections_cleared
 signal route_lock_changed(lock)
 signal switch_added(switch)
 signal switch_position_changed(pos)
+signal selected
+signal unselected
+signal removing(orientation)
 
 func _init(p_slot0, p_slot1):
 	slot0 = p_slot0
@@ -32,6 +41,11 @@ func _init(p_slot0, p_slot1):
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
+
+func remove():
+	clear_connections()
+	emit_signal("removing", get_orientation())
+	queue_free()
 
 func is_switch(slot=null):
 	if slot != null:
@@ -232,9 +246,29 @@ func stop_hover():
 		hover_switch = null
 	emit_signal("connections_changed")
 
+func select():
+	LayoutInfo.select(self)
+	selected=true
+	emit_signal("selected")
+	emit_signal("connections_changed")
+
+func unselect():
+	selected=false
+	emit_signal("unselected")
+	emit_signal("connections_changed")
+
 func process_mouse_button(event, pos):
 	prints("track received button at", pos)
 	var switch = get_switch_at(pos)
 	if switch != null:
 		print("forwarding mouse button to switch")
 		switch.process_mouse_button(event, pos)
+		return
+	
+	if LayoutInfo.input_mode == "select":
+		select()
+
+func get_inspector():
+	var inspector = TrackInspector.instance()
+	inspector.set_track(self)
+	return inspector

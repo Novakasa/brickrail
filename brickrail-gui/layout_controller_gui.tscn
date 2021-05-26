@@ -29,7 +29,7 @@ __meta__ = {
 }
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 237.0
+margin_right = 493.0
 margin_bottom = 20.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -46,7 +46,7 @@ __meta__ = {
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 153.0
-margin_right = 170.0
+margin_right = 426.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
@@ -54,12 +54,13 @@ __meta__ = {
 }
 
 [node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 174.0
-margin_right = 237.0
+margin_left = 430.0
+margin_right = 493.0
 margin_bottom = 20.0
 text = "settings"
 
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 3 )]
+margin_right = 493.0
 
 [node name="LayoutControllerSettingsDialog" parent="." instance=ExtResource( 2 )]
 
