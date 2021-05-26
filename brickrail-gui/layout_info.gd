@@ -18,6 +18,12 @@ func set_input_mode(mode):
 
 func select(obj):
 	if selection != null:
+		selection.disconnect("tree_exiting", self, "_on_selection_tree_exiting")
 		selection.unselect()
 	selection = obj
+	obj.connect("tree_exiting", self, "_on_selection_tree_exiting")
 	emit_signal("selected", obj)
+
+func _on_selection_tree_exiting():
+	selection.unselect()
+	selection = null
