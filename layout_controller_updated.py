@@ -89,11 +89,10 @@ class Controller:
         return ports
     
     def attach_device(self, device):
-        print(self.attached_ports(), device.port)
         assert device.port not in self.attached_ports()
-        # assert int(device.port)<=3
 
         self.devices[device.name] = device
+        device.queue_data("attached_at_port", repr(device.port))
     
     def update(self, delta):
         for device in self.devices.values():
