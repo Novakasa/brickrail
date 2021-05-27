@@ -10,6 +10,7 @@ var slots = ["N", "S", "E", "W"]
 var route_lock=false
 var hover=false
 var hover_switch=null
+var selected_solo=false
 var selected=false
 
 var switches = {}
@@ -258,20 +259,28 @@ func stop_hover():
 	emit_signal("connections_changed")
 
 func select():
-	LayoutInfo.select(self)
-	selected=true
+	selected_solo=true
 	emit_signal("selected")
+	visual_select()
+	LayoutInfo.select(self)
+
+func visual_select():
+	selected=true
 	emit_signal("connections_changed")
 
 func unselect():
-	selected=false
+	selected_solo=false
+	visual_unselect()
 	emit_signal("unselected")
+	
+func visual_unselect():
+	selected=false
 	emit_signal("connections_changed")
 
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.scancode == KEY_DELETE and event.pressed:
-			if selected:
+			if selected_solo:
 				for slot in connections:
 					for track in connections[slot].values():
 						track.call_deferred("select")

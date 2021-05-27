@@ -11,6 +11,8 @@ var drawing_track = false
 var drawing_last = null
 var drawing_last2 = null
 var drawing_last_track = null
+var drawing_mode = null
+var drawing_section = null
 var removing_track = false
 var dragging_view = false
 var dragging_view_reference = null
@@ -83,17 +85,37 @@ func draw_track(draw_track):
 			drawing_last2 = null
 			drawing_last_track = null
 			return
-		var track = drawing_last.create_track(slot0, slot1)
-		if not track.get_orientation() in drawing_last.tracks:
-			track = drawing_last.add_track(track)
-		else:
+		if drawing_mode == "create":
+			var track = drawing_last.create_track(slot0, slot1)
+			if not track.get_orientation() in drawing_last.tracks:
+				track = drawing_last.add_track(track)
+			else:
+				track = drawing_last.tracks[track.get_orientation()]
+			if drawing_last_track != null:
+				if track.can_connect_track(slot0, drawing_last_track):
+					track.connect_track(slot0, drawing_last_track)
+			drawing_last_track = track
+		if drawing_mode == "section":
+			if drawing_section == null:
+				drawing_section = LayoutSection.new()
+				drawing_section.select()
+				drawing_section.connect("unselected", self, "_on_drawing_section_unselected")
+				drawing_section.name="drawing_section"
+				add_child(drawing_section)
+			
+			var track = drawing_last.create_track(slot0, slot1)
+			if not track.get_orientation() in drawing_last.tracks:
+				drawing_track = false
+				return
 			track = drawing_last.tracks[track.get_orientation()]
-		if drawing_last_track != null:
-			if track.can_connect_track(slot0, drawing_last_track):
-				track.connect_track(slot0, drawing_last_track)
-		drawing_last_track = track 
+			drawing_section.add_track(track)
+			drawing_last_track = track
 	drawing_last2 = drawing_last
 	drawing_last = draw_track
+
+func _on_drawing_section_unselected():
+	get_node("drawing_section").queue_free()
+	drawing_section = null
 
 func _unhandled_input(event):
 	process_input(event)
@@ -151,12 +173,16 @@ func process_mouse_button(event, i, j, mpos_cell):
 
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
-			if LayoutInfo.input_mode == "draw":
+			if LayoutInfo.input_mode == "draw" or LayoutInfo.input_mode == "select":
 				drawing_last = cells[i][j]
 				drawing_last2 = null
 				drawing_track = true
 				drawing_last_track = null #track
-				return
+				if LayoutInfo.input_mode == "draw":
+					drawing_mode = "create"
+				else:
+					drawing_mode = "section"
+					drawing_section = null
 		else:
 			if drawing_track:
 				drawing_track = false
