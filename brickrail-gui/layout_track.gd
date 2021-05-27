@@ -185,7 +185,7 @@ func get_connected_slot(track):
 	for slot in connections:
 		if track in connections[slot].values():
 			return slot
-	push_error("[LayoutTrack].get_connected_slot: Track is not connected!")
+	return null
 
 func get_next_tracks_from(slot):
 	return get_next_tracks_at(get_opposite_slot(slot))

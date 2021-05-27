@@ -108,6 +108,9 @@ func draw_track(draw_track):
 				drawing_track = false
 				return
 			track = drawing_last.tracks[track.get_orientation()]
+			if not drawing_section.can_add_track(track):
+				drawing_track = false
+				return
 			drawing_section.add_track(track)
 			drawing_last_track = track
 	drawing_last2 = drawing_last
