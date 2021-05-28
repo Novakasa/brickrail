@@ -73,7 +73,13 @@ func _draw():
 		var end = Vector2(nx*spacing, j*spacing)
 		draw_line(start, end, grid_line_color, grid_line_width, true)
 
-func draw_track(draw_track):
+func draw_track(draw_cell):
+	if drawing_mode == "create":
+		draw_create_track(draw_cell)
+	if drawing_mode == "section":
+		draw_select(draw_cell)
+	
+func draw_create_track(draw_track):
 	if draw_track == drawing_last2:
 		drawing_last2 = null
 		drawing_last_track = null
@@ -85,36 +91,52 @@ func draw_track(draw_track):
 			drawing_last2 = null
 			drawing_last_track = null
 			return
-		if drawing_mode == "create":
-			var track = drawing_last.create_track(slot0, slot1)
-			if not track.get_orientation() in drawing_last.tracks:
-				track = drawing_last.add_track(track)
-			else:
-				track = drawing_last.tracks[track.get_orientation()]
-			if drawing_last_track != null:
-				if track.can_connect_track(slot0, drawing_last_track):
-					track.connect_track(slot0, drawing_last_track)
-			drawing_last_track = track
-		if drawing_mode == "section":
-			if drawing_section == null:
-				drawing_section = LayoutSection.new()
-				drawing_section.select()
-				drawing_section.connect("unselected", self, "_on_drawing_section_unselected")
-				drawing_section.name="drawing_section"
-				add_child(drawing_section)
-			
-			var track = drawing_last.create_track(slot0, slot1)
-			if not track.get_orientation() in drawing_last.tracks:
-				drawing_track = false
-				return
+		var track = drawing_last.create_track(slot0, slot1)
+		if not track.get_orientation() in drawing_last.tracks:
+			track = drawing_last.add_track(track)
+		else:
 			track = drawing_last.tracks[track.get_orientation()]
-			if not drawing_section.can_add_track(track):
-				drawing_track = false
-				return
-			drawing_section.add_track(track)
-			drawing_last_track = track
+		if drawing_last_track != null:
+			if track.can_connect_track(slot0, drawing_last_track):
+				track.connect_track(slot0, drawing_last_track)
+		drawing_last_track = track
 	drawing_last2 = drawing_last
 	drawing_last = draw_track
+
+func draw_select(draw_cell):
+	
+	if drawing_last2 == null:
+		drawing_last2 = drawing_last
+		drawing_last = draw_cell
+		return
+
+	var slot0 = drawing_last.get_slot_to_cell(drawing_last2)
+	var slot1 = drawing_last.get_slot_to_cell(draw_cell)
+	
+	if slot1 == null or slot0 == null or slot1 == slot0:
+		if drawing_section == null:
+			drawing_last2 = null
+			drawing_last = draw_cell
+		return
+	
+	var track = drawing_last.create_track(slot0, slot1)
+	if track.get_orientation() in drawing_last.tracks:
+		track = drawing_last.tracks[track.get_orientation()]
+		if drawing_section == null:
+			drawing_section = LayoutSection.new()
+			drawing_section.select()
+			drawing_section.connect("unselected", self, "_on_drawing_section_unselected")
+			drawing_section.name="drawing_section"
+			add_child(drawing_section)
+		else:
+			if not drawing_section.can_add_track(track):
+				return
+		drawing_section.add_track(track)
+		drawing_last2 = drawing_last
+		drawing_last = draw_cell
+	elif drawing_section == null:
+		drawing_last2 = drawing_last
+		drawing_last = draw_cell
 
 func _on_drawing_section_unselected():
 	clear_drawing_section()
