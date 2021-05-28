@@ -117,6 +117,11 @@ func draw_track(draw_track):
 	drawing_last = draw_track
 
 func _on_drawing_section_unselected():
+	clear_drawing_section()
+
+func clear_drawing_section():
+	if drawing_section == null:
+		return
 	get_node("drawing_section").queue_free()
 	drawing_section = null
 
@@ -185,7 +190,7 @@ func process_mouse_button(event, i, j, mpos_cell):
 					drawing_mode = "create"
 				else:
 					drawing_mode = "section"
-					drawing_section = null
+					clear_drawing_section()
 		else:
 			if drawing_track:
 				drawing_track = false
