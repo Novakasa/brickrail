@@ -6,6 +6,12 @@ var y_idx
 var tracks = {}
 var hover_track = null
 
+const STATE_NONE = 0
+const STATE_SELECTED = 1
+const STATE_HOVER = 2
+const STATE_OCCUPIED = 3
+const STATE_LOCKED = 4
+
 onready var track_material = preload("res://layout_cell_shader.tres")
 
 func _init(p_x_idx, p_y_idx):
@@ -155,23 +161,23 @@ func _on_track_connections_changed(orientation=null):
 				if opposite_switch != null:
 					if opposite_switch.hover:
 						if track == to_track.connections[to_track_from_slot][opposite_turn]:
-							states[turn] = 2
+							states[turn] = max(states[turn], STATE_HOVER)
 					if opposite_switch.selected:
 						if track == to_track.connections[to_track_from_slot][opposite_turn]:
-							states[turn] = 1
+							states[turn] = max(states[turn], STATE_SELECTED)
 					if opposite_turn == opposite_switch.get_position():
 						connections |= position_flags[turn]
 				# prints(connections, from_slot, to_slot, turn)
 				if track.switches[to_slot] != null:
 					if track.switches[to_slot].hover:
-						states[turn] = 2
+						states[turn] = max(states[turn], STATE_HOVER)
 					if track.switches[to_slot].selected:
-						states[turn] = 1
+						states[turn] = max(states[turn], STATE_SELECTED)
 				
 				if track.hover:
-					states[turn] = 2
+					states[turn] = max(states[turn], STATE_HOVER)
 				if track.selected:
-					states[turn] = 1
+					states[turn] = max(states[turn], STATE_SELECTED)
 
 			if track.switches[to_slot] != null:
 				connections |= position_flags[track.switches[to_slot].get_position()]
@@ -180,9 +186,9 @@ func _on_track_connections_changed(orientation=null):
 			
 			if len(track.connections[to_slot]) == 0:
 				if track.hover:
-					states["none"] = 2
+					states["none"] = max(states["none"], STATE_HOVER)
 				if track.selected:
-					states["none"] = 1
+					states["none"] = max(states["none"], STATE_SELECTED)
 				connections = 8
 			
 			if to_slot_id == 3:
