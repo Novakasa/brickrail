@@ -47,12 +47,6 @@ const int SWITCH_RIGHT = 64;
 const int SWITCH_PRIORITY_LEFT = 128;
 const int SWITCH_PRIORITY_STRAIGHT = 256;
 const int SWITCH_PRIORITY_RIGHT = 512;
-const int SELECTED_LEFT = 1024;
-const int SELECTED_STRAIGHT = 2048;
-const int SELECTED_RIGHT = 4096;
-const int HOVER_LEFT = 8192;
-const int HOVER_STRAIGHT = 16384;
-const int HOVER_RIGHT = 32768;
 
 const int TRACK_LINE = 0;
 const int TRACK_FULL = 1;
@@ -62,8 +56,6 @@ const int TRACK_ARROW = 3;
 const int TURN_BASE = 0;
 const int TURN_SWITCH_ALL = 1;
 const int TURN_SWITCH_PRIORITY = 2;
-const int TURN_SELECTED = 3;
-const int TURN_HOVER = 4;
 
 
 float circle(vec2 position, float radius) {
@@ -255,16 +247,6 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 			turn_flags[1] = SWITCH_STRAIGHT;
 			turn_flags[2] = SWITCH_RIGHT;
 	}
-	if (turn_type == TURN_SELECTED) {
-			turn_flags[0] = SELECTED_LEFT;
-			turn_flags[1] = SELECTED_STRAIGHT;
-			turn_flags[2] = SELECTED_RIGHT;
-	}
-	if (turn_type == TURN_HOVER) {
-			turn_flags[0] = HOVER_LEFT;
-			turn_flags[1] = HOVER_STRAIGHT;
-			turn_flags[2] = HOVER_RIGHT;
-	}
 	
 	float scene = 10.0;
 	
@@ -337,10 +319,6 @@ void fragment() {
 	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
 	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE, state_dummy);
-	float selected = tracks(position, TURN_SELECTED, TRACK_FULL, state_dummy);
-	float selected_inner = intersect(inner, selected);
-	float hover = tracks(position, TURN_HOVER, TRACK_FULL, state_dummy);
-	float hover_inner = intersect(inner, hover);
 	
 	float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
 	float arrow_modulate = (border_dist<0.4) ? arrow_cap : -1.0;
