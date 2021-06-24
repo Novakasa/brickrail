@@ -14,6 +14,8 @@ const STATE_LOCKED = 4
 
 onready var track_material = preload("res://layout_cell_shader.tres")
 
+signal track_selected(cell, orientation)
+
 func _init(p_x_idx, p_y_idx):
 	x_idx = p_x_idx
 	y_idx = p_y_idx
@@ -99,6 +101,7 @@ func add_track(track):
 	track.connect("switch_added", self, "_on_track_switch_added")
 	track.connect("switch_position_changed", self, "_on_track_connections_changed")
 	track.connect("removing", self, "_on_track_removing")
+	track.connect("selected", self, "_on_track_selected")
 	update()
 	_on_track_connections_changed()
 	return track
@@ -114,7 +117,9 @@ func _on_track_removing(orientation):
 	if track == hover_track:
 		hover_track = null
 	_on_track_connections_changed()
-	
+
+func _on_track_selected(track):
+	emit_signal("track_selected", self, track.get_orientation())
 
 func clear():
 	for track in tracks.values():

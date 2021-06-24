@@ -24,8 +24,8 @@ signal connections_cleared
 signal route_lock_changed(lock)
 signal switch_added(switch)
 signal switch_position_changed(pos)
-signal selected
-signal unselected
+signal selected(obj)
+signal unselected(obj)
 signal removing(orientation)
 
 func _init(p_slot0, p_slot1):
@@ -260,7 +260,7 @@ func stop_hover():
 
 func select():
 	selected_solo=true
-	emit_signal("selected")
+	emit_signal("selected", self)
 	visual_select()
 	LayoutInfo.select(self)
 
@@ -271,7 +271,7 @@ func visual_select():
 func unselect():
 	selected_solo=false
 	visual_unselect()
-	emit_signal("unselected")
+	emit_signal("unselected", self)
 	
 func visual_unselect():
 	selected=false

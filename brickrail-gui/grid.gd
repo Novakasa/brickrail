@@ -27,6 +27,7 @@ func setup_grid():
 			cells[i].append(LayoutCell.new(i, j))
 			add_child(cells[i][j])
 			connect("grid_view_changed", cells[i][j], "_on_grid_view_changed")
+			cells[i][j].connect("track_selected", self, "_on_cell_track_selected")
 
 func bresenham_line(startx, starty, stopx, stopy):
 	if startx == stopx and starty == stopy:
@@ -78,6 +79,18 @@ func draw_track(draw_cell):
 		draw_create_track(draw_cell)
 	if drawing_mode == "section":
 		draw_select(draw_cell)
+
+func _on_cell_track_selected(cell, orientation):
+	if drawing_track and drawing_mode == "section":
+		assert(drawing_section == null)
+		drawing_section = LayoutSection.new()
+		drawing_section.select()
+		drawing_section.connect("unselected", self, "_on_drawing_section_unselected")
+		drawing_section.name="drawing_section"
+		add_child(drawing_section)
+		drawing_section.add_track(cell.tracks[orientation])
+		drawing_last2 = drawing_last
+		drawing_last = cell
 	
 func draw_create_track(draw_track):
 	if draw_track == drawing_last2:
