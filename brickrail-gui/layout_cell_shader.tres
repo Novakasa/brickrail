@@ -24,6 +24,17 @@ uniform bool contours;
 
 uniform mat4 connections;
 
+uniform mat4 state_left;
+uniform mat4 state_right;
+uniform mat4 state_center;
+uniform mat4 state_none;
+
+const int STATE_NONE = 0;
+const int STATE_SELECTED = 1;
+const int STATE_HOVER = 2;
+const int STATE_OCCUPIED = 3;
+const int STATE_LOCKED = 4;
+
 const float PI = 3.14159265358979323846;
 
 const int LEFT = 1;
@@ -229,9 +240,11 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	
 }
 
-float tracks(vec2 position, int turn_type, int track_type) {
+float tracks(vec2 position, int turn_type, int track_type, out int state) {
 	
-	int turn_flags[3] = {LEFT, STRAIGHT, RIGHT};
+	state = 0;
+	
+	int turn_flags[4] = {LEFT, STRAIGHT, RIGHT, NO_CONNECT};
 	if (turn_type == TURN_SWITCH_PRIORITY) {
 		turn_flags[0] = SWITCH_PRIORITY_LEFT;
 		turn_flags[1] = SWITCH_PRIORITY_STRAIGHT;
@@ -262,22 +275,33 @@ float tracks(vec2 position, int turn_type, int track_type) {
 		for (int to_slot=0; to_slot<3; to_slot++) {
 			vec4 to_vec = basis[to_slot];
 			int connection_flags = int(dot(to_vec, connections*from_vec));
+			
 			int to_slot2 = to_slot;
 			if (from_slot == to_slot) {
 				to_slot2 = 3;
 			}
+			
+			int turn_state[4];
+			turn_state[0] = int(dot(to_vec, state_left*from_vec));
+			turn_state[1] = int(dot(to_vec, state_center*from_vec));
+			turn_state[2] = int(dot(to_vec, state_right*from_vec));
+			turn_state[3] = int(dot(to_vec, state_none*from_vec));
+			
 			float connection;
 			float width = track_width;
-			for (int flag=0; flag<3; flag++) {
+			for (int flag=0; flag<4; flag++) {
 				int turn = flag-1;
+				if (turn == 2 && turn_type!=TURN_BASE) {
+					break;
+				}
 				if ((connection_flags & turn_flags[flag]) != turn_flags[flag]) {
 					continue;
 				}
 				connection = track_connection(position, from_slot, to_slot2, turn, track_type);
-				scene = merge(scene, connection);
-			}
-			if (turn_type==TURN_BASE && ((connection_flags & NO_CONNECT) == NO_CONNECT)) {
-				connection = track_connection(position, from_slot, to_slot2, 2, track_type);
+				int temp_state = turn_state[flag];
+				if (temp_state > state && connection<0.0) {
+					state = temp_state;
+				}
 				scene = merge(scene, connection);
 			}
 	
@@ -286,6 +310,19 @@ float tracks(vec2 position, int turn_type, int track_type) {
 	
 	return scene;
 }
+
+vec4 get_inner_color(int state) {
+	if (state == STATE_NONE) {
+		return track_inner;
+	}
+	if (state == STATE_HOVER) {
+		return hover_color;
+	}
+	if (state == STATE_SELECTED) {
+		return selected_color;
+	}
+}
+
 void fragment() {
 	vec4 bg = background;
 	vec2 position = UV;
@@ -293,14 +330,16 @@ void fragment() {
 	if (border_dist<grid_width*0.5) {
 		bg = grid_color;
 	}
-	float base = tracks(position, TURN_BASE, TRACK_FULL);
-	float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER);
+	int state;
+	int state_dummy;
+	float base = tracks(position, TURN_BASE, TRACK_FULL, state);
+	float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER, state_dummy);
 	float inner = base + track_width - inner_track_width;
 	float switch_outer = intersect(turn_outer, inner);
-	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE);
-	float selected = tracks(position, TURN_SELECTED, TRACK_FULL);
+	float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE, state_dummy);
+	float selected = tracks(position, TURN_SELECTED, TRACK_FULL, state_dummy);
 	float selected_inner = intersect(inner, selected);
-	float hover = tracks(position, TURN_HOVER, TRACK_FULL);
+	float hover = tracks(position, TURN_HOVER, TRACK_FULL, state_dummy);
 	float hover_inner = intersect(inner, hover);
 	
 	float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
@@ -312,20 +351,14 @@ void fragment() {
 	float dist = base;
 	float base_change = fwidth(base)*0.5;
 	float inner_change = fwidth(inner)*0.5;
-	float selected_inner_change = fwidth(selected_inner)*0.5;
-	float hover_inner_change = fwidth(hover_inner)*0.5;
 	float switch_outer_change = fwidth(switch_outer)*0.5;
 	float switch_arrows_change = fwidth(switch_arrows)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
 	vec4 bg_mix = mix(bg, track_base, t);
 	t = smoothstep(inner_change, -inner_change, inner);
-	vec4 track_mix = mix(bg_mix, track_inner, t);
-	t = smoothstep(selected_inner_change, -selected_inner_change, selected_inner);
-	vec4 selected_mix = mix(track_mix, selected_color, t);
-	t = smoothstep(hover_inner_change, -hover_inner_change, hover_inner);
-	vec4 hover_mix = mix(selected_mix, hover_color, t);
+	vec4 track_mix = mix(bg_mix, get_inner_color(state), t);
 	t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
-	vec4 switch_mix = mix(hover_mix, switch_color, t);
+	vec4 switch_mix = mix(track_mix, switch_color, t);
 	t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
 	COLOR = mix(switch_mix, switch_inner_color, t);
 	
@@ -356,4 +389,8 @@ shader_param/stopper_delta = 0.677
 shader_param/stopper_size = 0.563
 shader_param/stopper_width = 0.11
 shader_param/contours = false
-shader_param/connections = Transform( 0, 42.708, 3.972, 2056.09, 2271.59, 2.327, 2054.03, 129.175, 0, 1.569, 2.568, 1.899 )
+shader_param/connections = Transform( 8.102, 4.769, 5, 4.873, 5, 5, 5, 5, 5, 5, 5, 5 )
+shader_param/state_left = Transform( 0.52, 0, 0, 2.347, 1.629, 0, 2.071, 0, 1.592, 0, 0, 0 )
+shader_param/state_right = Transform( 5.633, 0, 0, 1.556, 1, 0, 2.509, 0, 1, 0, 0, 0 )
+shader_param/state_center = Transform( 1.328, 0, 0, 2.194, 1, 0, 2.526, 0, 1, 0, 0, 0 )
+shader_param/state_none = Transform( 2.351, 0, 0, 1.174, 1, 0, 4.064, 0, 1, -0.522, 0, 0 )

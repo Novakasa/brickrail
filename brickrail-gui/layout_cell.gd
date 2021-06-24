@@ -119,6 +119,10 @@ func _on_track_switch_added(switch):
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
+	var vecs_left = []
+	var vecs_center = []
+	var vecs_right = []
+	var vecs_none = []
 	var turn_flags = {"left": 1, "center": 2, "right": 4}
 	var position_flags = {"left": 16, "center": 32, "right": 64}
 	var position_flags_priority = {"left": 128, "center": 256, "right": 512}
@@ -127,6 +131,10 @@ func _on_track_connections_changed(orientation=null):
 	
 	for from_id in range(4):
 		vecs.append(Vector3())
+		vecs_left.append(Vector3())
+		vecs_center.append(Vector3())
+		vecs_right.append(Vector3())
+		vecs_none.append(Vector3())
 	for track in tracks.values():
 		for to_slot in [track.slot0, track.slot1]:
 			var from_slot = track.get_opposite_slot(to_slot)
@@ -134,6 +142,7 @@ func _on_track_connections_changed(orientation=null):
 			var from_slot_id = LayoutInfo.slot_index[from_slot]
 
 			var connections = 0
+			var states = {"left": 0, "right": 0, "center": 0, "none": 0}
 			for turn in track.connections[to_slot]:
 				connections |= turn_flags[turn]
 				
@@ -146,23 +155,23 @@ func _on_track_connections_changed(orientation=null):
 				if opposite_switch != null:
 					if opposite_switch.hover:
 						if track == to_track.connections[to_track_from_slot][opposite_turn]:
-							connections |= hover_flags[turn]
+							states[turn] = 2
 					if opposite_switch.selected:
 						if track == to_track.connections[to_track_from_slot][opposite_turn]:
-							connections |= selected_flags[turn]
+							states[turn] = 1
 					if opposite_turn == opposite_switch.get_position():
 						connections |= position_flags[turn]
 				# prints(connections, from_slot, to_slot, turn)
 				if track.switches[to_slot] != null:
 					if track.switches[to_slot].hover:
-						connections |= hover_flags[turn]
+						states[turn] = 2
 					if track.switches[to_slot].selected:
-						connections |= selected_flags[turn]
+						states[turn] = 1
 				
 				if track.hover:
-					connections |= hover_flags[turn]
+					states[turn] = 2
 				if track.selected:
-					connections |= selected_flags[turn]
+					states[turn] = 1
 
 			if track.switches[to_slot] != null:
 				connections |= position_flags[track.switches[to_slot].get_position()]
@@ -170,14 +179,31 @@ func _on_track_connections_changed(orientation=null):
 					connections |= position_flags_priority[track.switches[to_slot].get_position()]
 			
 			if len(track.connections[to_slot]) == 0:
+				if track.hover:
+					states["none"] = 2
+				if track.selected:
+					states["none"] = 1
 				connections = 8
 			
 			if to_slot_id == 3:
 				to_slot_id = from_slot_id
 			# prints(from_slot, to_slot, "final connection:", connections, from_slot_id, to_slot_id)
 			vecs[from_slot_id][to_slot_id] = connections
+			vecs_left[from_slot_id][to_slot_id] = states["left"]
+			vecs_right[from_slot_id][to_slot_id] = states["right"]
+			vecs_center[from_slot_id][to_slot_id] = states["center"]
+			vecs_none[from_slot_id][to_slot_id] = states["none"]
+			
 	var connections_matrix = Transform(vecs[0], vecs[1], vecs[2], vecs[3])
+	var state_left_matrix = Transform(vecs_left[0], vecs_left[1], vecs_left[2], vecs_left[3])
+	var state_right_matrix = Transform(vecs_right[0], vecs_right[1], vecs_right[2], vecs_right[3])
+	var state_center_matrix = Transform(vecs_center[0], vecs_center[1], vecs_center[2], vecs_center[3])
+	var state_none_matrix = Transform(vecs_none[0], vecs_none[1], vecs_none[2], vecs_none[3])
 	material.set_shader_param("connections", connections_matrix)
+	material.set_shader_param("state_left", state_left_matrix)
+	material.set_shader_param("state_center", state_center_matrix)
+	material.set_shader_param("state_right", state_right_matrix)
+	material.set_shader_param("state_none", state_none_matrix)
 	# update()
 
 func _draw():
