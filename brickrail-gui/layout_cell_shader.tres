@@ -319,7 +319,7 @@ void fragment() {
 	float base_change = fwidth(base)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
 	vec4 bg_mix = mix(bg, track_base, t);
-	if (t < 0.0000001) {
+	if (t == -1.0) {
 		COLOR = bg_mix;
 	}
 	else {
