@@ -297,6 +297,7 @@ func process_mouse_button(event, pos):
 			switch = null
 		if switch != null:
 			switch.process_mouse_button(event, pos)
+			return
 		
 		if LayoutInfo.input_mode == "select":
 			LayoutInfo.init_drag_select(self)
