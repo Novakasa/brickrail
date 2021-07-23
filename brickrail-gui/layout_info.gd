@@ -19,7 +19,6 @@ var drawing_mode = null
 
 var drag_select = false
 var drag_selection = null
-var removing_track = false
 
 signal input_mode_changed(mode)
 signal selected(obj)
@@ -33,6 +32,14 @@ func _unhandled_input(event):
 				set_input_mode("select")
 			if event.scancode == KEY_E:
 				set_input_mode("draw")
+			
+			if event.scancode == KEY_DELETE:
+				if selection is LayoutSection:
+					var tracks = selection.tracks
+					selection.unselect()
+					for track in tracks:
+						track.remove()
+					
 
 func bresenham_line(startx, starty, stopx, stopy):
 	if startx == stopx and starty == stopy:
@@ -68,14 +75,18 @@ func set_input_mode(mode):
 
 func select(obj):
 	if selection != null:
-		selection.disconnect("tree_exiting", self, "_on_selection_tree_exiting")
 		selection.unselect()
 	selection = obj
 	obj.connect("tree_exiting", self, "_on_selection_tree_exiting")
+	obj.connect("unselected", self, "_on_selection_unselected")
 	emit_signal("selected", obj)
 
 func _on_selection_tree_exiting():
 	selection.unselect()
+
+func _on_selection_unselected():
+	selection.disconnect("tree_exiting", self, "_on_selection_tree_exiting")
+	selection.disconnect("unselected", self, "_on_selection_unselected")
 	selection = null
 
 func init_draw_track(cell):
