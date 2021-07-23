@@ -1,6 +1,8 @@
 class_name LayoutTrack
 extends Node
 
+var x_idx
+var y_idx
 var slot0
 var slot1
 var pos0
@@ -28,7 +30,7 @@ signal selected(obj)
 signal unselected(obj)
 signal removing(orientation)
 
-func _init(p_slot0, p_slot1):
+func _init(p_slot0, p_slot1, i, j):
 	slot0 = p_slot0
 	slot1 = p_slot1
 
@@ -39,6 +41,9 @@ func _init(p_slot0, p_slot1):
 	pos1 = LayoutInfo.slot_positions[slot1]
 	switches[slot0] = null
 	switches[slot1] = null
+	
+	x_idx = i
+	y_idx = j
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
@@ -288,15 +293,13 @@ func _unhandled_input(event):
 
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_LEFT and event.pressed:
-		prints("track received button at", pos)
 		var switch = get_switch_at(pos)
 		if switch != null:
-			print("forwarding mouse button to switch")
 			switch.process_mouse_button(event, pos)
 			return
 		
 		if LayoutInfo.input_mode == "select":
-			select()
+			LayoutInfo.init_drag_select(self)
 
 func get_inspector():
 	var inspector = TrackInspector.instance()

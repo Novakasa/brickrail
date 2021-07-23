@@ -27,6 +27,14 @@ func _ready():
 	_on_track_connections_changed()
 
 func hover_at(pos):
+	if LayoutInfo.drawing_track:
+		LayoutInfo.draw_track_hover_cell(self)
+		return
+	
+	if LayoutInfo.drag_select:
+		LayoutInfo.drag_select_hover_cell(self)
+		return
+
 	var normalized_pos = pos/LayoutInfo.spacing
 	var hover_candidate = null
 	hover_candidate = get_track_at(normalized_pos)
@@ -42,7 +50,16 @@ func stop_hover():
 		hover_track = null
 
 func process_mouse_button(event, pos):
+	prints("cell mouse button", x_idx, y_idx)
 	var normalized_pos = pos/LayoutInfo.spacing
+	
+	if event.button_index == BUTTON_LEFT:
+
+		if event.pressed:
+			if LayoutInfo.input_mode == "draw":
+				LayoutInfo.init_draw_track(self)
+				return
+	
 	var track = get_track_at(normalized_pos)
 	if track != null:
 		track.process_mouse_button(event, normalized_pos)
@@ -66,7 +83,7 @@ func create_track_at(pos, direction=null):
 	var closest_track = null
 	var normalized_pos = pos/LayoutInfo.spacing
 	for orientation in LayoutInfo.orientations:
-		var track = LayoutTrack.new(orientation[0], orientation[1])
+		var track = LayoutTrack.new(orientation[0], orientation[1], x_idx, y_idx)
 		if direction!= null:
 			if track.get_direction()!=direction:
 				continue
@@ -88,7 +105,7 @@ func get_slot_to_cell(cell):
 	return null
 	
 func create_track(slot0, slot1):
-	var track = LayoutTrack.new(slot0, slot1)
+	var track = LayoutTrack.new(slot0, slot1, x_idx, y_idx)
 	return track
 	
 func add_track(track):
