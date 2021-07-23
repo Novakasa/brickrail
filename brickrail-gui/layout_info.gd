@@ -35,7 +35,7 @@ func _unhandled_input(event):
 			
 			if event.scancode == KEY_DELETE:
 				if selection is LayoutSection:
-					var tracks = selection.tracks
+					var tracks = Array(selection.tracks)
 					selection.unselect()
 					for track in tracks:
 						track.remove()
