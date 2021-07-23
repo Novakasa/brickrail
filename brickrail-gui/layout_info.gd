@@ -84,6 +84,11 @@ func init_draw_track(cell):
 	drawing_last2 = null
 	drawing_last_track = null
 
+func init_connected_draw_track(track):
+	var cell = cells[track.x_idx][track.y_idx]
+	init_draw_track(cell)
+	drawing_last_track = track
+
 func init_drag_select(track):
 	drag_selection = LayoutSection.new()
 	drag_selection.select()

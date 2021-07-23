@@ -237,9 +237,10 @@ func get_switch_at(pos):
 	return null
 
 func hover(pos):
-	if LayoutInfo.input_mode == "draw":
-		return
+
 	var hover_candidate = get_switch_at(pos)
+	if LayoutInfo.input_mode == "draw":
+		hover_candidate = null
 	
 	if hover_candidate != hover_switch:
 		if hover_switch != null:
@@ -250,9 +251,7 @@ func hover(pos):
 			hover_switch.hover()
 	if hover_candidate != null:
 		return
-			
-	if LayoutInfo.input_mode != "select":
-		return
+
 	hover=true
 	emit_signal("connections_changed")
 
@@ -294,12 +293,16 @@ func _unhandled_input(event):
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_LEFT and event.pressed:
 		var switch = get_switch_at(pos)
+		if LayoutInfo.input_mode == "draw":
+			switch = null
 		if switch != null:
 			switch.process_mouse_button(event, pos)
-			return
 		
 		if LayoutInfo.input_mode == "select":
 			LayoutInfo.init_drag_select(self)
+		
+		if LayoutInfo.input_mode == "draw":
+			LayoutInfo.init_connected_draw_track(self)
 
 func get_inspector():
 	var inspector = TrackInspector.instance()

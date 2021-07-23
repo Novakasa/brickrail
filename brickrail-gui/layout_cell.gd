@@ -53,16 +53,15 @@ func process_mouse_button(event, pos):
 	prints("cell mouse button", x_idx, y_idx)
 	var normalized_pos = pos/LayoutInfo.spacing
 	
+	var track = get_track_at(normalized_pos)
+	if track != null:
+		track.process_mouse_button(event, normalized_pos)
+		return
 	if event.button_index == BUTTON_LEFT:
-
 		if event.pressed:
 			if LayoutInfo.input_mode == "draw":
 				LayoutInfo.init_draw_track(self)
 				return
-	
-	var track = get_track_at(normalized_pos)
-	if track != null:
-		track.process_mouse_button(event, normalized_pos)
 
 func get_track_at(normalized_pos):
 	var i = 0
