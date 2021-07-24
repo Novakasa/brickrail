@@ -14,6 +14,7 @@ var disabled=false
 var SwitchInspector = preload("res://switch_inspector.tscn")
 
 signal position_changed(slot, pos)
+signal state_changed(slot)
 signal selected
 signal unselected
 
@@ -59,11 +60,11 @@ func _on_ble_switch_position_changed(ble_pos):
 
 func hover():
 	hover=true
-	emit_signal("position_changed", slot, switch_positions[position_index])
+	emit_signal("state_changed", slot)
 
 func stop_hover():
 	hover=false
-	emit_signal("position_changed", slot, switch_positions[position_index])
+	emit_signal("state_changed", slot)
 
 func toggle_switch():
 	var new_index = (position_index+1) % len(switch_positions)
@@ -105,12 +106,12 @@ func select():
 	LayoutInfo.select(self)
 	selected=true
 	emit_signal("selected")
-	emit_signal("position_changed", slot, switch_positions[position_index])
+	emit_signal("state_changed", slot)
 
 func unselect():
 	selected=false
 	emit_signal("unselected")
-	emit_signal("position_changed", slot, switch_positions[position_index])
+	emit_signal("state_changed", slot)
 
 func get_inspector():
 	var inspector = SwitchInspector.instance()

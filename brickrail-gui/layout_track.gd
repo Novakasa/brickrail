@@ -21,7 +21,14 @@ var accessories = {}
 
 var TrackInspector = preload("res://track_inspector.tscn")
 
-signal connections_changed
+const STATE_NONE = 0
+const STATE_SELECTED = 1
+const STATE_HOVER = 2
+const STATE_OCCUPIED = 3
+const STATE_LOCKED = 4
+
+signal connections_changed(orientation)
+signal states_changed(orientation)
 signal connections_cleared
 signal route_lock_changed(lock)
 signal switch_added(switch)
@@ -129,6 +136,7 @@ func connect_track(slot, track, initial=true):
 	if initial:
 		track.connect_track(get_neighbour_slot(slot), self, false)
 	emit_signal("connections_changed", get_orientation())
+	emit_signal("states_changed", get_orientation())
 
 func update_switch(slot):
 	if len(connections[slot])>1:
@@ -137,16 +145,23 @@ func update_switch(slot):
 			switches[slot] = null
 		switches[slot] = LayoutSwitch.new(slot, connections[slot].keys())
 		switches[slot].connect("position_changed", self, "_on_switch_position_changed")
+		switches[slot].connect("state_changed", self, "_on_switch_state_changed")
 		emit_signal("switch_added", switches[slot])
+		_on_switch_position_changed(slot, switches[slot].get_position())
 	else:
 		if switches[slot] != null:
 			switches[slot].queue_free()
 			switches[slot] = null
 
-func _on_switch_position_changed(slot, pos):
-	emit_signal("switch_position_changed")
+func _on_switch_state_changed(slot):
+	emit_signal("states_changed", get_orientation())
 	for track in connections[slot].values():
-		track.emit_signal("switch_position_changed")
+		track.emit_signal("states_changed", track.get_orientation())
+
+func _on_switch_position_changed(slot, pos):
+	emit_signal("connections_changed", get_orientation())
+	for track in connections[slot].values():
+		track.emit_signal("connections_changed", track.get_orientation())
 
 func _on_track_connections_cleared(track):
 	disconnect_track(track)
@@ -253,14 +268,14 @@ func hover(pos):
 		return
 
 	hover=true
-	emit_signal("connections_changed")
+	emit_signal("states_changed", get_orientation())
 
 func stop_hover():
 	hover=false
 	if hover_switch != null:
 		hover_switch.stop_hover()
 		hover_switch = null
-	emit_signal("connections_changed")
+	emit_signal("states_changed", get_orientation())
 
 func select():
 	selected_solo=true
@@ -270,7 +285,7 @@ func select():
 
 func visual_select():
 	selected=true
-	emit_signal("connections_changed")
+	emit_signal("states_changed", get_orientation())
 
 func unselect():
 	selected_solo=false
@@ -279,7 +294,7 @@ func unselect():
 	
 func visual_unselect():
 	selected=false
-	emit_signal("connections_changed")
+	emit_signal("states_changed", get_orientation())
 
 func _unhandled_input(event):
 	if event is InputEventKey:
@@ -309,3 +324,63 @@ func get_inspector():
 	var inspector = TrackInspector.instance()
 	inspector.set_track(self)
 	return inspector
+
+func get_shader_connection_flags(to_slot):
+	if len(connections[to_slot]) == 0:
+		return 8
+
+	var turn_flags = {"left": 1, "center": 2, "right": 4}
+	var position_flags = {"left": 16, "center": 32, "right": 64}
+	var position_flags_priority = {"left": 128, "center": 256, "right": 512}
+	var connection_flags = 0
+	for turn in connections[to_slot]:
+		connection_flags |= turn_flags[turn]
+		
+		var to_track = connections[to_slot][turn]
+		var to_track_from_slot = to_track.get_neighbour_slot(to_slot)
+
+		var opposite_switch = to_track.switches[to_track_from_slot]
+		var opposite_turn = get_turn_from(to_slot)
+		if opposite_switch != null:
+			if opposite_turn == opposite_switch.get_position():
+				connection_flags |= position_flags[turn]
+
+	if switches[to_slot] != null:
+		connection_flags |= position_flags[switches[to_slot].get_position()]
+		if not switches[to_slot].disabled:
+			connection_flags |= position_flags_priority[switches[to_slot].get_position()]
+	
+	return connection_flags
+
+func get_shader_states(to_slot):
+	var states = {"left": 0, "right": 0, "center": 0, "none": 0}
+	if len(connections[to_slot]) == 0:
+		if hover:
+			states["none"] = max(states["none"], STATE_HOVER)
+		if selected:
+			states["none"] = max(states["none"], STATE_SELECTED)
+		return states
+	for turn in connections[to_slot]:
+		var to_track = connections[to_slot][turn]
+		var to_track_from_slot = to_track.get_neighbour_slot(to_slot)
+		var opposite_switch = to_track.switches[to_track_from_slot]
+		var opposite_turn = get_turn_from(to_slot)
+		if opposite_switch != null:
+			if opposite_switch.hover:
+				if self == to_track.connections[to_track_from_slot][opposite_turn]:
+					states[turn] = max(states[turn], STATE_HOVER)
+			if opposite_switch.selected:
+				if self == to_track.connections[to_track_from_slot][opposite_turn]:
+					states[turn] = max(states[turn], STATE_SELECTED)
+		
+		if switches[to_slot] != null:
+			if switches[to_slot].hover:
+				states[turn] = max(states[turn], STATE_HOVER)
+			if switches[to_slot].selected:
+				states[turn] = max(states[turn], STATE_SELECTED)
+		
+		if hover:
+			states[turn] = max(states[turn], STATE_HOVER)
+		if selected:
+			states[turn] = max(states[turn], STATE_SELECTED)
+	return states
