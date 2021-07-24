@@ -4,6 +4,7 @@
 code = "shader_type canvas_item;
 
 uniform vec4 background: hint_color;
+uniform vec4 background_hover: hint_color;
 uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
 uniform vec4 switch_color: hint_color;
@@ -12,7 +13,7 @@ uniform vec4 switch_inner_color: hint_color;
 uniform vec4 selected_color: hint_color;
 uniform vec4 hover_color: hint_color;
 
-
+uniform bool cell_hover;
 uniform float grid_width;
 uniform float track_width;
 uniform float inner_track_width;
@@ -307,6 +308,9 @@ vec4 get_inner_color(int state) {
 
 void fragment() {
 	vec4 bg = background;
+	if (cell_hover) {
+		bg = background_hover;
+	}
 	vec2 position = UV;
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
 	if (border_dist<grid_width*0.5) {
@@ -359,6 +363,7 @@ void fragment() {
 [resource]
 shader = SubResource( 1 )
 shader_param/background = Color( 0.105882, 0.109804, 0.121569, 1 )
+shader_param/background_hover = Color( 0.109804, 0.188235, 0.262745, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
@@ -366,6 +371,7 @@ shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
 shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
 shader_param/selected_color = Color( 0.647059, 0.215686, 0.168627, 1 )
 shader_param/hover_color = Color( 0.133333, 0.615686, 0.647059, 1 )
+shader_param/cell_hover = false
 shader_param/grid_width = 0.097
 shader_param/track_width = 0.126
 shader_param/inner_track_width = 0.062

@@ -4,6 +4,7 @@ extends Node2D
 var x_idx
 var y_idx
 var tracks = {}
+var hover = false
 var hover_track = null
 
 const STATE_NONE = 0
@@ -27,12 +28,23 @@ func _ready():
 	_on_track_connections_changed()
 
 func hover_at(pos):
+	
+	if not hover:
+		hover=true
+		_on_track_connections_changed()
+	
 	if LayoutInfo.drawing_track:
 		LayoutInfo.draw_track_hover_cell(self)
+		if hover_track != null:
+			hover_track.stop_hover()
+			hover_track = null
 		return
 	
 	if LayoutInfo.drag_select:
 		LayoutInfo.drag_select_hover_cell(self)
+		if hover_track != null:
+			hover_track.stop_hover()
+			hover_track = null
 		return
 
 	var normalized_pos = pos/LayoutInfo.spacing
@@ -42,12 +54,19 @@ func hover_at(pos):
 		hover_track.stop_hover()
 	hover_track = hover_candidate
 	if hover_track != null:
+		if hover:
+			hover=false
+			_on_track_connections_changed()
 		hover_track.hover(normalized_pos)
 
 func stop_hover():
 	if hover_track != null:
 		hover_track.stop_hover()
 		hover_track = null
+		return
+	
+	hover = false
+	_on_track_connections_changed()
 
 func process_mouse_button(event, pos):
 	prints("cell mouse button", x_idx, y_idx)
@@ -231,6 +250,7 @@ func _on_track_connections_changed(orientation=null):
 	material.set_shader_param("state_center", state_center_matrix)
 	material.set_shader_param("state_right", state_right_matrix)
 	material.set_shader_param("state_none", state_none_matrix)
+	material.set_shader_param("cell_hover", hover)
 	# update()
 
 func _draw():
