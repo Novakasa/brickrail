@@ -69,7 +69,6 @@ func stop_hover():
 	_on_track_connections_changed()
 
 func process_mouse_button(event, pos):
-	prints("cell mouse button", x_idx, y_idx)
 	var normalized_pos = pos/LayoutInfo.spacing
 	
 	var track = get_track_at(normalized_pos)
@@ -133,7 +132,6 @@ func add_track(track):
 		return tracks[track.get_orientation()]
 	tracks[track.get_orientation()] = track
 	track.connect("connections_changed", self, "_on_track_connections_changed")
-	track.connect("switch_added", self, "_on_track_switch_added")
 	track.connect("switch_position_changed", self, "_on_track_connections_changed")
 	track.connect("removing", self, "_on_track_removing")
 	track.connect("selected", self, "_on_track_selected")
@@ -144,7 +142,6 @@ func add_track(track):
 func _on_track_removing(orientation):
 	var track = tracks[orientation]
 	track.disconnect("connections_changed", self, "_on_track_connections_changed")
-	track.disconnect("switch_added", self, "_on_track_switch_added")
 	track.disconnect("switch_position_changed", self, "_on_track_connections_changed")
 	track.disconnect("removing", self, "_on_track_removing")
 	remove_child(tracks[orientation])
@@ -159,9 +156,6 @@ func _on_track_selected(track):
 func clear():
 	for track in tracks.values():
 		track.remove()
-
-func _on_track_switch_added(switch):
-	add_child(switch)
 
 func _on_track_connections_changed(orientation=null):
 	var vecs = []
