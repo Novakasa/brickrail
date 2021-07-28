@@ -152,6 +152,7 @@ func update_switch(slot):
 		switches[slot].connect("state_changed", self, "_on_switch_state_changed")
 		emit_signal("switch_added", switches[slot])
 		_on_switch_position_changed(slot, switches[slot].get_position())
+		add_child(switches[slot])
 	else:
 		if switches[slot] != null:
 			switches[slot].queue_free()
