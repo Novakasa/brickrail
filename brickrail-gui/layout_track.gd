@@ -170,9 +170,10 @@ func _on_switch_position_changed(slot, pos):
 func get_slot_switch(slot):
 	return switches[slot]
 
-func get_connection_switch(slot, turn):
+func get_connection_switches(slot, turn):
+	var switch_list = []
 	if switches[slot] != null:
-		return switches[slot]
+		switch_list.append(switches[slot])
 
 	var to_track = connections[slot][turn]
 	var to_track_from_slot = to_track.get_neighbour_slot(slot)
@@ -181,8 +182,8 @@ func get_connection_switch(slot, turn):
 	var opposite_turn = get_turn_from(slot)
 	if opposite_switch != null:
 		if self == to_track.connections[to_track_from_slot][opposite_turn]:
-			return opposite_switch
-	return null
+			switch_list.append(opposite_switch)
+	return switch_list
 
 func _on_track_connections_cleared(track):
 	disconnect_track(track)
@@ -398,8 +399,8 @@ func get_shader_states(to_slot):
 	var states = {"left": 0, "right": 0, "center": 0, "none": 0}
 	for turn in metadata[to_slot]:
 		if turn != "none":
-			var switch = get_connection_switch(to_slot, turn)
-			if switch != null:
+			var switches = get_connection_switches(to_slot, turn)
+			for switch in switches:
 				if switch.selected:
 					states[turn] = max(states[turn], STATE_SELECTED)
 				if switch.hover:
