@@ -168,22 +168,20 @@ func _on_switch_position_changed(slot, pos):
 	for track in connections[slot].values():
 		track.emit_signal("connections_changed", track.get_orientation())
 
-func get_slot_switch(slot):
+func get_switch(slot):
 	return switches[slot]
+
+func get_opposite_switch(slot, turn):
+	var to_track = connections[slot][turn]
+	return to_track.switches[to_track.get_neighbour_slot(slot)]
 
 func get_connection_switches(slot, turn):
 	var switch_list = []
 	if switches[slot] != null:
 		switch_list.append(switches[slot])
-
-	var to_track = connections[slot][turn]
-	var to_track_from_slot = to_track.get_neighbour_slot(slot)
-	
-	var opposite_switch = to_track.switches[to_track_from_slot]
-	var opposite_turn = get_turn_from(slot)
+	var opposite_switch = get_opposite_switch(slot, turn)
 	if opposite_switch != null:
-		if self == to_track.connections[to_track_from_slot][opposite_turn]:
-			switch_list.append(opposite_switch)
+		switch_list.append(opposite_switch)
 	return switch_list
 
 func _on_track_connections_cleared(track):
@@ -380,10 +378,7 @@ func get_shader_connection_flags(to_slot):
 	for turn in connections[to_slot]:
 		connection_flags |= turn_flags[turn]
 		
-		var to_track = connections[to_slot][turn]
-		var to_track_from_slot = to_track.get_neighbour_slot(to_slot)
-
-		var opposite_switch = to_track.switches[to_track_from_slot]
+		var opposite_switch = get_opposite_switch(to_slot, turn)
 		var opposite_turn = get_turn_from(to_slot)
 		if opposite_switch != null:
 			if opposite_turn == opposite_switch.get_position():
