@@ -89,16 +89,27 @@ func _on_selection_unselected():
 	selection.disconnect("unselected", self, "_on_selection_unselected")
 	selection = null
 
+func _on_drawing_last_track_removing(orientation):
+	drawing_last_track.disconnect("removing", self, "_on_drawing_last_track_removing")
+	drawing_last_track = null
+
+func set_drawing_last_track(track):
+	if drawing_last_track != null:
+		drawing_last_track.disconnect("removing", self, "_on_drawing_last_track_removing")
+	if track != null:
+		track.connect("removing", self, "_on_drawing_last_track_removing")
+	drawing_last_track = track
+
 func init_draw_track(cell):
 	drawing_track = true
 	drawing_last = cell
 	drawing_last2 = null
-	drawing_last_track = null
+	set_drawing_last_track(null)
 
 func init_connected_draw_track(track):
 	var cell = cells[track.x_idx][track.y_idx]
 	init_draw_track(cell)
-	drawing_last_track = track
+	set_drawing_last_track(track)
 
 func init_drag_select(track):
 	drag_selection = LayoutSection.new()
@@ -107,7 +118,7 @@ func init_drag_select(track):
 	drag_select = true
 	drawing_last = cells[track.x_idx][track.y_idx]
 	drawing_last2 = null
-	drawing_last_track = null
+	set_drawing_last_track(null)
 
 func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
@@ -118,14 +129,14 @@ func draw_track_hover_cell(cell):
 func draw_track_add_cell(draw_cell):
 	if draw_cell == drawing_last2:
 		drawing_last2 = null
-		drawing_last_track = null
+		set_drawing_last_track(null)
 	if drawing_last2 != null:
 		var slot0 = drawing_last.get_slot_to_cell(drawing_last2)
 		var slot1 = drawing_last.get_slot_to_cell(draw_cell)
 		if slot1 == null or slot0 == null:
 			drawing_last = draw_cell
 			drawing_last2 = null
-			drawing_last_track = null
+			set_drawing_last_track(null)
 			return
 		var track = drawing_last.create_track(slot0, slot1)
 		if not track.get_orientation() in drawing_last.tracks:
@@ -135,7 +146,7 @@ func draw_track_add_cell(draw_cell):
 		if drawing_last_track != null:
 			if track.can_connect_track(slot0, drawing_last_track):
 				track.connect_track(slot0, drawing_last_track)
-		drawing_last_track = track
+		set_drawing_last_track(track)
 	drawing_last2 = drawing_last
 	drawing_last = draw_cell
 
