@@ -178,6 +178,7 @@ func disconnect_track(track):
 
 func disconnect_turn(slot, turn):
 	connections[slot].erase(turn)
+	metadata[slot].erase(turn)
 	if len(connections[slot]) > 0:
 		update_switch(slot)
 	emit_signal("connections_changed", get_orientation())
