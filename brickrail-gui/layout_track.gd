@@ -394,15 +394,20 @@ func get_shader_connection_flags(to_slot):
 func get_shader_states(to_slot):
 	var states = {"left": 0, "right": 0, "center": 0, "none": 0}
 	for turn in metadata[to_slot]:
-		if turn != "none":
-			var switches = get_connection_switches(to_slot, turn)
-			for switch in switches:
-				if switch.selected:
-					states[turn] = max(states[turn], STATE_SELECTED)
-				if switch.hover:
-					states[turn] = max(states[turn], STATE_HOVER)
-		if metadata[to_slot][turn]["selected"]:
-			states[turn] = max(states[turn], STATE_SELECTED)
-		if metadata[to_slot][turn]["hover"]:
-			states[turn] = max(states[turn], STATE_HOVER)
+		states[turn] = get_shader_state(to_slot, turn)
 	return states
+
+func get_shader_state(to_slot, turn):
+	var state = 0
+	if turn != "none":
+		var switches = get_connection_switches(to_slot, turn)
+		for switch in switches:
+			if switch.selected:
+				state = max(state, STATE_SELECTED)
+			if switch.hover:
+				state = max(state, STATE_HOVER)
+	if metadata[to_slot][turn]["selected"]:
+		state = max(state, STATE_SELECTED)
+	if metadata[to_slot][turn]["hover"]:
+		state = max(state, STATE_HOVER)
+	return state
