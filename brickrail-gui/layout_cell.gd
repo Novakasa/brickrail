@@ -30,6 +30,7 @@ func _ready():
 	material.set_shader_param("state_center", transform_from_matrix(state_matrix_center))
 	material.set_shader_param("state_right", transform_from_matrix(state_matrix_right))
 	material.set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+	material.set_shader_param("has_switch", false)
 
 func hover_at(pos):
 	
@@ -180,7 +181,10 @@ func update_state():
 	material.set_shader_param("cell_hover", hover)
 
 func _on_track_connections_changed(orientation):
-	
+	var has_switch = false
+	for track in tracks.values():
+		if track.has_switch() or track.borders_switch():
+			has_switch=true
 	var track = tracks[orientation]
 	for to_slot in [track.slot0, track.slot1]:
 		var from_slot = track.get_opposite_slot(to_slot)
@@ -190,6 +194,7 @@ func _on_track_connections_changed(orientation):
 			to_slot_id = from_slot_id
 		connection_matrix[from_slot_id][to_slot_id] = track.get_shader_connection_flags(to_slot)
 	material.set_shader_param("connections", transform_from_matrix(connection_matrix))
+	material.set_shader_param("has_switch", has_switch)
 
 func _on_track_states_changed(orientation=null):
 	var track = tracks[orientation]

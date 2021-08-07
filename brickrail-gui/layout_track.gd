@@ -157,6 +157,16 @@ func update_switch(slot):
 		if switches[slot] != null:
 			switches[slot].queue_free()
 			switches[slot] = null
+	
+func has_switch():
+	return switches[slot0] != null or switches[slot1] != null
+
+func borders_switch():
+	for slot in connections:
+		for track in connections[slot].values():
+			if track.is_switch(get_neighbour_slot(slot)):
+				return true
+	return false
 
 func _on_switch_state_changed(slot):
 	emit_signal("states_changed", get_orientation())

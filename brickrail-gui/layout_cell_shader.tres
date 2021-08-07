@@ -22,6 +22,7 @@ uniform float stopper_size;
 uniform float stopper_width;
 
 uniform bool contours;
+uniform bool has_switch;
 
 uniform mat4 connections;
 
@@ -323,35 +324,48 @@ void fragment() {
 	int state;
 	int state_dummy;
 	float base = tracks(position, TURN_BASE, TRACK_FULL, state);
+	float inner = base + track_width - inner_track_width;
 	
 	float base_change = fwidth(base)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
 	vec4 bg_mix = mix(bg, track_base, t);
-	if (t == -1.0) {
+	
+	if (t <= -0.0) {
 		COLOR = bg_mix;
+		// COLOR *=0.5;
 	}
 	else {
-		
-		float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER, state_dummy);
-		float inner = base + track_width - inner_track_width;
-		float switch_outer = intersect(turn_outer, inner);
-		float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE, state_dummy);
-		
-		float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
-		float arrow_modulate = (border_dist<0.4) ? arrow_cap : -1.0;
-		arrow_modulate = arrow_cap  * clamp(20.0*(-border_dist+0.25), -1.0, 1.0);
-		// arrow_modulate = sqrt(max(1.0-(1.0-arrow_modulate)*(1.0-arrow_modulate),0.0));
-		float switch_arrows = switch_base - (arrow_modulate)*inner_track_width*0.4;
-		
+	
 		float inner_change = fwidth(inner)*0.5;
-		float switch_outer_change = fwidth(switch_outer)*0.5;
-		float switch_arrows_change = fwidth(switch_arrows)*0.5;
 		t = smoothstep(inner_change, -inner_change, inner);
 		vec4 track_mix = mix(bg_mix, get_inner_color(state), t);
-		t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
-		vec4 switch_mix = mix(track_mix, switch_color, t);
-		t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
-		COLOR = mix(switch_mix, switch_inner_color, t);
+		
+		if (!has_switch || t <= 0.0) {
+			COLOR = track_mix;
+			// COLOR *=0.5;
+		}
+		else {
+			
+			float turn_outer = tracks(position, TURN_SWITCH_ALL, TRACK_BORDER, state_dummy);
+			
+			float switch_outer = intersect(turn_outer, inner);
+			float switch_base = tracks(position, TURN_SWITCH_PRIORITY, TRACK_LINE, state_dummy);
+			
+			float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
+			float arrow_modulate = (border_dist<0.4) ? arrow_cap : -1.0;
+			arrow_modulate = arrow_cap  * clamp(20.0*(-border_dist+0.25), -1.0, 1.0);
+			// arrow_modulate = sqrt(max(1.0-(1.0-arrow_modulate)*(1.0-arrow_modulate),0.0));
+			float switch_arrows = switch_base - (arrow_modulate)*inner_track_width*0.4;
+			
+			
+			float switch_outer_change = fwidth(switch_outer)*0.5;
+			float switch_arrows_change = fwidth(switch_arrows)*0.5;
+			
+			t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
+			vec4 switch_mix = mix(track_mix, switch_color, t);
+			t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
+			COLOR = mix(switch_mix, switch_inner_color, t);
+		}
 	}
 	if (contours) {
 		COLOR = vec4(1);
@@ -383,6 +397,7 @@ shader_param/stopper_delta = 0.677
 shader_param/stopper_size = 0.563
 shader_param/stopper_width = 0.11
 shader_param/contours = false
+shader_param/has_switch = null
 shader_param/connections = Transform( 8.102, 4.769, 2.424, 4.873, 5, 5.343, 5, 5, 5, 5, 5, 5 )
 shader_param/state_left = Transform( -0.639, 2.363, 1.029, 3.893, 0, 1.085, 0, 0, 0.475, 0.688, 0.269, 1.751 )
 shader_param/state_right = Transform( 0.958, 0.672, 1.364, 0.83, 0.455, 2.744, 0.645, 0.547, 0.596, -0.813, 0.596, 1.12 )
