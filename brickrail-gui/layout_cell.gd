@@ -123,6 +123,12 @@ func get_slot_to_cell(cell):
 	if cell.x_idx == x_idx and cell.y_idx == y_idx-1:
 		return "N"
 	return null
+
+func get_turn_track_from(slot, turn):
+	for track in tracks.values():
+		if track.get_turn_from(slot) == turn:
+			return track
+	assert(false)
 	
 func create_track(slot0, slot1):
 	var track = LayoutTrack.new(slot0, slot1, x_idx, y_idx)

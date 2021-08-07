@@ -23,6 +23,39 @@ var drag_selection = null
 signal input_mode_changed(mode)
 signal selected(obj)
 
+func serialize():
+	var result = {}
+	result["nx"] = len(cells)
+	result["ny"] = len(cells[0])
+	
+	var tracks = []
+	for row in cells:
+		for cell in row:
+			for track in cell.tracks.values():
+				tracks.append(track.serialize())
+	
+	result["tracks"] = tracks
+	return result
+
+func load(struct):
+	for row in cells:
+		for cell in row:
+			for track in cell.tracks.values():
+				track.remove()
+	
+	for track in struct.tracks:
+		var i = track.x_idx
+		var j = track.y_idx
+		var track_obj = cells[i][j].create_track(track.slot0, track.slot1)
+		cells[i][j].add_track(track_obj)
+	
+	for track in struct.tracks:
+		var i = track.x_idx
+		var j = track.y_idx
+		var orientation = track.slot0 + track.slot1
+		var track_obj = cells[i][j].tracks[orientation]
+		track_obj.load_connections(track.connections)
+
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:

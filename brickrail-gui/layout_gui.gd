@@ -35,3 +35,32 @@ func _on_LayoutDraw_pressed():
 
 func _on_selected(obj):
 	get_node(inspector_container).add_child(obj.get_inspector())
+
+
+func _on_LayoutSave_pressed():
+	
+	$SaveFileDialog.popup()
+
+
+func _on_SaveFileDialog_file_selected(path):
+	var struct = LayoutInfo.serialize()
+	var serial = JSON.print(struct, "\t")
+	var dir = Directory.new()
+	if dir.file_exists(path):
+		dir.remove(path)
+	var file = File.new()
+	file.open(path, 2)
+	file.store_string(serial)
+	file.close()
+
+
+func _on_LayoutOpen_pressed():
+	$OpenFileDialog.popup()
+
+
+func _on_OpenFileDialog_file_selected(path):
+	var file = File.new()
+	file.open(path, 1)
+	var serial = file.get_as_text()
+	var struct = JSON.parse(serial)
+	LayoutInfo.load(struct.result)

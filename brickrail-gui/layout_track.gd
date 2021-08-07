@@ -58,6 +58,36 @@ func _init(p_slot0, p_slot1, i, j):
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
 
+func serialize():
+	var result = {}
+	result["x_idx"] = x_idx
+	result["y_idx"] = y_idx
+	result["slot0"] = slot0
+	result["slot1"] = slot1
+	var connections_result = {}
+	for slot in connections:
+		connections_result[slot] = []
+		for turn in connections[slot]:
+			connections_result[slot].append(turn)
+	result["connections"] = connections_result
+	return result
+
+func load_connections(struct):
+	for slot in struct:
+		for turn in struct[slot]:
+			var track = get_slot_cell(slot).get_turn_track_from(get_neighbour_slot(slot), turn)
+			connect_track(slot, track)
+		
+func get_slot_cell(slot):
+	if slot=="N":
+		return LayoutInfo.cells[x_idx][y_idx-1]
+	if slot=="S":
+		return LayoutInfo.cells[x_idx][y_idx+1]
+	if slot=="W":
+		return LayoutInfo.cells[x_idx-1][y_idx]
+	if slot=="E":
+		return LayoutInfo.cells[x_idx+1][y_idx]
+
 func remove():
 	clear_connections()
 	emit_signal("removing", get_orientation())
