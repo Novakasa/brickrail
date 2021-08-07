@@ -76,6 +76,8 @@ func load_connections(struct):
 	for slot in struct:
 		for turn in struct[slot]:
 			var track = get_slot_cell(slot).get_turn_track_from(get_neighbour_slot(slot), turn)
+			if track in connections[slot].values():
+				continue
 			connect_track(slot, track)
 		
 func get_slot_cell(slot):

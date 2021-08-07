@@ -126,6 +126,8 @@ func get_slot_to_cell(cell):
 
 func get_turn_track_from(slot, turn):
 	for track in tracks.values():
+		if not slot in track.connections:
+			continue
 		if track.get_turn_from(slot) == turn:
 			return track
 	assert(false)
