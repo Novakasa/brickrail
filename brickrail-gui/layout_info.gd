@@ -37,11 +37,14 @@ func serialize():
 	result["tracks"] = tracks
 	return result
 
-func load(struct):
+func clear():
 	for row in cells:
 		for cell in row:
 			for track in cell.tracks.values():
 				track.remove()
+
+func load(struct):
+	clear()
 	
 	for track in struct.tracks:
 		var i = track.x_idx

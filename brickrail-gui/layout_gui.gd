@@ -39,10 +39,10 @@ func _on_selected(obj):
 
 func _on_LayoutSave_pressed():
 	
-	$SaveFileDialog.popup()
+	$SaveLayoutDialog.popup()
 
 
-func _on_SaveFileDialog_file_selected(path):
+func _on_SaveLayoutDialog_file_selected(path):
 	var struct = LayoutInfo.serialize()
 	var serial = JSON.print(struct, "\t")
 	var dir = Directory.new()
@@ -55,12 +55,16 @@ func _on_SaveFileDialog_file_selected(path):
 
 
 func _on_LayoutOpen_pressed():
-	$OpenFileDialog.popup()
+	$OpenLayoutDialog.popup()
 
 
-func _on_OpenFileDialog_file_selected(path):
+func _on_OpenLayoutDialog_file_selected(path):
 	var file = File.new()
 	file.open(path, 1)
 	var serial = file.get_as_text()
 	var struct = JSON.parse(serial)
 	LayoutInfo.load(struct.result)
+
+
+func _on_LayoutNew_pressed():
+	LayoutInfo.clear()

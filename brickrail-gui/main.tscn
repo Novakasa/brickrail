@@ -156,15 +156,21 @@ focus_mode = 0
 toggle_mode = true
 text = "draw"
 
-[node name="LayoutSave" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+[node name="LayoutNew" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_left = 162.0
-margin_right = 203.0
+margin_right = 200.0
+margin_bottom = 22.0
+text = "new"
+
+[node name="LayoutSave" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+margin_left = 204.0
+margin_right = 245.0
 margin_bottom = 22.0
 text = "save"
 
 [node name="LayoutOpen" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 207.0
-margin_right = 251.0
+margin_left = 249.0
+margin_right = 293.0
 margin_bottom = 22.0
 text = "open"
 
@@ -195,13 +201,13 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="SaveFileDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
+[node name="SaveLayoutDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 700.0
 margin_bottom = 400.0
 resizable = true
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
-[node name="OpenFileDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
+[node name="OpenLayoutDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 700.0
 margin_bottom = 400.0
 window_title = "Open a File"
@@ -215,7 +221,8 @@ filters = PoolStringArray( "*.brl ; brickrail layout" )
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutControl" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutSelect" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutDraw" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutNew" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutNew_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutSave" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutOpen" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutOpen_pressed"]
-[connection signal="file_selected" from="VBoxContainer/HSplitContainer/LayoutGui/SaveFileDialog" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_SaveFileDialog_file_selected"]
-[connection signal="file_selected" from="VBoxContainer/HSplitContainer/LayoutGui/OpenFileDialog" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_OpenFileDialog_file_selected"]
+[connection signal="file_selected" from="VBoxContainer/HSplitContainer/LayoutGui/SaveLayoutDialog" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_SaveLayoutDialog_file_selected"]
+[connection signal="file_selected" from="VBoxContainer/HSplitContainer/LayoutGui/OpenLayoutDialog" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_OpenLayoutDialog_file_selected"]
