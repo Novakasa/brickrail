@@ -8,4 +8,4 @@ As of now, trains detect their location via a Boost Color sensor pointed dowward
 
 This is work in progress. Communication between GUI and trains is working, but full automation of lego trains is not working yet. A lot of work went into the track layout editor.
 
-![Alt text](screenshot.png?raw=true "GUI screenshot")
+![GUI screenshot](screenshot.png)
