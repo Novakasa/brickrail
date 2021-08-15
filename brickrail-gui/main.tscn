@@ -131,8 +131,13 @@ margin_right = 759.0
 margin_bottom = 22.0
 size_flags_horizontal = 3
 
+[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+margin_right = 4.0
+margin_bottom = 22.0
+
 [node name="LayoutControl" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_right = 57.0
+margin_left = 8.0
+margin_right = 65.0
 margin_bottom = 22.0
 focus_mode = 0
 toggle_mode = true
@@ -140,8 +145,8 @@ shortcut_in_tooltip = false
 text = "control"
 
 [node name="LayoutSelect" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 61.0
-margin_right = 112.0
+margin_left = 69.0
+margin_right = 120.0
 margin_bottom = 22.0
 focus_mode = 0
 toggle_mode = true
@@ -149,30 +154,40 @@ pressed = true
 text = "select"
 
 [node name="LayoutDraw" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 116.0
-margin_right = 158.0
+margin_left = 124.0
+margin_right = 166.0
 margin_bottom = 22.0
 focus_mode = 0
 toggle_mode = true
 text = "draw"
 
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+margin_left = 170.0
+margin_right = 174.0
+margin_bottom = 22.0
+
 [node name="LayoutNew" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 162.0
-margin_right = 200.0
+margin_left = 178.0
+margin_right = 216.0
 margin_bottom = 22.0
 text = "new"
 
 [node name="LayoutSave" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 204.0
-margin_right = 245.0
+margin_left = 220.0
+margin_right = 261.0
 margin_bottom = 22.0
 text = "save"
 
 [node name="LayoutOpen" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 249.0
-margin_right = 293.0
+margin_left = 265.0
+margin_right = 309.0
 margin_bottom = 22.0
 text = "open"
+
+[node name="VSeparator3" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+margin_left = 313.0
+margin_right = 317.0
+margin_bottom = 22.0
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
 margin_top = 26.0
