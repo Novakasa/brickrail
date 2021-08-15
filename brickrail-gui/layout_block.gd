@@ -13,6 +13,6 @@ func _init(p_name):
 
 func set_section(p_section):
 	
-	p_section.set_track_attributes("block", name)
 	logical_block_p.set_section(p_section)
 	logical_block_n.set_section(p_section.flip())
+	logical_block_n.section.set_track_attributes("block", name)

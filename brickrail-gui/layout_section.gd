@@ -24,6 +24,8 @@ func can_add_track(track):
 
 func flip():
 	var section = ThisClass.new()
+	for i in range(len(tracks)-1, -1, -1):
+		section.add_track(tracks[i])
 	return section
 
 func add_track(track):
