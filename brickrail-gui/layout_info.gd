@@ -1,6 +1,7 @@
 extends Node
 
 var cells = []
+var blocks = {}
 
 var spacing = 64.0
 var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
@@ -58,6 +59,11 @@ func load(struct):
 		var orientation = track.slot0 + track.slot1
 		var track_obj = cells[i][j].tracks[orientation]
 		track_obj.load_connections(track.connections)
+
+func create_block(p_name, section):
+	var block =  LayoutBlock.new(p_name)
+	blocks[p_name] = block
+	block.set_section(section)
 
 func _unhandled_input(event):
 	if event is InputEventKey:

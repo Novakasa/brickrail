@@ -2,13 +2,17 @@
 class_name LayoutBlock
 extends Node2D
 
-var block_name: String
-var section = null
-var train = null
+var logical_block_p
+var logical_block_n
 
+func _init(p_name):
+	name = p_name
+	
+	logical_block_p = LayoutLogicalBlock.new(p_name + "+")
+	logical_block_n = LayoutLogicalBlock.new(p_name + "-")
 
-func setup_train(layout_train):
-	train = layout_train
-
-func get_route_to(block):
-	pass
+func set_section(p_section):
+	
+	p_section.set_track_attributes("block", name)
+	logical_block_p.set_section(p_section)
+	logical_block_n.set_section(p_section.flip())

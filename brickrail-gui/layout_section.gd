@@ -9,6 +9,7 @@ signal selected
 signal unselected
 
 var LayoutSectionInspector = preload("res://layout_section_inspector.tscn")
+var ThisClass = get_script()
 
 func can_add_track(track):
 	if len(tracks)>0:
@@ -20,6 +21,10 @@ func can_add_track(track):
 			if connected_slot != get_stop_slot():
 				return false
 	return true
+
+func flip():
+	var section = ThisClass.new()
+	return section
 
 func add_track(track):
 	if len(tracks)>0:
@@ -66,6 +71,9 @@ func select():
 	selected = true
 	set_track_attributes("selected", true)
 	emit_signal("selected")
+
+func unset_track_attributes(key, value):
+	set_track_attributes(key, null)
 
 func set_track_attributes(key, value):
 	if len(tracks)==0:

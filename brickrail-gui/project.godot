@@ -49,6 +49,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://layout_controller.gd"
 }, {
+"base": "Resource",
+"class": "LayoutLogicalBlock",
+"language": "GDScript",
+"path": "res://layout_logical_block.gd"
+}, {
 "base": "Node",
 "class": "LayoutRoute",
 "language": "GDScript",
@@ -83,6 +88,11 @@ _global_script_classes=[ {
 "class": "TrainCommand",
 "language": "GDScript",
 "path": "res://train_command.gd"
+}, {
+"base": "Node2D",
+"class": "VirtualTrain",
+"language": "GDScript",
+"path": "res://virtual_train.gd"
 } ]
 _global_script_class_icons={
 "BLECommand": "",
@@ -93,13 +103,15 @@ _global_script_class_icons={
 "LayoutBlock": "",
 "LayoutCell": "",
 "LayoutController": "",
+"LayoutLogicalBlock": "",
 "LayoutRoute": "",
 "LayoutSection": "",
 "LayoutSwitch": "",
 "LayoutTrack": "",
 "LayoutTrain": "",
 "PhysicalSwitch": "",
-"TrainCommand": ""
+"TrainCommand": "",
+"VirtualTrain": ""
 }
 
 [application]

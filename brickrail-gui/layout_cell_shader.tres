@@ -12,6 +12,7 @@ uniform vec4 grid_color: hint_color;
 uniform vec4 switch_inner_color: hint_color;
 uniform vec4 selected_color: hint_color;
 uniform vec4 hover_color: hint_color;
+uniform vec4 block_color: hint_color;
 
 uniform bool cell_hover;
 uniform float grid_width;
@@ -36,6 +37,7 @@ const int STATE_SELECTED = 1;
 const int STATE_HOVER = 2;
 const int STATE_OCCUPIED = 3;
 const int STATE_LOCKED = 4;
+const int STATE_BLOCK = 5;
 
 const float PI = 3.14159265358979323846;
 
@@ -309,6 +311,9 @@ vec4 get_inner_color(int state) {
 	if (state == STATE_SELECTED) {
 		return selected_color;
 	}
+	if (state == STATE_BLOCK) {
+		return block_color;
+	}
 }
 
 void fragment() {
@@ -389,6 +394,7 @@ shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
 shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
 shader_param/selected_color = Color( 0.647059, 0.215686, 0.168627, 1 )
 shader_param/hover_color = Color( 0.133333, 0.615686, 0.647059, 1 )
+shader_param/block_color = Color( 1, 0.513726, 0, 1 )
 shader_param/cell_hover = false
 shader_param/grid_width = 0.097
 shader_param/track_width = 0.126
