@@ -188,6 +188,9 @@ func update_switch(slot):
 	else:
 		if switches[slot] != null:
 			switches[slot].queue_free()
+			if hover_switch == switches[slot]:
+				hover_switch.stop_hover()
+				hover_switch = null
 			switches[slot] = null
 	
 func has_switch():
