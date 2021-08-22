@@ -32,12 +32,11 @@ uniform mat4 state_right;
 uniform mat4 state_center;
 uniform mat4 state_none;
 
-const int STATE_NONE = 0;
 const int STATE_SELECTED = 1;
 const int STATE_HOVER = 2;
-const int STATE_OCCUPIED = 3;
 const int STATE_LOCKED = 4;
-const int STATE_BLOCK = 5;
+const int STATE_BLOCK_OCCUPIED = 16;
+const int STATE_BLOCK = 8;
 
 const float PI = 3.14159265358979323846;
 
@@ -287,8 +286,8 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 				}
 				connection = track_connection(position, from_slot, to_slot2, turn, track_type);
 				int temp_state = turn_state[flag];
-				if (temp_state > state && connection<0.0) {
-					state = temp_state;
+				if (connection<0.0) {
+					state |= temp_state;
 				}
 				if ((connection_flags & turn_flags[flag]) == turn_flags[flag]) {
 					scene = merge(scene, connection);
@@ -302,16 +301,16 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 }
 
 vec4 get_inner_color(int state) {
-	if (state == STATE_NONE) {
+	if (state == 0) {
 		return track_inner;
 	}
-	if (state == STATE_HOVER) {
+	if ((state & STATE_HOVER)== STATE_HOVER) {
 		return hover_color;
 	}
-	if (state == STATE_SELECTED) {
+	if ((state & STATE_SELECTED) == STATE_SELECTED) {
 		return selected_color;
 	}
-	if (state == STATE_BLOCK) {
+	if ((state & STATE_BLOCK) == STATE_BLOCK) {
 		return block_color;
 	}
 }

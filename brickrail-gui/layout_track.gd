@@ -22,12 +22,11 @@ var default_meta = {"selected": false, "hover": false}
 
 var TrackInspector = preload("res://track_inspector.tscn")
 
-const STATE_NONE = 0
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
-const STATE_OCCUPIED = 3
 const STATE_LOCKED = 4
-const STATE_BLOCK = 5
+const STATE_BLOCK = 8
+const STATE_BLOCK_OCCUPIED = 16
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
@@ -446,17 +445,17 @@ func get_shader_states(to_slot):
 func get_shader_state(to_slot, turn):
 	var state = 0
 	if "block" in metadata[to_slot][turn]:
-		state = STATE_BLOCK
+		state |= STATE_BLOCK
 	
 	if turn != "none":
 		var switches = get_connection_switches(to_slot, turn)
 		for switch in switches:
 			if switch.selected:
-				state = max(state, STATE_SELECTED)
+				state |= STATE_SELECTED
 			if switch.hover:
-				state = max(state, STATE_HOVER)
+				state |= STATE_HOVER
 	if metadata[to_slot][turn]["selected"]:
-		state = max(state, STATE_SELECTED)
+		state |= STATE_SELECTED
 	if metadata[to_slot][turn]["hover"]:
-		state = max(state, STATE_HOVER)
+		state |= STATE_HOVER
 	return state
