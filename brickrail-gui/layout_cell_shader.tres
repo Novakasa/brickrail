@@ -13,6 +13,7 @@ uniform vec4 switch_inner_color: hint_color;
 uniform vec4 selected_color: hint_color;
 uniform vec4 hover_color: hint_color;
 uniform vec4 block_color: hint_color;
+uniform vec4 track_border_block: hint_color;
 
 uniform bool cell_hover;
 uniform float grid_width;
@@ -315,6 +316,14 @@ vec4 get_inner_color(int state) {
 	}
 }
 
+vec4 get_border_color(int state) {
+	if ((state & STATE_BLOCK) == STATE_BLOCK) {
+		return track_border_block;
+	}
+	return track_base;
+}
+
+
 void fragment() {
 	vec4 bg = background;
 	if (cell_hover) {
@@ -328,11 +337,10 @@ void fragment() {
 	int state;
 	int state_dummy;
 	float base = tracks(position, TURN_BASE, TRACK_FULL, state);
-	float inner = base + track_width - inner_track_width;
 	
 	float base_change = fwidth(base)*0.5;
 	float t = smoothstep(base_change, -base_change, base);
-	vec4 bg_mix = mix(bg, track_base, t);
+	vec4 bg_mix = mix(bg, get_border_color(state), t);
 	
 	if (t <= -0.0) {
 		COLOR = bg_mix;
@@ -340,6 +348,7 @@ void fragment() {
 	}
 	else {
 	
+		float inner = base + track_width - inner_track_width;
 		float inner_change = fwidth(inner)*0.5;
 		t = smoothstep(inner_change, -inner_change, inner);
 		vec4 track_mix = mix(bg_mix, get_inner_color(state), t);
@@ -391,9 +400,10 @@ shader_param/track_inner = Color( 0, 0, 0, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
 shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
 shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
-shader_param/selected_color = Color( 0.647059, 0.215686, 0.168627, 1 )
-shader_param/hover_color = Color( 0.133333, 0.615686, 0.647059, 1 )
-shader_param/block_color = Color( 1, 0.513726, 0, 1 )
+shader_param/selected_color = Color( 0.133333, 0.615686, 0.647059, 1 )
+shader_param/hover_color = Color( 0, 0.368627, 1, 1 )
+shader_param/block_color = Color( 0.0823529, 0.266667, 0.0470588, 1 )
+shader_param/track_border_block = Color( 0.737255, 1, 0.313726, 1 )
 shader_param/cell_hover = false
 shader_param/grid_width = 0.097
 shader_param/track_width = 0.126
