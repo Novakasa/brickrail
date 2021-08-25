@@ -327,7 +327,7 @@ void fragment() {
 	
 	int track_state;
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
-	int state = block_state | track_state;
+	int state = track_state;
 	float base_change = fwidth(base)*0.5;
 	t = smoothstep(base_change, -base_change, base);
 	vec4 base_mix = mix(block_mix, get_border_color(state), t);
@@ -406,7 +406,7 @@ shader_param/block_width = 0.28
 shader_param/contours = false
 shader_param/has_switch = true
 shader_param/has_block = null
-shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 128.154, 0, 0, 0, 0, 0, 136, 0 )
+shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 128.155, 0 )
+shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 137.158, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 133.676, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_none = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
