@@ -306,28 +306,13 @@ func get_next_tracks_at(slot):
 	return connections[slot]
 	push_error("[LayoutTrack.get_next_tracks_at] track doesn't contain " + slot)
 
-func get_circle_arc_segment(center, radius, num, start, end):
-	var segments = PoolVector2Array()
-	var delta = (end-start)/num
-	var p1
-	for i in range(num):
-		var alpha0 = start + i*delta
-		var alpha1 = alpha0 + delta
-		var p0 = center + radius*Vector2(cos(alpha0), sin(alpha0))
-		segments.append(p0)
-		p1 = center + radius*Vector2(cos(alpha1), sin(alpha1))
-	segments.append(p1)
-	return segments
-
 func get_slot_tangent(slot):
 	if slot == slot1:
 		return pos1-pos0
 	return pos0-pos1
 
 func get_slot_pos(slot):
-	if slot == slot1:
-		return pos1
-	return pos0
+	return LayoutInfo.slot_positions[slot]
 
 func has_point(pos):
 	pass
@@ -468,3 +453,113 @@ func get_shader_state(to_slot, turn):
 	if metadata[to_slot][turn]["hover"]:
 		state |= STATE_HOVER
 	return state
+
+func get_tangent_to(slot):
+	if slot == slot1:
+		return get_tangent()
+	return -get_tangent()
+
+func get_turn_angle(slot, turn):
+	var next_track = connections[slot][turn]
+	var tangent = get_tangent_to(slot)
+	var neighbour_slot = get_neighbour_slot(slot)
+	var next_tangent = -next_track.get_tangent_to(neighbour_slot)
+	var angle = tangent.angle_to(next_tangent)
+	while angle>PI:
+		angle-=2*PI
+	while angle<-PI:
+		angle += 2*PI
+	return angle
+	
+func get_turn_radius(angle):
+	if is_equal_approx(angle, 0.0):
+		return 0.0
+	if is_equal_approx(abs(angle), 0.25*PI):
+		return 0.5+0.25*sqrt(2.0)
+	if is_equal_approx(abs(angle),PI*0.5):
+		return 0.25*sqrt(2.0)
+	push_error("[get_connection_radius] invalid angle to next track!")
+
+func get_interpolation_parameters(slot, turn):
+	var angle = get_turn_angle(slot, turn)
+	var turn_sign = sign(angle)
+	var neigbour_slot = get_neighbour_slot(slot)
+	var from_slot = slot0
+	if slot == slot0:
+		from_slot = slot1
+	var from_pos = get_slot_pos(from_slot)
+	var to_pos = get_slot_pos(slot)
+	var aligned_vector = get_slot_pos(slot)-get_slot_pos(neigbour_slot)
+	var tangent = get_tangent_to(slot)
+	var arc_start
+	var straight_start
+	if tangent.dot(aligned_vector)>0.99:
+		arc_start = to_pos-aligned_vector*(0.25*sqrt(2))
+		straight_start = 0.5*(to_pos+from_pos)
+	else:
+		arc_start = 0.5*(to_pos+from_pos)
+		straight_start = arc_start
+	var radius = get_turn_radius(angle)
+	var center = arc_start + tangent.rotated(0.5*PI*turn_sign)*radius
+	var start_angle = tangent.angle()-0.5*PI*turn_sign
+	var stop_angle = start_angle + 0.5*angle
+	var arc_length = abs(0.5*radius*angle)
+	if is_equal_approx(radius, 0.0):
+		arc_length = (to_pos-arc_start).length()
+	var straight_length = (arc_start - straight_start).length()
+	var connection_length = arc_length + straight_length
+	
+	return {"from_pos": from_pos,
+			"to_pos": to_pos,
+			"center": center,
+			"radius": radius,
+			"start_angle": start_angle,
+			"stop_angle": stop_angle,
+			"angle": angle,
+			"straight_start": straight_start,
+			"arc_start": arc_start,
+			"arc_length": arc_length,
+			"straight_length": straight_length,
+			"connection_length": connection_length}
+
+func get_connection_length(slot, turn):
+	return get_interpolation_parameters(slot, turn).connection_length
+
+func interpolate_connection(to_slot, turn, t, normalized=false):
+	var params = get_interpolation_parameters(to_slot, turn)
+	var x = t
+	if normalized:
+		x = t*params.connection_length
+	if is_equal_approx(params.radius, 0.0):
+		return lerp(params.straight_start, params.to_pos, x/params.connection_length)
+	if x<params.straight_length:
+		return lerp(params.straight_start, params.arc_start, x/params.straight_length)
+	var angle = lerp(params.start_angle, params.stop_angle, (x-params.straight_length)/params.arc_length)
+	return params.center + params.radius*Vector2(1.0,0.0).rotated(angle)
+
+func interpolate_track_connection(track, t, normalized=false):
+	var connection = get_connection_to(track)
+	var reverse_connection = track.get_connection_to(self)
+	var this_length = get_connection_length(connection.slot, connection.turn)
+	var reverse_length = track.get_connection_length(reverse_connection.slot, reverse_connection.turn)
+	var total_length = this_length + reverse_length
+	var x = t
+	if normalized:
+		x = t*total_length
+	printt(total_length, this_length, reverse_length, x)
+	if x<this_length:
+		return interpolate_connection(connection.slot, connection.turn, x, false)
+	var pos = track.interpolate_connection(reverse_connection.slot, reverse_connection.turn, total_length-x, false)
+	pos += Vector2(track.x_idx-x_idx, track.y_idx-y_idx)
+	return pos
+
+func interpolate_position_linear(from_slot, t):
+	var to_slot = get_opposite_slot(from_slot)
+	var from_pos = get_slot_pos(from_slot)
+	var to_pos = get_slot_pos(to_slot)
+	if t>=1.0:
+		return to_pos
+	if t<=0.0:
+		return from_pos
+	return from_pos + (to_pos-from_pos)*t
+

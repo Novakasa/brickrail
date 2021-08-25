@@ -147,7 +147,7 @@ func add_track(track):
 	track.connect("switch_position_changed", self, "_on_track_connections_changed")
 	track.connect("removing", self, "_on_track_removing")
 	track.connect("selected", self, "_on_track_selected")
-	update()
+	# update()
 	_on_track_connections_changed(track.get_orientation())
 	return track
 
@@ -203,6 +203,7 @@ func _on_track_connections_changed(orientation):
 			has_switch=true
 	material.set_shader_param("has_switch", has_switch)
 	_on_track_states_changed(orientation)
+	# update()
 
 func _on_track_states_changed(orientation=null):
 	var track = tracks[orientation]
@@ -228,3 +229,16 @@ func _on_track_states_changed(orientation=null):
 func _draw():
 	var spacing = LayoutInfo.spacing
 	draw_rect(Rect2(Vector2(0,0), Vector2(spacing, spacing)), Color.black)
+	
+	# for debugging interpolation, uncomment update() calls
+	for track in tracks.values():
+		for slot in track.connections:
+			for turn in track.connections[slot]:
+				# var params = track.get_interpolation_parameters(slot, turn)
+				# if not is_equal_approx(params.radius, 0.0):
+				# 	draw_circle(spacing*params.center, spacing*params.radius, Color.red)
+				for t in [0.0, 0.1666, 0.333, 0.5, 0.666, 0.8333, 1.0]:
+					var pos = track.interpolate_track_connection(track.connections[slot][turn], t, true)
+					# var pos = track.interpolate_connection(slot, turn, t, true)
+					print(pos)
+					draw_circle(spacing*pos, spacing*0.03, Color.white)
