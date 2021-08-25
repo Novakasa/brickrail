@@ -40,7 +40,7 @@ func set_section(p_section):
 
 func _draw():
 	size = $scaler.scale*$scaler/Label.rect_size
-	draw_rect(Rect2(-0.5*size, size), color)
+	# draw_rect(Rect2(-0.5*size, size), color)
 	var i = 0
 	var next
 	var xpos = -size.x/2

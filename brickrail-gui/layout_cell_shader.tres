@@ -22,6 +22,7 @@ uniform float inner_track_width;
 uniform float stopper_delta;
 uniform float stopper_size;
 uniform float stopper_width;
+uniform float block_width;
 
 uniform bool contours;
 uniform bool has_switch;
@@ -147,7 +148,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 
 	float scene = 10.0;
 	float width = track_width;
-	if (track_type==TRACK_LINE || track_type==TRACK_BORDER) {
+	if (track_type==TRACK_LINE || track_type==TRACK_BORDER || track_type==TRACK_BLOCK) {
 		width = 0.0;
 	}
 	
@@ -227,6 +228,10 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		}
 		scene = substract(scene, center_substract);
 	}
+	if (track_type == TRACK_BLOCK) {
+		scene = scene - block_width;
+	}
+	
 	return scene;
 	
 }
@@ -290,9 +295,6 @@ vec4 get_inner_color(int state) {
 	if ((state & STATE_SELECTED) == STATE_SELECTED) {
 		return selected_color;
 	}
-	if ((state & STATE_BLOCK) == STATE_BLOCK) {
-		return block_color;
-	}
 	if ((state & STATE_CONNECTED) == STATE_CONNECTED) {
 		return track_inner;
 	}
@@ -316,18 +318,23 @@ void fragment() {
 	if (border_dist<grid_width*0.5) {
 		bg = grid_color;
 	}
+	
 	int block_state;
 	float block = tracks(position, STATE_BLOCK, TRACK_BLOCK, block_state);
+	float block_change = fwidth(block)*0.5;
+	float t = smoothstep(block_change, -block_change, block);
+	vec4 block_mix = mix(bg, block_color, t);
+	
 	int track_state;
-	int state_dummy;
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
 	int state = block_state | track_state;
 	float base_change = fwidth(base)*0.5;
-	float t = smoothstep(base_change, -base_change, base);
-	vec4 bg_mix = mix(bg, get_border_color(state), t);
+	t = smoothstep(base_change, -base_change, base);
+	vec4 base_mix = mix(block_mix, get_border_color(state), t);
 	
+	int state_dummy;
 	if (t <= -0.0) {
-		COLOR = bg_mix;
+		COLOR = base_mix;
 		// COLOR *=0.5;
 	}
 	else {
@@ -335,7 +342,7 @@ void fragment() {
 		float inner = base + track_width - inner_track_width;
 		float inner_change = fwidth(inner)*0.5;
 		t = smoothstep(inner_change, -inner_change, inner);
-		vec4 track_mix = mix(bg_mix, get_inner_color(state), t);
+		vec4 track_mix = mix(base_mix, get_inner_color(state), t);
 		
 		if (!has_switch || t <= 0.0) {
 			COLOR = track_mix;
@@ -386,8 +393,8 @@ shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
 shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
 shader_param/selected_color = Color( 0.133333, 0.615686, 0.647059, 1 )
 shader_param/hover_color = Color( 0, 0.368627, 1, 1 )
-shader_param/block_color = Color( 0, 0, 0, 1 )
-shader_param/track_border_block = Color( 0.737255, 1, 0.313726, 1 )
+shader_param/block_color = Color( 0.788235, 0.976471, 0.00392157, 1 )
+shader_param/track_border_block = Color( 0.321569, 0.494118, 0.0470588, 1 )
 shader_param/cell_hover = false
 shader_param/grid_width = 0.097
 shader_param/track_width = 0.126
@@ -395,10 +402,11 @@ shader_param/inner_track_width = 0.062
 shader_param/stopper_delta = 0.677
 shader_param/stopper_size = 0.563
 shader_param/stopper_width = 0.11
+shader_param/block_width = 0.28
 shader_param/contours = false
 shader_param/has_switch = true
 shader_param/has_block = null
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 128, 0, 0, 128.154, 0, 0, 0, 0, 0, 128.796, 0 )
-shader_param/state_none = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 8, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 128.154, 0, 0, 0, 0, 0, 136, 0 )
+shader_param/state_none = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
