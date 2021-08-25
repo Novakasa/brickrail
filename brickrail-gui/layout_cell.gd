@@ -193,16 +193,8 @@ func _on_track_connections_changed(orientation):
 	for track in tracks.values():
 		if track.has_switch() or track.borders_switch():
 			has_switch=true
-	var track = tracks[orientation]
-	for to_slot in [track.slot0, track.slot1]:
-		var from_slot = track.get_opposite_slot(to_slot)
-		var to_slot_id = LayoutInfo.slot_index[to_slot]
-		var from_slot_id = LayoutInfo.slot_index[from_slot]
-		if to_slot_id == 3:
-			to_slot_id = from_slot_id
-		connection_matrix[from_slot_id][to_slot_id] = track.get_shader_connection_flags(to_slot)
-	material.set_shader_param("connections", transform_from_matrix(connection_matrix))
 	material.set_shader_param("has_switch", has_switch)
+	_on_track_states_changed(orientation)
 
 func _on_track_states_changed(orientation=null):
 	var track = tracks[orientation]

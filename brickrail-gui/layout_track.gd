@@ -27,6 +27,11 @@ const STATE_HOVER = 2
 const STATE_LOCKED = 4
 const STATE_BLOCK = 8
 const STATE_BLOCK_OCCUPIED = 16
+const STATE_BLOCK_HOVER = 32
+const STATE_BLOCK_SELECTED = 64
+const STATE_CONNECTED = 128
+const STATE_SWITCH = 256
+const STATE_SWITCH_PRIORITY = 512
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
@@ -424,30 +429,6 @@ func set_track_connection_attribute(track, key, value):
 	var connection = get_connection_to(track)
 	set_connection_attribute(connection.slot, connection.turn, key, value)
 
-func get_shader_connection_flags(to_slot):
-	if len(connections[to_slot]) == 0:
-		return 8
-
-	var turn_flags = {"left": 1, "center": 2, "right": 4}
-	var position_flags = {"left": 16, "center": 32, "right": 64}
-	var position_flags_priority = {"left": 128, "center": 256, "right": 512}
-	var connection_flags = 0
-	for turn in connections[to_slot]:
-		connection_flags |= turn_flags[turn]
-		
-		var opposite_switch = get_opposite_switch(to_slot, turn)
-		var opposite_turn = get_turn_from(to_slot)
-		if opposite_switch != null:
-			if opposite_turn == opposite_switch.get_position():
-				connection_flags |= position_flags[turn]
-
-	if switches[to_slot] != null:
-		connection_flags |= position_flags[switches[to_slot].get_position()]
-		if not switches[to_slot].disabled:
-			connection_flags |= position_flags_priority[switches[to_slot].get_position()]
-	
-	return connection_flags
-
 func get_shader_states(to_slot):
 	var states = {"left": 0, "right": 0, "center": 0, "none": 0}
 	for turn in metadata[to_slot]:
@@ -458,14 +439,30 @@ func get_shader_state(to_slot, turn):
 	var state = 0
 	if "block" in metadata[to_slot][turn]:
 		state |= STATE_BLOCK
-	
-	if turn != "none":
-		var switches = get_connection_switches(to_slot, turn)
-		for switch in switches:
-			if switch.selected:
+	if turn in connections[to_slot]:
+		state |= STATE_CONNECTED
+	if turn == "none" and len(connections[to_slot])==0:
+		state |= STATE_CONNECTED
+	if turn != "none" and turn in connections[to_slot]:
+		var opposite_switch = get_opposite_switch(to_slot, turn)
+		var opposite_turn = get_turn_from(to_slot)
+		if opposite_switch != null:
+			if opposite_switch.selected:
 				state |= STATE_SELECTED
-			if switch.hover:
+			if opposite_switch.hover:
 				state |= STATE_HOVER
+			if opposite_turn == opposite_switch.get_position():
+				state |= STATE_SWITCH
+
+		if switches[to_slot] != null:
+			if switches[to_slot].selected:
+				state |= STATE_SELECTED
+			if switches[to_slot].hover:
+				state |= STATE_HOVER
+			if not switches[to_slot].disabled and switches[to_slot].get_position() == turn:
+				state |= STATE_SWITCH
+				state |= STATE_SWITCH_PRIORITY
+		
 	if metadata[to_slot][turn]["selected"]:
 		state |= STATE_SELECTED
 	if metadata[to_slot][turn]["hover"]:
