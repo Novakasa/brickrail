@@ -44,6 +44,7 @@ func serialize():
 	return result
 
 func clear():
+	unselect()
 	for row in cells:
 		for cell in row:
 			for track in cell.tracks.values():
@@ -122,9 +123,13 @@ func set_input_mode(mode):
 	input_mode = mode
 	emit_signal("input_mode_changed", mode)
 
-func select(obj):
+func unselect():
 	if selection != null:
 		selection.unselect()
+	
+
+func select(obj):
+	unselect()
 	selection = obj
 	obj.connect("tree_exiting", self, "_on_selection_tree_exiting")
 	obj.connect("unselected", self, "_on_selection_unselected")
