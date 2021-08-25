@@ -8,7 +8,7 @@ var blocks = {}
 
 var BlockScene = preload("res://layout_block.tscn")
 
-var spacing = 64.0
+var spacing = 1024.0
 var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
 var pretty_tracks = true
 var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}

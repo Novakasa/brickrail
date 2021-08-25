@@ -4,21 +4,23 @@
 [ext_resource path="res://font-roboto/Roboto-Black.ttf" type="DynamicFontData" id=2]
 [ext_resource path="res://font-roboto/Roboto-Bold.ttf" type="DynamicFontData" id=3]
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="DynamicFont" id=3]
+size = 320
+use_mipmaps = true
+use_filter = true
 font_data = ExtResource( 3 )
 
-[sub_resource type="DynamicFont" id=1]
-size = 140
+[sub_resource type="DynamicFont" id=2]
+size = 320
 use_filter = true
 font_data = ExtResource( 2 )
 
 [node name="LayoutBlock" type="Node2D"]
 script = ExtResource( 1 )
 color = Color( 0.0431373, 0.258824, 0.239216, 1 )
-font = SubResource( 2 )
+font = SubResource( 3 )
 
 [node name="scaler" type="Node2D" parent="."]
-scale = Vector2( 0.1, 0.1 )
 
 [node name="Label" type="Label" parent="scaler"]
 visible = false
@@ -30,7 +32,7 @@ margin_left = -457.0
 margin_top = -105.5
 margin_right = 457.0
 margin_bottom = 105.5
-custom_fonts/font = SubResource( 1 )
+custom_fonts/font = SubResource( 2 )
 text = "block name"
 align = 1
 valign = 1

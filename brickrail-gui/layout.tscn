@@ -10,3 +10,4 @@ script = ExtResource( 2 )
 [node name="Camera2D" type="Camera2D" parent="Grid"]
 anchor_mode = 0
 current = true
+zoom = Vector2( 15, 15 )
