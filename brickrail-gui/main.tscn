@@ -43,28 +43,28 @@ __meta__ = {
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_right = 1280.0
-margin_bottom = 22.0
+margin_bottom = 27.0
 size_flags_horizontal = 3
 
 [node name="AddTrain" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_right = 68.0
-margin_bottom = 22.0
+margin_right = 75.0
+margin_bottom = 27.0
 text = "add train"
 
 [node name="AddLayoutController" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 72.0
-margin_right = 216.0
-margin_bottom = 22.0
+margin_left = 79.0
+margin_right = 236.0
+margin_bottom = 27.0
 text = "add layout controller"
 
 [node name="AddSwitch" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 220.0
-margin_right = 300.0
-margin_bottom = 22.0
+margin_left = 240.0
+margin_right = 329.0
+margin_bottom = 27.0
 text = "add switch"
 
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
-margin_top = 26.0
+margin_top = 31.0
 margin_right = 1280.0
 margin_bottom = 720.0
 mouse_filter = 1
@@ -74,14 +74,14 @@ split_offset = 293
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/HSplitContainer"]
 margin_right = 303.0
-margin_bottom = 694.0
+margin_bottom = 689.0
 mouse_filter = 1
 
 [node name="trains" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
-margin_top = 29.0
+margin_top = 34.0
 margin_right = -5.0
 margin_bottom = -5.0
 size_flags_horizontal = 3
@@ -112,7 +112,7 @@ size_flags_vertical = 3
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer/HSplitContainer"]
 margin_left = 311.0
 margin_right = 1280.0
-margin_bottom = 694.0
+margin_bottom = 689.0
 split_offset = -202
 script = ExtResource( 2 )
 input_control_button = NodePath("LayoutSplit/LayoutTools/LayoutControl")
@@ -122,77 +122,77 @@ inspector_container = NodePath("InspectorContainer")
 
 [node name="LayoutSplit" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 759.0
-margin_bottom = 694.0
+margin_bottom = 689.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="LayoutTools" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
 margin_right = 759.0
-margin_bottom = 22.0
+margin_bottom = 27.0
 size_flags_horizontal = 3
 
 [node name="VSeparator2" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_right = 4.0
-margin_bottom = 22.0
+margin_bottom = 27.0
 
 [node name="LayoutControl" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_left = 8.0
-margin_right = 65.0
-margin_bottom = 22.0
+margin_right = 69.0
+margin_bottom = 27.0
 focus_mode = 0
 toggle_mode = true
 shortcut_in_tooltip = false
 text = "control"
 
 [node name="LayoutSelect" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 69.0
-margin_right = 120.0
-margin_bottom = 22.0
+margin_left = 73.0
+margin_right = 126.0
+margin_bottom = 27.0
 focus_mode = 0
 toggle_mode = true
 pressed = true
 text = "select"
 
 [node name="LayoutDraw" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 124.0
-margin_right = 166.0
-margin_bottom = 22.0
+margin_left = 130.0
+margin_right = 177.0
+margin_bottom = 27.0
 focus_mode = 0
 toggle_mode = true
 text = "draw"
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 170.0
-margin_right = 174.0
-margin_bottom = 22.0
+margin_left = 181.0
+margin_right = 185.0
+margin_bottom = 27.0
 
 [node name="LayoutNew" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 178.0
-margin_right = 216.0
-margin_bottom = 22.0
+margin_left = 189.0
+margin_right = 230.0
+margin_bottom = 27.0
 text = "new"
 
 [node name="LayoutSave" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 220.0
-margin_right = 261.0
-margin_bottom = 22.0
+margin_left = 234.0
+margin_right = 279.0
+margin_bottom = 27.0
 text = "save"
 
 [node name="LayoutOpen" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 265.0
-margin_right = 309.0
-margin_bottom = 22.0
+margin_left = 283.0
+margin_right = 330.0
+margin_bottom = 27.0
 text = "open"
 
 [node name="VSeparator3" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 313.0
-margin_right = 317.0
-margin_bottom = 22.0
+margin_left = 334.0
+margin_right = 338.0
+margin_bottom = 27.0
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
-margin_top = 26.0
+margin_top = 31.0
 margin_right = 759.0
-margin_bottom = 694.0
+margin_bottom = 689.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -200,8 +200,10 @@ stretch = true
 script = ExtResource( 4 )
 
 [node name="Viewport" type="Viewport" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer"]
-size = Vector2( 759, 668 )
+size = Vector2( 759, 658 )
 handle_input_locally = false
+msaa = 2
+fxaa = true
 hdr = false
 usage = 0
 render_target_update_mode = 3
@@ -211,7 +213,7 @@ render_target_update_mode = 3
 [node name="InspectorContainer" type="Panel" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_left = 767.0
 margin_right = 969.0
-margin_bottom = 694.0
+margin_bottom = 689.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

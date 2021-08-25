@@ -1,7 +1,12 @@
+tool
 extends Node
+
+var grid = null
 
 var cells = []
 var blocks = {}
+
+var BlockScene = preload("res://layout_block.tscn")
 
 var spacing = 64.0
 var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
@@ -61,9 +66,11 @@ func load(struct):
 		track_obj.load_connections(track.connections)
 
 func create_block(p_name, section):
-	var block =  LayoutBlock.new(p_name)
+	var block = BlockScene.instance()
+	block.setup(p_name)
 	blocks[p_name] = block
 	block.set_section(section)
+	grid.add_child(block)
 
 func _unhandled_input(event):
 	if event is InputEventKey:

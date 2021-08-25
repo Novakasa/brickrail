@@ -72,6 +72,15 @@ func serialize():
 	result["connections"] = connections_result
 	return result
 
+func get_cell():
+	return LayoutInfo.cells[x_idx][y_idx]
+
+func get_center():
+	return (pos0 + pos1)*0.5
+
+func get_tangent():
+	return (pos1-pos0).normalized()
+
 func load_connections(struct):
 	for slot in struct:
 		for turn in struct[slot]:

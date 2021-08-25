@@ -23,6 +23,7 @@ func setup_grid():
 			LayoutInfo.cells[i][j].connect("track_selected", self, "_on_cell_track_selected")
 
 func _ready():
+	LayoutInfo.grid = self
 	setup_grid()
 
 func _draw():
