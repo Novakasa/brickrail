@@ -551,7 +551,7 @@ func interpolate_track_connection(track, t, normalized=false):
 	var x = t
 	if normalized:
 		x = t*total_length
-	printt(total_length, this_length, reverse_length, x)
+	# printt(total_length, this_length, reverse_length, x)
 	if x<this_length:
 		return interpolate_connection(connection.slot, connection.turn, x, false)
 	var pos = track.interpolate_connection(reverse_connection.slot, reverse_connection.turn, total_length-x, false)

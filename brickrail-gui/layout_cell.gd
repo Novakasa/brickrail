@@ -240,5 +240,4 @@ func _draw():
 				for t in [0.0, 0.1666, 0.333, 0.5, 0.666, 0.8333, 1.0]:
 					var pos = track.interpolate_track_connection(track.connections[slot][turn], t, true)
 					# var pos = track.interpolate_connection(slot, turn, t, true)
-					print(pos)
 					draw_circle(spacing*pos, spacing*0.03, Color.white)
