@@ -49,6 +49,6 @@ func _draw():
 			next = name[i+1]
 		else:
 			next = ""
-		xpos += draw_char(font, Vector2(xpos,0.0),ch,next)
+		xpos += draw_char(font, Vector2(xpos,0.0),ch,next, Color.black)
 		i += 1
 		# xpos += size.x/len(name)

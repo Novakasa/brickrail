@@ -8,6 +8,7 @@ var slot1
 var pos0
 var pos1
 var connections = {}
+var interpolation_params = {}
 var slots = ["N", "S", "E", "W"]
 var route_lock=false
 var hover=false
@@ -50,6 +51,8 @@ func _init(p_slot0, p_slot1, i, j):
 	assert_slot_degeneracy()
 	connections[slot0] = {}
 	connections[slot1] = {}
+	interpolation_params[slot0] = {}
+	interpolation_params[slot1] = {}
 	pos0 = LayoutInfo.slot_positions[slot0]
 	pos1 = LayoutInfo.slot_positions[slot1]
 	switches[slot0] = null
@@ -179,6 +182,7 @@ func connect_track(slot, track, initial=true):
 	var turn = track.get_turn_from(get_neighbour_slot(slot))
 	connections[slot][turn] = track
 	metadata[slot][turn] = default_meta.duplicate()
+	interpolation_params[slot][turn] = get_interpolation_parameters(slot, turn)
 	# prints("added connection, turning:", turn)
 	track.connect("connections_cleared", self, "_on_track_connections_cleared")
 	if len(connections[slot])>1:
@@ -254,6 +258,7 @@ func disconnect_track(track):
 
 func disconnect_turn(slot, turn):
 	connections[slot].erase(turn)
+	interpolation_params[slot].erase(turn)
 	metadata[slot].erase(turn)
 	if len(connections[slot]) > 0:
 		update_switch(slot)
@@ -523,10 +528,10 @@ func get_interpolation_parameters(slot, turn):
 			"connection_length": connection_length}
 
 func get_connection_length(slot, turn):
-	return get_interpolation_parameters(slot, turn).connection_length
+	return interpolation_params[slot][turn].connection_length
 
 func interpolate_connection(to_slot, turn, t, normalized=false):
-	var params = get_interpolation_parameters(to_slot, turn)
+	var params = interpolation_params[to_slot][turn]
 	var x = t
 	if normalized:
 		x = t*params.connection_length

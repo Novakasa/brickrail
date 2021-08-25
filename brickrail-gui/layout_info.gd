@@ -45,6 +45,9 @@ func serialize():
 
 func clear():
 	unselect()
+	for blockname in blocks:
+		blocks[blockname].queue_free()
+		blocks.erase(blockname)
 	for row in cells:
 		for cell in row:
 			for track in cell.tracks.values():
