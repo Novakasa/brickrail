@@ -169,7 +169,15 @@ func _on_track_removing(orientation):
 		if to_slot_id == 3:
 			to_slot_id = from_slot_id
 		connection_matrix[from_slot_id][to_slot_id] = 0
-	material.set_shader_param("connections", transform_from_matrix(connection_matrix))
+		state_matrix_left[from_slot_id][to_slot_id] = 0
+		state_matrix_right[from_slot_id][to_slot_id] = 0
+		state_matrix_center[from_slot_id][to_slot_id] = 0
+		state_matrix_none[from_slot_id][to_slot_id] = 0
+		
+	material.set_shader_param("state_left", transform_from_matrix(state_matrix_left))
+	material.set_shader_param("state_center", transform_from_matrix(state_matrix_center))
+	material.set_shader_param("state_right", transform_from_matrix(state_matrix_right))
+	material.set_shader_param("state_none", transform_from_matrix(state_matrix_none))
 
 func _on_track_selected(track):
 	emit_signal("track_selected", self, track.get_orientation())
@@ -210,6 +218,7 @@ func _on_track_states_changed(orientation=null):
 		state_matrix_right[from_slot_id][to_slot_id] = states["right"]
 		state_matrix_center[from_slot_id][to_slot_id] = states["center"]
 		state_matrix_none[from_slot_id][to_slot_id] = states["none"]
+	
 			
 	material.set_shader_param("state_left", transform_from_matrix(state_matrix_left))
 	material.set_shader_param("state_center", transform_from_matrix(state_matrix_center))
