@@ -157,7 +157,6 @@ func _on_track_removing(orientation):
 	track.disconnect("states_changed", self, "_on_track_states_changed")
 	track.disconnect("switch_position_changed", self, "_on_track_connections_changed")
 	track.disconnect("removing", self, "_on_track_removing")
-	remove_child(tracks[orientation])
 	tracks.erase(orientation)
 	if track == hover_track:
 		hover_track = null

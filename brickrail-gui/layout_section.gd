@@ -11,6 +11,19 @@ signal unselected
 var LayoutSectionInspector = preload("res://layout_section_inspector.tscn")
 var ThisClass = get_script()
 
+func serialize():
+	var result = {}
+	var track_data = []
+	for track in tracks:
+		track_data.append(track.serialize(true))
+	result["tracks"] = track_data
+	return result
+
+func load(struct):
+	for track_data in struct["tracks"]:
+		var track = LayoutInfo.get_track_from_struct(track_data)
+		add_track(track)
+
 func can_add_track(track):
 	if len(tracks)>0:
 		var last_track = tracks[-1]

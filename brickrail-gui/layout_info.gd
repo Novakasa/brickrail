@@ -40,18 +40,29 @@ func serialize():
 			for track in cell.tracks.values():
 				tracks.append(track.serialize())
 	
+	var blockdata = []
+	for block in blocks.values():
+		blockdata.append(block.serialize())
+	print(blockdata)
+
 	result["tracks"] = tracks
+	result["blocks"] = blockdata
+	
+	print(result)
 	return result
 
 func clear():
 	unselect()
-	for blockname in blocks:
-		blocks[blockname].queue_free()
-		blocks.erase(blockname)
+	for block in blocks.values():
+		block.remove()
 	for row in cells:
 		for cell in row:
 			for track in cell.tracks.values():
 				track.remove()
+
+func _on_block_removing(p_name):
+	blocks[p_name].disconnect("removing", self, "_on_block_removing")
+	blocks.erase(p_name)
 
 func load(struct):
 	clear()
@@ -68,6 +79,18 @@ func load(struct):
 		var orientation = track.slot0 + track.slot1
 		var track_obj = cells[i][j].tracks[orientation]
 		track_obj.load_connections(track.connections)
+	
+	if "blocks" in struct:
+		for block_data in struct.blocks:
+			var section = LayoutSection.new()
+			section.load(block_data.section)
+			create_block(block_data.name, section)
+
+func get_track_from_struct(struct):
+	var i = struct.x_idx
+	var j = struct.y_idx
+	var orientation = struct.slot0+struct.slot1
+	return cells[i][j].tracks[orientation]
 
 func create_block(p_name, section):
 	var block = BlockScene.instance()
@@ -75,6 +98,7 @@ func create_block(p_name, section):
 	blocks[p_name] = block
 	block.set_section(section)
 	grid.add_child(block)
+	block.connect("removing", self, "_on_block_removing")
 
 func _unhandled_input(event):
 	if event is InputEventKey:
