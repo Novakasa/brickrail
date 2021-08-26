@@ -53,12 +53,12 @@ func serialize():
 
 func clear():
 	unselect()
-	for block in blocks.values():
-		block.remove()
 	for row in cells:
 		for cell in row:
 			for track in cell.tracks.values():
 				track.remove()
+	for block in blocks.values():
+		block.remove()
 
 func _on_block_removing(p_name):
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")

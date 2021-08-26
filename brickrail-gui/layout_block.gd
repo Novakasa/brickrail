@@ -28,7 +28,8 @@ func setup(p_name):
 
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_LEFT and event.pressed:
-		select()
+		if not selected:
+			select()
 
 func hover(pos):
 	hover = true
