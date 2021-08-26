@@ -88,6 +88,7 @@ func get_inspector():
 	return inspector
 
 func remove():
+	section.unset_track_attributes("block")
 	emit_signal("removing", blockname)
 	queue_free()
 

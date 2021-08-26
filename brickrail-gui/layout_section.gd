@@ -88,7 +88,7 @@ func select():
 	set_track_attributes("selected", true)
 	emit_signal("selected")
 
-func unset_track_attributes(key, value):
+func unset_track_attributes(key):
 	set_track_attributes(key, null)
 
 func set_track_attributes(key, value):
