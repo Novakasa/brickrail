@@ -8,10 +8,16 @@ var logical_block_n
 var size = Vector2(0.5, 0.25)
 var section = null
 var blockname
+var hover = false
+var selected = false
 export(Color) var color
 export(Font) var font
 
+var LayoutBlockInspector = preload("res://layout_block_inspector.tscn")
+
 signal removing(p_name)
+signal selected()
+signal unselected()
 
 func setup(p_name):
 	blockname = p_name
@@ -19,6 +25,29 @@ func setup(p_name):
 	
 	logical_block_p = LayoutLogicalBlock.new(p_name + "+")
 	logical_block_n = LayoutLogicalBlock.new(p_name + "-")
+
+func process_mouse_button(event, pos):
+	if event.button_index == BUTTON_LEFT and event.pressed:
+		select()
+
+func hover(pos):
+	hover = true
+	section.set_track_attributes("block", blockname)
+
+func stop_hover():
+	hover = false
+	section.set_track_attributes("block", blockname)
+
+func select():
+	selected=true
+	LayoutInfo.select(self)
+	section.set_track_attributes("block", blockname)
+	emit_signal("selected")
+
+func unselect():
+	selected=false
+	section.set_track_attributes("block", blockname)
+	emit_signal("unselected")
 
 func set_section(p_section):
 	
@@ -51,6 +80,11 @@ func serialize():
 	if section != null:
 		result["section"] = section.serialize()
 	return result
+
+func get_inspector():
+	var inspector = LayoutBlockInspector.instance()
+	inspector.set_block(self)
+	return inspector
 
 func remove():
 	emit_signal("removing", blockname)

@@ -13,6 +13,8 @@ uniform vec4 switch_inner_color: hint_color;
 uniform vec4 selected_color: hint_color;
 uniform vec4 hover_color: hint_color;
 uniform vec4 block_color: hint_color;
+uniform vec4 block_color_hover: hint_color;
+uniform vec4 block_color_selected: hint_color;
 uniform vec4 track_border_block: hint_color;
 
 uniform bool cell_hover;
@@ -194,21 +196,21 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	delta_angle = float(curve_index)*PI/4.0;
 	if (turn_index == 2) {
 		if (track_type == TRACK_FULL) {
-		vec2 end_pos = from_pos+tangent*stopper_delta;
-		vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
-		straight_end = end_pos+ normalize(tangent)*stopper_width*0.5;
-		float straight = line_rect(position, from_pos+tangent*0.5, straight_end, width);
-		scene = merge(scene, straight);
-		float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, width);
-		scene = merge(scene, round_straight);
-		// float endcap = circle(position-from_pos-tangent*0.5, width);
-		// scene = merge(scene, endcap);
-		vec2 stopper_pos = end_pos;
-		vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
-		float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
-		scene = merge(scene, stopper);
-		return scene;
-	}
+			vec2 end_pos = from_pos+tangent*stopper_delta;
+			vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
+			straight_end = end_pos+ normalize(tangent)*stopper_width*0.5;
+			float straight = line_rect(position, from_pos+tangent*0.5, straight_end, width);
+			scene = merge(scene, straight);
+			float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, width);
+			scene = merge(scene, round_straight);
+			// float endcap = circle(position-from_pos-tangent*0.5, width);
+			// scene = merge(scene, endcap);
+			vec2 stopper_pos = end_pos;
+			vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
+			float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
+			scene = merge(scene, stopper);
+			return scene;
+		}
 		if (track_type == TRACK_BLOCK) {
 			return scene;
 		}
@@ -327,6 +329,16 @@ vec4 get_inner_color(int state) {
 	}
 }
 
+vec4 get_block_color(int state) {
+	if ((state & STATE_BLOCK_HOVER)==STATE_BLOCK_HOVER) {
+		return block_color_hover;
+	}
+	if ((state & STATE_BLOCK_SELECTED)==STATE_BLOCK_SELECTED) {
+		return block_color_selected;
+	}
+	return block_color;
+}
+
 vec4 get_border_color(int state) {
 	/*if ((state & STATE_BLOCK) == STATE_BLOCK) {
 		return track_border_block;
@@ -350,7 +362,7 @@ void fragment() {
 	float block = tracks(position, STATE_BLOCK, TRACK_BLOCK, block_state);
 	float block_change = fwidth(block)*0.5;
 	float t = smoothstep(block_change, -block_change, block);
-	vec4 block_mix = mix(bg, block_color, t);
+	vec4 block_mix = mix(bg, get_block_color(block_state), t);
 	
 	int track_state;
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
@@ -422,6 +434,8 @@ shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
 shader_param/selected_color = Color( 0.133333, 0.615686, 0.647059, 1 )
 shader_param/hover_color = Color( 0, 0.368627, 1, 1 )
 shader_param/block_color = Color( 0.788235, 0.976471, 0.00392157, 1 )
+shader_param/block_color_hover = Color( 0, 1, 0.439216, 1 )
+shader_param/block_color_selected = Color( 0.101961, 1, 0, 1 )
 shader_param/track_border_block = Color( 0.321569, 0.494118, 0.0470588, 1 )
 shader_param/cell_hover = false
 shader_param/grid_width = 0.097

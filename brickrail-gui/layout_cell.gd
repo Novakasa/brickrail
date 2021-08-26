@@ -5,7 +5,7 @@ var x_idx
 var y_idx
 var tracks = {}
 var hover = false
-var hover_track = null
+var hover_obj = null
 
 var connection_matrix = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_left = [Vector3(), Vector3(), Vector3(), Vector3()]
@@ -39,33 +39,33 @@ func hover_at(pos):
 	
 	if LayoutInfo.drawing_track:
 		LayoutInfo.draw_track_hover_cell(self)
-		if hover_track != null:
-			hover_track.stop_hover()
-			hover_track = null
+		if hover_obj != null:
+			hover_obj.stop_hover()
+			hover_obj = null
 		return
 	
 	if LayoutInfo.drag_select:
 		LayoutInfo.drag_select_hover_cell(self)
-		if hover_track != null:
-			hover_track.stop_hover()
-			hover_track = null
+		if hover_obj != null:
+			hover_obj.stop_hover()
+			hover_obj = null
 		return
 
 	var normalized_pos = pos/LayoutInfo.spacing
 	var hover_candidate = null
-	hover_candidate = get_track_at(normalized_pos)
-	if hover_candidate != hover_track and hover_track != null:
-		hover_track.stop_hover()
-	hover_track = hover_candidate
-	if hover_track != null:
+	hover_candidate = get_obj_at(normalized_pos)
+	if hover_candidate != hover_obj and hover_obj != null:
+		hover_obj.stop_hover()
+	hover_obj = hover_candidate
+	if hover_obj != null:
 		if hover:
 			set_hover(false)
-		hover_track.hover(normalized_pos)
+		hover_obj.hover(normalized_pos)
 
 func stop_hover():
-	if hover_track != null:
-		hover_track.stop_hover()
-		hover_track = null
+	if hover_obj != null:
+		hover_obj.stop_hover()
+		hover_obj = null
 		return
 	
 	set_hover(false)
@@ -74,9 +74,9 @@ func stop_hover():
 func process_mouse_button(event, pos):
 	var normalized_pos = pos/LayoutInfo.spacing
 	
-	var track = get_track_at(normalized_pos)
-	if track != null:
-		track.process_mouse_button(event, normalized_pos)
+	var obj = get_obj_at(normalized_pos)
+	if obj != null:
+		obj.process_mouse_button(event, normalized_pos)
 		return
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
@@ -84,7 +84,7 @@ func process_mouse_button(event, pos):
 				LayoutInfo.init_draw_track(self)
 				return
 
-func get_track_at(normalized_pos):
+func get_obj_at(normalized_pos):
 	var i = 0
 	var closest_dist = LayoutInfo.spacing+1
 	var closest_track = null
@@ -93,8 +93,15 @@ func get_track_at(normalized_pos):
 		if dist<closest_dist:
 			closest_track = track
 			closest_dist = dist
-	if closest_dist > 0.2:
+	if closest_track == null:
 		return null
+	if closest_dist > 0.239:
+		return null
+	if closest_dist > 0.126:
+		var block = closest_track.get_block()
+		if block == null:
+			return null
+		return block
 	return closest_track
 
 func create_track_at(pos, direction=null):
@@ -158,8 +165,8 @@ func _on_track_removing(orientation):
 	track.disconnect("switch_position_changed", self, "_on_track_connections_changed")
 	track.disconnect("removing", self, "_on_track_removing")
 	tracks.erase(orientation)
-	if track == hover_track:
-		hover_track = null
+	if track == hover_obj:
+		hover_obj = null
 
 	for to_slot in [track.slot0, track.slot1]:
 		var from_slot = track.get_opposite_slot(to_slot)

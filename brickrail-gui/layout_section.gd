@@ -65,6 +65,7 @@ func add_track(track):
 			tracks[0].set_connection_attribute(track.slot0, "none", "selected", true)
 			tracks[-1].set_connection_attribute(track.slot1, "none", "selected", true)
 
+
 func get_start_slot():
 	if len(tracks) < 2:
 		return null

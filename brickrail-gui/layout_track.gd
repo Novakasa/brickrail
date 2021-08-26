@@ -81,6 +81,13 @@ func serialize(reference=false):
 		result["connections"] = connections_result
 	return result
 
+func get_block():
+	for slot in connections:
+		for turn in connections[slot]:
+			if "block" in metadata[slot][turn]:
+				return LayoutInfo.blocks[metadata[slot][turn]["block"]]
+	return null
+
 func get_cell():
 	return LayoutInfo.cells[x_idx][y_idx]
 
@@ -430,6 +437,11 @@ func get_shader_state(to_slot, turn):
 	var state = 0
 	if "block" in metadata[to_slot][turn]:
 		state |= STATE_BLOCK
+		var block = LayoutInfo.blocks[metadata[to_slot][turn]["block"]]
+		if block.hover:
+			state |= STATE_BLOCK_HOVER
+		if block.selected:
+			state |= STATE_BLOCK_SELECTED
 	if turn in connections[to_slot]:
 		state |= STATE_CONNECTED
 	if turn == "none" and len(connections[to_slot])==0:
