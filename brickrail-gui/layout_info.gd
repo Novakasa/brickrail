@@ -116,6 +116,9 @@ func _unhandled_input(event):
 					selection.unselect()
 					for track in tracks:
 						track.remove()
+				
+				if selection is LayoutBlock:
+					selection.remove()
 					
 
 func bresenham_line(startx, starty, stopx, stopy):
