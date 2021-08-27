@@ -1,0 +1,373 @@
+{
+	"nx": 60,
+	"ny": 60,
+	"tracks": [
+		{
+			"x_idx": 2,
+			"y_idx": 3,
+			"slot0": "S",
+			"slot1": "E",
+			"connections": {
+				"S": [
+					"center"
+				],
+				"E": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 2,
+			"y_idx": 4,
+			"slot0": "N",
+			"slot1": "S",
+			"connections": {
+				"N": [
+					"right"
+				],
+				"S": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 2,
+			"y_idx": 5,
+			"slot0": "N",
+			"slot1": "S",
+			"connections": {
+				"N": [
+					"center"
+				],
+				"S": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 2,
+			"y_idx": 6,
+			"slot0": "N",
+			"slot1": "E",
+			"connections": {
+				"N": [
+					"center"
+				],
+				"E": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 3,
+			"y_idx": 2,
+			"slot0": "S",
+			"slot1": "E",
+			"connections": {
+				"S": [
+					"right"
+				],
+				"E": [
+					"right",
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 3,
+			"y_idx": 3,
+			"slot0": "N",
+			"slot1": "W",
+			"connections": {
+				"N": [
+					"right"
+				],
+				"W": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 3,
+			"y_idx": 6,
+			"slot0": "E",
+			"slot1": "W",
+			"connections": {
+				"E": [
+					"center"
+				],
+				"W": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 4,
+			"y_idx": 1,
+			"slot0": "S",
+			"slot1": "E",
+			"connections": {
+				"S": [
+					"right"
+				],
+				"E": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 4,
+			"y_idx": 2,
+			"slot0": "S",
+			"slot1": "W",
+			"connections": {
+				"S": [
+					"left"
+				],
+				"W": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 4,
+			"y_idx": 2,
+			"slot0": "N",
+			"slot1": "W",
+			"connections": {
+				"N": [
+					"right"
+				],
+				"W": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 4,
+			"y_idx": 3,
+			"slot0": "N",
+			"slot1": "E",
+			"connections": {
+				"N": [
+					"left"
+				],
+				"E": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 4,
+			"y_idx": 6,
+			"slot0": "E",
+			"slot1": "W",
+			"connections": {
+				"E": [
+					"center"
+				],
+				"W": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 5,
+			"y_idx": 1,
+			"slot0": "S",
+			"slot1": "W",
+			"connections": {
+				"S": [
+					"left"
+				],
+				"W": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 5,
+			"y_idx": 2,
+			"slot0": "N",
+			"slot1": "E",
+			"connections": {
+				"N": [
+					"left"
+				],
+				"E": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 5,
+			"y_idx": 3,
+			"slot0": "E",
+			"slot1": "W",
+			"connections": {
+				"E": [
+					"center"
+				],
+				"W": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 5,
+			"y_idx": 6,
+			"slot0": "E",
+			"slot1": "W",
+			"connections": {
+				"E": [
+					"left"
+				],
+				"W": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 6,
+			"y_idx": 2,
+			"slot0": "E",
+			"slot1": "W",
+			"connections": {
+				"E": [
+					"right"
+				],
+				"W": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 6,
+			"y_idx": 3,
+			"slot0": "E",
+			"slot1": "W",
+			"connections": {
+				"E": [
+					"right"
+				],
+				"W": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 6,
+			"y_idx": 4,
+			"slot0": "S",
+			"slot1": "E",
+			"connections": {
+				"S": [
+					"center"
+				],
+				"E": [
+					"left"
+				]
+			}
+		},
+		{
+			"x_idx": 6,
+			"y_idx": 5,
+			"slot0": "N",
+			"slot1": "S",
+			"connections": {
+				"N": [
+					"right"
+				],
+				"S": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 6,
+			"y_idx": 6,
+			"slot0": "N",
+			"slot1": "W",
+			"connections": {
+				"N": [
+					"center"
+				],
+				"W": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 7,
+			"y_idx": 2,
+			"slot0": "S",
+			"slot1": "W",
+			"connections": {
+				"S": [
+					"center"
+				],
+				"W": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 7,
+			"y_idx": 3,
+			"slot0": "S",
+			"slot1": "W",
+			"connections": {
+				"S": [
+					"right"
+				],
+				"W": [
+					"center"
+				]
+			}
+		},
+		{
+			"x_idx": 7,
+			"y_idx": 3,
+			"slot0": "N",
+			"slot1": "S",
+			"connections": {
+				"N": [
+					"left"
+				],
+				"S": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 7,
+			"y_idx": 4,
+			"slot0": "N",
+			"slot1": "W",
+			"connections": {
+				"N": [
+					"left",
+					"center"
+				],
+				"W": [
+					"left"
+				]
+			}
+		}
+	],
+	"blocks": [
+		{
+			"name": "some block lol",
+			"section": {
+				"tracks": [
+					{
+						"x_idx": 2,
+						"y_idx": 4,
+						"slot0": "N",
+						"slot1": "S"
+					}
+				]
+			}
+		}
+	]
+}
