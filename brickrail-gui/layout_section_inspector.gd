@@ -27,3 +27,7 @@ func _on_BlockOKButton_pressed():
 
 func _on_BlockCancelButton_pressed():
 	$CreateBlockPopup.hide()
+
+
+func _on_CollectSegment_pressed():
+	section.collect_segment()

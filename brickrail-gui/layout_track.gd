@@ -308,16 +308,15 @@ func get_connection_to(track):
 			return {"slot": slot, "turn": turn}
 	assert(false)
 
-func get_next_tracks_from(slot):
-	return get_next_tracks_at(get_opposite_slot(slot))
-
-func directed_iter(neighbour_to):
-	var to_slot = get_opposite_slot(get_neighbour_slot(neighbour_to))
-	return [to_slot, connections[to_slot]]
-	
-func get_next_tracks_at(slot):
-	return connections[slot]
-	push_error("[LayoutTrack.get_next_tracks_at] track doesn't contain " + slot)
+func get_next_segment_track(slot):
+	if len(connections[slot])>1:
+		return null
+	if len(connections[slot])==0:
+		return null
+	for track in connections[slot].values():
+		if track.get_block() != null:
+			return null
+		return track
 
 func get_slot_tangent(slot):
 	if slot == slot1:

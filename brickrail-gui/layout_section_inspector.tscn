@@ -11,24 +11,32 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 123.0
+margin_right = 116.0
 margin_bottom = 14.0
 text = "layout section"
 
 [node name="CreateBlock" type="Button" parent="."]
 margin_top = 18.0
-margin_right = 123.0
+margin_right = 116.0
 margin_bottom = 38.0
 text = "create block"
 
 [node name="AddMarker" type="Button" parent="."]
 margin_top = 42.0
-margin_right = 123.0
+margin_right = 116.0
 margin_bottom = 62.0
 text = "add marker"
 
+[node name="CollectSegment" type="Button" parent="."]
+margin_top = 66.0
+margin_right = 116.0
+margin_bottom = 86.0
+text = "Collect segment"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="CreateBlockPopup" type="PopupPanel" parent="."]
-visible = true
 margin_top = 66.0
 margin_right = 123.0
 margin_bottom = 140.0
@@ -63,7 +71,7 @@ size_flags_vertical = 3
 [node name="HBoxContainer" type="HBoxContainer" parent="CreateBlockPopup/VBoxContainer"]
 margin_top = 46.0
 margin_right = 115.0
-margin_bottom = 70.0
+margin_bottom = 66.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -72,7 +80,7 @@ __meta__ = {
 
 [node name="BlockCancelButton" type="Button" parent="CreateBlockPopup/VBoxContainer/HBoxContainer"]
 margin_right = 55.0
-margin_bottom = 24.0
+margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "Cancel"
@@ -83,12 +91,13 @@ __meta__ = {
 [node name="BlockOKButton" type="Button" parent="CreateBlockPopup/VBoxContainer/HBoxContainer"]
 margin_left = 59.0
 margin_right = 115.0
-margin_bottom = 24.0
+margin_bottom = 20.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 text = "OK"
 
 [connection signal="pressed" from="CreateBlock" to="." method="_on_CreateBlock_pressed"]
 [connection signal="pressed" from="AddMarker" to="." method="_on_AddMarker_pressed"]
+[connection signal="pressed" from="CollectSegment" to="." method="_on_CollectSegment_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockCancelButton" to="." method="_on_BlockCancelButton_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockOKButton" to="." method="_on_BlockOKButton_pressed"]
