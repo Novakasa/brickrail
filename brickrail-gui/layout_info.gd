@@ -115,7 +115,8 @@ func _unhandled_input(event):
 					var tracks = Array(selection.tracks)
 					selection.unselect()
 					for track in tracks:
-						track.remove()
+						if track.get_block() == null:
+							track.remove()
 				
 				if selection is LayoutBlock:
 					selection.remove()
