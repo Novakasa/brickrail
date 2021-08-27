@@ -63,14 +63,11 @@ func hover_at(pos):
 		hover_obj.hover(normalized_pos)
 
 func set_hover_obj(obj):
-	if obj == null:
-		if hover_obj != null:
-			hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
-		hover_obj = null
-	else:
-		set_hover_obj(null)
-		hover_obj = obj
-		hover_obj.connect("removing", self, "_on_hover_obj_removing")
+	if hover_obj != null:
+		hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
+	if obj!=null:
+		obj.connect("removing", self, "_on_hover_obj_removing")
+	hover_obj = obj
 
 func _on_hover_obj_removing(id):
 	set_hover_obj(null)
