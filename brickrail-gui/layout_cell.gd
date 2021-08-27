@@ -75,7 +75,7 @@ func _on_hover_obj_removing(id):
 func stop_hover():
 	if hover_obj != null:
 		hover_obj.stop_hover()
-		hover_obj = null
+		set_hover_obj(null)
 		return
 	
 	set_hover(false)
