@@ -41,14 +41,14 @@ func hover_at(pos):
 		LayoutInfo.draw_track_hover_cell(self)
 		if hover_obj != null:
 			hover_obj.stop_hover()
-			hover_obj = null
+			set_hover_obj(null)
 		return
 	
 	if LayoutInfo.drag_select:
 		LayoutInfo.drag_select_hover_cell(self)
 		if hover_obj != null:
 			hover_obj.stop_hover()
-			hover_obj = null
+			set_hover_obj(null)
 		return
 
 	var normalized_pos = pos/LayoutInfo.spacing
@@ -75,7 +75,7 @@ func _on_hover_obj_removing(id):
 func stop_hover():
 	if hover_obj != null:
 		hover_obj.stop_hover()
-		hover_obj = null
+		set_hover_obj(null)
 		return
 	
 	set_hover(false)
@@ -176,7 +176,7 @@ func _on_track_removing(orientation):
 	track.disconnect("removing", self, "_on_track_removing")
 	tracks.erase(orientation)
 	if track == hover_obj:
-		hover_obj = null
+		set_hover_obj(null)
 
 	for to_slot in [track.slot0, track.slot1]:
 		var from_slot = track.get_opposite_slot(to_slot)
