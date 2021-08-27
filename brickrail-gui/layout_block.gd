@@ -10,6 +10,7 @@ var section = null
 var blockname
 var hover = false
 var selected = false
+var logical_blocks = []
 export(Color) var color
 export(Font) var font
 
@@ -23,8 +24,20 @@ func setup(p_name):
 	blockname = p_name
 	name = blockname
 	
-	logical_block_p = LayoutLogicalBlock.new(p_name + "+")
-	logical_block_n = LayoutLogicalBlock.new(p_name + "-")
+	logical_blocks.append(LayoutLogicalBlock.new(p_name, 0))
+	logical_blocks.append(LayoutLogicalBlock.new(p_name, 1))
+
+func get_occupied():
+	for logical_block in logical_blocks:
+		if logical_block.occupied:
+			return true
+	return false
+
+func get_train():
+	for logical_block in logical_blocks:
+		if logical_block.occupied:
+			return logical_block.train
+	return null
 
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_LEFT and event.pressed:
@@ -52,9 +65,9 @@ func unselect():
 
 func set_section(p_section):
 	
-	logical_block_p.set_section(p_section)
-	logical_block_n.set_section(p_section.flip())
-	logical_block_n.section.set_track_attributes("block", blockname)
+	logical_blocks[0].set_section(p_section)
+	logical_blocks[1].set_section(p_section.flip())
+	p_section.set_track_attributes("block", blockname)
 	section = p_section
 	
 	var index = len(p_section.tracks)/2

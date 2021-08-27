@@ -442,6 +442,8 @@ func get_shader_state(to_slot, turn):
 			state |= STATE_BLOCK_HOVER
 		if block.selected:
 			state |= STATE_BLOCK_SELECTED
+		if block.get_occupied():
+			state |= STATE_BLOCK_OCCUPIED
 	if turn in connections[to_slot]:
 		state |= STATE_CONNECTED
 	if turn == "none" and len(connections[to_slot])==0:

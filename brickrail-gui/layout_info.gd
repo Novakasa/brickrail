@@ -5,6 +5,7 @@ var grid = null
 
 var cells = []
 var blocks = {}
+var trains = {}
 
 var BlockScene = preload("res://layout_block.tscn")
 
@@ -60,10 +61,6 @@ func clear():
 			for track in cell.tracks.values():
 				track.remove()
 
-func _on_block_removing(p_name):
-	blocks[p_name].disconnect("removing", self, "_on_block_removing")
-	blocks.erase(p_name)
-
 func load(struct):
 	clear()
 	
@@ -99,6 +96,20 @@ func create_block(p_name, section):
 	block.set_section(section)
 	grid.add_child(block)
 	block.connect("removing", self, "_on_block_removing")
+
+func _on_block_removing(p_name):
+	blocks[p_name].disconnect("removing", self, "_on_block_removing")
+	blocks.erase(p_name)
+
+func create_train(p_name):
+	var train = LayoutTrain.new(p_name)
+	trains[p_name] = train
+	train.connect("removing", self, "_on_train_removing")
+	return train
+
+func _on_train_removing(p_name):
+	trains[p_name].disconnect("removing", self, "_on_train_removing")
+	trains.erase(p_name)
 
 func _unhandled_input(event):
 	if event is InputEventKey:
