@@ -82,8 +82,8 @@ func serialize(reference=false):
 	return result
 
 func get_block():
-	for slot in connections:
-		for turn in connections[slot]:
+	for slot in metadata:
+		for turn in metadata[slot]:
 			if "block" in metadata[slot][turn]:
 				return LayoutInfo.blocks[metadata[slot][turn]["block"]]
 	return null

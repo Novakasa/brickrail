@@ -212,6 +212,9 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			return scene;
 		}
 		if (track_type == TRACK_BLOCK) {
+			float angle = atan(tangent.y, tangent.x);
+			float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, vec2(block_width-0.2))-0.2;
+			scene = merge(scene, rhomb);
 			return scene;
 		}
 	}
@@ -450,5 +453,5 @@ shader_param/has_switch = true
 shader_param/has_block = null
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 200.117, 0, 0, 0, 0, 0, 128, 0 )
-shader_param/state_none = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 72, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 199.547, 0, 0, 0, 0, 0, 128, 0 )
+shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 72, 0 )
