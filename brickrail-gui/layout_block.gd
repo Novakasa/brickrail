@@ -71,7 +71,7 @@ func set_section(p_section):
 	section = p_section
 	
 	var index = len(p_section.tracks)/2
-	var track = p_section.tracks[index]
+	var track = p_section.tracks[index].track
 	var tangent = track.get_tangent()
 	while tangent.angle()>PI/2:
 		tangent = tangent.rotated(-PI)

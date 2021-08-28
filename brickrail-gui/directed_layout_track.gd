@@ -18,3 +18,9 @@ func get_next(segment=true):
 		return null
 	var next_prev_slot = track.get_neighbour_slot(next_slot)
 	return next_track.get_directed_from(next_prev_slot)
+
+func set_connection_attribute(slot, turn, key, value):
+	track.set_connection_attribute(slot, turn, key, value)
+
+func set_track_connection_attribute(to_track, key, value):
+	track.set_track_connection_attribute(to_track.track, key, value)
