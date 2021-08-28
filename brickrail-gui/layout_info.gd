@@ -90,6 +90,7 @@ func get_track_from_struct(struct):
 	return cells[i][j].tracks[orientation]
 
 func create_block(p_name, section):
+	assert(not p_name in blocks)
 	var block = BlockScene.instance()
 	block.setup(p_name)
 	blocks[p_name] = block
@@ -102,6 +103,7 @@ func _on_block_removing(p_name):
 	blocks.erase(p_name)
 
 func create_train(p_name):
+	assert(not p_name in trains)
 	var train = LayoutTrain.new(p_name)
 	trains[p_name] = train
 	train.connect("removing", self, "_on_train_removing")

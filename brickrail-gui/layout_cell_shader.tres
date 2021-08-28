@@ -7,6 +7,7 @@ uniform vec4 background: hint_color;
 uniform vec4 background_hover: hint_color;
 uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
+uniform vec4 arrow_color: hint_color;
 uniform vec4 occupied_color: hint_color;
 uniform vec4 switch_color: hint_color;
 uniform vec4 grid_color: hint_color;
@@ -46,6 +47,7 @@ const int STATE_BLOCK_SELECTED = 64;
 const int STATE_CONNECTED = 128;
 const int STATE_SWITCH = 256;
 const int STATE_SWITCH_PRIORITY = 512;
+const int STATE_ARROW = 1024;
 
 const float PI = 3.14159265358979323846;
 
@@ -195,6 +197,18 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	vec2 center;
 	start_angle = this_angle - 0.5*PI*float(sign(curve_index));
 	delta_angle = float(curve_index)*PI/4.0;
+
+	if (track_type == TRACK_ARROW) {
+		float angle = atan(tangent.y, tangent.x);
+		vec2 arrowdims = vec2(1.5,0.9);
+		float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*arrowdims);
+		float rhomb2 = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*vec2(0.3,1.0)*arrowdims);
+		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
+		scene = substract(rhomb, rhomb2);
+		//scene = rhomb;
+		scene = substract(scene, mask);
+		return scene;
+	}
 	if (turn_index == 2) {
 		if (track_type == TRACK_FULL) {
 			vec2 end_pos = from_pos+tangent*stopper_delta;
@@ -391,6 +405,14 @@ void fragment() {
 		t = smoothstep(inner_change, -inner_change, inner);
 		vec4 track_mix = mix(base_mix, get_inner_color(state), t);
 		
+		if ((state & STATE_ARROW) == STATE_ARROW) {
+			int dummy_state;
+			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, dummy_state);
+			float arrow_change = fwidth(arrow)*0.5;
+			t = smoothstep(arrow_change, -arrow_change, arrow);
+			track_mix = mix(track_mix, arrow_color, t);
+		}
+		
 		if (!has_switch || t <= 0.0) {
 			COLOR = track_mix;
 			// COLOR *=0.5;
@@ -435,6 +457,7 @@ shader_param/background = Color( 0.105882, 0.109804, 0.121569, 1 )
 shader_param/background_hover = Color( 0.109804, 0.188235, 0.262745, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
+shader_param/arrow_color = Color( 0.184314, 0.65098, 0.235294, 1 )
 shader_param/occupied_color = Color( 0.945098, 0, 1, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
 shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
@@ -458,5 +481,5 @@ shader_param/has_switch = true
 shader_param/has_block = null
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 200.093, 0, 0, 0, 0, 0, 128, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 1152, 0 )
 shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 72, 0 )
