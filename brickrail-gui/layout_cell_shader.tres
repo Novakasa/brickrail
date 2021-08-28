@@ -311,7 +311,7 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 			float width = track_width;
 			for (int flag=0; flag<4; flag++) {
 				int turn = flag-1;
-				if (turn == 2 && turn_type!=STATE_CONNECTED && turn_type!=STATE_BLOCK) {
+				if (turn == 2 && turn_type!=STATE_CONNECTED && turn_type!=STATE_BLOCK && turn_type!=STATE_ARROW) {
 					break;
 				}
 				if ((turn_state[flag] & turn_type) != turn_type) {
@@ -457,7 +457,7 @@ shader_param/background = Color( 0.105882, 0.109804, 0.121569, 1 )
 shader_param/background_hover = Color( 0.109804, 0.188235, 0.262745, 1 )
 shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
-shader_param/arrow_color = Color( 0.184314, 0.65098, 0.235294, 1 )
+shader_param/arrow_color = Color( 0.0666667, 0.0588235, 0.164706, 1 )
 shader_param/occupied_color = Color( 0.945098, 0, 1, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
 shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
@@ -481,5 +481,5 @@ shader_param/has_switch = true
 shader_param/has_block = null
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 1152, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 1152.12, 0 )
 shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 72, 0 )

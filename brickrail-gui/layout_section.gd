@@ -57,6 +57,7 @@ func collect_segment(directed_track=null):
 func add_track(track):
 	if selected:
 		set_track_attributes("selected", false)
+		set_track_attributes("arrow", false, ">")
 
 	if track is DirectedLayoutTrack:
 		track = track.track
@@ -82,6 +83,7 @@ func add_track(track):
 	
 	if selected:
 		set_track_attributes("selected", true)
+		set_track_attributes("arrow", true, ">")
 
 
 func get_start_slot():
@@ -94,33 +96,41 @@ func select():
 	LayoutInfo.select(self)
 	selected = true
 	set_track_attributes("selected", true)
+	set_track_attributes("arrow", true, ">")
 	emit_signal("selected")
 
 func unset_track_attributes(key):
 	set_track_attributes(key, null)
 
-func set_track_attributes(key, value):
+func set_track_attributes(key, value, direction="<>"):
 	if len(tracks)==0:
 		return
 	if len(tracks)==1:
-		tracks[0].set_connection_attribute(tracks[0].prev_slot, "none", key, value)
-		tracks[0].set_connection_attribute(tracks[0].next_slot, "none", key, value)
+		if "<" in direction:
+			tracks[0].set_connection_attribute(tracks[0].prev_slot, "none", key, value)
+		if ">" in direction:
+			tracks[0].set_connection_attribute(tracks[0].next_slot, "none", key, value)
 		return
 	var track0 = null
 	for track1 in tracks:
 		if track0 == null:
 			track0 = track1
 			continue
-		track0.set_track_connection_attribute(track1, key, value)
-		track1.set_track_connection_attribute(track0, key, value)
+		if ">" in direction:
+			track0.set_track_connection_attribute(track1, key, value)
+		if "<" in direction:
+			track1.set_track_connection_attribute(track0, key, value)
 		track0 = track1
 	
-	tracks[0].set_connection_attribute(get_start_slot(), "none", key, value)
-	tracks[-1].set_connection_attribute(get_stop_slot(), "none", key, value)
+	if "<" in direction:
+		tracks[0].set_connection_attribute(get_start_slot(), "none", key, value)
+	if ">" in direction:
+		tracks[-1].set_connection_attribute(get_stop_slot(), "none", key, value)
 	
 func unselect():
 	selected = false
 	set_track_attributes("selected", false)
+	set_track_attributes("arrow", false, ">")
 	emit_signal("unselected")
 
 func get_inspector():

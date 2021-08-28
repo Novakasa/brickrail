@@ -21,7 +21,7 @@ var switches = {}
 var directed_tracks = {}
 
 var metadata = {}
-var default_meta = {"selected": false, "hover": false}
+var default_meta = {"selected": false, "hover": false, "arrow": false}
 
 var TrackInspector = preload("res://track_inspector.tscn")
 
@@ -35,6 +35,7 @@ const STATE_BLOCK_SELECTED = 64
 const STATE_CONNECTED = 128
 const STATE_SWITCH = 256
 const STATE_SWITCH_PRIORITY = 512
+const STATE_ARROW = 1024
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
@@ -490,6 +491,8 @@ func get_shader_state(to_slot, turn):
 		state |= STATE_SELECTED
 	if metadata[to_slot][turn]["hover"]:
 		state |= STATE_HOVER
+	if metadata[to_slot][turn]["arrow"]:
+		state |= STATE_ARROW
 	return state
 
 func get_tangent_to(slot):
