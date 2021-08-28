@@ -14,17 +14,13 @@ var slots = ["N", "S", "E", "W"]
 var route_lock=false
 var hover=false
 var hover_slot = null
-var hover_switch=null
-var selected_solo=false
-var selected=false
+var hover_switch=null 
 
 var switches = {}
 var directed_tracks = {}
 
 var metadata = {}
 var default_meta = {"selected": false, "hover": false, "arrow": false}
-
-var TrackInspector = preload("res://track_inspector.tscn")
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
@@ -390,35 +386,6 @@ func stop_hover():
 		hover_switch = null
 	emit_signal("states_changed", get_orientation())
 
-func select():
-	selected_solo=true
-	emit_signal("selected", self)
-	visual_select()
-	LayoutInfo.select(self)
-
-func visual_select():
-	set_connection_attribute(slot0, "none", "selected", true)
-	set_connection_attribute(slot1, "none", "selected", true)
-	emit_signal("states_changed", get_orientation())
-
-func unselect():
-	selected_solo=false
-	visual_unselect()
-	emit_signal("unselected", self)
-	
-func visual_unselect():
-	set_connection_attribute(slot1, "none", "selected", false)
-	emit_signal("states_changed", get_orientation())
-
-func _unhandled_input(event):
-	if event is InputEventKey:
-		if event.scancode == KEY_DELETE and event.pressed:
-			if selected_solo:
-				for slot in connections:
-					for track in connections[slot].values():
-						track.call_deferred("select")
-				remove()
-
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_LEFT and event.pressed:
 		var switch = get_switch_at(pos)
@@ -436,11 +403,6 @@ func process_mouse_button(event, pos):
 		
 		if LayoutInfo.input_mode == "draw":
 			LayoutInfo.init_connected_draw_track(self)
-
-func get_inspector():
-	var inspector = TrackInspector.instance()
-	inspector.set_track(self)
-	return inspector
 
 func set_connection_attribute(slot, turn, key, value):
 	if value == null:
