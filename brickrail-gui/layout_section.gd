@@ -2,6 +2,7 @@ class_name LayoutSection
 extends Node
 
 var tracks = []
+var directed_tracks = []
 var selected = false
 var hover = false
 
@@ -41,35 +42,42 @@ func flip():
 		section.add_track(tracks[i])
 	return section
 
-func collect_segment(track=null):
-	if track == null:
+func collect_segment(directed_track=null):
+	if directed_track == null:
 		assert(len(tracks)==1)
-		track = tracks[0]
+		directed_track = directed_tracks[0]
 	else:
 		assert(len(tracks)==0)
-		add_track(track)
-	for search_slot in track.connections:
-		var iter_track = track.get_next_segment_track(search_slot)
-		if iter_track==null:
-			continue
-		var iter_slot = search_slot
-		while iter_track != null and not iter_track in tracks:
-			add_track(iter_track)
-			iter_slot = iter_track.get_opposite_slot(iter_track.get_neighbour_slot(iter_slot))
-			iter_track = iter_track.get_next_segment_track(iter_slot)
-		break
+		add_track(directed_track)
+	var iter_track = directed_track.get_next()
+	while iter_track != null:
+		if iter_track in directed_tracks:
+			break
+		add_track(iter_track)
+		iter_track = iter_track.get_next()
 
 func add_track(track):
+	if track is DirectedLayoutTrack:
+		track = track.track
+
 	if len(tracks)>0:
 		var last_track = tracks[-1]
-		var connected_slot = last_track.get_connected_slot(track)
-		if connected_slot == null:
+		var prev_slot = track.get_connected_slot(last_track)
+		if prev_slot == null:
 			push_error("[LayoutSegment] track to add is not connected to last track!")
 			assert(false)
 		if len(tracks) > 1:
-			if connected_slot != get_stop_slot():
+			if prev_slot != track.get_neighbour_slot(get_stop_slot()):
 				push_error("[LayoutSegment] track to add is not connected in correct slot!")
 				assert(false)
+		
+		directed_tracks.append(track.get_directed_from(prev_slot))
+		
+		if len(tracks) == 1:
+			var track0 = tracks[0]
+			directed_tracks[0] = track0.get_directed_to(track0.get_neighbour_slot(prev_slot))
+	else:
+		directed_tracks.append(DirectedLayoutTrack.new(track, track.slot0))
 	tracks.append(track)
 	
 	if selected:
@@ -85,20 +93,10 @@ func add_track(track):
 
 
 func get_start_slot():
-	if len(tracks) < 2:
-		return null
-	var last_track = tracks[0]
-	var last_track2 = tracks[1]
-	var connected_slot = last_track.get_connected_slot(last_track2)
-	return last_track.get_opposite_slot(connected_slot)
+	return directed_tracks[0].prev_slot
 
 func get_stop_slot():
-	if len(tracks) < 2:
-		return null
-	var last_track = tracks[-1]
-	var last_track2 = tracks[-2]
-	var connected_slot = last_track.get_connected_slot(last_track2)
-	return last_track.get_opposite_slot(connected_slot)
+	return directed_tracks[-1].next_slot
 
 func select():
 	LayoutInfo.select(self)

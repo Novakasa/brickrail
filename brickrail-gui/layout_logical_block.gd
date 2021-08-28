@@ -2,7 +2,6 @@ class_name LayoutLogicalBlock
 extends Resource
 
 var blockname
-var routes = {}
 var section
 var occupied: bool
 var train: LayoutTrain
@@ -19,3 +18,6 @@ func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
 	train = p_train
 	section.set_track_attributes("block", blockname)
+
+func compute_routes(can_flip, ignore_occupation):
+	var routes = {}

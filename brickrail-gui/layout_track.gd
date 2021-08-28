@@ -5,6 +5,7 @@ var x_idx
 var y_idx
 var slot0
 var slot1
+var id
 var pos0
 var pos1
 var connections = {}
@@ -17,6 +18,7 @@ var selected_solo=false
 var selected=false
 
 var switches = {}
+var directed_tracks = {}
 
 var metadata = {}
 var default_meta = {"selected": false, "hover": false}
@@ -49,6 +51,11 @@ func _init(p_slot0, p_slot1, i, j):
 	slot1 = p_slot1
 
 	assert_slot_degeneracy()
+	
+	x_idx = i
+	y_idx = j
+	id = str(x_idx)+"_"+str(y_idx)+"_"+get_orientation()
+
 	connections[slot0] = {}
 	connections[slot1] = {}
 	interpolation_params[slot0] = {}
@@ -57,14 +64,20 @@ func _init(p_slot0, p_slot1, i, j):
 	pos1 = LayoutInfo.slot_positions[slot1]
 	switches[slot0] = null
 	switches[slot1] = null
+	directed_tracks[slot0] = DirectedLayoutTrack.new(self, slot0)
+	directed_tracks[slot1] = DirectedLayoutTrack.new(self, slot1)
 	metadata[slot0] = {"none": default_meta.duplicate()}
 	metadata[slot1] = {"none": default_meta.duplicate()}
 	
-	x_idx = i
-	y_idx = j
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
+
+func get_directed_to(slot):
+	return directed_tracks[slot]
+
+func get_directed_from(slot):
+	return directed_tracks[get_opposite_slot(slot)]
 
 func serialize(reference=false):
 	var result = {}
@@ -308,13 +321,19 @@ func get_connection_to(track):
 			return {"slot": slot, "turn": turn}
 	assert(false)
 
-func get_next_segment_track(slot):
-	if len(connections[slot])>1:
-		return null
-	if len(connections[slot])==0:
-		return null
-	for track in connections[slot].values():
-		if track.get_block() != null:
+func get_next_track(slot, segment=true):
+	if segment:
+		if len(connections[slot])>1:
+			return null
+		if len(connections[slot])==0:
+			return null
+	
+	for turn in connections[slot]:
+		var track = connections[slot][turn]
+		if track.get_block() != null and segment:
+			return null
+		var switch = get_switch(slot) #can only be not null if segment=false
+		if switch != null and turn!=switch.get_position():
 			return null
 		return track
 
