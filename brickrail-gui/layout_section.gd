@@ -58,9 +58,13 @@ func add_track(track):
 	if selected:
 		set_track_attributes("selected", false)
 		set_track_attributes("arrow", false, ">")
+	var next_slot
 
 	if track is DirectedLayoutTrack:
+		next_slot = track.next_slot
 		track = track.track
+	else:
+		next_slot = track.slot0
 
 	if len(tracks)>0:
 		var last_track = tracks[-1].track
@@ -79,7 +83,7 @@ func add_track(track):
 			var track0 = tracks[0]
 			tracks[0] = track0.get_directed_to(track0.get_neighbour_slot(prev_slot))
 	else:
-		tracks.append(track.get_directed_to(track.slot0))
+		tracks.append(track.get_directed_to(next_slot))
 	
 	if selected:
 		set_track_attributes("selected", true)

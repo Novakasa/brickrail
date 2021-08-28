@@ -13,6 +13,7 @@ var interpolation_params = {}
 var slots = ["N", "S", "E", "W"]
 var route_lock=false
 var hover=false
+var hover_slot = null
 var hover_switch=null
 var selected_solo=false
 var selected=false
@@ -367,20 +368,23 @@ func hover(pos):
 			hover_switch.stop_hover()
 		hover_switch = hover_candidate
 		if hover_switch != null:
-			set_connection_attribute(slot0, "none", "hover", false)
-			set_connection_attribute(slot1, "none", "hover", false)
+			hover=false
+			hover_slot=null
 			emit_signal("states_changed", get_orientation())
 			hover_switch.hover()
 	if hover_candidate != null:
 		return
 
-	set_connection_attribute(slot0, "none", "hover", true)
-	set_connection_attribute(slot1, "none", "hover", true)
+	hover=true
+	if (pos-pos0).length()<(pos-pos1).length():
+		hover_slot = slot0
+	else:
+		hover_slot = slot1
 	emit_signal("states_changed", get_orientation())
 
 func stop_hover():
-	set_connection_attribute(slot0, "none", "hover", false)
-	set_connection_attribute(slot1, "none", "hover", false)
+	hover=false
+	hover_slot=null
 	if hover_switch != null:
 		hover_switch.stop_hover()
 		hover_switch = null
@@ -425,7 +429,10 @@ func process_mouse_button(event, pos):
 			return
 		
 		if LayoutInfo.input_mode == "select":
-			LayoutInfo.init_drag_select(self)
+			if (pos0-pos).length()<(pos1-pos).length():
+				LayoutInfo.init_drag_select(self, slot0)
+			else:
+				LayoutInfo.init_drag_select(self, slot1)
 		
 		if LayoutInfo.input_mode == "draw":
 			LayoutInfo.init_connected_draw_track(self)
@@ -492,6 +499,10 @@ func get_shader_state(to_slot, turn):
 	if metadata[to_slot][turn]["hover"]:
 		state |= STATE_HOVER
 	if metadata[to_slot][turn]["arrow"]:
+		state |= STATE_ARROW
+	if hover:
+		state |= STATE_HOVER
+	if hover_slot==to_slot:
 		state |= STATE_ARROW
 	return state
 

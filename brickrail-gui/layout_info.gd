@@ -209,10 +209,10 @@ func init_connected_draw_track(track):
 	init_draw_track(cell)
 	set_drawing_last_track(track)
 
-func init_drag_select(track):
+func init_drag_select(track, slot):
 	drag_selection = LayoutSection.new()
 	drag_selection.select()
-	drag_selection.add_track(track)
+	drag_selection.add_track(track.get_directed_to(slot))
 	drag_select = true
 	drawing_last = cells[track.x_idx][track.y_idx]
 	drawing_last2 = null
