@@ -56,6 +56,8 @@ func flip():
 	return section
 
 func append(section):
+	if len(tracks)>0:
+		assert(section.tracks[0] in tracks[-1].get_next_tracks())
 	for track in section.tracks:
 		add_track(track)
 
