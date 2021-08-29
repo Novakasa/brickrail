@@ -10,6 +10,7 @@ var button
 var hover=false
 var selected=false
 var disabled=false
+var id
 
 var SwitchInspector = preload("res://switch_inspector.tscn")
 
@@ -17,14 +18,19 @@ signal position_changed(slot, pos)
 signal state_changed(slot)
 signal selected
 signal unselected
+signal removing(id)
 
-func _init(p_slot, positions):
+func _init(p_slot, positions, track_id):
 	switch_positions = positions
 	switch_positions.sort()
 	slot = p_slot
+	id = track_id+"_"+slot
 	
 	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
 
+func remove():
+	emit_signal("removing", id)
+	queue_free()
 
 func drop_data(position, data):
 	prints("dropping switch!", data.name)

@@ -45,14 +45,14 @@ signal unselected(obj)
 signal removing(orientation)
 
 func _init(p_slot0, p_slot1, i, j):
+	
 	slot0 = p_slot0
 	slot1 = p_slot1
-
 	assert_slot_degeneracy()
 	
 	x_idx = i
 	y_idx = j
-	id = str(x_idx)+"_"+str(y_idx)+"_"+get_orientation()
+	id = "track_"+str(x_idx)+"_"+str(y_idx)+"_"+get_orientation()
 
 	connections[slot0] = {}
 	connections[slot1] = {}
@@ -216,7 +216,7 @@ func update_switch(slot):
 		if switches[slot] != null:
 			switches[slot].queue_free()
 			switches[slot] = null
-		switches[slot] = LayoutSwitch.new(slot, connections[slot].keys())
+		switches[slot] = LayoutInfo.create_switch(slot, connections[slot].keys(), id)
 		switches[slot].connect("position_changed", self, "_on_switch_position_changed")
 		switches[slot].connect("state_changed", self, "_on_switch_state_changed")
 		emit_signal("switch_added", switches[slot])
@@ -224,10 +224,10 @@ func update_switch(slot):
 		add_child(switches[slot])
 	else:
 		if switches[slot] != null:
-			switches[slot].queue_free()
 			if hover_switch == switches[slot]:
 				hover_switch.stop_hover()
 				hover_switch = null
+			switches[slot].remove()
 			switches[slot] = null
 	
 func has_switch():

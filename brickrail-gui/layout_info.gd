@@ -6,6 +6,7 @@ var grid = null
 var cells = []
 var blocks = {}
 var trains = {}
+var switches = {}
 
 var BlockScene = preload("res://layout_block.tscn")
 
@@ -44,7 +45,6 @@ func serialize():
 	var blockdata = []
 	for block in blocks.values():
 		blockdata.append(block.serialize())
-	print(blockdata)
 
 	result["tracks"] = tracks
 	result["blocks"] = blockdata
@@ -112,6 +112,17 @@ func create_train(p_name):
 func _on_train_removing(p_name):
 	trains[p_name].disconnect("removing", self, "_on_train_removing")
 	trains.erase(p_name)
+
+func create_switch(slot, positions, track_id):
+	var switch = LayoutSwitch.new(slot, positions, track_id)
+	assert(not switch.id in switches)
+	switches[switch.id] = switch
+	switch.connect("removing", self, "_on_switch_removing")
+	return switch
+
+func _on_switch_removing(id):
+	switches[id].disconnect("removing", self, "_on_switch_removing")
+	switches.erase(id)
 
 func _unhandled_input(event):
 	if event is InputEventKey:
