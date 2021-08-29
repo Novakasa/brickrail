@@ -12,11 +12,7 @@ func _init(p_obj, p_id):
 func collect_edges():
 	# prints("collecting edges on", id)
 	edges = {}
-	var segments = obj.collect_segments()
-	for segment in segments:
-		var edge = LayoutEdge.new(self, segment)
-		if edge.to_node == null:
-			continue
+	for edge in obj.collect_edges():
 		edges[edge.to_node.id] = edge
 
 func is_smaller_null(val1, val2):

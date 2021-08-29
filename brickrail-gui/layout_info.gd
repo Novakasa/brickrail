@@ -107,6 +107,8 @@ func create_block(p_name, section):
 	return block
 
 func _on_block_removing(p_name):
+	for logical_block in blocks[p_name].logical_blocks:
+		nodes.erase(logical_block.node.id)
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")
 	blocks.erase(p_name)
 
@@ -133,6 +135,8 @@ func create_switch(directed_track):
 	return switch
 
 func _on_switch_removing(id):
+	nodes.erase(switches[id].node.id)
+	
 	switches[id].disconnect("removing", self, "_on_switch_removing")
 	switches.erase(id)
 
@@ -198,15 +202,10 @@ func unselect():
 func select(obj):
 	unselect()
 	selection = obj
-	obj.connect("tree_exiting", self, "_on_selection_tree_exiting")
 	obj.connect("unselected", self, "_on_selection_unselected")
 	emit_signal("selected", obj)
 
-func _on_selection_tree_exiting():
-	selection.unselect()
-
 func _on_selection_unselected():
-	selection.disconnect("tree_exiting", self, "_on_selection_tree_exiting")
 	selection.disconnect("unselected", self, "_on_selection_unselected")
 	selection = null
 

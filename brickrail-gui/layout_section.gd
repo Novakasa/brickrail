@@ -1,5 +1,5 @@
 class_name LayoutSection
-extends Node
+extends Reference
 
 var tracks = []
 var selected = false
@@ -44,20 +44,21 @@ func flip():
 	var section = get_script().new()
 	for i in range(len(tracks)-1, -1, -1):
 		# print(i)
-		section.add_track(tracks[i].track)
+		section.add_track(tracks[i].get_opposite())
 	
-	"""var j = len(tracks)-1
+	var j = len(tracks)-1
 	for track in tracks:
 		var other = section.tracks[j]
 		printt(track.id, other.id)
-		j-=1"""
+		j-=1
 	assert(section.tracks[0].get_opposite() == tracks[-1])
 	assert(section.tracks[-1].get_opposite() == tracks[0])
 	return section
 
 func append(section):
 	if len(tracks)>0:
-		assert(section.tracks[0] in tracks[-1].get_next_tracks())
+		# assert(section.tracks[0] in tracks[-1].get_next_tracks())
+		pass
 	for track in section.tracks:
 		add_track(track)
 

@@ -131,10 +131,18 @@ func get_inspector():
 	inspector.set_switch(self)
 	return inspector
 
-func collect_segments():
-	var segments = []
+func collect_edges():
+	var edges = []
 	for track in directed_track.get_next_tracks():
-		var segment = LayoutSection.new()
-		segment.collect_segment(track)
-		segments.append(segment)
-	return segments
+		
+		var node_obj = track.get_block()
+		if node_obj != null:
+			edges.append(LayoutEdge.new(node, node_obj.node, null))
+			continue
+		var next_section = LayoutSection.new()
+		next_section.collect_segment(track)
+		node_obj = next_section.tracks[-1].get_node_obj()
+		if node_obj == null:
+			continue
+		edges.append(LayoutEdge.new(node, node_obj.node, next_section))
+	return edges

@@ -16,7 +16,8 @@ func get_full_section():
 	if edges[0].from_node.obj.has_method("set_occupied"):
 		section.append(edges[0].from_node.obj.section)
 	for edge in edges:
-		section.append(edge.section)
+		if edge.section != null:
+			section.append(edge.section)
 		if edge.to_node.obj.has_method("set_occupied"):
 			section.append(edge.to_node.obj.section)
 	return section
