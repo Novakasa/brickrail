@@ -30,4 +30,7 @@ func _on_BlockCancelButton_pressed():
 
 
 func _on_CollectSegment_pressed():
-	section.collect_segment()
+	if len(section.tracks)==1:
+		section.collect_segment()
+	else:
+		push_error("can't collect segment on section with more than one track!")
