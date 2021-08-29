@@ -6,6 +6,10 @@ var block
 func set_block(p_block):
 	block = p_block
 	block.connect("unselected", self, "_on_block_unselected")
+	
+	$TargetOption.clear()
+	for id in LayoutInfo.nodes.keys():
+		$TargetOption.add_item(id)
 
 func _on_block_unselected():
 	queue_free()
@@ -23,7 +27,7 @@ func _on_AddTrainDialog_confirmed():
 
 
 func _on_ShowRoute0_pressed():
-	var target = $TargetEdit.text
+	var target = LayoutInfo.nodes.keys()[$TargetOption.selected]
 	var route = block.logical_blocks[0].get_route_to(target)
 	if route == null:
 		push_error("no route to selected target "+target)
@@ -32,7 +36,7 @@ func _on_ShowRoute0_pressed():
 
 
 func _on_ShowRoute1_pressed():
-	var target = $TargetEdit.text
+	var target = LayoutInfo.nodes.keys()[$TargetOption.selected]
 	var route = block.logical_blocks[1].get_route_to(target)
 	if route == null:
 		push_error("no route to selected target "+target)
