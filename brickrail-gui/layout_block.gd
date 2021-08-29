@@ -22,8 +22,8 @@ func setup(p_name):
 	blockname = p_name
 	name = blockname
 	
-	logical_blocks.append(LayoutLogicalBlock.new(p_name+"0", 0))
-	logical_blocks.append(LayoutLogicalBlock.new(p_name+"1", 1))
+	logical_blocks.append(LayoutLogicalBlock.new(p_name, 0))
+	logical_blocks.append(LayoutLogicalBlock.new(p_name, 1))
 
 func get_occupied():
 	for logical_block in logical_blocks:

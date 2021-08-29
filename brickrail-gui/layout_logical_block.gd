@@ -2,6 +2,7 @@ class_name LayoutLogicalBlock
 extends Resource
 
 var blockname
+var id
 var section
 var occupied: bool
 var train: LayoutTrain
@@ -11,7 +12,8 @@ var node
 func _init(p_name, p_index):
 	blockname = p_name
 	index = p_index
-	node = LayoutNode.new(self, blockname)
+	id = blockname + "-" + str(index)
+	node = LayoutNode.new(self, id)
 
 func set_section(p_section):
 	section = p_section

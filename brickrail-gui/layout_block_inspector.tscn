@@ -46,7 +46,7 @@ __meta__ = {
 margin_top = 90.0
 margin_right = 129.0
 margin_bottom = 114.0
-text = "block10"
+text = "block1-0"
 
 [node name="AddTrainDialog" type="ConfirmationDialog" parent="."]
 margin_top = 42.0
