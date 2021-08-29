@@ -216,7 +216,7 @@ func update_switch(slot):
 		if switches[slot] != null:
 			switches[slot].queue_free()
 			switches[slot] = null
-		switches[slot] = LayoutInfo.create_switch(slot, connections[slot].keys(), id)
+		switches[slot] = LayoutInfo.create_switch(get_directed_to(slot))
 		switches[slot].connect("position_changed", self, "_on_switch_position_changed")
 		switches[slot].connect("state_changed", self, "_on_switch_state_changed")
 		emit_signal("switch_added", switches[slot])

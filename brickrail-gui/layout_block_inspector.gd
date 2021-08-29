@@ -20,3 +20,13 @@ func _on_AddTrainDialog_confirmed():
 	var trainname = $AddTrainDialog/VBoxContainer/GridContainer/TrainNameEdit.get_text()
 	var train: LayoutTrain = LayoutInfo.create_train(trainname)
 	train.set_current_block(block.logical_blocks[0])
+
+
+func _on_ShowRoute0_pressed():
+	var target = $TargetEdit.text
+	block.logical_blocks[0].get_route_to(target).get_full_section().select()
+
+
+func _on_ShowRoute1_pressed():
+	var target = $TargetEdit.text
+	block.logical_blocks[1].get_route_to(target).get_full_section().select()

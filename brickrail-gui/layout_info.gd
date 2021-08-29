@@ -8,6 +8,8 @@ var blocks = {}
 var trains = {}
 var switches = {}
 
+var nodes = {}
+
 var BlockScene = preload("res://layout_block.tscn")
 
 var spacing = 1024.0
@@ -97,6 +99,12 @@ func create_block(p_name, section):
 	block.set_section(section)
 	grid.add_child(block)
 	block.connect("removing", self, "_on_block_removing")
+	
+	for logical_block in block.logical_blocks:
+		var node = logical_block.node
+		nodes[node.id] = node
+	
+	return block
 
 func _on_block_removing(p_name):
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")
@@ -113,11 +121,15 @@ func _on_train_removing(p_name):
 	trains[p_name].disconnect("removing", self, "_on_train_removing")
 	trains.erase(p_name)
 
-func create_switch(slot, positions, track_id):
-	var switch = LayoutSwitch.new(slot, positions, track_id)
+func create_switch(directed_track):
+	var switch = LayoutSwitch.new(directed_track)
 	assert(not switch.id in switches)
 	switches[switch.id] = switch
 	switch.connect("removing", self, "_on_switch_removing")
+	
+	var node = switch.node
+	nodes[node.id] = node
+	
 	return switch
 
 func _on_switch_removing(id):

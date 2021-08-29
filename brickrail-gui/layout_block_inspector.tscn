@@ -11,18 +11,42 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 77.0
+margin_right = 129.0
 margin_bottom = 14.0
 text = "LayoutBlock"
 
 [node name="AddTrain" type="Button" parent="."]
 margin_top = 18.0
-margin_right = 77.0
+margin_right = 129.0
 margin_bottom = 38.0
-text = "add train"
+text = "Add train"
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="ShowRoute0" type="Button" parent="."]
+margin_top = 42.0
+margin_right = 129.0
+margin_bottom = 62.0
+text = "Show route from 0"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ShowRoute1" type="Button" parent="."]
+margin_top = 66.0
+margin_right = 129.0
+margin_bottom = 86.0
+text = "Show route from 1"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TargetEdit" type="LineEdit" parent="."]
+margin_top = 90.0
+margin_right = 129.0
+margin_bottom = 114.0
+text = "block10"
 
 [node name="AddTrainDialog" type="ConfirmationDialog" parent="."]
 margin_top = 42.0
@@ -63,4 +87,6 @@ __meta__ = {
 }
 
 [connection signal="pressed" from="AddTrain" to="." method="_on_AddTrain_pressed"]
+[connection signal="pressed" from="ShowRoute0" to="." method="_on_ShowRoute0_pressed"]
+[connection signal="pressed" from="ShowRoute1" to="." method="_on_ShowRoute1_pressed"]
 [connection signal="confirmed" from="AddTrainDialog" to="." method="_on_AddTrainDialog_confirmed"]

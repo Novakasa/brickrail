@@ -1,35 +1,20 @@
 
 class_name LayoutRoute
-extends Node
+extends Reference
 
-var target_block
-var origin_block
-var tracks
-var markers
-var lock
+var edges = []
+var length = 0.0
 
-func set_lock(value):
-	for track in tracks:
-		track.set_route_lock(value)
-	lock = value
+func add_prev_edge(edge):
+	edges.push_front(edge)
+	length += edge.weight
+	if len(edges)>1:
+		assert(edges[0].to_node == edges[1].from_node)
 
-func set_switch_positions():
-	var prev_track = tracks[0]
-	for track in tracks:
-		if prev_track == track:
-			continue
-		var from_slot = track.get_connected_slot(prev_track)
-		if prev_track.is_switch(from_slot):
-			# prev_track.switch(track.get_) TODO
-			pass
-		prev_track = track
-		
-
-func can_lock():
-	for track in tracks:
-		if track.route_lock:
-			return false
-	return true
-
-func get_length():
-	pass
+func get_full_section():
+	var section = LayoutSection.new()
+	for edge in edges:
+		section.append(edge.section)
+		if edge.to_node.obj.has_method("set_occupied"):
+			section.append(edge.to_node.obj.section)
+	return section

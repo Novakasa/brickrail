@@ -3,8 +3,6 @@ tool
 class_name LayoutBlock
 extends Node2D
 
-var logical_block_p
-var logical_block_n
 var size = Vector2(0.5, 0.25)
 var section = null
 var blockname
@@ -24,8 +22,8 @@ func setup(p_name):
 	blockname = p_name
 	name = blockname
 	
-	logical_blocks.append(LayoutLogicalBlock.new(p_name, 0))
-	logical_blocks.append(LayoutLogicalBlock.new(p_name, 1))
+	logical_blocks.append(LayoutLogicalBlock.new(p_name+"0", 0))
+	logical_blocks.append(LayoutLogicalBlock.new(p_name+"1", 1))
 
 func get_occupied():
 	for logical_block in logical_blocks:

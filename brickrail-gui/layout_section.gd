@@ -14,7 +14,7 @@ func serialize():
 	var result = {}
 	var track_data = []
 	for track in tracks:
-		track_data.append(track.serialize(true))
+		track_data.append(track.track.serialize(true))
 	result["tracks"] = track_data
 	return result
 
@@ -34,11 +34,30 @@ func can_add_track(track):
 				return false
 	return true
 
+func copy():
+	var section = get_script().new()
+	for track in tracks:
+		section.add_track(track)
+	return section
+
 func flip():
 	var section = get_script().new()
 	for i in range(len(tracks)-1, -1, -1):
-		section.add_track(tracks[i])
+		print(i)
+		section.add_track(tracks[i].track)
+	
+	"""var j = len(tracks)-1
+	for track in tracks:
+		var other = section.tracks[j]
+		printt(track.id, other.id)
+		j-=1"""
+	assert(section.tracks[0].get_opposite() == tracks[-1])
+	assert(section.tracks[-1].get_opposite() == tracks[0])
 	return section
+
+func append(section):
+	for track in section.tracks:
+		add_track(track)
 
 func collect_segment(directed_track=null):
 	if directed_track == null:
@@ -77,18 +96,16 @@ func add_track(track):
 				push_error("[LayoutSegment] track to add is not connected in correct slot!")
 				assert(false)
 		
-		tracks.append(track.get_directed_from(prev_slot))
-		
 		if len(tracks) == 1:
 			var track0 = tracks[0]
-			tracks[0] = track0.get_directed_to(track0.get_neighbour_slot(prev_slot))
+			tracks[0] = track0.track.get_directed_to(track0.track.get_neighbour_slot(prev_slot))
+		tracks.append(track.get_directed_from(prev_slot))
 	else:
 		tracks.append(track.get_directed_to(next_slot))
 	
 	if selected:
 		set_track_attributes("selected", true)
 		set_track_attributes("arrow", true, ">")
-
 
 func get_start_slot():
 	return tracks[0].prev_slot
@@ -141,3 +158,11 @@ func get_inspector():
 	var inspector = LayoutSectionInspector.instance()
 	inspector.set_section(self)
 	return inspector
+
+func get_next_segments():
+	var segments = []
+	for track in tracks[-1].get_next_tracks():
+		var segment = get_script().new()
+		segment.collect_segment(track)
+		segments.append(segment)
+	return segments

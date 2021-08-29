@@ -11,6 +11,8 @@ var hover=false
 var selected=false
 var disabled=false
 var id
+var node
+var directed_track
 
 var SwitchInspector = preload("res://switch_inspector.tscn")
 
@@ -20,15 +22,20 @@ signal selected
 signal unselected
 signal removing(id)
 
-func _init(p_slot, positions, track_id):
-	switch_positions = positions
+func _init(p_directed_track):
+	directed_track = p_directed_track
+	switch_positions = directed_track.get_turns()
 	switch_positions.sort()
-	slot = p_slot
-	id = track_id+"_"+slot
+	slot = directed_track.next_slot
+	id = "switch_"+directed_track.id
+	
+	node = LayoutNode.new(self, id)
 	
 	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
 
 func remove():
+	if selected:
+		unselect()
 	emit_signal("removing", id)
 	queue_free()
 
@@ -123,3 +130,11 @@ func get_inspector():
 	var inspector = SwitchInspector.instance()
 	inspector.set_switch(self)
 	return inspector
+
+func collect_segments():
+	var segments = []
+	for track in directed_track.get_next_tracks():
+		var segment = LayoutSection.new()
+		segment.collect_segment(track)
+		segments.append(segment)
+	return segments
