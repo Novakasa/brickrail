@@ -124,7 +124,8 @@
 					"left"
 				],
 				"E": [
-					"center"
+					"center",
+					"right"
 				]
 			}
 		},
@@ -173,12 +174,27 @@
 		},
 		{
 			"x_idx": 4,
+			"y_idx": 2,
+			"slot0": "S",
+			"slot1": "W",
+			"connections": {
+				"S": [
+					"center"
+				],
+				"W": [
+					"right"
+				]
+			}
+		},
+		{
+			"x_idx": 4,
 			"y_idx": 3,
 			"slot0": "N",
 			"slot1": "S",
 			"connections": {
 				"N": [
-					"right"
+					"right",
+					"left"
 				],
 				"S": [
 					"center"
@@ -223,7 +239,8 @@
 					"center"
 				],
 				"S": [
-					"right"
+					"right",
+					"left"
 				]
 			}
 		},
@@ -256,6 +273,20 @@
 			}
 		},
 		{
+			"x_idx": 4,
+			"y_idx": 7,
+			"slot0": "N",
+			"slot1": "E",
+			"connections": {
+				"N": [
+					"center"
+				],
+				"E": [
+					"center"
+				]
+			}
+		},
+		{
 			"x_idx": 5,
 			"y_idx": 2,
 			"slot0": "E",
@@ -280,7 +311,8 @@
 					"left"
 				],
 				"W": [
-					"center"
+					"center",
+					"right"
 				]
 			}
 		},

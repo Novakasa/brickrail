@@ -10,11 +10,13 @@ func _init(p_obj, p_id):
 	id = p_id
 
 func collect_edges():
-	prints("collecting edges on", id)
+	# prints("collecting edges on", id)
 	edges = {}
 	var segments = obj.collect_segments()
 	for segment in segments:
 		var edge = LayoutEdge.new(self, segment)
+		if edge.to_node == null:
+			continue
 		edges[edge.to_node.id] = edge
 
 func is_smaller_null(val1, val2):
@@ -47,8 +49,8 @@ func calculate_routes():
 		if mindist == null:
 			break
 		current_id = minid
-		prints("current id:",current_id)
-		print(distances)
+		# prints("current id:",current_id)
+		# print(distances)
 
 		var current_node = LayoutInfo.nodes[current_id]
 		unvisited.erase(current_id)
@@ -60,7 +62,7 @@ func calculate_routes():
 			if is_smaller_null(new_dist, distances[neighbour_id]):
 				distances[neighbour_id] = new_dist
 				from_nodes[neighbour_id] = current_id
-				prints("setting distance for",neighbour_id,new_dist, "from", current_id)
+				# prints("setting distance for",neighbour_id,new_dist, "from", current_id)
 
 	var routes = {}
 	for iter_id in LayoutInfo.nodes.keys():

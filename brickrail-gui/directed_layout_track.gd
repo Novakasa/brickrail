@@ -52,8 +52,11 @@ func get_block():
 func get_next_block():
 	if get_switch()!=null:
 		return null
-	var next_directed = get_next_tracks()[0]
-	return next_directed.get_block()
+	var next_directed = get_next_tracks()
+	if len(next_directed) == 0:
+		return null
+	assert(len(next_directed)==1)
+	return next_directed[0].get_block()
 
 func get_node_obj():
 	var switch = get_switch()

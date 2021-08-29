@@ -43,7 +43,7 @@ func copy():
 func flip():
 	var section = get_script().new()
 	for i in range(len(tracks)-1, -1, -1):
-		print(i)
+		# print(i)
 		section.add_track(tracks[i].track)
 	
 	"""var j = len(tracks)-1

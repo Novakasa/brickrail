@@ -9,5 +9,9 @@ var weight
 func _init(p_from_node, p_section):
 	from_node = p_from_node
 	section = p_section
-	to_node = p_section.tracks[-1].get_node_obj().node
+	var node_obj = p_section.tracks[-1].get_node_obj()
+	if node_obj == null:
+		to_node = null
+	else:
+		to_node = node_obj.node
 	weight = float(len(p_section.tracks))
