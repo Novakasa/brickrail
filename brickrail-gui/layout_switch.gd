@@ -11,7 +11,7 @@ var hover=false
 var selected=false
 var disabled=false
 var id
-var node
+var nodes = {}
 var directed_track
 
 var SwitchInspector = preload("res://switch_inspector.tscn")
@@ -29,7 +29,8 @@ func _init(p_directed_track):
 	slot = directed_track.next_slot
 	id = "switch_"+directed_track.id
 	
-	node = LayoutNode.new(self, id)
+	for facing in [">", "<"]:
+		nodes[facing] = LayoutNode.new(self, id, facing, "switch")
 	
 	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
 
@@ -131,18 +132,18 @@ func get_inspector():
 	inspector.set_switch(self)
 	return inspector
 
-func collect_edges():
+func collect_edges(facing):
 	var edges = []
 	for track in directed_track.get_next_tracks():
 		
 		var node_obj = track.get_block()
 		if node_obj != null:
-			edges.append(LayoutEdge.new(node, node_obj.node, null))
+			edges.append(LayoutEdge.new(nodes[facing], node_obj.nodes[facing], "travel", null))
 			continue
 		var next_section = LayoutSection.new()
 		next_section.collect_segment(track)
 		node_obj = next_section.tracks[-1].get_node_obj()
 		if node_obj == null:
 			continue
-		edges.append(LayoutEdge.new(node, node_obj.node, next_section))
+		edges.append(LayoutEdge.new(nodes[facing], node_obj.nodes[facing], "travel", next_section))
 	return edges

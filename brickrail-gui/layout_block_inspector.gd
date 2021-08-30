@@ -28,7 +28,7 @@ func _on_AddTrainDialog_confirmed():
 
 func _on_ShowRoute0_pressed():
 	var target = LayoutInfo.nodes.keys()[$TargetOption.selected]
-	var route = block.logical_blocks[0].get_route_to(target)
+	var route = block.logical_blocks[0].get_route_to(">", target)
 	if route == null:
 		push_error("no route to selected target "+target)
 	else:
@@ -37,7 +37,7 @@ func _on_ShowRoute0_pressed():
 
 func _on_ShowRoute1_pressed():
 	var target = LayoutInfo.nodes.keys()[$TargetOption.selected]
-	var route = block.logical_blocks[1].get_route_to(target)
+	var route = block.logical_blocks[1].get_route_to(">", target)
 	if route == null:
 		push_error("no route to selected target "+target)
 	else:

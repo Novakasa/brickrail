@@ -317,7 +317,7 @@ func get_connection_to(track):
 		if track in connections[slot].values():
 			var turn = track.get_turn_from(get_neighbour_slot(slot))
 			return {"slot": slot, "turn": turn}
-	assert(false)
+	return null
 
 func get_next_track(slot, segment=true):
 	if segment:
@@ -413,6 +413,8 @@ func set_connection_attribute(slot, turn, key, value):
 
 func set_track_connection_attribute(track, key, value):
 	var connection = get_connection_to(track)
+	if connection == null:
+		return
 	set_connection_attribute(connection.slot, connection.turn, key, value)
 
 func get_shader_states(to_slot):

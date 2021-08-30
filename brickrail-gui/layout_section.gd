@@ -83,28 +83,27 @@ func add_track(track):
 	var next_slot
 
 	if track is DirectedLayoutTrack:
-		next_slot = track.next_slot
-		track = track.track
+		tracks.append(track)
 	else:
 		next_slot = track.slot0
 
-	if len(tracks)>0:
-		var last_track = tracks[-1].track
-		var prev_slot = track.get_connected_slot(last_track)
-		if prev_slot == null:
-			push_error("[LayoutSegment] track to add is not connected to last track!")
-			assert(false)
-		if len(tracks) > 1:
-			if prev_slot != track.get_neighbour_slot(get_stop_slot()):
-				push_error("[LayoutSegment] track to add is not connected in correct slot!")
+		if len(tracks)>0:
+			var last_track = tracks[-1].track
+			var prev_slot = track.get_connected_slot(last_track)
+			if prev_slot == null:
+				push_error("[LayoutSegment] track to add is not connected to last track!")
 				assert(false)
-		
-		if len(tracks) == 1:
-			var track0 = tracks[0]
-			tracks[0] = track0.track.get_directed_to(track0.track.get_neighbour_slot(prev_slot))
-		tracks.append(track.get_directed_from(prev_slot))
-	else:
-		tracks.append(track.get_directed_to(next_slot))
+			if len(tracks) > 1:
+				if prev_slot != track.get_neighbour_slot(get_stop_slot()):
+					push_error("[LayoutSegment] track to add is not connected in correct slot!")
+					assert(false)
+			
+			if len(tracks) == 1:
+				var track0 = tracks[0]
+				tracks[0] = track0.track.get_directed_to(track0.track.get_neighbour_slot(prev_slot))
+			tracks.append(track.get_directed_from(prev_slot))
+		else:
+			tracks.append(track.get_directed_to(next_slot))
 	
 	if selected:
 		set_track_attributes("selected", true)

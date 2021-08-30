@@ -4,15 +4,19 @@ extends Reference
 var obj
 var id
 var edges = {}
+var type
+var facing
 
-func _init(p_obj, p_id):
+func _init(p_obj, p_id, p_facing, p_type):
 	obj = p_obj
-	id = p_id
+	id = p_id + p_facing
+	facing = p_facing
+	type = p_type
 
 func collect_edges():
 	# prints("collecting edges on", id)
 	edges = {}
-	for edge in obj.collect_edges():
+	for edge in obj.collect_edges(facing):
 		edges[edge.to_node.id] = edge
 
 func is_smaller_null(val1, val2):

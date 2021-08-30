@@ -101,8 +101,8 @@ func create_block(p_name, section):
 	block.connect("removing", self, "_on_block_removing")
 	
 	for logical_block in block.logical_blocks:
-		var node = logical_block.node
-		nodes[node.id] = node
+		for node in logical_block.nodes.values():
+			nodes[node.id] = node
 	
 	return block
 
@@ -117,6 +117,7 @@ func create_train(p_name):
 	var train = LayoutTrain.new(p_name)
 	trains[p_name] = train
 	train.connect("removing", self, "_on_train_removing")
+	grid.add_child(train)
 	return train
 
 func _on_train_removing(p_name):
@@ -129,8 +130,8 @@ func create_switch(directed_track):
 	switches[switch.id] = switch
 	switch.connect("removing", self, "_on_switch_removing")
 	
-	var node = switch.node
-	nodes[node.id] = node
+	for node in switch.nodes.values():
+		nodes[node.id] = node
 	
 	return switch
 
