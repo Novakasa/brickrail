@@ -32,7 +32,7 @@ func collect_edges(facing):
 	var edges = []
 	
 	var other_facing = ["<", ">"][1-["<", ">"].find(facing)]
-	edges.append(LayoutEdge.new(nodes[facing], nodes[other_facing], "flip", null))
+	edges.append(LayoutEdge.new(nodes[facing], get_opposite_block().nodes[other_facing], "flip", null))
 	
 	var node_obj = section.tracks[-1].get_node_obj()
 	if node_obj != null:

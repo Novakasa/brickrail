@@ -108,7 +108,8 @@ func create_block(p_name, section):
 
 func _on_block_removing(p_name):
 	for logical_block in blocks[p_name].logical_blocks:
-		nodes.erase(logical_block.node.id)
+		for node in logical_block[p_name].nodes.values():
+			nodes.erase(node.id)
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")
 	blocks.erase(p_name)
 
@@ -136,7 +137,8 @@ func create_switch(directed_track):
 	return switch
 
 func _on_switch_removing(id):
-	nodes.erase(switches[id].node.id)
+	for node in switches[id].nodes.values():
+		nodes.erase(node.id)
 	
 	switches[id].disconnect("removing", self, "_on_switch_removing")
 	switches.erase(id)
