@@ -1,5 +1,5 @@
 class_name LayoutTrack
-extends Node
+extends Node2D
 
 var x_idx
 var y_idx
@@ -18,6 +18,7 @@ var hover_switch=null
 
 var switches = {}
 var directed_tracks = {}
+var sensor = null
 
 var metadata = {}
 var default_meta = {"selected": false, "hover": false, "arrow": false}
@@ -66,6 +67,8 @@ func _init(p_slot0, p_slot1, i, j):
 	directed_tracks[slot1] = DirectedLayoutTrack.new(self, slot1)
 	metadata[slot0] = {"none": default_meta.duplicate()}
 	metadata[slot1] = {"none": default_meta.duplicate()}
+	
+	position = get_center()*LayoutInfo.spacing
 	
 	
 	assert(slot0 != slot1)
@@ -353,6 +356,21 @@ func get_switch_at(pos):
 				return switches[slot]
 	return null
 
+func add_sensor(p_sensor):
+	sensor = p_sensor
+	emit_signal("states_changed", get_orientation())
+	update()
+
+func set_sensor_marker(markername):
+	sensor.set_marker(markername)
+	update()
+	emit_signal("states_changed", get_orientation())
+
+func remove_sensor():
+	sensor = null
+	emit_signal("states_changed", get_orientation())
+	update()
+
 func hover(pos):
 
 	var hover_candidate = get_switch_at(pos)
@@ -579,3 +597,6 @@ func interpolate_position_linear(from_slot, t):
 		return from_pos
 	return from_pos + (to_pos-from_pos)*t
 
+func _draw():
+	if sensor != null:
+		draw_circle(Vector2(), 0.05*LayoutInfo.spacing, LayoutInfo.markers[sensor.markername])

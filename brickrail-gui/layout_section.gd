@@ -7,6 +7,7 @@ var hover = false
 
 signal selected
 signal unselected
+signal track_added(track)
 
 var LayoutSectionInspector = preload("res://layout_section_inspector.tscn")
 
@@ -108,6 +109,8 @@ func add_track(track):
 	if selected:
 		set_track_attributes("selected", true)
 		set_track_attributes("arrow", true, ">")
+	
+	emit_signal("track_added", tracks[-1])
 
 func get_start_slot():
 	return tracks[0].prev_slot

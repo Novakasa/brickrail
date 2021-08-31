@@ -8,6 +8,8 @@ var blocks = {}
 var trains = {}
 var switches = {}
 
+var markers = {"default": Color.white}
+
 var nodes = {}
 
 var BlockScene = preload("res://layout_block.tscn")
@@ -236,12 +238,12 @@ func init_connected_draw_track(track):
 
 func init_drag_select(track, slot):
 	drag_selection = LayoutSection.new()
-	drag_selection.select()
 	drag_selection.add_track(track.get_directed_to(slot))
 	drag_select = true
 	drawing_last = cells[track.x_idx][track.y_idx]
 	drawing_last2 = null
 	set_drawing_last_track(null)
+	drag_selection.select()
 
 func draw_track_hover_cell(cell):
 	if not cell == drawing_last:

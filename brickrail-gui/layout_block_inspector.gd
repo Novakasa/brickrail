@@ -16,8 +16,11 @@ func _on_block_unselected():
 
 
 func _on_AddTrain_pressed():
+	var new_name = "train" + str(len(LayoutInfo.trains))
+	while new_name in LayoutInfo.trains:
+		new_name = new_name + "_"
 	$AddTrainDialog.popup_centered()
-	$AddTrainDialog/VBoxContainer/GridContainer/TrainNameEdit.text = "train"+str(len(LayoutInfo.trains))
+	$AddTrainDialog/VBoxContainer/GridContainer/TrainNameEdit.text = new_name
 
 
 func _on_AddTrainDialog_confirmed():

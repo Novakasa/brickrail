@@ -11,26 +11,147 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 116.0
+margin_right = 156.0
 margin_bottom = 14.0
-text = "layout section"
+text = "Track segment selection"
 
 [node name="CreateBlock" type="Button" parent="."]
 margin_top = 18.0
-margin_right = 116.0
+margin_right = 156.0
 margin_bottom = 38.0
-text = "create block"
+text = "Create block"
 
-[node name="AddMarker" type="Button" parent="."]
+[node name="AddSensor" type="Button" parent="."]
 margin_top = 42.0
-margin_right = 116.0
+margin_right = 156.0
 margin_bottom = 62.0
-text = "add marker"
+text = "Add sensor"
+
+[node name="SensorPanel" type="PanelContainer" parent="."]
+margin_top = 66.0
+margin_right = 156.0
+margin_bottom = 160.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Panel" type="Panel" parent="SensorPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 149.0
+margin_bottom = 87.0
+
+[node name="SensorInspector" type="VBoxContainer" parent="SensorPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 149.0
+margin_bottom = 87.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="SensorPanel/SensorInspector"]
+margin_right = 142.0
+margin_bottom = 14.0
+text = "Sensor"
+
+[node name="RemoveSensor" type="Button" parent="SensorPanel/SensorInspector"]
+margin_top = 18.0
+margin_right = 142.0
+margin_bottom = 38.0
+text = "Remove"
+
+[node name="Label2" type="Label" parent="SensorPanel/SensorInspector"]
+margin_top = 42.0
+margin_right = 142.0
+margin_bottom = 56.0
+text = "Marker"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer" type="HBoxContainer" parent="SensorPanel/SensorInspector"]
+margin_top = 60.0
+margin_right = 142.0
+margin_bottom = 80.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarkerSelect" type="OptionButton" parent="SensorPanel/SensorInspector/HBoxContainer"]
+margin_right = 97.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="MarkerAdd" type="Button" parent="SensorPanel/SensorInspector/HBoxContainer"]
+margin_left = 101.0
+margin_right = 121.0
+margin_bottom = 20.0
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarkerRemove" type="Button" parent="SensorPanel/SensorInspector/HBoxContainer"]
+margin_left = 125.0
+margin_right = 142.0
+margin_bottom = 20.0
+text = "-"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MarkerColorAdd" type="ConfirmationDialog" parent="SensorPanel"]
+margin_left = 7.0
+margin_top = 7.0
+margin_right = 331.0
+margin_bottom = 541.0
+window_title = "Add marker"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="SensorPanel/MarkerColorAdd"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 316.0
+margin_bottom = 498.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="ColorPicker" type="ColorPicker" parent="SensorPanel/MarkerColorAdd/VBoxContainer"]
+margin_right = 308.0
+margin_bottom = 438.0
+edit_alpha = false
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="SensorPanel/MarkerColorAdd/VBoxContainer"]
+margin_top = 442.0
+margin_right = 308.0
+margin_bottom = 466.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="SensorPanel/MarkerColorAdd/VBoxContainer/HBoxContainer2"]
+margin_top = 5.0
+margin_right = 84.0
+margin_bottom = 19.0
+text = "Marker name"
+
+[node name="LineEdit" type="LineEdit" parent="SensorPanel/MarkerColorAdd/VBoxContainer/HBoxContainer2"]
+margin_left = 88.0
+margin_right = 308.0
+margin_bottom = 24.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
 
 [node name="CollectSegment" type="Button" parent="."]
-margin_top = 66.0
-margin_right = 116.0
-margin_bottom = 86.0
+margin_top = 164.0
+margin_right = 156.0
+margin_bottom = 184.0
 text = "Collect segment"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -97,7 +218,12 @@ size_flags_vertical = 3
 text = "OK"
 
 [connection signal="pressed" from="CreateBlock" to="." method="_on_CreateBlock_pressed"]
-[connection signal="pressed" from="AddMarker" to="." method="_on_AddMarker_pressed"]
+[connection signal="pressed" from="AddSensor" to="." method="_on_AddSensor_pressed"]
+[connection signal="pressed" from="SensorPanel/SensorInspector/RemoveSensor" to="." method="_on_RemoveSensor_pressed"]
+[connection signal="item_selected" from="SensorPanel/SensorInspector/HBoxContainer/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
+[connection signal="pressed" from="SensorPanel/SensorInspector/HBoxContainer/MarkerAdd" to="." method="_on_MarkerAdd_pressed"]
+[connection signal="pressed" from="SensorPanel/SensorInspector/HBoxContainer/MarkerRemove" to="." method="_on_MarkerRemove_pressed"]
+[connection signal="confirmed" from="SensorPanel/MarkerColorAdd" to="." method="_on_MarkerColorAdd_confirmed"]
 [connection signal="pressed" from="CollectSegment" to="." method="_on_CollectSegment_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockCancelButton" to="." method="_on_BlockCancelButton_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockOKButton" to="." method="_on_BlockOKButton_pressed"]
