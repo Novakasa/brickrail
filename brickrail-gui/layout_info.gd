@@ -110,7 +110,7 @@ func create_block(p_name, section):
 
 func _on_block_removing(p_name):
 	for logical_block in blocks[p_name].logical_blocks:
-		for node in logical_block[p_name].nodes.values():
+		for node in logical_block.nodes.values():
 			nodes.erase(node.id)
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")
 	blocks.erase(p_name)
