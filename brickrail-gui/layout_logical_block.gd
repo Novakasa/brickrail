@@ -13,7 +13,7 @@ func _init(p_name, p_index):
 	blockname = p_name
 	index = p_index
 	id = blockname + "-" + str(index)
-	for facing in [">", "<"]:
+	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
 
 func set_section(p_section):
@@ -31,8 +31,7 @@ func get_route_to(from_facing, node_id):
 func collect_edges(facing):
 	var edges = []
 	
-	var other_facing = ["<", ">"][1-["<", ">"].find(facing)]
-	edges.append(LayoutEdge.new(nodes[facing], get_opposite_block().nodes[other_facing], "flip", null))
+	edges.append(LayoutEdge.new(nodes[facing], get_opposite_block().nodes[-1*facing], "flip", null))
 	
 	var node_obj = section.tracks[-1].get_node_obj()
 	if node_obj != null:

@@ -29,7 +29,7 @@ func _init(p_directed_track):
 	slot = directed_track.next_slot
 	id = "switch_"+directed_track.id
 	
-	for facing in [">", "<"]:
+	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "switch")
 	
 	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
