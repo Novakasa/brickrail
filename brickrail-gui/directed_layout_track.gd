@@ -4,6 +4,8 @@ extends Reference
 var track
 var next_slot
 var prev_slot
+var next_pos
+var prev_pos
 var id
 
 func _init(p_track, p_next_slot):
@@ -11,6 +13,11 @@ func _init(p_track, p_next_slot):
 	next_slot = p_next_slot
 	prev_slot = track.get_opposite_slot(next_slot)
 	id = p_track.id + "_>"+next_slot
+	next_pos = LayoutInfo.slot_positions[next_slot]
+	prev_pos = LayoutInfo.slot_positions[prev_slot]
+
+func get_rotation():
+	return (next_pos-prev_pos).angle()
 
 func get_turns():
 	return track.connections[next_slot].keys()
