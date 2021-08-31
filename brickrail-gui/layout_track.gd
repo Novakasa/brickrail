@@ -214,7 +214,7 @@ func connect_track(slot, track, initial=true):
 func update_switch(slot):
 	if len(connections[slot])>1:
 		if switches[slot] != null:
-			switches[slot].queue_free()
+			switches[slot].remove()
 			switches[slot] = null
 		switches[slot] = LayoutInfo.create_switch(get_directed_to(slot))
 		switches[slot].connect("position_changed", self, "_on_switch_position_changed")
