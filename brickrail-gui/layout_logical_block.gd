@@ -8,6 +8,7 @@ var occupied: bool
 var train: LayoutTrain
 var index: int
 var nodes = {}
+var sensors = {}
 
 func _init(p_name, p_index):
 	blockname = p_name
@@ -17,7 +18,26 @@ func _init(p_name, p_index):
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
 
 func set_section(p_section):
+	if section != null:
+		section.disconnect("sensor_changed", self, "_on_section_sensor_changed")
 	section = p_section
+	section.connect("sensor_changed", self, "_on_section_sensor_changed")
+	find_sensors()
+
+func _on_section_sensor_changed(track):
+	find_sensors()
+
+func find_sensors():
+	var sensorlist = []
+	for dirtrack in section.tracks:
+		if dirtrack.track.sensor != null:
+			sensorlist.append(dirtrack)
+	
+	sensors = {}
+	if len(sensorlist)<2:
+		return
+	sensors["enter"] = sensorlist[0]
+	sensors["in"] = sensorlist[-1]
 
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied

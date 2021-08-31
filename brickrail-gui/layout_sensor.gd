@@ -4,6 +4,7 @@ class_name LayoutSensor
 var markername
 
 signal marker_changed(markername)
+signal train_detected(train)
 
 func _init(p_markername):
 	markername = p_markername
@@ -20,3 +21,6 @@ func serialize():
 
 func load(struct):
 	set_marker(struct["markername"])
+
+func trigger(train=null):
+	emit_signal("train_detected", train)

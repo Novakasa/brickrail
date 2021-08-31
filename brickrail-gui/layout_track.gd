@@ -44,6 +44,7 @@ signal switch_position_changed(pos)
 signal selected(obj)
 signal unselected(obj)
 signal removing(orientation)
+signal sensor_changed(track)
 
 func _init(p_slot0, p_slot1, i, j):
 	
@@ -67,9 +68,6 @@ func _init(p_slot0, p_slot1, i, j):
 	directed_tracks[slot1] = DirectedLayoutTrack.new(self, slot1)
 	metadata[slot0] = {"none": default_meta.duplicate()}
 	metadata[slot1] = {"none": default_meta.duplicate()}
-	
-	position = get_center()*LayoutInfo.spacing
-	
 	
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
@@ -363,6 +361,7 @@ func add_sensor(p_sensor):
 	sensor = p_sensor
 	sensor.connect("marker_changed", self, "_on_sensor_marker_changed")
 	emit_signal("states_changed", get_orientation())
+	emit_signal("sensor_changed", self)
 	update()
 
 func load_sensor(struct):
@@ -380,6 +379,7 @@ func remove_sensor():
 	sensor.disconnect("marker_changed", self, "_on_sensor_marker_changed")
 	sensor = null
 	emit_signal("states_changed", get_orientation())
+	emit_signal("sensor_changed", self)
 	update()
 
 func hover(pos):
@@ -610,4 +610,4 @@ func interpolate_position_linear(from_slot, t):
 
 func _draw():
 	if sensor != null:
-		draw_circle(Vector2(), 0.05*LayoutInfo.spacing, LayoutInfo.markers[sensor.markername])
+		draw_circle(get_center()*LayoutInfo.spacing, 0.05*LayoutInfo.spacing, LayoutInfo.markers[sensor.markername])
