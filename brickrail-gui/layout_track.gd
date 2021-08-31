@@ -93,6 +93,9 @@ func serialize(reference=false):
 			for turn in connections[slot]:
 				connections_result[slot].append(turn)
 		result["connections"] = connections_result
+		
+		if sensor != null:
+			result["sensor"] = sensor.serialize()
 	return result
 
 func get_block():
@@ -358,15 +361,23 @@ func get_switch_at(pos):
 
 func add_sensor(p_sensor):
 	sensor = p_sensor
+	sensor.connect("marker_changed", self, "_on_sensor_marker_changed")
 	emit_signal("states_changed", get_orientation())
 	update()
+
+func load_sensor(struct):
+	add_sensor(LayoutSensor.new(LayoutInfo.markers.values()[0]))
+	sensor.load(struct)
+
+func _on_sensor_marker_changed(marker):
+	update()
+	emit_signal("states_changed", get_orientation())
 
 func set_sensor_marker(markername):
 	sensor.set_marker(markername)
-	update()
-	emit_signal("states_changed", get_orientation())
 
 func remove_sensor():
+	sensor.disconnect("marker_changed", self, "_on_sensor_marker_changed")
 	sensor = null
 	emit_signal("states_changed", get_orientation())
 	update()

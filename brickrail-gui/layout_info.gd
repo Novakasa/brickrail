@@ -40,6 +40,10 @@ func serialize():
 	result["nx"] = len(cells)
 	result["ny"] = len(cells[0])
 	
+	result["markers"] = {}
+	for markername in markers:
+		result["markers"][markername] = markers[markername].to_html()
+	
 	var tracks = []
 	for row in cells:
 		for cell in row:
@@ -68,6 +72,12 @@ func clear():
 func load(struct):
 	clear()
 	
+	if "markers" in struct:
+		markers = {}
+		for markername in struct["markers"]:
+			markers[markername] = Color(struct["markers"][markername])
+		
+	
 	for track in struct.tracks:
 		var i = track.x_idx
 		var j = track.y_idx
@@ -80,6 +90,8 @@ func load(struct):
 		var orientation = track.slot0 + track.slot1
 		var track_obj = cells[i][j].tracks[orientation]
 		track_obj.load_connections(track.connections)
+		if "sensor" in track:
+			track_obj.load_sensor(track.sensor)
 	
 	if "blocks" in struct:
 		for block_data in struct.blocks:
