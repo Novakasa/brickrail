@@ -118,6 +118,13 @@ func add_track(track):
 func _on_track_sensor_changed(track):
 	emit_signal("sensor_changed", track)
 
+func get_sensor_tracks():
+	var sensorlist = []
+	for dirtrack in tracks:
+		if dirtrack.track.sensor != null:
+			sensorlist.append(dirtrack)
+	return sensorlist
+
 func get_start_slot():
 	return tracks[0].prev_slot
 

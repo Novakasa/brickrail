@@ -105,7 +105,7 @@ func get_obj_at(normalized_pos):
 			closest_dist = dist
 	if closest_track == null:
 		return null
-	if closest_dist > 0.239:
+	if closest_dist > 3*0.126:
 		return null
 	if closest_dist > 0.126:
 		var block = closest_track.get_block()

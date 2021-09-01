@@ -28,10 +28,7 @@ func _on_section_sensor_changed(track):
 	find_sensors()
 
 func find_sensors():
-	var sensorlist = []
-	for dirtrack in section.tracks:
-		if dirtrack.track.sensor != null:
-			sensorlist.append(dirtrack)
+	var sensorlist = section.get_sensor_tracks()
 	
 	sensors = {}
 	if len(sensorlist)<2:
