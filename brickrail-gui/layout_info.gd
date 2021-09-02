@@ -62,6 +62,8 @@ func serialize():
 
 func clear():
 	unselect()
+	for train in trains.values():
+		train.remove()
 	for block in blocks.values():
 		block.remove()
 	for row in cells:
@@ -221,7 +223,6 @@ func set_input_mode(mode):
 func unselect():
 	if selection != null:
 		selection.unselect()
-	
 
 func select(obj):
 	unselect()

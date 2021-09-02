@@ -65,6 +65,7 @@ func flip_heading():
 
 func remove():
 	emit_signal("removing", trainname)
+	queue_free()
 
 func get_inspector():
 	var inspector = TrainInspector.instance()
