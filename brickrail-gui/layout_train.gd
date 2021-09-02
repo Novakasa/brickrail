@@ -64,6 +64,7 @@ func flip_heading():
 	set_current_block(block.get_opposite_block())
 
 func remove():
+	unselect()
 	emit_signal("removing", trainname)
 	queue_free()
 

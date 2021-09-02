@@ -186,7 +186,10 @@ func _unhandled_input(event):
 				
 				if selection is LayoutBlock:
 					selection.remove()
-					
+				
+				if selection is LayoutTrain:
+					selection.remove()
+				
 
 func bresenham_line(startx, starty, stopx, stopy):
 	if startx == stopx and starty == stopy:

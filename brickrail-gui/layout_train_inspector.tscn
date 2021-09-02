@@ -11,6 +11,6 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 75.0
+margin_right = 73.0
 margin_bottom = 14.0
 text = "LayoutTrain"
