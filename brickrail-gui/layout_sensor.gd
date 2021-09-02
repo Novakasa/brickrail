@@ -6,7 +6,9 @@ var markername
 signal marker_changed(markername)
 signal train_detected(train)
 
-func _init(p_markername):
+func _init(p_markername=null):
+	if p_markername==null:
+		p_markername = LayoutInfo.markers.keys()[0]
 	markername = p_markername
 
 func get_color():

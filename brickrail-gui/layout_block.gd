@@ -63,6 +63,10 @@ func unselect():
 
 func set_section(p_section):
 	
+	if len(p_section.get_sensor_tracks()) == 0:
+		p_section.tracks[0].track.add_sensor(LayoutSensor.new())
+		p_section.tracks[-1].track.add_sensor(LayoutSensor.new())
+	
 	logical_blocks[0].set_section(p_section)
 	logical_blocks[1].set_section(p_section.flip())
 	p_section.set_track_attributes("block", blockname)
