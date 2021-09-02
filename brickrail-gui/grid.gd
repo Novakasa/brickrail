@@ -71,10 +71,16 @@ func process_mouse_motion(event, i, j, mpos_cell):
 	if dragging_view:
 		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
 
+	for train in LayoutInfo.trains.values():
+		train.stop_hover()
 	if hover_cell != null && hover_cell != LayoutInfo.cells[i][j]:
 		hover_cell.stop_hover()
 	hover_cell = LayoutInfo.cells[i][j]
 	hover_cell.hover_at(mpos_cell)
+
+func stop_hover():
+	if hover_cell != null:
+		hover_cell.stop_hover()
 
 func process_mouse_button(event, i, j, mpos_cell):
 	if event.button_index == BUTTON_WHEEL_UP:

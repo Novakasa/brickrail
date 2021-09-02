@@ -99,6 +99,13 @@ func load(struct):
 			section.load(block_data.section)
 			create_block(block_data.name, section)
 
+func get_hover_lock():
+	if drag_select or drawing_track:
+		return true
+	if grid.dragging_view:
+		return true
+	return false
+
 func get_track_from_struct(struct):
 	var i = struct.x_idx
 	var j = struct.y_idx

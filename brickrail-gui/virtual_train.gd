@@ -9,17 +9,45 @@ var acceleration = 0.1
 var hover=false
 var selected=false
 var dirtrack
+var size = Vector2(0.3,0.2)
 
 export(Color) var color
 export(Color) var accent_color
+export(Color) var hover_color
+export(Color) var selected_color
 
 signal hover()
 signal stop_hover()
 signal clicked(event)
 signal marker(marker)
 
+func has_point(pos):
+	var spacing = LayoutInfo.spacing
+	var wsize = size*spacing
+	wsize.x = wsize.x + wsize.y
+	var hitbox = Rect2(-wsize*0.5, wsize)
+	return hitbox.has_point(pos)
+
+func _unhandled_input(event):
+	if event is InputEventMouseButton:
+		if not event.button_index in [BUTTON_LEFT, BUTTON_RIGHT]:
+			return
+		if has_point(get_local_mouse_position()):
+			get_tree().set_input_as_handled()
+			emit_signal("clicked", event)
+	if event is InputEventMouseMotion:
+		if has_point(get_local_mouse_position()):
+			if not LayoutInfo.get_hover_lock():
+				LayoutInfo.grid.stop_hover()
+				get_tree().set_input_as_handled()
+			emit_signal("hover")
+
 func set_selected(p_selected):
 	selected = p_selected
+	update()
+
+func set_hover(p_hover):
+	hover = p_hover
 	update()
 
 func set_dirtrack(p_dirtrack):
@@ -33,8 +61,13 @@ func _init():
 
 func _draw():
 	var spacing = LayoutInfo.spacing
-	var size = spacing * Vector2(0.3,0.2)
-	draw_rect(Rect2(-size*0.5, size), color)
-	draw_circle(0.5*Vector2(size.x,0.0), size.y*0.5, color)
-	draw_circle(-0.5*Vector2(size.x,0.0), size.y*0.5, color)
-	draw_circle(0.5*Vector2(size.x,0.0), size.y*0.5*0.8, accent_color)
+	var wsize = size*spacing
+	var col = color
+	if selected:
+		col = selected_color
+	if hover:
+		col = hover_color
+	draw_rect(Rect2(-wsize*0.5, wsize), col)
+	draw_circle(0.5*Vector2(wsize.x,0.0), wsize.y*0.5, col)
+	draw_circle(-0.5*Vector2(wsize.x,0.0), wsize.y*0.5, col)
+	draw_circle(0.5*Vector2(wsize.x,0.0), wsize.y*0.5*0.8, accent_color)
