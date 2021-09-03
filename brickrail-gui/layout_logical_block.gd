@@ -50,7 +50,6 @@ func set_occupied(p_occupied, p_train=null):
 	section.set_track_attributes("block", blockname)
 
 func get_route_to(from_facing, node_id):
-	var nodename	
 	return nodes[from_facing].calculate_routes()[node_id]
 
 func collect_edges(facing):
@@ -78,17 +77,37 @@ func get_inspector():
 	return inspector
 
 func process_mouse_button(event, pos):
-	if event.button_index == BUTTON_LEFT and event.pressed:
-		if not selected:
-			select()
+	if event.button_index == BUTTON_LEFT:
+		if event.pressed:
+			if not selected:
+				select()
+		if not event.pressed:
+			if LayoutInfo.drag_train:
+				var train = LayoutInfo.dragged_train
+				var start_facing = train.facing
+				var end_facing = LayoutInfo.drag_virtual_train.facing
+				var target = nodes[end_facing].id
+				var route = train.block.get_route_to(start_facing, target)
+				if route == null:
+					push_error("no route to selected target "+target)
+				else:
+					route.get_full_section().select()
+				
 
 func hover(pos):
 	hover = true
 	section.set_track_attributes("block", blockname)
+	
+	if LayoutInfo.drag_train:
+		LayoutInfo.drag_virtual_train.set_dirtrack(sensors["in"])
+		LayoutInfo.drag_virtual_train.visible=true
 
 func stop_hover():
 	hover = false
 	section.set_track_attributes("block", blockname)
+
+	if LayoutInfo.drag_train:
+		LayoutInfo.drag_virtual_train.visible=false
 
 func select():
 	selected=true

@@ -32,6 +32,10 @@ var drawing_mode = null
 var drag_select = false
 var drag_selection = null
 
+var drag_train = false
+var dragged_train = null
+var drag_virtual_train = null
+
 signal input_mode_changed(mode)
 signal selected(obj)
 
@@ -267,6 +271,21 @@ func init_drag_select(track, slot):
 	drawing_last2 = null
 	set_drawing_last_track(null)
 	drag_selection.select()
+
+func init_drag_train(train):
+	drag_train = true
+	dragged_train = train
+	drag_virtual_train = load("res://virtual_train.tscn").instance()
+	grid.add_child(drag_virtual_train)
+	drag_virtual_train.set_process_unhandled_input(false)
+	drag_virtual_train.visible=false
+
+func stop_drag_train():
+	if drag_train:
+		print("stopping drag train")
+		drag_train = false
+		drag_virtual_train.queue_free()
+		dragged_train = null
 
 func draw_track_hover_cell(cell):
 	if not cell == drawing_last:

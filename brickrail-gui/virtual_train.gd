@@ -30,6 +30,7 @@ func has_point(pos):
 	return hitbox.has_point(pos)
 
 func set_facing(p_facing):
+	prints("setting facing:", p_facing)
 	facing = p_facing
 	update()
 

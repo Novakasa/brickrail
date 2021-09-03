@@ -45,8 +45,11 @@ func stop_hover():
 func _on_virtual_train_clicked(event):
 	# prints("train:", trainname)
 	if event.button_index == BUTTON_LEFT:
-		if not selected:
-			select()
+		if LayoutInfo.input_mode == "select":
+			if not selected:
+				select()
+		if LayoutInfo.input_mode == "control":
+			LayoutInfo.init_drag_train(self)
 	
 func set_current_block(p_block):
 	if block != null:
