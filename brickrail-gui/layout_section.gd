@@ -107,7 +107,8 @@ func add_track(track):
 		else:
 			tracks.append(track.get_directed_to(next_slot))
 	
-	tracks[-1].track.connect("sensor_changed", self, "_on_track_sensor_changed")
+	if not tracks[-1].track.is_connected("sensor_changed", self, "_on_track_sensor_changed"):
+		tracks[-1].track.connect("sensor_changed", self, "_on_track_sensor_changed")
 	
 	if selected:
 		set_track_attributes("selected", true)
