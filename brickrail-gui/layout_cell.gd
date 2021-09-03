@@ -107,7 +107,7 @@ func get_obj_at(normalized_pos):
 		return null
 	if closest_dist > 3*0.126:
 		return null
-	if closest_dist > 0.126:
+	if closest_dist > 0.126 or LayoutInfo.drag_train:
 		var block = closest_track.get_logical_block()
 		if block == null:
 			return null
