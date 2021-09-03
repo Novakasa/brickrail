@@ -2145,26 +2145,31 @@
 	"trains": [
 		{
 			"name": "train0",
+			"facing": 1,
 			"blockname": "block1",
 			"blockindex": 1
 		},
 		{
 			"name": "train1",
+			"facing": -1,
 			"blockname": "block0",
 			"blockindex": 0
 		},
 		{
 			"name": "train2",
+			"facing": 1,
 			"blockname": "block6",
 			"blockindex": 0
 		},
 		{
 			"name": "train3",
+			"facing": 1,
 			"blockname": "block5",
 			"blockindex": 1
 		},
 		{
 			"name": "train4",
+			"facing": 1,
 			"blockname": "block4",
 			"blockindex": 1
 		}

@@ -28,6 +28,7 @@ func _init(p_name):
 func serialize():
 	var struct = {}
 	struct["name"] = trainname
+	struct["facing"] = facing
 	if block != null:
 		struct["blockname"] = block.blockname
 		struct["blockindex"] = block.index
@@ -76,6 +77,10 @@ func flip_heading():
 
 func flip_facing():
 	facing *= -1
+	virtual_train.set_facing(facing)
+
+func set_facing(p_facing):
+	facing = p_facing
 	virtual_train.set_facing(facing)
 
 func remove():
