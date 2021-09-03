@@ -11,8 +11,7 @@ var selected = false
 var logical_blocks = []
 export(Color) var color
 export(Font) var font
-
-var LayoutBlockInspector = preload("res://layout_block_inspector.tscn")
+var hover_block = null
 
 signal removing(p_name)
 signal selected()
@@ -36,30 +35,6 @@ func get_train():
 		if logical_block.occupied:
 			return logical_block.train
 	return null
-
-func process_mouse_button(event, pos):
-	if event.button_index == BUTTON_LEFT and event.pressed:
-		if not selected:
-			select()
-
-func hover(pos):
-	hover = true
-	section.set_track_attributes("block", blockname)
-
-func stop_hover():
-	hover = false
-	section.set_track_attributes("block", blockname)
-
-func select():
-	selected=true
-	LayoutInfo.select(self)
-	section.set_track_attributes("block", blockname)
-	emit_signal("selected")
-
-func unselect():
-	selected=false
-	section.set_track_attributes("block", blockname)
-	emit_signal("unselected")
 
 func set_section(p_section):
 	
@@ -97,16 +72,14 @@ func serialize():
 		result["section"] = section.serialize()
 	return result
 
-func get_inspector():
-	var inspector = LayoutBlockInspector.instance()
-	inspector.set_block(self)
-	return inspector
-
 func remove():
-	if selected:
-		unselect()
+	for logical_block in logical_blocks:
+		if logical_block.selected:
+			logical_block.unselect()
 	section.unset_track_attributes("block")
 	emit_signal("removing", blockname)
+	for logical_block in logical_blocks:
+		logical_block.emit_signal("removing", blockname)
 	queue_free()
 
 func _draw():

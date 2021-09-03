@@ -30,6 +30,8 @@ const STATE_BLOCK = 8
 const STATE_BLOCK_OCCUPIED = 16
 const STATE_BLOCK_HOVER = 32
 const STATE_BLOCK_SELECTED = 64
+const STATE_BLOCK_PLUS = 2048
+const STATE_BLOCK_MINUS = 4096
 const STATE_CONNECTED = 128
 const STATE_SWITCH = 256
 const STATE_SWITCH_PRIORITY = 512
@@ -102,6 +104,14 @@ func get_block():
 			if "block" in metadata[slot][turn]:
 				return LayoutInfo.blocks[metadata[slot][turn]["block"]]
 	return null
+
+func get_logical_block():
+	var block = get_block()
+	if block == null:
+		return null
+	if block.logical_blocks[0].section.get_track_index(self)>=(len(block.section.tracks)/2):
+		return block.logical_blocks[0]
+	return block.logical_blocks[1]
 
 func get_cell():
 	return LayoutInfo.cells[x_idx][y_idx]
@@ -457,10 +467,15 @@ func get_shader_state(to_slot, turn):
 	if "block" in metadata[to_slot][turn]:
 		state |= STATE_BLOCK
 		var block = LayoutInfo.blocks[metadata[to_slot][turn]["block"]]
-		if block.hover:
-			state |= STATE_BLOCK_HOVER
-		if block.selected:
-			state |= STATE_BLOCK_SELECTED
+		for logical_block in block.logical_blocks:
+			if logical_block.hover:
+				state |= STATE_BLOCK_HOVER
+				if logical_block.section.tracks[-1].track == self:
+					state |= [STATE_BLOCK_PLUS, STATE_BLOCK_MINUS][logical_block.index]
+			if logical_block.selected:
+				state |= STATE_BLOCK_SELECTED
+				if logical_block.section.tracks[-1].track == self:
+					state |= [STATE_BLOCK_PLUS, STATE_BLOCK_MINUS][logical_block.index]
 		if block.get_occupied():
 			state |= STATE_BLOCK_OCCUPIED
 	if turn in connections[to_slot]:

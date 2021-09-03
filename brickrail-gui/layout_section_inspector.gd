@@ -28,6 +28,7 @@ func _on_section_track_added(track):
 
 
 func _on_CreateBlock_pressed():
+	assert(len(section.tracks)>1)
 	var new_name = "block" + str(len(LayoutInfo.blocks))
 	while new_name in LayoutInfo.blocks:
 		new_name = new_name + "_"

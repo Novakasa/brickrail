@@ -9,11 +9,19 @@ var train: LayoutTrain
 var index: int
 var nodes = {}
 var sensors = {}
+var selected = false
+var hover = false
+
+var LayoutBlockInspector = preload("res://layout_block_inspector.tscn")
+
+signal removing(blockname)
+signal selected()
+signal unselected()
 
 func _init(p_name, p_index):
 	blockname = p_name
 	index = p_index
-	id = blockname + "-" + str(index)
+	id = blockname + "_" + ["+", "-"][index]
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
 
@@ -63,3 +71,32 @@ func collect_edges(facing):
 
 func get_opposite_block():
 	return LayoutInfo.blocks[blockname].logical_blocks[1-index]
+
+func get_inspector():
+	var inspector = LayoutBlockInspector.instance()
+	inspector.set_block(self)
+	return inspector
+
+func process_mouse_button(event, pos):
+	if event.button_index == BUTTON_LEFT and event.pressed:
+		if not selected:
+			select()
+
+func hover(pos):
+	hover = true
+	section.set_track_attributes("block", blockname)
+
+func stop_hover():
+	hover = false
+	section.set_track_attributes("block", blockname)
+
+func select():
+	selected=true
+	LayoutInfo.select(self)
+	section.set_track_attributes("block", blockname)
+	emit_signal("selected")
+
+func unselect():
+	selected=false
+	section.set_track_attributes("block", blockname)
+	emit_signal("unselected")

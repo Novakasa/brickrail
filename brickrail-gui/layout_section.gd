@@ -125,6 +125,16 @@ func get_sensor_tracks():
 			sensorlist.append(dirtrack)
 	return sensorlist
 
+func get_track_index(track):
+	if track is DirectedLayoutTrack:
+		return tracks.find(track)
+	else:
+		for slot in track.get_orientation():
+			var dirtrack = track.get_directed_to(slot)
+			if dirtrack in tracks:
+				return tracks.find(dirtrack)
+	return null
+
 func get_start_slot():
 	return tracks[0].prev_slot
 

@@ -44,6 +44,8 @@ const int STATE_BLOCK_OCCUPIED = 16;
 const int STATE_BLOCK = 8;
 const int STATE_BLOCK_HOVER = 32;
 const int STATE_BLOCK_SELECTED = 64;
+const int STATE_BLOCK_PLUS = 2048;
+const int STATE_BLOCK_MINUS = 4096;
 const int STATE_CONNECTED = 128;
 const int STATE_SWITCH = 256;
 const int STATE_SWITCH_PRIORITY = 512;
@@ -56,6 +58,8 @@ const int TRACK_FULL = 1;
 const int TRACK_BORDER = 2;
 const int TRACK_ARROW = 3;
 const int TRACK_BLOCK = 4;
+const int TRACK_BLOCK_PLUS = 5;
+const int TRACK_BLOCK_MINUS = 6;
 
 const int TURN_BASE = 0;
 const int TURN_SWITCH_ALL = 1;
@@ -177,6 +181,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	vec2 from_pos = slot_positions[from_slot];
 	vec2 to_pos = slot_positions[to_slot];
 	vec2 tangent = to_pos-from_pos;
+	float angle = atan(tangent.y, tangent.x);
+	vec2 normal = vec2(cos(angle+0.5*PI), sin(angle+0.5*PI));
 	vec2 to_pos_opposite = slot_positions[(to_slot+2)%4];
 	vec2 aligned = to_pos - to_pos_opposite;
 	float this_angle = atan(tangent.y, tangent.x);
@@ -199,7 +205,6 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	delta_angle = float(curve_index)*PI/4.0;
 
 	if (track_type == TRACK_ARROW) {
-		float angle = atan(tangent.y, tangent.x);
 		vec2 arrowdims = vec2(1.5,0.9);
 		float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*arrowdims);
 		float rhomb2 = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*vec2(0.3,1.0)*arrowdims);
@@ -207,6 +212,30 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		scene = substract(rhomb, rhomb2);
 		//scene = rhomb;
 		scene = substract(scene, mask);
+		return scene;
+	}
+	if (track_type == TRACK_BLOCK_PLUS) {
+		float size = (block_width-track_width)*0.5;
+		float swidth = 0.3*size;
+		for (int s=-1; s<3; s+=2) {
+			vec2 sign_pos = 0.5*(from_pos+to_pos) + float(s)*normal*(track_width + 0.5*(block_width-track_width));
+			float hbar = line_rect(position, sign_pos-size*normalize(tangent), sign_pos+size*normalize(tangent), swidth);
+			float vbar = line_rect(position, sign_pos-size*normal, sign_pos+size*normal, swidth);
+			scene = merge(scene, hbar);
+			scene = merge(scene, vbar);
+		}
+		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
+		return scene;
+	}
+	if (track_type == TRACK_BLOCK_MINUS) {
+		float size = (block_width-track_width)*0.5;
+		float swidth = 0.3*size;
+		for (int s=-1; s<3; s+=2) {
+			vec2 sign_pos = 0.5*(from_pos+to_pos) + float(s)*normal*(track_width + 0.5*(block_width-track_width));
+			float hbar = line_rect(position, sign_pos-size*normalize(tangent), sign_pos+size*normalize(tangent), swidth);
+			scene = merge(scene, hbar);
+		}
+		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
 		return scene;
 	}
 	if (turn_index == 2) {
@@ -221,13 +250,11 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			// float endcap = circle(position-from_pos-tangent*0.5, width);
 			// scene = merge(scene, endcap);
 			vec2 stopper_pos = end_pos;
-			vec2 normal = vec2(cos(this_angle+PI*0.5), sin(this_angle+PI*0.5));
 			float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
 			scene = merge(scene, stopper);
 			return scene;
 		}
 		if (track_type == TRACK_BLOCK) {
-			float angle = atan(tangent.y, tangent.x);
 			float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, vec2(block_width-0.2))-0.2;
 			scene = merge(scene, rhomb);
 			return scene;
@@ -274,7 +301,6 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		scene = scene - block_width;
 		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos),1.0);
 		scene = substract(scene, mask);
-		float angle = atan(tangent.y, tangent.x);
 		float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, vec2(block_width-0.2))-0.2;
 		scene = merge(scene, rhomb);
 	}
@@ -385,6 +411,21 @@ void fragment() {
 	float t = smoothstep(block_change, -block_change, block);
 	vec4 block_mix = mix(bg, get_block_color(block_state), t);
 	
+	if ((block_state & STATE_BLOCK_PLUS) == STATE_BLOCK_PLUS) {
+		int dummy_state;
+		float plus = tracks(position, STATE_BLOCK_PLUS, TRACK_BLOCK_PLUS, dummy_state);
+		float plus_change = fwidth(plus)*0.5;
+		t = smoothstep(plus_change, -plus_change, plus);
+		block_mix = mix(block_mix, track_inner, t);
+	}
+		if ((block_state & STATE_BLOCK_MINUS) == STATE_BLOCK_MINUS) {
+		int dummy_state;
+		float plus = tracks(position, STATE_BLOCK_MINUS, TRACK_BLOCK_MINUS, dummy_state);
+		float plus_change = fwidth(plus)*0.5;
+		t = smoothstep(plus_change, -plus_change, plus);
+		block_mix = mix(block_mix, track_inner, t);
+	}
+	
 	int track_state;
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
 	int state = track_state;
@@ -481,5 +522,5 @@ shader_param/has_switch = true
 shader_param/has_block = null
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 200, 0, 0, 0, 0, 0, 1152.12, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 4296, 0, 0, 0, 0, 0, 1152.68, 0 )
 shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 72, 0 )

@@ -184,8 +184,8 @@ func _unhandled_input(event):
 						if track.track.get_block() == null:
 							track.track.remove()
 				
-				if selection is LayoutBlock:
-					selection.remove()
+				if selection is LayoutLogicalBlock:
+					blocks[selection.blockname].remove()
 				
 				if selection is LayoutTrain:
 					selection.remove()

@@ -11,13 +11,13 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 129.0
+margin_right = 95.0
 margin_bottom = 14.0
 text = "LayoutBlock"
 
 [node name="AddTrain" type="Button" parent="."]
 margin_top = 18.0
-margin_right = 129.0
+margin_right = 95.0
 margin_bottom = 38.0
 text = "Add train"
 __meta__ = {
@@ -26,25 +26,25 @@ __meta__ = {
 
 [node name="ShowRoute0" type="Button" parent="."]
 margin_top = 42.0
-margin_right = 129.0
+margin_right = 95.0
 margin_bottom = 62.0
-text = "Show route from 0"
+text = "Show route >"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="ShowRoute1" type="Button" parent="."]
 margin_top = 66.0
-margin_right = 129.0
+margin_right = 95.0
 margin_bottom = 86.0
-text = "Show route from 1"
+text = "Show route <"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="TargetOption" type="OptionButton" parent="."]
 margin_top = 90.0
-margin_right = 129.0
+margin_right = 95.0
 margin_bottom = 110.0
 __meta__ = {
 "_edit_use_anchors_": false
