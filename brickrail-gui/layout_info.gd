@@ -57,9 +57,14 @@ func serialize():
 	var blockdata = []
 	for block in blocks.values():
 		blockdata.append(block.serialize())
+	
+	var traindata = []
+	for train in trains.values():
+		traindata.append(train.serialize())
 
 	result["tracks"] = tracks
 	result["blocks"] = blockdata
+	result["trains"] = traindata
 	
 	print(result)
 	return result
@@ -104,6 +109,13 @@ func load(struct):
 			var section = LayoutSection.new()
 			section.load(block_data.section)
 			create_block(block_data.name, section)
+	
+	if "trains" in struct:
+		for train_data in struct.trains:
+			var train = create_train(train_data.name)
+			if "blockname" in  train_data:
+				var block = blocks[train_data.blockname].logical_blocks[train_data.blockindex]
+				train.set_current_block(block)
 
 func get_hover_lock():
 	if drag_select or drawing_track:

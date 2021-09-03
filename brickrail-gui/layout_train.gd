@@ -25,6 +25,14 @@ func _init(p_name):
 	virtual_train.connect("clicked", self, "_on_virtual_train_clicked")
 	virtual_train.visible=false
 
+func serialize():
+	var struct = {}
+	struct["name"] = trainname
+	if block != null:
+		struct["blockname"] = block.blockname
+		struct["blockindex"] = block.index
+	return struct
+
 func select():
 	selected=true
 	LayoutInfo.select(self)
