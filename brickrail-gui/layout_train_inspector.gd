@@ -8,3 +8,7 @@ func set_train(obj):
 
 func _on_train_unselected():
 	queue_free()
+
+
+func _on_FlipHeading_pressed():
+	train.flip_heading()

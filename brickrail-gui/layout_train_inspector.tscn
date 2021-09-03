@@ -11,6 +11,14 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 73.0
+margin_right = 89.0
 margin_bottom = 14.0
 text = "LayoutTrain"
+
+[node name="FlipHeading" type="Button" parent="."]
+margin_top = 18.0
+margin_right = 89.0
+margin_bottom = 38.0
+text = "Flip heading"
+
+[connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
