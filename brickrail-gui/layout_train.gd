@@ -60,9 +60,12 @@ func set_route(p_route):
 	route = p_route
 
 func flip_heading():
+	set_current_block(block.get_opposite_block())
+	flip_facing()
+
+func flip_facing():
 	facing *= -1
 	virtual_train.set_facing(facing)
-	set_current_block(block.get_opposite_block())
 
 func remove():
 	unselect()

@@ -12,3 +12,7 @@ func _on_train_unselected():
 
 func _on_FlipHeading_pressed():
 	train.flip_heading()
+
+
+func _on_FlipFacing_pressed():
+	train.flip_facing()
