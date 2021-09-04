@@ -33,6 +33,20 @@ margin_right = 89.0
 margin_bottom = 86.0
 text = "Start"
 
+[node name="Slow" type="Button" parent="."]
+margin_top = 90.0
+margin_right = 89.0
+margin_bottom = 110.0
+text = "Slow"
+
+[node name="Stop" type="Button" parent="."]
+margin_top = 114.0
+margin_right = 89.0
+margin_bottom = 134.0
+text = "Stop"
+
 [connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
 [connection signal="pressed" from="FlipFacing" to="." method="_on_FlipFacing_pressed"]
 [connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]
+[connection signal="pressed" from="Slow" to="." method="_on_Slow_pressed"]
+[connection signal="pressed" from="Stop" to="." method="_on_Stop_pressed"]

@@ -20,3 +20,11 @@ func _on_FlipFacing_pressed():
 
 func _on_Start_pressed():
 	train.start()
+
+
+func _on_Stop_pressed():
+	train.virtual_train.stop()
+
+
+func _on_Slow_pressed():
+	train.virtual_train.slow()

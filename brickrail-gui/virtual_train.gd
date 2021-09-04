@@ -15,6 +15,7 @@ var length = 0.0
 var size = Vector2(0.3,0.2)
 var facing: int = 1
 var max_velocity = 1.0
+var slow_velocity = 0.2
 
 var state = "stopped"
 
@@ -57,12 +58,25 @@ func _unhandled_input(event):
 func start():
 	set_state("started")
 
+func slow():
+	set_state("slow")
+
+func stop():
+	set_state("stopped")
+
 func set_state(p_state):
 	state = p_state
 
 func _process(delta):
 	if state=="started":
 		velocity = min(velocity+acceleration*delta, max_velocity)
+	if state=="slow":
+		if velocity<slow_velocity:
+			velocity = min(velocity+acceleration*delta, slow_velocity)
+		else:
+			velocity = max(velocity-acceleration*delta, slow_velocity)
+	if state=="stopped":
+		velocity = max(velocity-4*acceleration*delta, 0.0)
 	
 	track_pos = track_pos + velocity*delta
 	update_position()
