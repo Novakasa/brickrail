@@ -64,6 +64,15 @@ func slow():
 func stop():
 	set_state("stopped")
 
+func flip_heading():
+	if state!="stopped":
+		push_error("can't flip heading while state is " + state)
+		return
+	var prev_pos = track_pos
+	set_dirtrack(dirtrack.get_next(turn).get_opposite())
+	track_pos = length-prev_pos
+	set_facing(facing*-1)
+
 func set_state(p_state):
 	state = p_state
 
@@ -104,6 +113,7 @@ func set_dirtrack(p_dirtrack):
 	length = dirtrack.get_connection_length(turn)
 	position = LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx) + track.get_center())
 	rotation = dirtrack.get_rotation()
+	track_pos = 0.0
 
 func _init():
 	pass

@@ -15,17 +15,17 @@ margin_right = 89.0
 margin_bottom = 14.0
 text = "LayoutTrain"
 
-[node name="FlipHeading" type="Button" parent="."]
+[node name="FlipFacing" type="Button" parent="."]
 margin_top = 18.0
 margin_right = 89.0
 margin_bottom = 38.0
-text = "Flip heading"
+text = "Flip facing"
 
-[node name="FlipFacing" type="Button" parent="."]
+[node name="FlipHeading" type="Button" parent="."]
 margin_top = 42.0
 margin_right = 89.0
 margin_bottom = 62.0
-text = "Flip facing"
+text = "Flip heading"
 
 [node name="Start" type="Button" parent="."]
 margin_top = 66.0
@@ -45,8 +45,8 @@ margin_right = 89.0
 margin_bottom = 134.0
 text = "Stop"
 
-[connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
 [connection signal="pressed" from="FlipFacing" to="." method="_on_FlipFacing_pressed"]
+[connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
 [connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]
 [connection signal="pressed" from="Slow" to="." method="_on_Slow_pressed"]
 [connection signal="pressed" from="Stop" to="." method="_on_Stop_pressed"]
