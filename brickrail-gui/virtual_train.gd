@@ -3,14 +3,20 @@ tool
 class_name VirtualTrain
 extends Node2D
 
-var route_position = 0.0
+var route_pos = 0.0
+var track_pos = 0.0
 var velocity = 0.0
-var acceleration = 0.1
+var acceleration = 0.5
 var hover=false
 var selected=false
 var dirtrack
+var turn=null
+var length = 0.0
 var size = Vector2(0.3,0.2)
 var facing: int = 1
+var max_velocity = 1.0
+
+var state = "stopped"
 
 export(Color) var color
 export(Color) var accent_color
@@ -48,6 +54,27 @@ func _unhandled_input(event):
 				get_tree().set_input_as_handled()
 			emit_signal("hover")
 
+func start():
+	set_state("started")
+
+func set_state(p_state):
+	state = p_state
+
+func _process(delta):
+	if state=="started":
+		velocity = min(velocity+acceleration*delta, max_velocity)
+	
+	track_pos = track_pos + velocity*delta
+	update_position()
+
+func update_position():
+	while track_pos > length:
+		track_pos -= length
+		set_dirtrack(dirtrack.get_next(turn))
+	var interpolation = dirtrack.interpolate(track_pos, turn)
+	position = dirtrack.to_world(interpolation.position)
+	rotation = interpolation.rotation
+
 func set_selected(p_selected):
 	selected = p_selected
 	update()
@@ -59,6 +86,8 @@ func set_hover(p_hover):
 func set_dirtrack(p_dirtrack):
 	var track = p_dirtrack.track
 	dirtrack = p_dirtrack
+	turn = dirtrack.get_next_turn()
+	length = dirtrack.get_connection_length(turn)
 	position = LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx) + track.get_center())
 	rotation = dirtrack.get_rotation()
 

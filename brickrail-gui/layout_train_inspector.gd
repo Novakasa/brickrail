@@ -16,3 +16,7 @@ func _on_FlipHeading_pressed():
 
 func _on_FlipFacing_pressed():
 	train.flip_facing()
+
+
+func _on_Start_pressed():
+	train.start()

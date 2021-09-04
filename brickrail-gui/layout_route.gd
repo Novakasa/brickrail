@@ -27,6 +27,7 @@ func get_full_section():
 	return section
 
 func setup_legs():
+	legs = []
 	var travel_edges = []
 	for edge in edges:
 		if edge.type == "flip":

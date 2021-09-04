@@ -27,5 +27,12 @@ margin_right = 89.0
 margin_bottom = 62.0
 text = "Flip facing"
 
+[node name="Start" type="Button" parent="."]
+margin_top = 66.0
+margin_right = 89.0
+margin_bottom = 86.0
+text = "Start"
+
 [connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
 [connection signal="pressed" from="FlipFacing" to="." method="_on_FlipFacing_pressed"]
+[connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]

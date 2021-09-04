@@ -9,6 +9,7 @@ var trainname
 var facing: int = 1
 var VirtualTrainScene = load("res://virtual_train.tscn")
 var selected=false
+var fixed_facing=false
 
 var TrainInspector = preload("res://layout_train_inspector.tscn")
 
@@ -47,6 +48,9 @@ func unselect():
 
 func _on_virtual_train_hover():
 	virtual_train.set_hover(true)
+	
+func start():
+	virtual_train.start()
 
 func stop_hover():
 	virtual_train.set_hover(false)

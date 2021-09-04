@@ -291,6 +291,7 @@ func init_drag_train(train):
 	drag_virtual_train = load("res://virtual_train.tscn").instance()
 	grid.add_child(drag_virtual_train)
 	drag_virtual_train.set_process_unhandled_input(false)
+	drag_virtual_train.set_process(false)
 	drag_virtual_train.set_facing(dragged_train.facing)
 	drag_virtual_train.visible=false
 

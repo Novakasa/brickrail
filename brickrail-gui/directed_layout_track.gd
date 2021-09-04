@@ -22,12 +22,44 @@ func get_rotation():
 func get_turns():
 	return track.connections[next_slot].keys()
 
-func get_next(segment=true):
-	var next_track = track.get_next_track(next_slot, segment)
+func get_next_in_segment():
+	var next_track = track.get_next_track(next_slot, true)
 	if next_track == null:
 		return null
 	var next_prev_slot = track.get_neighbour_slot(next_slot)
 	return next_track.get_directed_from(next_prev_slot)
+
+func get_next(turn=null):
+	if turn==null:
+		turn = get_next_turn()
+		if turn==null:
+			return null
+	var next = track.connections[next_slot][turn]
+	var next_prev_slot = track.get_neighbour_slot(next_slot)
+	return next.get_directed_from(next_prev_slot)
+
+func get_next_turn():
+	if len(track.connections[next_slot])==0:
+		return null
+	if len(track.connections[next_slot])>1:
+		return get_switch().get_position()
+	return track.connections[next_slot].keys()[0]
+
+func get_connection_length(turn=null):
+	var next = get_next(turn)
+	if turn == null:
+		turn = next.get_turn_from(next.prev_slot)
+	var this_length = track.get_connection_length(next_slot, turn)
+	var reverse_connection = next.track.get_connection_to(track)
+	var next_length = next.track.get_connection_length(reverse_connection.slot, reverse_connection.turn)
+	return this_length + next_length
+
+func interpolate(pos, turn=null):
+	var next = get_next(turn)
+	return track.interpolate_track_connection(next.track, pos)
+
+func to_world(vec):
+	return LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx)+vec)
 
 func get_next_tracks():
 	var next_tracks = []

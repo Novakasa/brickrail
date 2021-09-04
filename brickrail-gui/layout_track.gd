@@ -591,11 +591,20 @@ func interpolate_connection(to_slot, turn, t, normalized=false):
 	if normalized:
 		x = t*params.connection_length
 	if is_equal_approx(params.radius, 0.0):
-		return lerp(params.straight_start, params.to_pos, x/params.connection_length)
+		var result = {}
+		result["position"] = lerp(params.straight_start, params.to_pos, x/params.connection_length)
+		result["rotation"] = (params.to_pos-params.from_pos).angle()
+		return result
 	if x<params.straight_length:
-		return lerp(params.straight_start, params.arc_start, x/params.straight_length)
+		var result = {}
+		result["position"] = lerp(params.straight_start, params.arc_start, x/params.straight_length)
+		result["rotation"] = (params.to_pos-params.from_pos).angle()
+		return result
 	var angle = lerp(params.start_angle, params.stop_angle, (x-params.straight_length)/params.arc_length)
-	return params.center + params.radius*Vector2(1.0,0.0).rotated(angle)
+	var result = {}
+	result["position"] = params.center + params.radius*Vector2(1.0,0.0).rotated(angle)
+	result["rotation"] = angle+0.5*PI*sign(params.angle)
+	return result
 
 func interpolate_track_connection(track, t, normalized=false):
 	var connection = get_connection_to(track)
@@ -609,9 +618,10 @@ func interpolate_track_connection(track, t, normalized=false):
 	# printt(total_length, this_length, reverse_length, x)
 	if x<this_length:
 		return interpolate_connection(connection.slot, connection.turn, x, false)
-	var pos = track.interpolate_connection(reverse_connection.slot, reverse_connection.turn, total_length-x, false)
-	pos += Vector2(track.x_idx-x_idx, track.y_idx-y_idx)
-	return pos
+	var result = track.interpolate_connection(reverse_connection.slot, reverse_connection.turn, total_length-x, false)
+	result["position"] += Vector2(track.x_idx-x_idx, track.y_idx-y_idx)
+	result["rotation"] += PI
+	return result
 
 func interpolate_position_linear(from_slot, t):
 	var to_slot = get_opposite_slot(from_slot)

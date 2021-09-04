@@ -71,12 +71,12 @@ func collect_segment(directed_track=null):
 	else:
 		assert(len(tracks)==0)
 		add_track(directed_track)
-	var iter_track = directed_track.get_next()
+	var iter_track = directed_track.get_next_in_segment()
 	while iter_track != null:
 		if iter_track in tracks:
 			break
 		add_track(iter_track)
-		iter_track = iter_track.get_next()
+		iter_track = iter_track.get_next_in_segment()
 
 func add_track(track):
 	if selected:
