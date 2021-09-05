@@ -337,7 +337,6 @@ func get_connection_to(track):
 		if track in connections[slot].values():
 			var turn = track.get_turn_from(get_neighbour_slot(slot))
 			return {"slot": slot, "turn": turn}
-	assert(false)
 	return null
 
 func get_next_track(slot, segment=true):

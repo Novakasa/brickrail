@@ -18,7 +18,6 @@ func get_type():
 func set_switches():
 	var last_track = get_start().obj.section.tracks[-1]
 	for edge in edges:
-		print(edge.type)
 		if edge.section == null:
 			continue
 		for dirtrack in edge.section.tracks:

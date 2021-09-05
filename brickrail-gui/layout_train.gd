@@ -64,12 +64,15 @@ func start_leg():
 
 func set_target(p_block):
 	if target!=null:
+		# prints("disconnecting target:", target.id)
 		target.disconnect("train_entered", self, "_on_target_train_entered")
 		target.disconnect("train_in", self, "_on_target_train_in")
 	target = p_block
 	if target != null:
-		target.connect("train_entered", self, "_on_target_train_entered")
-		target.connect("train_in", self, "_on_target_train_in")
+		# prints("connecting target:", target.id)
+		# connect signals deferred, so they don't get retriggered within this frame if it happens to be the same sensor as the one that triggered this method call
+		target.call_deferred("connect", "train_entered", self, "_on_target_train_entered")
+		target.call_deferred("connect", "train_in", self, "_on_target_train_in")
 
 func _on_target_train_entered(p_train):
 	if p_train != null:
