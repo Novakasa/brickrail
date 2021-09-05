@@ -74,7 +74,12 @@ func set_target(p_block):
 func _on_target_train_entered(p_train):
 	if p_train != null:
 		assert(p_train==self)
-	slow()
+	if route.get_next_leg()==null:
+		slow()
+		return
+	if route.get_next_leg().get_type()=="flip":
+		slow()
+		return
 
 func _on_target_train_in(p_train):
 	if p_train != null:

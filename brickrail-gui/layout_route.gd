@@ -52,5 +52,10 @@ func advance_leg():
 	current_leg -= 1
 	return null
 
+func get_next_leg():
+	if not current_leg<len(legs)-1:
+		return null
+	return legs[current_leg+1]
+
 func get_current_leg():
 	return legs[current_leg]
