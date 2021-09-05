@@ -17,6 +17,8 @@ var LayoutBlockInspector = preload("res://layout_block_inspector.tscn")
 signal removing(blockname)
 signal selected()
 signal unselected()
+signal train_in(p_train)
+signal train_entered(p_train)
 
 func _init(p_name, p_index):
 	blockname = p_name
@@ -35,7 +37,18 @@ func set_section(p_section):
 func _on_section_sensor_changed(track):
 	find_sensors()
 
+func _on_sensor_in_triggered(p_train):
+	emit_signal("train_in", p_train)
+
+func _on_sensor_enter_triggered(p_train):
+	emit_signal("train_entered", p_train)
+
 func find_sensors():
+	if "enter" in sensors:
+		sensors["enter"].track.sensor.disconnect("triggered", self, "_on_sensor_enter_triggered")
+	if "in" in sensors:
+		sensors["in"].track.sensor.disconnect("triggered", self, "_on_sensor_in_triggered")
+	
 	var sensorlist = section.get_sensor_tracks()
 	
 	sensors = {}
@@ -43,6 +56,9 @@ func find_sensors():
 		return
 	sensors["enter"] = sensorlist[0]
 	sensors["in"] = sensorlist[-1]
+	
+	sensors["enter"].track.sensor.connect("triggered", self, "_on_sensor_enter_triggered")
+	sensors["in"].track.sensor.connect("triggered", self, "_on_sensor_in_triggered")
 
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
@@ -91,7 +107,8 @@ func process_mouse_button(event, pos):
 				if route == null:
 					push_error("no route to selected target "+target)
 				else:
-					route.get_full_section().select()
+					train.set_route(route)
+					train.start_leg()
 				
 
 func hover(pos):

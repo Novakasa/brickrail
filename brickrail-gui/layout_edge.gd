@@ -11,6 +11,7 @@ func _init(p_from_node, p_to_node, p_type, p_section=null):
 	from_node = p_from_node
 	to_node = p_to_node
 	section = p_section
+	type = p_type
 	if section!=null:
 		weight = float(len(section.tracks))
 	else:

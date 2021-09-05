@@ -14,8 +14,8 @@ var turn=null
 var length = 0.0
 var size = Vector2(0.3,0.2)
 var facing: int = 1
-var max_velocity = 1.0
-var slow_velocity = 0.2
+var max_velocity = 3.0
+var slow_velocity = 0.5
 
 var state = "stopped"
 
@@ -114,6 +114,8 @@ func set_dirtrack(p_dirtrack):
 	position = LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx) + track.get_center())
 	rotation = dirtrack.get_rotation()
 	track_pos = 0.0
+	if dirtrack.track.sensor!=null:
+		dirtrack.track.sensor.trigger(null)
 
 func _init():
 	pass

@@ -280,6 +280,12 @@ func get_connection_switches(slot, turn):
 		switch_list.append(opposite_switch)
 	return switch_list
 
+func set_switch_to_track(track):
+	var connection = get_connection_to(track)
+	if switches[connection.slot]==null:
+		return
+	switches[connection.slot].switch(connection.turn)
+
 func _on_track_connections_cleared(track):
 	disconnect_track(track)
 
@@ -331,6 +337,7 @@ func get_connection_to(track):
 		if track in connections[slot].values():
 			var turn = track.get_turn_from(get_neighbour_slot(slot))
 			return {"slot": slot, "turn": turn}
+	assert(false)
 	return null
 
 func get_next_track(slot, segment=true):

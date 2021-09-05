@@ -5,6 +5,7 @@ var ble_train
 var virtual_train
 var route
 var block
+var target
 var trainname
 var facing: int = 1
 var VirtualTrainScene = load("res://virtual_train.tscn")
@@ -48,9 +49,48 @@ func unselect():
 
 func _on_virtual_train_hover():
 	virtual_train.set_hover(true)
+
+func set_route(p_route):
+	route = p_route
+
+func start_leg():
+	var leg = route.get_current_leg()
+	if leg.get_type() == "flip":
+		flip_heading()
+	else:
+		leg.set_switches()
+	set_target(leg.get_target().obj)
+	start()
+
+func set_target(p_block):
+	if target!=null:
+		target.disconnect("train_entered", self, "_on_target_train_entered")
+		target.disconnect("train_in", self, "_on_target_train_in")
+	target = p_block
+	if target != null:
+		target.connect("train_entered", self, "_on_target_train_entered")
+		target.connect("train_in", self, "_on_target_train_in")
+
+func _on_target_train_entered(p_train):
+	if p_train != null:
+		assert(p_train==self)
+	slow()
+
+func _on_target_train_in(p_train):
+	if p_train != null:
+		assert(p_train==self)
+	stop()
+	set_current_block(target, false)
+	set_target(null)
 	
 func start():
 	virtual_train.start()
+	
+func slow():
+	virtual_train.slow()
+
+func stop():
+	virtual_train.stop()
 
 func stop_hover():
 	virtual_train.set_hover(false)
@@ -64,19 +104,17 @@ func _on_virtual_train_clicked(event):
 		if LayoutInfo.input_mode == "control":
 			LayoutInfo.init_drag_train(self)
 	
-func set_current_block(p_block):
+func set_current_block(p_block, teleport=true):
 	if block != null:
 		block.set_occupied(false, self)
 	block = p_block
 	block.set_occupied(true, self)
 	virtual_train.visible=true
-	virtual_train.set_dirtrack(block.sensors["in"])
-
-func set_route(p_route):
-	route = p_route
+	if teleport:
+		virtual_train.set_dirtrack(block.sensors["in"])
 
 func flip_heading():
-	set_current_block(block.get_opposite_block())
+	virtual_train.flip_heading()
 	flip_facing()
 
 func flip_facing():

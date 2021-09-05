@@ -75,5 +75,6 @@ func calculate_routes():
 			var prev_node = LayoutInfo.nodes[from_nodes[iter_node.id]]
 			route.add_prev_edge(prev_node.edges[iter_node.id])
 			iter_node = prev_node
+		route.setup_legs()
 		routes[iter_id] = route
 	return routes
