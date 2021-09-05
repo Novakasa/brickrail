@@ -83,6 +83,11 @@ func _on_target_train_in(p_train):
 	set_current_block(target, false)
 	set_target(null)
 	
+	if route.advance_leg()==null:
+		set_route(null)
+	else:
+		start_leg()
+	
 func start():
 	virtual_train.start()
 	

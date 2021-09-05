@@ -45,7 +45,7 @@ func get_target():
 	return legs[0].get_target()
 
 func advance_leg():
-	legs[current_leg].unlock()
+	# legs[current_leg].unlock()
 	current_leg += 1
 	if current_leg<len(legs):
 		return legs[current_leg]
