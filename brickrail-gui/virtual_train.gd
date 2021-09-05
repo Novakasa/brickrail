@@ -6,7 +6,8 @@ extends Node2D
 var route_pos = 0.0
 var track_pos = 0.0
 var velocity = 0.0
-var acceleration = 0.5
+var acceleration = 1.5
+var deceleration = 3.0
 var hover=false
 var selected=false
 var dirtrack
@@ -83,9 +84,9 @@ func _process(delta):
 		if velocity<slow_velocity:
 			velocity = min(velocity+acceleration*delta, slow_velocity)
 		else:
-			velocity = max(velocity-acceleration*delta, slow_velocity)
+			velocity = max(velocity-deceleration*delta, slow_velocity)
 	if state=="stopped":
-		velocity = max(velocity-4*acceleration*delta, 0.0)
+		velocity = max(velocity-2*deceleration*delta, 0.0)
 	
 	track_pos = track_pos + velocity*delta
 	update_position()
