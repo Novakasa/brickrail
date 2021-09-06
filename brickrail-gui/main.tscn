@@ -1,10 +1,11 @@
-[gd_scene load_steps=6 format=2]
+[gd_scene load_steps=7 format=2]
 
 [ext_resource path="res://layout.tscn" type="PackedScene" id=1]
 [ext_resource path="res://layout_gui.gd" type="Script" id=2]
 [ext_resource path="res://main.gd" type="Script" id=3]
 [ext_resource path="res://ViewportContainer.gd" type="Script" id=4]
 [ext_resource path="res://ui_theme.tres" type="Theme" id=5]
+[ext_resource path="res://settings_gui.gd" type="Script" id=6]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
@@ -108,6 +109,40 @@ margin_right = -5.0
 margin_bottom = -5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+
+[node name="Settings" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 34.0
+margin_right = -258.0
+margin_bottom = -615.0
+script = ExtResource( 6 )
+
+[node name="BackgroundColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
+margin_right = 12.0
+margin_bottom = 27.0
+
+[node name="SurfaceColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
+margin_right = 12.0
+margin_bottom = 27.0
+
+[node name="PrimaryColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
+margin_right = 12.0
+margin_bottom = 27.0
+
+[node name="SecondaryColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
+margin_right = 12.0
+margin_bottom = 27.0
+
+[node name="TertiaryColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
+margin_right = 12.0
+margin_bottom = 27.0
+
+[node name="WhiteColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
+margin_right = 12.0
+margin_bottom = 27.0
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer/HSplitContainer"]
 margin_left = 311.0
@@ -235,6 +270,12 @@ filters = PoolStringArray( "*.brl ; brickrail layout" )
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddSwitch" to="." method="_on_AddSwitch_pressed"]
+[connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/BackgroundColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_BackgroundColor_color_changed"]
+[connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/SurfaceColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_SurfaceColor_color_changed"]
+[connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/PrimaryColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_PrimaryColor_color_changed"]
+[connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/SecondaryColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_SecondaryColor_color_changed"]
+[connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/TertiaryColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_TertiaryColor_color_changed"]
+[connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/WhiteColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutControl" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutSelect" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutDraw" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]

@@ -31,6 +31,10 @@ signal clicked(event)
 signal marker(marker)
 
 func _ready():
+	_on_settings_colors_changed()
+	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+
+func _on_settings_colors_changed():
 	color = Settings.colors["secondary"]*1.5
 	selected_color = Settings.colors["tertiary"]
 
