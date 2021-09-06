@@ -31,6 +31,15 @@ func _ready():
 	material.set_shader_param("state_right", transform_from_matrix(state_matrix_right))
 	material.set_shader_param("state_none", transform_from_matrix(state_matrix_none))
 	material.set_shader_param("has_switch", false)
+	
+	material.set_shader_param("background", Settings.colors["background"]*0.5)
+	material.set_shader_param("grid_color", Settings.colors["surface"]*0.5)
+	material.set_shader_param("track_base", Settings.colors["white"])
+	material.set_shader_param("track_inner", Settings.colors["surface"]*0.5)
+	material.set_shader_param("selected_color", Settings.colors["tertiary"])
+	material.set_shader_param("block_color", Settings.colors["primary"])
+	material.set_shader_param("switch_color", Settings.colors["primary"])
+	material.set_shader_param("occupied_color", Settings.colors["secondary"])
 
 func hover_at(pos):
 	

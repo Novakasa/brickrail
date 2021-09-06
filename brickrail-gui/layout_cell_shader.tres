@@ -362,35 +362,40 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 }
 
 vec4 get_inner_color(int state) {
-	if ((state & STATE_HOVER)== STATE_HOVER) {
-		return hover_color;
+	vec4 color;
+	color = track_inner;
+	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
+		color = occupied_color;
 	}
 	if ((state & STATE_SELECTED) == STATE_SELECTED) {
-		return selected_color;
+		color = selected_color;
 	}
-	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
-		return occupied_color;
+	if ((state & STATE_HOVER)== STATE_HOVER) {
+		color *= 1.5;
 	}
-	if ((state & STATE_CONNECTED) == STATE_CONNECTED) {
-		return track_inner;
-	}
+	return color;
 }
 
 vec4 get_block_color(int state) {
-	if ((state & STATE_BLOCK_HOVER)==STATE_BLOCK_HOVER) {
-		return block_color_hover;
-	}
+	vec4 color = block_color;
 	if ((state & STATE_BLOCK_SELECTED)==STATE_BLOCK_SELECTED) {
-		return block_color_selected;
+		color = selected_color;
 	}
-	return block_color;
+	if ((state & STATE_BLOCK_HOVER)==STATE_BLOCK_HOVER) {
+		color *= 1.5;
+	}
+	return color;
 }
 
 vec4 get_border_color(int state) {
 	/*if ((state & STATE_BLOCK) == STATE_BLOCK) {
 		return track_border_block;
 	}*/
-	return track_base;
+	vec4 color = track_base;
+	if ((state & STATE_SELECTED) == STATE_SELECTED) {
+		// color = selected_color;
+	}
+	return color;
 }
 
 
@@ -478,7 +483,7 @@ void fragment() {
 			t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
 			vec4 switch_mix = mix(track_mix, switch_color, t);
 			t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
-			COLOR = mix(switch_mix, switch_inner_color, t);
+			COLOR = mix(switch_mix, switch_color, t);
 		}
 	}
 	if (contours) {

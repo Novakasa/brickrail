@@ -29,6 +29,7 @@ func _ready():
 func _draw():
 	
 	var spacing = LayoutInfo.spacing
+	return
 	
 	for i in range(nx+1):
 		var start = Vector2(i*spacing, 0.0)
