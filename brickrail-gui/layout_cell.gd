@@ -39,7 +39,7 @@ func _ready():
 	material.set_shader_param("selected_color", Settings.colors["tertiary"])
 	material.set_shader_param("block_color", Settings.colors["primary"])
 	material.set_shader_param("switch_color", Settings.colors["primary"])
-	material.set_shader_param("occupied_color", Settings.colors["secondary"])
+	material.set_shader_param("occupied_color", Settings.colors["tertiary"]*0.5)
 
 func hover_at(pos):
 	

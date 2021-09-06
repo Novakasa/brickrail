@@ -30,6 +30,10 @@ signal stop_hover()
 signal clicked(event)
 signal marker(marker)
 
+func _ready():
+	color = Settings.colors["secondary"]*1.5
+	selected_color = Settings.colors["tertiary"]
+
 func has_point(pos):
 	var spacing = LayoutInfo.spacing
 	var wsize = size*spacing
@@ -127,7 +131,7 @@ func _draw():
 	if selected:
 		col = selected_color
 	if hover:
-		col = hover_color
+		col = col*1.5
 	draw_rect(Rect2(-wsize*0.5, wsize), col)
 	draw_circle(0.5*Vector2(wsize.x,0.0), wsize.y*0.5, col)
 	draw_circle(-0.5*Vector2(wsize.x,0.0), wsize.y*0.5, col)
