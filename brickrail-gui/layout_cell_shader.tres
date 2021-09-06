@@ -398,73 +398,58 @@ vec4 get_border_color(int state) {
 	return color;
 }
 
+float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
+	float sdf_change = fwidth(sdf)*0.5;
+	float t = smoothstep(sdf_change, -sdf_change, sdf);
+	base_color = mix(base_color, color_sdf, t);
+	return t;
+}
 
 void fragment() {
-	vec4 bg = background;
+	vec4 color_mix;
+	color_mix = background;
 	if (cell_hover) {
-		bg = background_hover;
+		color_mix = background_hover;
 	}
 	vec2 position = UV;
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
 	if (border_dist<grid_width*0.5) {
-		bg = grid_color;
+		color_mix = grid_color;
 	}
 	
 	int block_state;
 	float block = tracks(position, STATE_BLOCK, TRACK_BLOCK, block_state)+0.002; // add constant for antialiasing state issues. could also fix this with a border
-	float block_change = fwidth(block)*0.5;
-	float t = smoothstep(block_change, -block_change, block);
-	vec4 block_mix = mix(bg, get_block_color(block_state), t);
+	mix_sdf(block, color_mix, get_block_color(block_state));
 	
 	if ((block_state & STATE_BLOCK_PLUS) == STATE_BLOCK_PLUS) {
 		int dummy_state;
 		float plus = tracks(position, STATE_BLOCK_PLUS, TRACK_BLOCK_PLUS, dummy_state);
-		float plus_change = fwidth(plus)*0.5;
-		t = smoothstep(plus_change, -plus_change, plus);
-		block_mix = mix(block_mix, track_inner, t);
+		mix_sdf(plus, color_mix, track_inner);
 	}
 		if ((block_state & STATE_BLOCK_MINUS) == STATE_BLOCK_MINUS) {
 		int dummy_state;
 		float plus = tracks(position, STATE_BLOCK_MINUS, TRACK_BLOCK_MINUS, dummy_state);
-		float plus_change = fwidth(plus)*0.5;
-		t = smoothstep(plus_change, -plus_change, plus);
-		block_mix = mix(block_mix, track_inner, t);
+		mix_sdf(plus, color_mix, track_inner);
 	}
 	
 	int track_state;
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
 	int state = track_state;
-	float base_change = fwidth(base)*0.5;
-	t = smoothstep(base_change, -base_change, base);
-	// t = 0.0;
-	vec4 base_mix = mix(block_mix, get_border_color(state), t);
+	float t = mix_sdf(base, color_mix, get_border_color(state));
 	
 	int state_dummy;
-	if (t <= -0.0) {
-		COLOR = base_mix;
-		// COLOR *=0.5;
-	}
-	else {
+	if (t > 0.0) {
 	
 		float inner = base + track_width - inner_track_width;
-		float inner_change = fwidth(inner)*0.5;
-		t = smoothstep(inner_change, -inner_change, inner);
-		vec4 track_mix = mix(base_mix, get_inner_color(state), t);
+		mix_sdf(inner, color_mix, get_inner_color(state));
 		
 		if ((state & STATE_ARROW) == STATE_ARROW) {
 			int dummy_state;
 			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, dummy_state);
-			float arrow_change = fwidth(arrow)*0.5;
-			t = smoothstep(arrow_change, -arrow_change, arrow);
-			track_mix = mix(track_mix, arrow_color, t);
+			mix_sdf(arrow, color_mix, arrow_color);
 		}
 		
-		if (!has_switch || t <= 0.0) {
-			COLOR = track_mix;
-			// COLOR *=0.5;
-		}
-		else {
-			
+		if (has_switch && t > 0.0) {
 			float turn_outer = tracks(position, STATE_SWITCH, TRACK_BORDER, state_dummy);
 			
 			float switch_outer = intersect(turn_outer, inner);
@@ -476,16 +461,12 @@ void fragment() {
 			// arrow_modulate = sqrt(max(1.0-(1.0-arrow_modulate)*(1.0-arrow_modulate),0.0));
 			float switch_arrows = switch_base - (arrow_modulate)*inner_track_width*0.4;
 			
-			
-			float switch_outer_change = fwidth(switch_outer)*0.5;
-			float switch_arrows_change = fwidth(switch_arrows)*0.5;
-			
-			t = smoothstep(switch_outer_change, -switch_outer_change, switch_outer);
-			vec4 switch_mix = mix(track_mix, switch_color, t);
-			t = smoothstep(switch_arrows_change, -switch_arrows_change, switch_arrows);
-			COLOR = mix(switch_mix, switch_color, t);
+			mix_sdf(switch_outer, color_mix, switch_color);
+			mix_sdf(switch_arrows, color_mix, switch_color);
 		}
 	}
+	COLOR = color_mix;
+	
 	if (contours) {
 		COLOR = vec4(1);
 		float dist = base;
@@ -524,7 +505,7 @@ shader_param/stopper_width = 0.11
 shader_param/block_width = 0.239
 shader_param/contours = false
 shader_param/has_switch = true
-shader_param/has_block = null
+shader_param/has_block = true
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_center = Transform( 0, 0, 0, 0, 4296, 0, 0, 0, 0, 0, 1152.68, 0 )
