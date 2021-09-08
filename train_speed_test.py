@@ -7,7 +7,7 @@ from pybricksdev.ble import find_device
 
 
 async def main_coro():
-    device = await find_device("Pybricks Hub")
+    device = await find_device()
     hub = PybricksHub()
     # hub = BLEPUPConnection()
     await hub.connect(device)

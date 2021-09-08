@@ -10,4 +10,4 @@ class BLEProcess(Node):
 
 	def start_process(self):
 		print("executing python based ble control server")
-		subprocess.run("start cmd /K C:/Users/lolli/miniconda3/envs/brickrail/python.exe E:/repos/brickrail/ble_server.py", shell=True)
+		subprocess.run("start cmd /K C:/Users/Lolli/miniconda3/envs/brickrail/python.exe E:/repos/brickrail/ble_server.py", shell=True)

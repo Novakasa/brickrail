@@ -33,7 +33,7 @@ class BLEHub:
     async def connect(self):
         if self.address is None:
             try:
-                self.address = await find_device("Pybricks Hub")
+                self.address = await find_device()
             except Exception as exception:
                 data = SerialData("connect_error", self.name, repr(exception))
                 await self.out_queue.put(data)
