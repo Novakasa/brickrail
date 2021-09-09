@@ -171,16 +171,15 @@ class TrainMotor:
     
     def update(self, delta):
 
-        if self.speed < self.target_speed:
-            speed_delta = self.acceleration*delta
-            self.speed = min(self.speed+speed_delta, self.target_speed)
-            self.motor.dc(self.direction*self.speed)
-            return
-        if self.speed > self.target_speed:
-            speed_delta = self.deceleration*delta
-            self.speed = max(self.speed-speed_delta, self.target_speed)
-            self.motor.dc(self.direction*self.speed)
-            return
+        if self.speed*self.direction>=0:
+            if abs(self.speed)<self.target_speed:
+                self.speed = min(abs(self.speed)+delta*self.acceleration, self.target_speed)*self.direction
+            if abs(self.speed)>self.target_speed:
+                self.speed = max(abs(self.speed)-delta*self.deceleration, self.target_speed)*self.direction
+        else:
+            self.speed += delta*self.deceleration*self.direction
+        
+        self.motor.dc(self.speed)
 
         if self.braking:
             self.motor.brake()
