@@ -50,45 +50,71 @@ class Timer:
 
 class SleeperCounter:
     def __init__(self):
-        self.last_color = "sleeper"
+        self.last_ctype = None
         self.transition_times = []
         self.watch = StopWatch()
         self.period = 500
+    
+    def reset(self):
+        self.transition_times = []
+        self.last_ctype = None
+        self.watch.reset()
     
     def update(self):
         current_time = self.watch.time()
         while self.transition_times and current_time-self.transition_times[0]>self.period:
             del self.transition_times[0]
 
-    def on_colorname(self, name):
-        for color in ["sleeper", "floor"]:
-            if color not in name:
-                continue
-            if self.last_color == color:
-                return
-            self.last_color = color
-            current_time = self.watch.time()
-            self.transition_times.append(current_time)
-            
+    def on_ctype(self, ctype):
+        if self.last_ctype == ctype:
             return
+        self.last_ctype = ctype
+        current_time = self.watch.time()
+        self.transition_times.append(current_time)
+        
+        return
     
-    def get_speed(self, period=1000):
+    def get_speed(self):
         return len(self.transition_times)
 
 
 class TrainSensor:
 
-    def __init__(self, marker_colors, marker_callback):
+    def __init__(self, marker_callback):
         self.sensor = ColorDistanceSensor(Port.B)
-        self.sensor.detectable_colors(list(CALIBRATED_COLORS.values()))
         self.blind_timer = Timer()
         self.blind = False
-        self.marker_colors = marker_colors
+        self.colors = {}
+        self.marker_colors = []
+        self.speedA = None
+        self.speedB = None
         self.marker_callback = marker_callback
         self.sleeper_counter = SleeperCounter()
+        self.measure_speed = False
+    
+    def add_color(self, name, color, type):
+        self.colors[name] = color
+        if type=="marker":
+            if name not in self.marker_colors:
+                self.marker_colors.append(name)
+        if type=="speedA":
+            self.speed_a = name
+        if type=="speedB":
+            self.speed_b = name
+        self.sensor.detectable_colors(list(self.colors.values()))
+    
+    def remove_color(self, name):
+        del self.colors[name]
+        if name in self.marker_colors:
+            self.marker_colors.remove(name)
+        if self.speed_a == name:
+            self.speed_a = None
+        if self.speed_b == name:
+            self.speed_b = None
     
     def update(self, delta):
-        self.sleeper_counter.update()
+        if self.measure_speed:
+            self.sleeper_counter.update()
         if self.blind:
             return
         measured_color = self.sensor.color()
@@ -96,13 +122,19 @@ class TrainSensor:
             if color != measured_color:
                 continue
             if colorname in self.marker_colors:
-                # print("detected marker!!", colorname)
                 self.marker_callback(colorname)
                 return
-            self.sleeper_counter.on_colorname(colorname)
+            if self.measure_speed:
+                if colorname == self.speed_a:
+                    self.sleeper_counter.on_ctype(0)
+                if colorname == self.speed_b:
+                    self.sleeper_counter.on_ctype(1)
 
-    def estimate_speed(self, period):
-        return self.sleeper_counter.get_speed(period)
+    def estimate_speed(self):
+        return self.sleeper_counter.get_speed()
+    
+    def get_hsv(self):
+        return self.sensor.hsv()
     
     def make_blind(self, duration=None):
         if duration:
@@ -121,6 +153,7 @@ class TrainMotor:
         self.deceleration = 90
         self.motor = DCMotor(Port.A)
         self.braking = False
+        self.direction = 1
     
     def set_target(self, speed):
         self.target_speed = speed
@@ -141,12 +174,12 @@ class TrainMotor:
         if self.speed < self.target_speed:
             speed_delta = self.acceleration*delta
             self.speed = min(self.speed+speed_delta, self.target_speed)
-            self.motor.dc(self.speed)
+            self.motor.dc(self.direction*self.speed)
             return
         if self.speed > self.target_speed:
             speed_delta = self.deceleration*delta
             self.speed = max(self.speed-speed_delta, self.target_speed)
-            self.motor.dc(self.speed)
+            self.motor.dc(self.direction*self.speed)
             return
 
         if self.braking:
@@ -159,19 +192,23 @@ class Train:
     def __init__(self):
         self.wait_timer = Timer()
         self.hub = CityHub()
+        self.hub.system.set_stop_button(None)
         self.motor = TrainMotor()
-        self.sensor = TrainSensor(["red_marker", "blue_marker"], self.on_marker)
+        self.sensor = TrainSensor(self.on_marker)
+
+        self.heading = 1
 
         self.data_queue = []
         self.state = None
         self.mode = None
         self.slow_marker = None
         self.stop_marker = None
+
+        self.expect_marker = None
+        self.expect_behaviour = None
         
         self.set_state("stopped")
-        self.set_mode("block")
-        self.set_slow_marker("blue_marker")
-        self.set_stop_marker("red_marker")
+        self.set_mode("manual")
     
     def set_mode(self, mode):
         self.mode = mode
@@ -192,24 +229,39 @@ class Train:
         self.state = state
         self.queue_data("state_changed", state)
     
-    def report_speed(self, period=1000):
-        speed = self.sensor.estimate_speed(period)
+    def report_speed(self):
+        speed = self.sensor.estimate_speed()
         self.queue_data("speed", speed)
+    
+    def report_hsv(self):
+        color = self.sensor.get_hsv()
+        self.queue_data("hsv", [color.h, color.s, color.v])
+    
+    def add_color(self, name, color, type):
+        self.sensor.add_color(name, color, type)
+    
+    def set_expect_marker(self, name, behaviour):
+        self.expect_marker = name
+        self.expect_behaviour = behaviour
     
     def slow(self):
         # print("slowing...")
+        self.sensor.measure_speed=True
+        self.sensor.sleeper_counter.reset()
         self.motor.set_target(40)
         self.set_state("slow")
     
     def stop(self):
         # print("stopping...")
-        self.set_state("stopped")
+        self.sensor.measure_speed=False
         self.motor.brake()
+        self.set_state("stopped")
     
     def start(self):
-        self.set_state("started")
+        self.sensor.measure_speed=False
         self.motor.set_target(100)
         self.sensor.make_blind(1500)
+        self.set_state("started")
     
     def wait(self, duration):
         if self.state != "stopped":
@@ -218,8 +270,23 @@ class Train:
         self.set_state("waiting")
         self.wait_timer.arm(duration, self.on_wait_timer)
     
+    def flip_heading(self):
+        self.heading *= -1
+        self.motor.direction = self.heading
+    
     def on_marker(self, colorname):
         self.queue_data("detected_marker", colorname)
+        if colorname == self.expect_marker:
+            if self.expect_behaviour=="slow":
+                self.slow()
+            if self.expect_behaviour=="start":
+                self.start()
+            if self.expect_behaviour=="stop":
+                self.stop()
+            if self.expect_behaviour=="flip_heading":
+                self.flip_heading()
+        if self.mode == "manual":
+            return
         if colorname == self.stop_marker:
             self.stop()
             if self.mode == "auto":
@@ -237,10 +304,11 @@ class Train:
         self.start()
     
     def update(self, delta):
-        if self.mode in ["auto", "block"]:
-            if self.state in ["started", "slow"]:
-                self.sensor.update(delta)
+        if self.state in ["started", "slow"]:
+            self.sensor.update(delta)
         self.motor.update(delta)
+        if self.hub.button.pressed():
+            self.report_hsv()
 
 
 device = train = Train()

@@ -72,6 +72,9 @@ func wait():
 func slow():
 	hub.hub_command("train.slow()")
 
+func flip_heading():
+	hub.hub_command("train.flip_heading()")
+
 func set_slow_marker(marker):
 	slow_marker = marker
 	var cmd = "train.set_slow_marker('"+marker+"')"

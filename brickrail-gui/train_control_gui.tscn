@@ -97,6 +97,15 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="change_heading_button" type="Button" parent="VBoxContainer/HBoxContainer"]
+margin_left = 134.0
+margin_right = 220.0
+margin_bottom = 20.0
+text = "flip heading"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
 margin_top = 72.0
 margin_right = 493.0
@@ -157,6 +166,7 @@ __meta__ = {
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/slow_button" to="." method="_on_slow_button_pressed"]
+[connection signal="pressed" from="VBoxContainer/HBoxContainer/change_heading_button" to="." method="_on_change_heading_button_pressed"]
 [connection signal="item_selected" from="VBoxContainer/GridContainer/mode_select" to="." method="_on_mode_select_item_selected"]
 [connection signal="item_selected" from="VBoxContainer/GridContainer/slow_marker_select" to="." method="_on_slow_marker_select_item_selected"]
 [connection signal="item_selected" from="VBoxContainer/GridContainer/stop_marker_select" to="." method="_on_stop_marker_select_item_selected"]

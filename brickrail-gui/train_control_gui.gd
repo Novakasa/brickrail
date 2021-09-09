@@ -81,6 +81,9 @@ func _on_stop_button_pressed():
 func _on_slow_button_pressed():
 	get_train().slow()
 
+func _on_change_heading_button_pressed():
+	get_train().flip_heading()
+
 func _on_settings_button_pressed():
 	$TrainSettingsDialog.show()
 
@@ -95,3 +98,5 @@ func _on_slow_marker_select_item_selected(index):
 func _on_stop_marker_select_item_selected(index):
 	get_train().set_stop_marker(markers[index])
 	get_node(auto_container).get_node("stop_marker_select").disabled=true
+
+
