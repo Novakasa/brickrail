@@ -65,8 +65,8 @@ func set_occupied(p_occupied, p_train=null):
 	train = p_train
 	section.set_track_attributes("block", blockname)
 
-func get_route_to(from_facing, node_id):
-	return nodes[from_facing].calculate_routes()[node_id]
+func get_route_to(from_facing, node_id, fixed_facing):
+	return nodes[from_facing].calculate_routes(fixed_facing)[node_id]
 
 func collect_edges(facing):
 	var edges = []
@@ -103,12 +103,7 @@ func process_mouse_button(event, pos):
 				var start_facing = train.facing
 				var end_facing = LayoutInfo.drag_virtual_train.facing
 				var target = nodes[end_facing].id
-				var route = train.block.get_route_to(start_facing, target)
-				if route == null:
-					push_error("no route to selected target "+target)
-				else:
-					train.set_route(route)
-					train.start_leg()
+				train.find_route(target)
 				
 
 func hover(pos):

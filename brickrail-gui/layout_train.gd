@@ -51,6 +51,14 @@ func unselect():
 func _on_virtual_train_hover():
 	virtual_train.set_hover(true)
 
+func find_route(target):
+	var route = block.get_route_to(facing, target, fixed_facing)
+	if route == null:
+		push_error("no route to selected target "+target)
+	else:
+		set_route(route)
+		start_leg()
+
 func set_route(p_route):
 	route = p_route
 
