@@ -92,6 +92,8 @@ func _on_target_train_entered(p_train):
 	if route.get_next_leg().get_type()=="flip":
 		slow()
 		return
+	else:
+		route.get_next_leg().set_switches()
 
 func _on_target_train_in(p_train):
 	if p_train != null:
