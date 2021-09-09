@@ -5,6 +5,7 @@ var train = null
 func set_train(obj):
 	train = obj
 	train.connect("unselected", self, "_on_train_unselected")
+	$FixedFacingCheckbox.pressed = train.fixed_facing
 
 func _on_train_unselected():
 	queue_free()
@@ -28,3 +29,7 @@ func _on_Stop_pressed():
 
 func _on_Slow_pressed():
 	train.virtual_train.slow()
+
+
+func _on_FixedFacingCheckbox_toggled(button_pressed):
+	train.fixed_facing = button_pressed

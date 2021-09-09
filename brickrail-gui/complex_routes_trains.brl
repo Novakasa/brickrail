@@ -2146,30 +2146,35 @@
 		{
 			"name": "train0",
 			"facing": 1,
+			"fixed_facing": true,
 			"blockname": "block1",
 			"blockindex": 1
 		},
 		{
 			"name": "train1",
 			"facing": -1,
+			"fixed_facing": false,
 			"blockname": "block0",
 			"blockindex": 0
 		},
 		{
 			"name": "train2",
 			"facing": 1,
+			"fixed_facing": false,
 			"blockname": "block6",
 			"blockindex": 0
 		},
 		{
 			"name": "train3",
 			"facing": 1,
+			"fixed_facing": false,
 			"blockname": "block5",
 			"blockindex": 1
 		},
 		{
 			"name": "train4",
 			"facing": 1,
+			"fixed_facing": false,
 			"blockname": "block4",
 			"blockindex": 1
 		}

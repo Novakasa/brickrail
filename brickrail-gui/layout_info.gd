@@ -114,6 +114,8 @@ func load(struct):
 		for train_data in struct.trains:
 			var train = create_train(train_data.name)
 			train.set_facing(train_data.facing)
+			if "fixed_facing" in train_data:
+				train.fixed_facing = train_data.fixed_facing
 			if "blockname" in  train_data:
 				var block = blocks[train_data.blockname].logical_blocks[train_data.blockindex]
 				train.set_current_block(block)

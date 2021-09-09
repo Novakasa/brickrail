@@ -116,8 +116,8 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
 margin_top = 34.0
-margin_right = -258.0
-margin_bottom = -615.0
+margin_right = -5.0
+margin_bottom = -5.0
 script = ExtResource( 6 )
 
 [node name="BackgroundColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]

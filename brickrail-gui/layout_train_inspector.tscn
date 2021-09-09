@@ -11,40 +11,47 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 89.0
+margin_right = 103.0
 margin_bottom = 14.0
 text = "LayoutTrain"
 
-[node name="FlipFacing" type="Button" parent="."]
+[node name="FixedFacingCheckbox" type="CheckBox" parent="."]
 margin_top = 18.0
-margin_right = 89.0
-margin_bottom = 38.0
+margin_right = 103.0
+margin_bottom = 42.0
+text = "Fixed facing"
+
+[node name="FlipFacing" type="Button" parent="."]
+margin_top = 46.0
+margin_right = 103.0
+margin_bottom = 66.0
 text = "Flip facing"
 
 [node name="FlipHeading" type="Button" parent="."]
-margin_top = 42.0
-margin_right = 89.0
-margin_bottom = 62.0
+margin_top = 70.0
+margin_right = 103.0
+margin_bottom = 90.0
 text = "Flip heading"
 
 [node name="Start" type="Button" parent="."]
-margin_top = 66.0
-margin_right = 89.0
-margin_bottom = 86.0
+margin_top = 94.0
+margin_right = 103.0
+margin_bottom = 114.0
 text = "Start"
 
 [node name="Slow" type="Button" parent="."]
-margin_top = 90.0
-margin_right = 89.0
-margin_bottom = 110.0
+margin_top = 118.0
+margin_right = 103.0
+margin_bottom = 138.0
 text = "Slow"
 
 [node name="Stop" type="Button" parent="."]
-margin_top = 114.0
-margin_right = 89.0
-margin_bottom = 134.0
+margin_top = 142.0
+margin_right = 103.0
+margin_bottom = 162.0
 text = "Stop"
 
+[connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
 [connection signal="pressed" from="FlipFacing" to="." method="_on_FlipFacing_pressed"]
 [connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
 [connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]

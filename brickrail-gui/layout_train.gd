@@ -31,6 +31,7 @@ func serialize():
 	var struct = {}
 	struct["name"] = trainname
 	struct["facing"] = facing
+	struct["fixed_facing"] = fixed_facing
 	if block != null:
 		struct["blockname"] = block.blockname
 		struct["blockindex"] = block.index
