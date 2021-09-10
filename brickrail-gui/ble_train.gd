@@ -24,6 +24,35 @@ func _init(p_name, p_address):
 	name = p_name
 	hub = BLEHub.new(p_name, "train", p_address)
 	hub.connect("data_received", self, "_on_data_received")
+	hub.connect("program_started", self, "_on_hub_program_started")
+	Devices.connect("color_added", self, "_on_devices_color_added")
+
+func _on_hub_program_started():
+	for color in Devices.colors.values():
+		set_color(color)
+
+func _on_devices_color_added(colorname):
+	if hub.running:
+		var color = Devices.colors[colorname]
+		set_color(color)
+
+func set_color(color):
+	var hsvlist = color.get_pybricks_colors()
+	color.connect("colors_changed", self, "_on_color_colors_changed")
+	color.connect("removing", self, "_on_color_removing")
+	hub.rpc("set_color", [color.colorname, hsvlist, color.type])
+
+func _on_color_removing(colorname):
+	remove_color(colorname)
+
+func remove_color(colorname):
+	hub.rpc("remove_color", [colorname])
+	Devices.colors[colorname].disconnect("colors_changed", self, "_on_color_colors_changed")
+	Devices.colors[colorname].disconnect("removing", self, "_on_color_removing")
+
+func _on_color_colors_changed(colorname):
+	remove_color(colorname)
+	set_color(Devices.colors[colorname])
 
 func _on_data_received(key, data):
 	prints("train received:", key, data)
@@ -38,6 +67,9 @@ func _on_data_received(key, data):
 	if key == "stop_marker_changed":
 		stop_marker = data
 		emit_signal("stop_marker_changed", data)
+	if key == "hsv":
+		var color = Color(data[0]/360, data[1]/100, data[2]/100)
+		emit_signal("color_measured", data)
 
 func set_state(p_state):
 	state = p_state

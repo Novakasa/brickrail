@@ -6,18 +6,6 @@ from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
 
-CALIBRATED_COLORS = {
-    "red_marker": Color(h=357, s=96, v=80), #measured in dark room
-    "blue_marker": Color(h=219, s=94, v=75), #measured in dark room
-    "orange_floor": Color(h=40, s=66, v=49), #measured in dark room
-    "orange_floor2": Color(h=20, s=65, v=49), #measured in dark room
-    "orange_floor3": Color(h=21, s=82, v=45), # measured with lights on
-    "dark_gray_sleeper": Color(h=0, s=5, v=20), #measured in dark room
-    "dark_gray_sleeper2": Color(h=340, s=17, v=20), #measured in dark room
-    "bluish_gray_sleeper": Color(h=168, s=24, v=26), #measured in dark room
-    "bluish_gray_sleeper2": Color(h=204, s=46, v=37) #measured with lights on
-}
-
 delta = 0.03
 
 class Timer:
@@ -92,8 +80,8 @@ class TrainSensor:
         self.sleeper_counter = SleeperCounter()
         self.measure_speed = False
     
-    def add_color(self, name, color, type):
-        self.colors[name] = color
+    def set_color(self, name, colors, type):
+        self.colors[name] = colors
         if type=="marker":
             if name not in self.marker_colors:
                 self.marker_colors.append(name)
@@ -101,7 +89,8 @@ class TrainSensor:
             self.speed_a = name
         if type=="speedB":
             self.speed_b = name
-        self.sensor.detectable_colors(list(self.colors.values()))
+        all_colors = [color for color in self.colors[name] for name in self.colors]
+        self.sensor.detectable_colors(all_colors)
     
     def remove_color(self, name):
         del self.colors[name]
@@ -112,22 +101,24 @@ class TrainSensor:
         if self.speed_b == name:
             self.speed_b = None
     
+    def get_colorname(self, color):
+        for colorname, colors in self.colors.items():
+            if color in colors:
+                return colorname
+    
     def update(self, delta):
         if self.measure_speed:
             self.sleeper_counter.update()
         if self.blind:
             return
-        measured_color = self.sensor.color()
-        for colorname, color in CALIBRATED_COLORS.items():
-            if color != measured_color:
-                continue
-            if colorname in self.marker_colors:
-                self.marker_callback(colorname)
-                return
-            if self.measure_speed:
-                if colorname == self.speed_a:
-                    self.sleeper_counter.on_ctype(0)
-                if colorname == self.speed_b:
+        colorname = self.get_colorname(self.sensor.color())
+        if colorname in self.marker_colors:
+            self.marker_callback(colorname)
+            return
+        if self.measure_speed:
+            if colorname == self.speed_a:
+                self.sleeper_counter.on_ctype(0)
+            if colorname == self.speed_b:
                     self.sleeper_counter.on_ctype(1)
 
     def estimate_speed(self):
@@ -236,8 +227,14 @@ class Train:
         color = self.sensor.get_hsv()
         self.queue_data("hsv", [color.h, color.s, color.v])
     
-    def add_color(self, name, color, type):
-        self.sensor.add_color(name, color, type)
+    def set_color(self, name, colorlist, type):
+        colors = []
+        for hsv in colorlist:
+            colors.append(Color(h=hsv[0], s=hsv[1], v=hsv[2]))
+        self.sensor.set_color(name, colors, type)
+    
+    def remove_color(self, name):
+        self.sensor.remove_color(name)
     
     def set_expect_marker(self, name, behaviour):
         self.expect_marker = name
@@ -335,12 +332,14 @@ def input_handler(message):
         for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
+        print(code)
         try:
             expr = eval(code)
         except SyntaxError:
             print("[ble_hub] Syntaxerror when running eval()")
             print(code)
         if message.find("rpc::")==0:
+            print("got rpc message:", message)
             func = getattr(device, expr["func"])
             args = expr["args"]
             kwargs = expr["kwargs"]

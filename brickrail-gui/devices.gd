@@ -3,15 +3,30 @@ extends Node2D
 var trains = {}
 var layout_controllers = {}
 var switches = {}
+var colors = {}
 
 signal data_received(key,data)
 signal trains_changed
 signal layout_controllers_changed
 signal switches_changed
 
+signal color_added(p_colorname)
+signal color_removed(p_colorname)
+
 func _on_data_received(key, data):
 	prints("[project] received data", key, data)
 	emit_signal("data_received", key, data)
+
+func create_color(colorname, type):
+	var color = load("res://calibrated_color.tscn").instance()
+	color.connect("removing", self, "_on_color_removing")
+	color.setup(colorname, type)
+	colors[colorname] = color
+	emit_signal("color_added", colorname)
+
+func _on_color_removing(colorname):
+	colors.erase(colorname)
+	emit_signal("color_removed", colorname)
 
 func add_train(p_name, p_address=null):
 	var train = BLETrain.new(p_name, p_address)

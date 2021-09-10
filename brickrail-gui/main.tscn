@@ -1,4 +1,4 @@
-[gd_scene load_steps=7 format=2]
+[gd_scene load_steps=8 format=2]
 
 [ext_resource path="res://layout.tscn" type="PackedScene" id=1]
 [ext_resource path="res://layout_gui.gd" type="Script" id=2]
@@ -6,6 +6,7 @@
 [ext_resource path="res://ViewportContainer.gd" type="Script" id=4]
 [ext_resource path="res://ui_theme.tres" type="Theme" id=5]
 [ext_resource path="res://settings_gui.gd" type="Script" id=6]
+[ext_resource path="res://colors_gui.gd" type="Script" id=7]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
@@ -71,12 +72,15 @@ margin_bottom = 720.0
 mouse_filter = 1
 size_flags_horizontal = 3
 size_flags_vertical = 3
-split_offset = 293
+split_offset = -618
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer/HSplitContainer"]
-margin_right = 303.0
+margin_right = 308.0
 margin_bottom = 689.0
 mouse_filter = 1
+size_flags_horizontal = 3
+size_flags_vertical = 3
+tab_align = 0
 
 [node name="trains" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
 anchor_right = 1.0
@@ -110,6 +114,116 @@ margin_bottom = -5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
+[node name="Colors" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 34.0
+margin_right = -5.0
+margin_bottom = -5.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+script = ExtResource( 7 )
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/Colors"]
+margin_right = 298.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+
+[node name="Color" type="Label" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer"]
+margin_right = 45.0
+margin_bottom = 27.0
+text = "Color"
+
+[node name="ColorSelector" type="OptionButton" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer"]
+margin_left = 49.0
+margin_right = 252.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+
+[node name="PlusButton" type="Button" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer"]
+margin_left = 256.0
+margin_right = 277.0
+margin_bottom = 27.0
+text = "+"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="MinusButton" type="Button" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer"]
+margin_left = 281.0
+margin_right = 298.0
+margin_bottom = 27.0
+text = "-"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="TabContainer" type="TabContainer" parent="VBoxContainer/HSplitContainer/TabContainer/Colors"]
+margin_top = 31.0
+margin_right = 298.0
+margin_bottom = 41.0
+tabs_visible = false
+
+[node name="NewColorDialog" type="ConfirmationDialog" parent="VBoxContainer/HSplitContainer/TabContainer/Colors"]
+margin_top = 45.0
+margin_right = 493.0
+margin_bottom = 123.0
+window_title = "Add new color"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog/VBoxContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 485.0
+margin_bottom = 35.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog/VBoxContainer/HBoxContainer2"]
+margin_right = 50.0
+margin_bottom = 27.0
+text = "Name"
+
+[node name="NameEdit" type="LineEdit" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog/VBoxContainer/HBoxContainer2"]
+margin_left = 54.0
+margin_right = 477.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog/VBoxContainer"]
+margin_left = 8.0
+margin_top = 8.0
+margin_right = 485.0
+margin_bottom = 35.0
+size_flags_horizontal = 3
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog/VBoxContainer/HBoxContainer3"]
+margin_right = 50.0
+margin_bottom = 27.0
+text = "type"
+
+[node name="TypeSelect" type="OptionButton" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog/VBoxContainer/HBoxContainer3"]
+margin_left = 54.0
+margin_right = 477.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+text = "marker"
+items = [ "marker", null, false, 0, null, "speedA", null, false, 1, null, "speedB", null, false, 2, null ]
+selected = 0
+
 [node name="Settings" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
@@ -121,31 +235,36 @@ margin_bottom = -5.0
 script = ExtResource( 6 )
 
 [node name="BackgroundColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
-margin_right = 12.0
+margin_right = 305.0
 margin_bottom = 27.0
 
 [node name="SurfaceColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
-margin_right = 12.0
-margin_bottom = 27.0
+margin_top = 31.0
+margin_right = 305.0
+margin_bottom = 58.0
 
 [node name="PrimaryColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
-margin_right = 12.0
-margin_bottom = 27.0
+margin_top = 62.0
+margin_right = 305.0
+margin_bottom = 89.0
 
 [node name="SecondaryColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
-margin_right = 12.0
-margin_bottom = 27.0
+margin_top = 93.0
+margin_right = 305.0
+margin_bottom = 120.0
 
 [node name="TertiaryColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
-margin_right = 12.0
-margin_bottom = 27.0
+margin_top = 124.0
+margin_right = 305.0
+margin_bottom = 151.0
 
 [node name="WhiteColor" type="ColorPickerButton" parent="VBoxContainer/HSplitContainer/TabContainer/Settings"]
-margin_right = 12.0
-margin_bottom = 27.0
+margin_top = 155.0
+margin_right = 305.0
+margin_bottom = 182.0
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer/HSplitContainer"]
-margin_left = 311.0
+margin_left = 316.0
 margin_right = 1280.0
 margin_bottom = 689.0
 split_offset = -202
@@ -156,13 +275,13 @@ input_draw_button = NodePath("LayoutSplit/LayoutTools/LayoutDraw")
 inspector_container = NodePath("InspectorContainer")
 
 [node name="LayoutSplit" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui"]
-margin_right = 759.0
+margin_right = 754.0
 margin_bottom = 689.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="LayoutTools" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
-margin_right = 759.0
+margin_right = 754.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 
@@ -226,7 +345,7 @@ margin_bottom = 27.0
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
 margin_top = 31.0
-margin_right = 759.0
+margin_right = 754.0
 margin_bottom = 689.0
 mouse_filter = 1
 size_flags_horizontal = 3
@@ -235,7 +354,7 @@ stretch = true
 script = ExtResource( 4 )
 
 [node name="Viewport" type="Viewport" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer"]
-size = Vector2( 759, 658 )
+size = Vector2( 754, 658 )
 handle_input_locally = false
 msaa = 2
 fxaa = true
@@ -246,8 +365,8 @@ render_target_update_mode = 3
 [node name="Layout" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport" instance=ExtResource( 1 )]
 
 [node name="InspectorContainer" type="Panel" parent="VBoxContainer/HSplitContainer/LayoutGui"]
-margin_left = 767.0
-margin_right = 969.0
+margin_left = 762.0
+margin_right = 964.0
 margin_bottom = 689.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -270,6 +389,10 @@ filters = PoolStringArray( "*.brl ; brickrail layout" )
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddSwitch" to="." method="_on_AddSwitch_pressed"]
+[connection signal="item_selected" from="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer/ColorSelector" to="VBoxContainer/HSplitContainer/TabContainer/Colors" method="_on_ColorSelector_item_selected"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer/PlusButton" to="VBoxContainer/HSplitContainer/TabContainer/Colors" method="_on_PlusButton_pressed"]
+[connection signal="pressed" from="VBoxContainer/HSplitContainer/TabContainer/Colors/HBoxContainer/MinusButton" to="VBoxContainer/HSplitContainer/TabContainer/Colors" method="_on_MinusButton_pressed"]
+[connection signal="confirmed" from="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog" to="VBoxContainer/HSplitContainer/TabContainer/Colors" method="_on_NewColorDialog_confirmed"]
 [connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/BackgroundColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_BackgroundColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/SurfaceColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_SurfaceColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/PrimaryColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_PrimaryColor_color_changed"]
