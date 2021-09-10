@@ -82,6 +82,8 @@ __meta__ = {
 margin_right = 97.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
+text = "Item 0"
+selected = 0
 
 [node name="MarkerAdd" type="Button" parent="SensorPanel/SensorInspector/HBoxContainer"]
 margin_left = 101.0
@@ -118,8 +120,10 @@ __meta__ = {
 }
 
 [node name="ColorPicker" type="ColorPicker" parent="SensorPanel/MarkerColorAdd/VBoxContainer"]
-margin_right = 308.0
-margin_bottom = 438.0
+margin_left = 4.0
+margin_top = 4.0
+margin_right = 312.0
+margin_bottom = 442.0
 edit_alpha = false
 __meta__ = {
 "_edit_use_anchors_": false

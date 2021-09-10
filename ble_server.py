@@ -33,7 +33,7 @@ class ClientCommand:
             func = getattr(project.hubs[self.hub], self.funcname)
 
         if asyncio.iscoroutinefunction(func):
-            print(f"awaiting coroutine: {func}")
+            print(f"awaiting coroutine: {func} with args {self.args}")
             result = await func(*self.args)
         else:
             print(f"executing func: {func}")

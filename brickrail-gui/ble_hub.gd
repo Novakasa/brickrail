@@ -89,3 +89,6 @@ func stop_program():
 	
 func hub_command(python_expression):
 	send_command("pipe_command", [python_expression])
+
+func rpc(funcname, args, kwargs={}):
+	send_command("rpc", [funcname, args, kwargs])

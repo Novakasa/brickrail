@@ -61,31 +61,28 @@ func brake():
 	hub.hub_command("train.brake()")
 
 func start():
-	hub.hub_command("train.start()")
+	hub.rpc("start", [])
 
 func stop():
-	hub.hub_command("train.stop()")
+	hub.rpc("stop", [])
 
 func wait():
-	hub.hub_command("train.wait()")
+	hub.rpc("wait", [])
 
 func slow():
-	hub.hub_command("train.slow()")
+	hub.rpc("slow", [])
 
 func flip_heading():
-	hub.hub_command("train.flip_heading()")
+	hub.rpc("flip_heading", [])
 
 func set_slow_marker(marker):
 	slow_marker = marker
-	var cmd = "train.set_slow_marker('"+marker+"')"
-	hub.hub_command(cmd)
+	hub.rpc("set_slow_marker", [marker])
 
 func set_stop_marker(marker):
 	stop_marker = marker
-	var cmd = "train.set_stop_marker('"+marker+"')"
-	hub.hub_command(cmd)
+	hub.rpc("set_stop_marker", [marker])
 
 func set_mode(p_mode):
 	mode = p_mode
-	var cmd = "train.set_mode('"+mode+"')"
-	hub.hub_command(cmd)
+	hub.rpc("set_mode", [mode])

@@ -86,8 +86,8 @@ class TrainSensor:
         self.blind = False
         self.colors = {}
         self.marker_colors = []
-        self.speedA = None
-        self.speedB = None
+        self.speed_a = None
+        self.speed_b = None
         self.marker_callback = marker_callback
         self.sleeper_counter = SleeperCounter()
         self.measure_speed = False
@@ -330,16 +330,21 @@ def input_handler(message):
     global running
     if message == "stop_program":
         running=False
-    if message.find("cmd::") == 0:
+    if message.find("::") > 0:
         lmsg = list(message)
         for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
         try:
-            eval(code)
+            expr = eval(code)
         except SyntaxError:
             print("[ble_hub] Syntaxerror when running eval()")
             print(code)
+        if message.find("rpc::")==0:
+            func = getattr(device, expr["func"])
+            args = expr["args"]
+            kwargs = expr["kwargs"]
+            _result = func(*args, **kwargs)
     else:
         print(message)
 
