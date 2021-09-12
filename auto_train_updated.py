@@ -89,7 +89,7 @@ class TrainSensor:
             self.speed_a = name
         if type=="speedB":
             self.speed_b = name
-        all_colors = [color for color in self.colors[name] for name in self.colors]
+        all_colors = [color for cname in self.colors for color in self.colors[cname]]
         self.sensor.detectable_colors(all_colors)
     
     def remove_color(self, name):
