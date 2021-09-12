@@ -185,6 +185,7 @@ class Train:
         self.hub.system.set_stop_button(None)
         self.motor = TrainMotor()
         self.sensor = TrainSensor(self.on_marker)
+        self.button_pressed = False
 
         self.heading = 1
 
@@ -226,6 +227,8 @@ class Train:
     def report_hsv(self):
         color = self.sensor.get_hsv()
         self.queue_data("hsv", [color.h, color.s, color.v])
+        colorname = self.sensor.get_colorname(self.sensor.sensor.color())
+        self.queue_data("colorname", colorname)
     
     def set_color(self, name, colorlist, type):
         colors = []
@@ -299,12 +302,19 @@ class Train:
         self.sensor.make_blind(1500)
         self.start()
     
+    def on_button_down(self):
+        self.report_hsv()
+    
     def update(self, delta):
         if self.state in ["started", "slow"]:
             self.sensor.update(delta)
         self.motor.update(delta)
         if self.hub.button.pressed():
-            self.report_hsv()
+            if not self.button_pressed:
+                self.on_button_down()
+                self.button_pressed = True
+        else:
+            self.button_pressed=False
 
 
 device = train = Train()
