@@ -14,11 +14,13 @@ func setup(p_colorname, p_type):
 	colorname = p_colorname
 	type = p_type
 
-func add_color():
+func add_color(p_color=null):
 	var color = ColorEntry.instance()
 	color.connect("removing", self, "_on_color_removing")
 	color.connect("color_changed", self, "_on_entry_color_changed")
 	$VBoxContainer.add_child(color)
+	if p_color!=null:
+		color.set_entry_color(p_color)
 	emit_signal("colors_changed", colorname)
 
 func _on_color_removing():

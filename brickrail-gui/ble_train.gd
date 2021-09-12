@@ -70,8 +70,8 @@ func _on_data_received(key, data):
 		stop_marker = data
 		emit_signal("stop_marker_changed", data)
 	if key == "hsv":
-		var color = Color(data[0]/360, data[1]/100, data[2]/100)
-		emit_signal("color_measured", data)
+		var color = Color.from_hsv(data[0]/360, data[1]/100, data[2]/100)
+		emit_signal("color_measured", color)
 
 func set_state(p_state):
 	state = p_state

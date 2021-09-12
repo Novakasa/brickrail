@@ -3,6 +3,15 @@ extends VBoxContainer
 func _ready():
 	Devices.connect("color_added", self, "_on_devices_color_added")
 	Devices.connect("color_removed", self, "_on_devices_color_removed")
+	Devices.connect("train_added", self, "_on_devices_train_added")
+
+func _on_devices_train_added(trainname):
+	var train = Devices.trains[trainname]
+	train.connect("color_measured", self, "_on_train_color_measured")
+
+func _on_train_color_measured(color):
+	if $ScanCheck.pressed:
+		Devices.colors[get_selected_colorname()].add_color(color)
 
 func _on_devices_color_added(colorname):
 	var color = Devices.colors[colorname]

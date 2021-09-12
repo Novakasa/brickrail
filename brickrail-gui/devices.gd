@@ -7,6 +7,7 @@ var colors = {}
 
 signal data_received(key,data)
 signal trains_changed
+signal train_added(trainname)
 signal layout_controllers_changed
 signal switches_changed
 
@@ -34,6 +35,7 @@ func add_train(p_name, p_address=null):
 	trains[p_name] = train
 	train.connect("name_changed", self, "_on_train_name_changed")
 	emit_signal("trains_changed")
+	emit_signal("train_added", p_name)
 
 func _on_train_name_changed(p_name, p_new_name):
 	var train = trains[p_name]
