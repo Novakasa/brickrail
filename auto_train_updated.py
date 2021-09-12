@@ -349,13 +349,13 @@ def input_handler(message):
 
 
 input_buffer = ""
-
 p = poll()
 p.register(stdin)
 
 def update_input(char):
     global input_buffer
     if char == "$":
+        print("msg_ack$")
         input_handler(input_buffer)
         input_buffer = ""
     else:

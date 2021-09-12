@@ -19,6 +19,7 @@ signal mode_changed(mode)
 signal slow_marker_changed(marker)
 signal stop_marker_changed(marker)
 signal name_changed(old_name, new_name)
+signal color_measured(data)
 
 func _init(p_name, p_address):
 	name = p_name

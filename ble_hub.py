@@ -1,4 +1,4 @@
-from pybricksdev.connections import PybricksHub, BLEPUPConnection
+from pybricksdev.connections import PybricksHub
 from pybricksdev.ble import find_device
 from pybricksdev.connections import NUS_RX_UUID
 
@@ -11,6 +11,12 @@ def get_script_path(program):
         return "E:/repos/brickrail/auto_train_updated.py"
     if program == "layout_controller":
         return "E:/repos/brickrail/layout_controller_updated.py"
+    
+
+def chunk(data, size):
+    for i in range(0, len(data), size):
+        yield data[i : i + size]
+
 
 class BLEHub:
     
@@ -23,6 +29,7 @@ class BLEHub:
         self.address = address
         self.out_queue = out_queue
         self.run_task = None
+        self.msg_acknowledged = asyncio.Event()
     
     def set_name(self, name):
         self.name = name
@@ -56,14 +63,20 @@ class BLEHub:
         await self.hub.user_program_stopped.wait()
 
     async def handle_output(self, msg):
+        # print("[output handler]: got msg:", msg)
         for line in msg.split("$")[:-1]:
+            # print("[output handler]: processing line:", msg)
+            if line=="msg_ack":
+                # print("message acknowledged from hub!")
+                self.msg_acknowledged.set()
+                continue
             if line.find("data::") == 0:
                 print("got return data from hub!", line)
                 data = SerialData.from_hub_msg(line)
                 data.hub = self.name
                 await self.out_queue.put(data)
-            else:
-                print(line)
+                continue
+            print(line)
     
     async def output_loop(self):
         print("starting output handler loop")
@@ -114,8 +127,13 @@ class BLEHub:
     async def send_message(self, message):
         if isinstance(message, str):
             message = bytearray(message + "$", encoding="utf8")
-        await self.hub.client.write_gatt_char(NUS_RX_UUID, message, False)
-        await asyncio.sleep(0.15)
+        
+        self.msg_acknowledged.clear()
+        for i, block in enumerate(chunk(message, 100)):
+            if i>0:
+                await asyncio.sleep(0.15)
+            await self.hub.client.write_gatt_char(NUS_RX_UUID, block, False)
+        await self.msg_acknowledged.wait()
     
     async def pipe_command(self, cmdstr):
         assert self.running
