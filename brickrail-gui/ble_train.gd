@@ -48,8 +48,9 @@ func _on_color_removing(colorname):
 
 func remove_color(colorname):
 	hub.rpc("remove_color", [colorname])
-	Devices.colors[colorname].disconnect("colors_changed", self, "_on_color_colors_changed")
-	Devices.colors[colorname].disconnect("removing", self, "_on_color_removing")
+	if colorname in Devices.colors:
+		Devices.colors[colorname].disconnect("colors_changed", self, "_on_color_colors_changed")
+		Devices.colors[colorname].disconnect("removing", self, "_on_color_removing")
 
 func _on_color_colors_changed(colorname):
 	remove_color(colorname)

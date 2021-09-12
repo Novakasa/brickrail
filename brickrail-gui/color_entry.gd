@@ -16,4 +16,9 @@ func _on_MinusButton_pressed():
 
 
 func _on_ColorPickerButton_color_changed(color):
+	#emit_signal("color_changed")
+	pass
+
+
+func _on_ColorPickerButton_popup_closed():
 	emit_signal("color_changed")

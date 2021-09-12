@@ -27,4 +27,5 @@ __meta__ = {
 }
 
 [connection signal="color_changed" from="ColorPickerButton" to="." method="_on_ColorPickerButton_color_changed"]
+[connection signal="popup_closed" from="ColorPickerButton" to="." method="_on_ColorPickerButton_popup_closed"]
 [connection signal="pressed" from="MinusButton" to="." method="_on_MinusButton_pressed"]
