@@ -229,7 +229,7 @@ margin_right = 477.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "marker"
-items = [ "marker", null, false, 0, null, "speedA", null, false, 1, null, "speedB", null, false, 2, null ]
+items = [ "marker", null, false, 0, null, "speedA", null, false, 1, null, "speedB", null, false, 2, null, "ignore", null, false, 3, null ]
 selected = 0
 
 [node name="Settings" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]

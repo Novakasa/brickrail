@@ -46,7 +46,7 @@ func _on_PlusButton_pressed():
 func _on_NewColorDialog_confirmed():
 	var cname = $NewColorDialog/VBoxContainer/HBoxContainer2/NameEdit.text
 	var ctypeid = $NewColorDialog/VBoxContainer/HBoxContainer3/TypeSelect.get_selected_id()
-	var ctype = ["marker", "speedA", "speedB"][ctypeid]
+	var ctype = ["marker", "speedA", "speedB", "ignore"][ctypeid]
 	Devices.create_color(cname, ctype)
 
 func _on_MinusButton_pressed():
