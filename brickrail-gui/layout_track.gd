@@ -375,21 +375,18 @@ func get_switch_at(pos):
 
 func add_sensor(p_sensor):
 	sensor = p_sensor
-	sensor.connect("marker_changed", self, "_on_sensor_marker_changed")
+	sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
 	emit_signal("states_changed", get_orientation())
 	emit_signal("sensor_changed", self)
 	update()
 
 func load_sensor(struct):
-	add_sensor(LayoutSensor.new(LayoutInfo.markers.values()[0]))
+	add_sensor(LayoutSensor.new())
 	sensor.load(struct)
 
-func _on_sensor_marker_changed(marker):
+func _on_sensor_marker_color_changed():
 	update()
 	emit_signal("states_changed", get_orientation())
-
-func set_sensor_marker(markername):
-	sensor.set_marker(markername)
 
 func remove_sensor():
 	sensor.disconnect("marker_changed", self, "_on_sensor_marker_changed")
@@ -641,4 +638,9 @@ func interpolate_position_linear(from_slot, t):
 
 func _draw():
 	if sensor != null:
-		draw_circle(get_center()*LayoutInfo.spacing, 0.05*LayoutInfo.spacing, LayoutInfo.markers[sensor.markername])
+		var color
+		if sensor.marker_color != null:
+			color = sensor.marker_color.get_preview_color()
+		else:
+			color = Color.white
+		draw_circle(get_center()*LayoutInfo.spacing, 0.05*LayoutInfo.spacing, color)

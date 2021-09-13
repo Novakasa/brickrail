@@ -275,6 +275,7 @@ class Train:
     
     def on_marker(self, colorname):
         self.queue_data("detected_marker", colorname)
+        self.sensor.make_blind(400)
         if colorname == self.expect_marker:
             if self.expect_behaviour=="slow":
                 self.slow()

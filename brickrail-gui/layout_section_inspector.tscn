@@ -65,7 +65,7 @@ text = "Remove"
 margin_top = 42.0
 margin_right = 142.0
 margin_bottom = 56.0
-text = "Marker"
+text = "Marker color"
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -79,78 +79,9 @@ __meta__ = {
 }
 
 [node name="MarkerSelect" type="OptionButton" parent="SensorPanel/SensorInspector/HBoxContainer"]
-margin_right = 97.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-text = "Item 0"
-selected = 0
-
-[node name="MarkerAdd" type="Button" parent="SensorPanel/SensorInspector/HBoxContainer"]
-margin_left = 101.0
-margin_right = 121.0
-margin_bottom = 20.0
-text = "+"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MarkerRemove" type="Button" parent="SensorPanel/SensorInspector/HBoxContainer"]
-margin_left = 125.0
 margin_right = 142.0
 margin_bottom = 20.0
-text = "-"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MarkerColorAdd" type="ConfirmationDialog" parent="SensorPanel"]
-margin_left = 7.0
-margin_top = 7.0
-margin_right = 331.0
-margin_bottom = 541.0
-window_title = "Add marker"
-
-[node name="VBoxContainer" type="VBoxContainer" parent="SensorPanel/MarkerColorAdd"]
-margin_left = 8.0
-margin_top = 8.0
-margin_right = 316.0
-margin_bottom = 498.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="ColorPicker" type="ColorPicker" parent="SensorPanel/MarkerColorAdd/VBoxContainer"]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 312.0
-margin_bottom = 442.0
-edit_alpha = false
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="HBoxContainer2" type="HBoxContainer" parent="SensorPanel/MarkerColorAdd/VBoxContainer"]
-margin_top = 442.0
-margin_right = 308.0
-margin_bottom = 466.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="Label" type="Label" parent="SensorPanel/MarkerColorAdd/VBoxContainer/HBoxContainer2"]
-margin_top = 5.0
-margin_right = 84.0
-margin_bottom = 19.0
-text = "Marker name"
-
-[node name="LineEdit" type="LineEdit" parent="SensorPanel/MarkerColorAdd/VBoxContainer/HBoxContainer2"]
-margin_left = 88.0
-margin_right = 308.0
-margin_bottom = 24.0
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="CollectSegment" type="Button" parent="."]
 margin_top = 164.0
@@ -225,9 +156,6 @@ text = "OK"
 [connection signal="pressed" from="AddSensor" to="." method="_on_AddSensor_pressed"]
 [connection signal="pressed" from="SensorPanel/SensorInspector/RemoveSensor" to="." method="_on_RemoveSensor_pressed"]
 [connection signal="item_selected" from="SensorPanel/SensorInspector/HBoxContainer/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
-[connection signal="pressed" from="SensorPanel/SensorInspector/HBoxContainer/MarkerAdd" to="." method="_on_MarkerAdd_pressed"]
-[connection signal="pressed" from="SensorPanel/SensorInspector/HBoxContainer/MarkerRemove" to="." method="_on_MarkerRemove_pressed"]
-[connection signal="confirmed" from="SensorPanel/MarkerColorAdd" to="." method="_on_MarkerColorAdd_confirmed"]
 [connection signal="pressed" from="CollectSegment" to="." method="_on_CollectSegment_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockCancelButton" to="." method="_on_BlockCancelButton_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockOKButton" to="." method="_on_BlockOKButton_pressed"]

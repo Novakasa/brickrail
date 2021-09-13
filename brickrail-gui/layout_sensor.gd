@@ -1,28 +1,43 @@
 extends Reference
 class_name LayoutSensor
 
-var markername
+var marker_color
 
-signal marker_changed(markername)
+signal marker_color_changed()
 signal triggered(train)
 
-func _init(p_markername=null):
-	if p_markername==null:
-		p_markername = LayoutInfo.markers.keys()[0]
-	markername = p_markername
+func _init(p_marker_color=null):
+	marker_color = p_marker_color
 
 func get_color():
-	return LayoutInfo.markers[markername]
+	if marker_color == null:
+		return Color.white
+	return marker_color.get_preview_color()
 
-func set_marker(p_markername):
-	markername = p_markername
-	emit_signal("marker_changed", markername)
+func set_marker_color(p_marker_colorname):
+	if marker_color != null:
+		marker_color.disconnect("colors_changed", self, "_on_marker_colors_changed")
+	if p_marker_colorname == null:
+		marker_color = null
+	else:
+		marker_color = Devices.colors[p_marker_colorname]
+		marker_color.connect("colors_changed", self, "_on_marker_colors_changed")
+	emit_signal("marker_color_changed")
+
+func _on_marker_colors_changed(colorname):
+	emit_signal("marker_color_changed")
 
 func serialize():
-	return {"markername": markername}
+	var cname = null
+	if marker_color != null:
+		cname = marker_color.colorname
+	return {"markername": cname}
 
 func load(struct):
-	set_marker(struct["markername"])
+	var colorname = struct["markername"]
+	if colorname == "default":
+		colorname = null
+	set_marker_color(colorname)
 
 func trigger(train=null):
 	emit_signal("triggered", train)

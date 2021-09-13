@@ -34,7 +34,10 @@ func remove():
 	queue_free()
 
 func get_preview_color():
-	return get_children()[0].get_entry_color()
+	var colors = $VBoxContainer.get_children()
+	if len(colors) == 0:
+		return Color.black
+	return colors[0].get_entry_color()
 
 func get_pybricks_colors():
 	var list = []

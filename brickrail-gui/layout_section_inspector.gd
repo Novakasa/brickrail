@@ -8,6 +8,11 @@ func set_section(obj):
 	section.connect("unselected", self, "_on_section_unselected")
 	section.connect("track_added", self, "_on_section_track_added")
 	_on_section_track_added(null)
+	Devices.connect("color_added", self, "_on_devices_colors_changed")
+	Devices.connect("color_removed", self, "_on_devices_colors_changed")
+
+func _on_devices_colors_changed(param):
+	update_marker_select()
 
 func _on_section_unselected():
 	queue_free()
@@ -38,9 +43,9 @@ func _on_CreateBlock_pressed():
 func _on_AddSensor_pressed():
 	$AddSensor.visible=false
 	$SensorPanel.visible=true
-	update_marker_select()
-	var sensor = LayoutSensor.new(LayoutInfo.markers.keys()[0])
+	var sensor = LayoutSensor.new(null)
 	dirtrack.track.add_sensor(sensor)
+	update_marker_select()
 
 func _on_BlockOKButton_pressed():
 	var block_name = $CreateBlockPopup/VBoxContainer/NameEdit.text
@@ -61,39 +66,35 @@ func _on_CollectSegment_pressed():
 func update_marker_select():
 	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
 	marker_select.clear()
-	for markername in LayoutInfo.markers:
-		marker_select.add_item(markername)
-	if dirtrack.track.sensor != null:
-		marker_select.select(LayoutInfo.markers.keys().find(dirtrack.track.sensor.markername))
+	marker_select.add_item("None")
+	marker_select.set_item_metadata(0, null)
+	var i = 1
+	for colorname in Devices.colors:
+		if Devices.colors[colorname].type != "marker":
+			continue
+		marker_select.add_item(colorname)
+		marker_select.set_item_metadata(i, colorname)
+		i += 1
+	var sensor = dirtrack.track.sensor
+	if sensor != null:
+		if sensor.marker_color != null:
+			marker_select.select(get_colorname_index(sensor.marker_color.colorname))
 
-func get_selected_marker():
+func get_selected_colorname():
 	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
-	return LayoutInfo.markers.keys()[marker_select.selected]
+	return marker_select.get_selected_metadata()
+
+func get_colorname_index(colorname):
+	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
+	for i in range(marker_select.get_item_count()):
+		if marker_select.get_item_metadata(i) == colorname:
+			return i
+	assert(false)
+		
 
 func _on_RemoveSensor_pressed():
 	dirtrack.track.remove_sensor()
 
 
 func _on_MarkerSelect_item_selected(index):
-	dirtrack.track.set_sensor_marker(get_selected_marker())
-
-
-func _on_MarkerAdd_pressed():
-	$SensorPanel/MarkerColorAdd.popup_centered()
-	var new_name = "marker"+str(len(LayoutInfo.markers))
-	while new_name in LayoutInfo.markers:
-		new_name = new_name + "_"
-	$SensorPanel/MarkerColorAdd/VBoxContainer/HBoxContainer2/LineEdit.text = new_name
-
-func _on_MarkerRemove_pressed():
-	LayoutInfo.markers.erase(get_selected_marker())
-	update_marker_select()
-
-func _on_MarkerColorAdd_confirmed():
-	var color = $SensorPanel/MarkerColorAdd/VBoxContainer/ColorPicker.color
-	var markername = $SensorPanel/MarkerColorAdd/VBoxContainer/HBoxContainer2/LineEdit.text
-	LayoutInfo.markers[markername] = color
-	update_marker_select()
-	var index = LayoutInfo.markers.keys().find(markername)
-	$SensorPanel/SensorInspector/HBoxContainer/MarkerSelect.select(index)
-	_on_MarkerSelect_item_selected(index)
+	dirtrack.track.sensor.set_marker_color(get_selected_colorname())

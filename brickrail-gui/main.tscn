@@ -83,7 +83,6 @@ size_flags_vertical = 3
 tab_align = 0
 
 [node name="trains" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -116,6 +115,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Colors" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
