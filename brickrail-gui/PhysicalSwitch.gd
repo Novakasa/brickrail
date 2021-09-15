@@ -20,6 +20,13 @@ func _init(p_name, p_controller, p_port):
 	position = "unknown"
 	responsiveness = false
 
+func serialize():
+	var struct = {}
+	struct["name"] = name
+	struct["controller"] = controller
+	struct["port"] = port
+	return struct
+
 func _on_data_received(key, data):
 	prints("switch got data", key)
 	if key == "position_changed":

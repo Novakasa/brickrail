@@ -1,0 +1,60 @@
+{
+	"devices": {
+		"colors": [
+
+		],
+		"trains": [
+			{
+				"name": "orange",
+				"address": "90:84:2B:BE:1E:40"
+			},
+			{
+				"name": "red",
+				"address": "90:84:2B:BD:5A:42"
+			}
+		],
+		"controllers": [
+			{
+				"name": "controller0",
+				"address": "90:84:2B:4D:1F:8E"
+			},
+			{
+				"name": "controller1",
+				"address": "90:84:2B:50:F5:82"
+			}
+		],
+		"switches": [
+			{
+				"name": "switch0",
+				"controller": "controller0",
+				"port": 0
+			},
+			{
+				"name": "switch1",
+				"controller": "controller0",
+				"port": 1
+			},
+			{
+				"name": "switch2",
+				"controller": "controller1",
+				"port": 0
+			}
+		]
+	},
+	"layout": {
+		"nx": 60,
+		"ny": 60,
+		"markers": {
+			"default": "ffffffff"
+		},
+		"tracks": [
+
+		],
+		"blocks": [
+
+		],
+		"trains": [
+
+		]
+	}
+}

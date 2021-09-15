@@ -14,6 +14,19 @@ func setup(p_colorname, p_type):
 	colorname = p_colorname
 	type = p_type
 
+func serialize():
+	var struct = {}
+	struct["colorname"] = colorname
+	struct["type"] = type
+	struct["colors"] = []
+	for color in get_colors():
+		struct["colors"].append(color.get_entry_color().to_html())
+	return struct
+
+func load(struct):
+	for color_data in struct.colors:
+		add_color(Color(color_data))
+
 func add_color(p_color=null):
 	var color = ColorEntry.instance()
 	color.connect("removing", self, "_on_color_removing")
@@ -38,6 +51,9 @@ func get_preview_color():
 	if len(colors) == 0:
 		return Color.black
 	return colors[0].get_entry_color()
+
+func get_colors():
+	return $VBoxContainer.get_children()
 
 func get_pybricks_colors():
 	var list = []

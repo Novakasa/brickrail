@@ -28,6 +28,12 @@ func _init(p_name, p_address):
 	hub.connect("program_started", self, "_on_hub_program_started")
 	Devices.connect("color_added", self, "_on_devices_color_added")
 
+func serialize():
+	var struct = {}
+	struct["name"] = name
+	struct["address"] = hub.address
+	return struct
+
 func _on_hub_program_started():
 	for color in Devices.colors.values():
 		set_color(color)

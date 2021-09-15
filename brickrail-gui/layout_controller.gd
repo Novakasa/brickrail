@@ -14,6 +14,12 @@ func _init(p_name, p_address):
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 
+func serialize():
+	var struct = {}
+	struct["name"] = name
+	struct["address"] = hub.address
+	return struct
+
 func _on_data_received(key, data):
 	if key == "device_data":
 		var devkey = data.key
