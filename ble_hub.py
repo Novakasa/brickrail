@@ -38,15 +38,9 @@ class BLEHub:
         self.address = address
     
     async def connect(self):
-        if self.address is None:
-            try:
-                self.address = await find_device()
-            except Exception as exception:
-                data = SerialData("connect_error", self.name, repr(exception))
-                await self.out_queue.put(data)
-                return
         try:
-            await self.hub.connect(self.address)
+            device = await find_device(self.address)
+            await self.hub.connect(device)
         except Exception as exception:
             data = SerialData("connect_error", self.name, repr(exception))
             await self.out_queue.put(data)

@@ -12,6 +12,9 @@ onready var SwitchGUI = preload("res://switch_gui.tscn")
 func _ready():
 	Devices.connect("data_received", self, "_on_devices_data_received")
 
+func _on_devices_data_received(key, data):
+	pass
+
 func _on_AddTrain_pressed():
 	var trainnum = len(Devices.trains)
 	var trainname = "train"+str(trainnum)

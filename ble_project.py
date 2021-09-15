@@ -20,8 +20,8 @@ class BLEProject:
         self.hubs[new_name] = hub
         hub.set_name(new_name)
     
-    async def find_device(self, devicename="Pybricks Hub"):
-        device =  await find_device(devicename)
+    async def find_device(self):
+        device =  await find_device()
         return device.address
     
     def print(self, str):

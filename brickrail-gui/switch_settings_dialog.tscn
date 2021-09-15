@@ -28,55 +28,52 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
-margin_top = 9.0
+margin_top = 7.0
 margin_right = 200.0
-margin_bottom = 77.0
+margin_bottom = 79.0
 columns = 2
 
 [node name="NameLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 3.0
+margin_top = 5.0
 margin_right = 62.0
-margin_bottom = 17.0
+margin_bottom = 19.0
 text = "name"
 
-[node name="NameInput" type="TextEdit" parent="VBoxContainer/GridContainer"]
+[node name="NameInput" type="LineEdit" parent="VBoxContainer/GridContainer"]
 margin_left = 66.0
 margin_right = 200.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ControllerLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 27.0
+margin_top = 31.0
 margin_right = 62.0
-margin_bottom = 41.0
+margin_bottom = 45.0
 text = "controller"
 
 [node name="ControllerSelect" type="OptionButton" parent="VBoxContainer/GridContainer"]
 margin_left = 66.0
-margin_top = 24.0
+margin_top = 28.0
 margin_right = 200.0
-margin_bottom = 44.0
+margin_bottom = 48.0
 
 [node name="PortLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 51.0
+margin_top = 55.0
 margin_right = 62.0
-margin_bottom = 65.0
+margin_bottom = 69.0
 text = "port"
 
 [node name="PortSelect" type="OptionButton" parent="VBoxContainer/GridContainer"]
 margin_left = 66.0
-margin_top = 48.0
+margin_top = 52.0
 margin_right = 200.0
-margin_bottom = 68.0
+margin_bottom = 72.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 81.0
+margin_top = 83.0
 margin_right = 200.0
-margin_bottom = 101.0
+margin_bottom = 103.0
 alignment = 2
 
 [node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]

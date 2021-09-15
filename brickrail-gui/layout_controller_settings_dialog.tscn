@@ -37,15 +37,12 @@ margin_right = 50.0
 margin_bottom = 17.0
 text = "name"
 
-[node name="NameInput" type="TextEdit" parent="VBoxContainer/GridContainer"]
+[node name="NameInput" type="LineEdit" parent="VBoxContainer/GridContainer"]
 margin_left = 54.0
 margin_right = 200.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="AddressLabel" type="Label" parent="VBoxContainer/GridContainer"]
 margin_top = 27.0

@@ -26,9 +26,9 @@ __meta__ = {
 }
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
-margin_top = 10.0
+margin_top = 8.0
 margin_right = 200.0
-margin_bottom = 54.0
+margin_bottom = 56.0
 columns = 2
 
 [node name="NameLabel" type="Label" parent="VBoxContainer/GridContainer"]
@@ -48,39 +48,36 @@ __meta__ = {
 }
 
 [node name="AddressLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 27.0
+margin_top = 29.0
 margin_right = 50.0
-margin_bottom = 41.0
+margin_bottom = 43.0
 text = "address"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/GridContainer"]
 margin_left = 54.0
 margin_top = 24.0
 margin_right = 200.0
-margin_bottom = 44.0
+margin_bottom = 48.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="AddressInput" type="TextEdit" parent="VBoxContainer/GridContainer/HBoxContainer"]
+[node name="AddressInput" type="LineEdit" parent="VBoxContainer/GridContainer/HBoxContainer"]
 margin_right = 101.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 rect_min_size = Vector2( 0, 20 )
 size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="ScanButton" type="Button" parent="VBoxContainer/GridContainer/HBoxContainer"]
 margin_left = 105.0
 margin_right = 146.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 text = "scan"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 58.0
+margin_top = 60.0
 margin_right = 200.0
-margin_bottom = 78.0
+margin_bottom = 80.0
 alignment = 2
 
 [node name="CancelButton" type="Button" parent="VBoxContainer/HBoxContainer"]
