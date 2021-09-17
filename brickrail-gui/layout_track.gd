@@ -389,7 +389,7 @@ func _on_sensor_marker_color_changed():
 	emit_signal("states_changed", get_orientation())
 
 func remove_sensor():
-	sensor.disconnect("marker_changed", self, "_on_sensor_marker_changed")
+	sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
 	sensor = null
 	emit_signal("states_changed", get_orientation())
 	emit_signal("sensor_changed", self)

@@ -1,5 +1,5 @@
 class_name LayoutLogicalBlock
-extends Resource
+extends Node
 
 var blockname
 var id
@@ -35,6 +35,10 @@ func set_section(p_section):
 	find_sensors()
 
 func _on_section_sensor_changed(track):
+	if "enter" in sensors and sensors["enter"].track == track:
+		sensors.erase("enter")
+	if "in" in sensors and sensors["in"].track == track:
+		sensors.erase("in")
 	find_sensors()
 
 func _on_sensor_in_triggered(p_train):
