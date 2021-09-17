@@ -66,7 +66,7 @@ class SleeperCounter:
 
 class TrainSensor:
 
-    def __init__(self, marker_callback):
+    def __init__(self, marker_callback, marker_exit_callback):
         self.sensor = ColorDistanceSensor(Port.B)
         self.blind_timer = Timer()
         self.blind = False
@@ -75,6 +75,7 @@ class TrainSensor:
         self.speed_a = None
         self.speed_b = None
         self.marker_callback = marker_callback
+        self.marker_exit_callback = marker_exit_callback
         self.sleeper_counter = SleeperCounter()
         self.measure_speed = False
         self.last_color = None
@@ -113,6 +114,8 @@ class TrainSensor:
         colorname = self.get_colorname(self.sensor.color())
         if colorname == self.last_color:
             return
+        if self.last_color in self.marker_colors:
+            self.marker_exit_callback(self.last_color)
         self.last_color = colorname
         if colorname in self.marker_colors:
             self.marker_callback(colorname)
@@ -186,7 +189,7 @@ class Train:
         self.hub = CityHub()
         self.hub.system.set_stop_button(None)
         self.motor = TrainMotor()
-        self.sensor = TrainSensor(self.on_marker)
+        self.sensor = TrainSensor(self.on_marker, self.on_marker_exit)
         self.button_pressed = False
 
         self.heading = 1
@@ -260,13 +263,18 @@ class Train:
         self.motor.direction = self.heading
     
     def on_marker(self, colorname):
-        self.queue_data("detected_marker", colorname)
-        self.sensor.make_blind(400)
+        
         if colorname == self.expect_marker:
             if self.expect_behaviour=="slow":
                 self.slow()
             if self.expect_behaviour=="start":
                 self.start()
+            self.sensor.make_blind(400)
+        else:
+            self.queue_data("detected_unexpected_marker", colorname)
+
+    def on_marker_exit(self, colorname):
+        if colorname == self.expect_marker:
             if self.expect_behaviour=="stop":
                 self.stop()
             if self.expect_behaviour=="flip_heading":

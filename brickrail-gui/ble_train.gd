@@ -39,6 +39,9 @@ func set_color(color):
 	color.connect("removing", self, "_on_color_removing")
 	hub.rpc("set_color", [color.colorname, hsvlist, color.type])
 
+func set_expect_marker(colorname, behaviour):
+	hub.rpc("set_expect_marker", [colorname, behaviour])
+
 func _on_color_removing(colorname):
 	remove_color(colorname)
 

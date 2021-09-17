@@ -86,9 +86,14 @@ func start_leg():
 		ble_train.start()
 	
 	if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
-		virtual_train.set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "ignore")
+		set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "ignore")
 	else:
-		virtual_train.set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "slow")
+		set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "slow")
+
+func set_expect_marker(marker, behaviour):
+	virtual_train.set_expect_marker(marker, behaviour)
+	if can_control_ble_train():
+		ble_train.set_expect_marker(marker, behaviour)
 
 func set_target(p_block):
 	if target!=null:
@@ -107,9 +112,9 @@ func _on_target_train_entered(p_train):
 		assert(p_train==self)
 	if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
 		route.get_next_leg().set_switches()
-		virtual_train.set_expect_marker(target.sensors["in"].track.sensor.get_colorname(), "ignore")
+		set_expect_marker(target.sensors["in"].track.sensor.get_colorname(), "ignore")
 	else:
-		virtual_train.set_expect_marker(target.sensors["in"].track.sensor.get_colorname(), "stop")
+		set_expect_marker(target.sensors["in"].track.sensor.get_colorname(), "stop")
 		
 
 func _on_target_train_in(p_train):
@@ -146,6 +151,8 @@ func set_current_block(p_block, teleport=true):
 
 func flip_heading():
 	virtual_train.flip_heading()
+	if can_control_ble_train():
+		ble_train.flip_heading()
 	flip_facing()
 
 func flip_facing():
