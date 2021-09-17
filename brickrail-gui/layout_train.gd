@@ -69,7 +69,11 @@ func start_leg():
 	else:
 		leg.set_switches()
 	set_target(leg.get_target().obj)
-	start()
+	virtual_train.start()
+	if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
+		virtual_train.set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "ignore")
+	else:
+		virtual_train.set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "slow")
 
 func set_target(p_block):
 	if target!=null:
@@ -86,19 +90,16 @@ func set_target(p_block):
 func _on_target_train_entered(p_train):
 	if p_train != null:
 		assert(p_train==self)
-	if route.get_next_leg()==null:
-		slow()
-		return
-	if route.get_next_leg().get_type()=="flip":
-		slow()
-		return
-	else:
+	if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
 		route.get_next_leg().set_switches()
+		virtual_train.set_expect_marker(target.sensors["in"].track.sensor.get_colorname(), "ignore")
+	else:
+		virtual_train.set_expect_marker(target.sensors["in"].track.sensor.get_colorname(), "stop")
+		
 
 func _on_target_train_in(p_train):
 	if p_train != null:
 		assert(p_train==self)
-	stop()
 	set_current_block(target, false)
 	set_target(null)
 	
@@ -106,15 +107,6 @@ func _on_target_train_in(p_train):
 		set_route(null)
 	else:
 		start_leg()
-	
-func start():
-	virtual_train.start()
-	
-func slow():
-	virtual_train.slow()
-
-func stop():
-	virtual_train.stop()
 
 func stop_hover():
 	virtual_train.set_hover(false)

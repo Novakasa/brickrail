@@ -14,6 +14,11 @@ func get_color():
 		return Color.white
 	return marker_color.get_preview_color()
 
+func get_colorname():
+	if marker_color == null:
+		return "none"
+	return marker_color.colorname
+
 func set_marker_color(p_marker_colorname):
 	if marker_color != null:
 		marker_color.disconnect("colors_changed", self, "_on_marker_colors_changed")

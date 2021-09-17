@@ -17,6 +17,8 @@ var size = Vector2(0.3,0.2)
 var facing: int = 1
 var max_velocity = 3.0
 var slow_velocity = 0.5
+var expect_marker = null
+var expect_behaviour = null
 
 var state = "stopped"
 
@@ -63,6 +65,10 @@ func _unhandled_input(event):
 				LayoutInfo.grid.stop_hover()
 				get_tree().set_input_as_handled()
 			emit_signal("hover")
+
+func set_expect_marker(colorname, behaviour):
+	expect_marker = colorname
+	expect_behaviour = behaviour
 
 func start():
 	set_state("started")
@@ -124,7 +130,16 @@ func set_dirtrack(p_dirtrack):
 	rotation = dirtrack.get_rotation()
 	track_pos = 0.0
 	if dirtrack.track.sensor!=null:
-		dirtrack.track.sensor.trigger(null)
+		var sensor = dirtrack.track.sensor
+		if expect_marker != null:
+			assert(sensor.get_colorname() == expect_marker)
+			if expect_behaviour == "stop":
+				stop()
+			if expect_behaviour == "slow":
+				slow()
+			if expect_behaviour == "flip_heading":
+				flip_heading()
+		sensor.trigger(null)
 
 func _init():
 	pass
