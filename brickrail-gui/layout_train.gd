@@ -27,6 +27,15 @@ func _init(p_name):
 	virtual_train.connect("clicked", self, "_on_virtual_train_clicked")
 	virtual_train.visible=false
 
+func can_control_ble_train():
+	return LayoutInfo.control_devices and ble_train != null
+
+func set_ble_train(trainname):
+	if trainname == null:
+		ble_train = null
+		return
+	ble_train = Devices.trains[trainname]
+
 func serialize():
 	var struct = {}
 	struct["name"] = trainname
@@ -35,6 +44,8 @@ func serialize():
 	if block != null:
 		struct["blockname"] = block.blockname
 		struct["blockindex"] = block.index
+	if ble_train != null:
+		struct["ble_train"] = ble_train.name
 	return struct
 
 func select():
@@ -69,7 +80,11 @@ func start_leg():
 	else:
 		leg.set_switches()
 	set_target(leg.get_target().obj)
+	
 	virtual_train.start()
+	if can_control_ble_train():
+		ble_train.start()
+	
 	if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
 		virtual_train.set_expect_marker(target.sensors["enter"].track.sensor.get_colorname(), "ignore")
 	else:

@@ -75,3 +75,7 @@ func _on_OpenLayoutDialog_file_selected(path):
 
 func _on_LayoutNew_pressed():
 	LayoutInfo.clear()
+
+
+func _on_CheckBox_toggled(button_pressed):
+	LayoutInfo.control_devices = button_pressed

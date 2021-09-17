@@ -70,17 +70,6 @@ func set_name(p_new_name):
 	hub.set_name(p_new_name)
 	emit_signal("name_changed", old_name, p_new_name)
 
-func set_target(value):
-	var cmd = "train.set_target(" + str(value) + ")"
-	hub.hub_command(cmd)
-
-func set_speed(value):
-	var cmd = "train.set_speed(" + str(value) + ")"
-	hub.hub_command(cmd)
-
-func brake():
-	hub.hub_command("train.brake()")
-
 func start():
 	hub.rpc("start", [])
 

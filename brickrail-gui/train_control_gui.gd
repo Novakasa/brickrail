@@ -3,7 +3,6 @@ extends Panel
 var train_name
 export(NodePath) var train_label
 export(NodePath) var control_container
-export(NodePath) var auto_container
 export(NodePath) var hub_controls
 
 var markers = ["blue_marker", "red_marker"]
@@ -12,12 +11,7 @@ var modes = ["block", "auto", "manual"]
 func setup(p_train_name):
 	set_train_name(p_train_name)
 	get_train().connect("name_changed", self, "_on_train_name_changed")
-	get_train().connect("mode_changed", self, "_on_mode_changed")
-	get_train().connect("slow_marker_changed", self, "_on_slow_marker_changed")
-	get_train().connect("stop_marker_changed", self, "_on_stop_marker_changed")
 	get_train().hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
-	
-	var auto_container_node = get_node(auto_container)
 	
 	set_controls_disabled(true)
 	
@@ -33,18 +27,6 @@ func set_controls_disabled(mode):
 
 func _on_train_name_changed(old_name, new_name):
 	set_train_name(new_name)
-
-func _on_mode_changed(marker):
-	get_node(auto_container).get_node("mode_select").disabled=false
-	get_node(auto_container).get_node("mode_select").select(markers.find(marker))
-
-func _on_slow_marker_changed(marker):
-	get_node(auto_container).get_node("slow_marker_select").disabled=false
-	get_node(auto_container).get_node("slow_marker_select").select(markers.find(marker))
-
-func _on_stop_marker_changed(marker):
-	get_node(auto_container).get_node("stop_marker_select").disabled=false
-	get_node(auto_container).get_node("stop_marker_select").select(markers.find(marker))
 
 func set_train_name(p_train_name):
 	train_name = p_train_name
@@ -67,17 +49,4 @@ func _on_change_heading_button_pressed():
 
 func _on_settings_button_pressed():
 	$TrainSettingsDialog.show()
-
-func _on_mode_select_item_selected(index):
-	get_train().set_mode(modes[index])
-	get_node(auto_container).get_node("mode_select").disabled=true
-
-func _on_slow_marker_select_item_selected(index):
-	get_train().set_slow_marker(markers[index])
-	get_node(auto_container).get_node("slow_marker_select").disabled=true
-
-func _on_stop_marker_select_item_selected(index):
-	get_train().set_stop_marker(markers[index])
-	get_node(auto_container).get_node("stop_marker_select").disabled=true
-
 

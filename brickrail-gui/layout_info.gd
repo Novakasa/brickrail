@@ -22,6 +22,7 @@ var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0
 
 var input_mode = "select"
 var selection = null
+var control_devices = false
 
 var drawing_track = false
 var drawing_last = null
@@ -119,6 +120,8 @@ func load(struct):
 			if "blockname" in  train_data:
 				var block = blocks[train_data.blockname].logical_blocks[train_data.blockindex]
 				train.set_current_block(block)
+			if "ble_train" in train_data:
+				train.set_ble_train(train_data.ble_train)
 
 func get_hover_lock():
 	if drag_select or drawing_track:

@@ -62,7 +62,7 @@ margin_right = 493.0
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 48.0
 margin_right = 493.0
-margin_bottom = 140.0
+margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -71,7 +71,7 @@ __meta__ = {
 
 [node name="start_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_right = 41.0
-margin_bottom = 92.0
+margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
 text = "start"
 __meta__ = {
@@ -81,7 +81,7 @@ __meta__ = {
 [node name="stop_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 45.0
 margin_right = 85.0
-margin_bottom = 92.0
+margin_bottom = 20.0
 text = "stop"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -90,7 +90,7 @@ __meta__ = {
 [node name="slow_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 89.0
 margin_right = 130.0
-margin_bottom = 92.0
+margin_bottom = 20.0
 text = "slow"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -99,7 +99,7 @@ __meta__ = {
 [node name="change_heading_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 134.0
 margin_right = 220.0
-margin_bottom = 92.0
+margin_bottom = 20.0
 text = "flip heading"
 __meta__ = {
 "_edit_use_anchors_": false
