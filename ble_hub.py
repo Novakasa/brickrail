@@ -136,9 +136,9 @@ class BLEHub:
         message = "cmd::" + cmdstr
         await self.send_message(message)
     
-    async def rpc(self, funcname, args, kwargs):
+    async def rpc(self, funcname, args):
         assert self.running
-        struct = {"func": funcname, "args": args, "kwargs": kwargs}
+        struct = {"func": funcname, "args": args}
         message = "rpc::" + repr(struct)
         await self.send_message(message)
 

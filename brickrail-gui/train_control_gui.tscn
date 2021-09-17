@@ -17,7 +17,6 @@ __meta__ = {
 }
 train_label = NodePath("VBoxContainer/HBoxContainer2/Label")
 control_container = NodePath("VBoxContainer/HBoxContainer")
-auto_container = NodePath("VBoxContainer/GridContainer")
 hub_controls = NodePath("VBoxContainer/HubControl")
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
@@ -63,7 +62,7 @@ margin_right = 493.0
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 48.0
 margin_right = 493.0
-margin_bottom = 68.0
+margin_bottom = 140.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 __meta__ = {
@@ -72,7 +71,7 @@ __meta__ = {
 
 [node name="start_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_right = 41.0
-margin_bottom = 20.0
+margin_bottom = 92.0
 rect_min_size = Vector2( 0, 20 )
 text = "start"
 __meta__ = {
@@ -82,7 +81,7 @@ __meta__ = {
 [node name="stop_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 45.0
 margin_right = 85.0
-margin_bottom = 20.0
+margin_bottom = 92.0
 text = "stop"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -91,7 +90,7 @@ __meta__ = {
 [node name="slow_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 89.0
 margin_right = 130.0
-margin_bottom = 20.0
+margin_bottom = 92.0
 text = "slow"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -100,62 +99,8 @@ __meta__ = {
 [node name="change_heading_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 134.0
 margin_right = 220.0
-margin_bottom = 20.0
+margin_bottom = 92.0
 text = "flip heading"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
-margin_top = 72.0
-margin_right = 493.0
-margin_bottom = 140.0
-columns = 2
-
-[node name="mode_label" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 3.0
-margin_right = 82.0
-margin_bottom = 17.0
-text = "mode"
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="mode_select" type="OptionButton" parent="VBoxContainer/GridContainer"]
-margin_left = 86.0
-margin_right = 493.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="slow_marker_label" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 27.0
-margin_right = 82.0
-margin_bottom = 41.0
-text = "slow marker:"
-
-[node name="slow_marker_select" type="OptionButton" parent="VBoxContainer/GridContainer"]
-margin_left = 86.0
-margin_top = 24.0
-margin_right = 493.0
-margin_bottom = 44.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="stop_marker_label" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 51.0
-margin_right = 82.0
-margin_bottom = 65.0
-text = "stop marker:"
-
-[node name="stop_marker_select" type="OptionButton" parent="VBoxContainer/GridContainer"]
-margin_left = 86.0
-margin_top = 48.0
-margin_right = 493.0
-margin_bottom = 68.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -167,6 +112,3 @@ __meta__ = {
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/slow_button" to="." method="_on_slow_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/change_heading_button" to="." method="_on_change_heading_button_pressed"]
-[connection signal="item_selected" from="VBoxContainer/GridContainer/mode_select" to="." method="_on_mode_select_item_selected"]
-[connection signal="item_selected" from="VBoxContainer/GridContainer/slow_marker_select" to="." method="_on_slow_marker_select_item_selected"]
-[connection signal="item_selected" from="VBoxContainer/GridContainer/stop_marker_select" to="." method="_on_stop_marker_select_item_selected"]

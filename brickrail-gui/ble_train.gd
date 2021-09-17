@@ -4,20 +4,9 @@ extends Reference
 
 var name
 var hub
-var current_speed = 0
-var target_speed = 0
-var acceleration = 40
-var deceleration = 90
-var braking = false
 var state = "stopped"
-var slow_marker = "blue_marker"
-var stop_marker = "red_marker"
-var mode = "block"
 
 signal state_changed(state)
-signal mode_changed(mode)
-signal slow_marker_changed(marker)
-signal stop_marker_changed(marker)
 signal name_changed(old_name, new_name)
 signal color_measured(data)
 
@@ -27,6 +16,7 @@ func _init(p_name, p_address):
 	hub.connect("data_received", self, "_on_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 	Devices.connect("color_added", self, "_on_devices_color_added")
+	# TODO: color_removed
 
 func serialize():
 	var struct = {}
@@ -66,15 +56,6 @@ func _on_data_received(key, data):
 	prints("train received:", key, data)
 	if key == "state_changed":
 		set_state(data)
-	if key == "mode_changed":
-		mode = data
-		emit_signal("mode_changed", data)
-	if key == "slow_marker_changed":
-		slow_marker = data
-		emit_signal("slow_marker_changed", data)
-	if key == "stop_marker_changed":
-		stop_marker = data
-		emit_signal("stop_marker_changed", data)
 	if key == "hsv":
 		var color = Color.from_hsv(data[0]/360, data[1]/100, data[2]/100)
 		emit_signal("color_measured", color)
@@ -114,15 +95,3 @@ func slow():
 
 func flip_heading():
 	hub.rpc("flip_heading", [])
-
-func set_slow_marker(marker):
-	slow_marker = marker
-	hub.rpc("set_slow_marker", [marker])
-
-func set_stop_marker(marker):
-	stop_marker = marker
-	hub.rpc("set_stop_marker", [marker])
-
-func set_mode(p_mode):
-	mode = p_mode
-	hub.rpc("set_mode", [mode])

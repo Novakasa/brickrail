@@ -6,8 +6,6 @@ from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
 
-delta = 0.03
-
 class Timer:
 
     timers = []
@@ -79,6 +77,7 @@ class TrainSensor:
         self.marker_callback = marker_callback
         self.sleeper_counter = SleeperCounter()
         self.measure_speed = False
+        self.last_color = None
     
     def set_color(self, name, colors, type):
         self.colors[name] = colors
@@ -112,6 +111,9 @@ class TrainSensor:
         if self.blind:
             return
         colorname = self.get_colorname(self.sensor.color())
+        if colorname == self.last_color:
+            return
+        self.last_color = colorname
         if colorname in self.marker_colors:
             self.marker_callback(colorname)
             return
@@ -196,8 +198,6 @@ class Train:
         self.expect_behaviour = None
         
         self.set_state("stopped")
-    
-
 
     def queue_data(self, key, data):
         self.data_queue.append((key, data))
@@ -276,23 +276,24 @@ class Train:
         self.sensor.make_blind(1500)
         self.start()
     
-    def on_button_down(self):
+    def on_button_down(self, delta):
         self.report_hsv()
+        print("delta", delta)
     
     def update(self, delta):
-        if self.state in ["started", "slow"]:
+        if self.state in ["started", "slow", "stopped"]:
             self.sensor.update(delta)
         self.motor.update(delta)
         if self.hub.button.pressed():
             if not self.button_pressed:
-                self.on_button_down()
+                self.on_button_down(delta)
                 self.button_pressed = True
         else:
             self.button_pressed=False
 
 
 device = train = Train()
-running = True
+max_delta = 0.0001
 
 def send_data_queue(queue):
     if not queue:
@@ -315,21 +316,21 @@ def input_handler(message):
         lmsg = list(message)
         for _ in range(5):
             del lmsg[0]
-        code = "".join(lmsg)
+        expr = "".join(lmsg)
         try:
-            expr = eval(code)
+            struct = eval(expr)
         except SyntaxError:
             print("[ble_hub] Syntaxerror when running eval()")
-            print(code)
+            print(expr)
         if message.find("rpc::")==0:
-            func = getattr(device, expr["func"])
-            args = expr["args"]
-            kwargs = expr["kwargs"]
-            _result = func(*args, **kwargs)
+            func = getattr(device, struct["func"])
+            args = struct["args"]
+            _result = func(*args)
     else:
         print(message)
 
 
+running = True
 input_buffer = ""
 p = poll()
 p.register(stdin)
@@ -344,18 +345,24 @@ def update_input(char):
     else:
         input_buffer += char
 
-def update():
+def update(delta):
     update_timers()
     device.update(delta)
     send_data_queue(device.data_queue)
     device.data_queue = []
 
 def main_loop():
+    loop_watch = StopWatch()
+    loop_watch.resume()
+    last_time = loop_watch.time()
     while running:
-        if p.poll(int(1000*delta)):
+        if p.poll(int(1000*max_delta)):
             char = stdin.read(1)
             if char is not None:
                 update_input(char)
-        update()
+        t = loop_watch.time()
+        delta = (t-last_time)/1000
+        last_time = t
+        update(delta)
 
 main_loop()

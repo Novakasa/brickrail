@@ -43,14 +43,17 @@ func _on_hub_responsiveness_changed(value):
 		set_unresponsive()
 
 func setup_on_hub():
-	var portstr = ["A", "B", "C", "D"][port]
-	var cmd = "controller.attach_device(Switch('"+name+"', Port."+portstr+"))"
+	var hub = Devices.layout_controllers[controller].hub
 	# var cmd = "add_switch('"+name+"', "+str(port)+"))"
-	emit_signal("hub_command", cmd)
+	hub.rpc("add_switch", [name, port])
 
 	position = "unknown"
 	set_responsive()
 	emit_signal("position_changed", position)
+
+func device_call(funcname, args):
+	var hub = Devices.layout_controllers[controller].hub
+	hub.rpc("device_call", [name, funcname, args])
 
 func set_unresponsive():
 	responsiveness = false
@@ -62,8 +65,7 @@ func set_responsive():
 
 func switch(position):
 	set_unresponsive()
-	var cmd = "controller.devices['"+self.name+"'].switch('"+position+"')"
-	emit_signal("hub_command", cmd)
+	device_call("switch", [position])
 
 func set_name(p_name):
 	var old_name = name

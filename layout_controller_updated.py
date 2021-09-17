@@ -81,6 +81,11 @@ class Controller:
         self.hub = TechnicHub()
         self.devices = {}
         self.data_queue = []
+    
+    def add_switch(self, name, port):
+        port = [Port.A, Port.B, Port.C, Port.D][port]
+        switch = Switch(name, port)
+        self.attach_device(switch)
 
     def attached_ports(self):
         ports = []
@@ -100,10 +105,15 @@ class Controller:
             self.data_queue += device.data_queue
             device.data_queue = []
     
+    def device_call(self, name, funcname, args):
+        func = getattr(self.devices[name], funcname)
+        func(*args)
+    
     def queue_data(self, key, data):
         self.data_queue.append({"key": key, "data": data})
 
 device = controller = Controller()
+max_delta = 0.05
 running = True
 
 def send_data_queue(queue):
@@ -122,46 +132,57 @@ def input_handler(message):
     global running
     if message == "stop_program":
         running=False
-    if message.find("cmd::") == 0:
+    if message.find("::") > 0:
         lmsg = list(message)
         for _ in range(5):
             del lmsg[0]
-        code = "".join(lmsg)
+        expr = "".join(lmsg)
         try:
-            eval(code)
+            struct = eval(expr)
         except SyntaxError:
             print("[ble_hub] Syntaxerror when running eval()")
-            print(code)
+            print(expr)
+        if message.find("rpc::")==0:
+            func = getattr(device, struct["func"])
+            args = struct["args"]
+            _result = func(*args)
     else:
         print(message)
 
 
+running = True
 input_buffer = ""
-
 p = poll()
 p.register(stdin)
 
 def update_input(char):
     global input_buffer
     if char == "$":
-        print("msg_ack$")
         input_handler(input_buffer)
         input_buffer = ""
+    elif char == "#":
+        print("msg_ack$")
     else:
         input_buffer += char
 
-def update():
+def update(delta):
     update_timers()
     device.update(delta)
     send_data_queue(device.data_queue)
     device.data_queue = []
 
 def main_loop():
+    loop_watch = StopWatch()
+    loop_watch.resume()
+    last_time = loop_watch.time()
     while running:
-        if p.poll(int(1000*delta)):
+        if p.poll(int(1000*max_delta)):
             char = stdin.read(1)
             if char is not None:
                 update_input(char)
-        update()
+        t = loop_watch.time()
+        delta = (t-last_time)/1000
+        last_time = t
+        update(delta)
 
 main_loop()
