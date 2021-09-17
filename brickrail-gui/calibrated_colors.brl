@@ -1,0 +1,66 @@
+{
+	"devices": {
+		"colors": [
+			{
+				"colorname": "red",
+				"type": "marker",
+				"colors": [
+					"ffc7100a",
+					"ffc40808"
+				]
+			},
+			{
+				"colorname": "blue",
+				"type": "marker",
+				"colors": [
+					"ff094ab3",
+					"ff0a49ad"
+				]
+			},
+			{
+				"colorname": "sleeper",
+				"type": "speedA",
+				"colors": [
+					"ff2a4a41",
+					"ff374a4a"
+				]
+			},
+			{
+				"colorname": "floor",
+				"type": "speedB",
+				"colors": [
+					"ff141417",
+					"ff121212"
+				]
+			}
+		],
+		"trains": [
+			{
+				"name": "train0",
+				"address": null
+			}
+		],
+		"controllers": [
+
+		],
+		"switches": [
+
+		]
+	},
+	"layout": {
+		"nx": 60,
+		"ny": 60,
+		"markers": {
+			"default": "ffffffff"
+		},
+		"tracks": [
+
+		],
+		"blocks": [
+
+		],
+		"trains": [
+
+		]
+	}
+}

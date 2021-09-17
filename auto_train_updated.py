@@ -41,7 +41,7 @@ class SleeperCounter:
         self.last_ctype = None
         self.transition_times = []
         self.watch = StopWatch()
-        self.period = 500
+        self.period = 200
     
     def reset(self):
         self.transition_times = []
@@ -191,27 +191,13 @@ class Train:
 
         self.data_queue = []
         self.state = None
-        self.mode = None
-        self.slow_marker = None
-        self.stop_marker = None
 
         self.expect_marker = None
         self.expect_behaviour = None
         
         self.set_state("stopped")
-        self.set_mode("manual")
     
-    def set_mode(self, mode):
-        self.mode = mode
-        self.queue_data("mode_changed", mode)
-    
-    def set_slow_marker(self, marker):
-        self.slow_marker = marker
-        self.queue_data("slow_marker_changed", marker)
 
-    def set_stop_marker(self, marker):
-        self.stop_marker = marker
-        self.queue_data("stop_marker_changed", marker)
 
     def queue_data(self, key, data):
         self.data_queue.append((key, data))
@@ -285,19 +271,6 @@ class Train:
                 self.stop()
             if self.expect_behaviour=="flip_heading":
                 self.flip_heading()
-        if self.mode == "manual":
-            return
-        if colorname == self.stop_marker:
-            self.stop()
-            if self.mode == "auto":
-                self.wait(4000)
-                return
-            else:
-                self.sensor.make_blind(400)
-        if colorname == self.slow_marker:
-            self.slow()
-            self.sensor.make_blind(400)
-            return
     
     def on_wait_timer(self):
         self.sensor.make_blind(1500)
@@ -343,14 +316,12 @@ def input_handler(message):
         for _ in range(5):
             del lmsg[0]
         code = "".join(lmsg)
-        print(code)
         try:
             expr = eval(code)
         except SyntaxError:
             print("[ble_hub] Syntaxerror when running eval()")
             print(code)
         if message.find("rpc::")==0:
-            print("got rpc message:", message)
             func = getattr(device, expr["func"])
             args = expr["args"]
             kwargs = expr["kwargs"]
@@ -366,9 +337,10 @@ p.register(stdin)
 def update_input(char):
     global input_buffer
     if char == "$":
-        print("msg_ack$")
         input_handler(input_buffer)
         input_buffer = ""
+    elif char == "#":
+        print("msg_ack$")
     else:
         input_buffer += char
 

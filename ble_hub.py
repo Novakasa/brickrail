@@ -15,7 +15,7 @@ def get_script_path(program):
 
 def chunk(data, size):
     for i in range(0, len(data), size):
-        yield data[i : i + size]
+        yield data[i : i + size] + b"#"
 
 
 class BLEHub:
@@ -122,12 +122,14 @@ class BLEHub:
         if isinstance(message, str):
             message = bytearray(message + "$", encoding="utf8")
         
-        self.msg_acknowledged.clear()
-        for i, block in enumerate(chunk(message, 100)):
-            if i>0:
-                await asyncio.sleep(0.15)
+        for block in chunk(message, 80):
+            self.msg_acknowledged.clear()
+            print("writing block:",block)
             await self.hub.client.write_gatt_char(NUS_RX_UUID, block, False)
-        await self.msg_acknowledged.wait()
+            try:
+                await asyncio.wait_for(self.msg_acknowledged.wait(), timeout=1.0)
+            except asyncio.TimeoutError:
+                print("waiting for acknowledgement timed out!!")
     
     async def pipe_command(self, cmdstr):
         assert self.running
