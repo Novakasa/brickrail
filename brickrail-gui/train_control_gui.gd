@@ -19,21 +19,6 @@ func setup(p_train_name):
 	
 	var auto_container_node = get_node(auto_container)
 	
-	var mode_select = auto_container_node.get_node("mode_select")
-	for mode in modes:
-		mode_select.add_item(mode)
-	mode_select.select(0)
-	
-	var slow_marker_select = auto_container_node.get_node("slow_marker_select")
-	for marker in markers:
-		slow_marker_select.add_item(marker)
-	slow_marker_select.select(0)
-	
-	var stop_marker_select = auto_container_node.get_node("stop_marker_select")
-	for marker in markers:
-		stop_marker_select.add_item(marker)
-	stop_marker_select.select(0)
-	
 	set_controls_disabled(true)
 	
 	get_node(hub_controls).setup(get_train().hub)
@@ -45,10 +30,6 @@ func _on_hub_responsiveness_changed(val):
 func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():
 		child.disabled=mode
-	var auto_container_node = get_node(auto_container)
-	auto_container_node.get_node("mode_select").disabled=mode
-	auto_container_node.get_node("slow_marker_select").disabled=mode
-	auto_container_node.get_node("stop_marker_select").disabled=mode
 
 func _on_train_name_changed(old_name, new_name):
 	set_train_name(new_name)

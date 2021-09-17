@@ -29,7 +29,7 @@ func load(struct):
 
 func add_color(p_color=null):
 	var color = ColorEntry.instance()
-	color.connect("removing", self, "_on_color_removing")
+	color.connect("tree_exited", self, "_on_color_removing")
 	color.connect("color_changed", self, "_on_entry_color_changed")
 	$VBoxContainer.add_child(color)
 	if p_color!=null:
