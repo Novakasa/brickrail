@@ -102,6 +102,7 @@ func switch(pos):
 		var ble_pos = pos_to_dev1(pos)
 		prints("switching ble_switch:", ble_pos)
 		ble_switch.switch(ble_pos)
+		position_index = switch_positions.find(pos)
 	else:
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", slot, pos)
