@@ -267,8 +267,10 @@ class Train:
         if colorname == self.expect_marker:
             if self.expect_behaviour=="slow":
                 self.slow()
+                self.queue_data("handled_marker", colorname)
             if self.expect_behaviour=="start":
                 self.start()
+                self.queue_data("handled_marker", colorname)
             self.sensor.make_blind(400)
         else:
             self.queue_data("detected_unexpected_marker", colorname)
@@ -277,8 +279,10 @@ class Train:
         if colorname == self.expect_marker:
             if self.expect_behaviour=="stop":
                 self.stop()
+                self.queue_data("handled_marker", colorname)
             if self.expect_behaviour=="flip_heading":
                 self.flip_heading()
+                self.queue_data("handled_marker", colorname)
     
     def on_wait_timer(self):
         self.sensor.make_blind(1500)

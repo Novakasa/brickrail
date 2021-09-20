@@ -9,6 +9,7 @@ var state = "stopped"
 signal state_changed(state)
 signal name_changed(old_name, new_name)
 signal color_measured(data)
+signal handled_marker(colorname)
 
 func _init(p_name, p_address):
 	name = p_name
@@ -62,6 +63,8 @@ func _on_data_received(key, data):
 	if key == "hsv":
 		var color = Color.from_hsv(data[0]/360, data[1]/100, data[2]/100)
 		emit_signal("color_measured", color)
+	if key == "handled_marker":
+		emit_signal("handled_marker", data)
 
 func set_state(p_state):
 	state = p_state

@@ -78,4 +78,4 @@ func _on_LayoutNew_pressed():
 
 
 func _on_CheckBox_toggled(button_pressed):
-	LayoutInfo.control_devices = button_pressed
+	LayoutInfo.set_control_devices(button_pressed)

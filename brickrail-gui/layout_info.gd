@@ -39,6 +39,7 @@ var drag_virtual_train = null
 
 signal input_mode_changed(mode)
 signal selected(obj)
+signal control_devices_changed(control_device)
 
 func serialize():
 	var result = {}
@@ -187,6 +188,10 @@ func _on_switch_removing(id):
 	
 	switches[id].disconnect("removing", self, "_on_switch_removing")
 	switches.erase(id)
+
+func set_control_devices(p_control_devices):
+	control_devices = p_control_devices
+	emit_signal("control_devices_changed", control_devices)
 
 func _unhandled_input(event):
 	if event is InputEventKey:

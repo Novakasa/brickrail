@@ -20,6 +20,11 @@ var slow_velocity = 0.5
 var expect_marker = null
 var expect_behaviour = null
 
+var allow_sensor_advance = true
+var prev_sensor_track = null
+var next_sensor_track = null
+var next_sensor_distance = 0.0
+
 var state = "stopped"
 
 export(Color) var color
@@ -66,6 +71,32 @@ func _unhandled_input(event):
 				get_tree().set_input_as_handled()
 			emit_signal("hover")
 
+func update_next_sensor_info():
+	var distance
+	var itertrack
+	if prev_sensor_track == null:
+		distance = length - track_pos
+		itertrack = dirtrack.get_next()
+	else:
+		itertrack = prev_sensor_track.get_next()
+		distance = next_sensor_distance + prev_sensor_track.get_connection_length()
+	while itertrack.track.sensor==null:
+		var next_turn = itertrack.get_next_turn()
+		if next_turn == null:
+			next_sensor_track = null
+			next_sensor_distance = 0.0
+			return
+		distance += itertrack.get_connection_length(next_turn)
+		itertrack = itertrack.get_next(next_turn)
+	next_sensor_track = itertrack
+	next_sensor_distance = distance
+
+func advance_to_next_sensor_track():
+	advance_position(next_sensor_distance)
+	pass_sensor(next_sensor_track.track.sensor)
+	prev_sensor_track = next_sensor_track
+	next_sensor_track = null
+
 func set_expect_marker(colorname, behaviour):
 	expect_marker = colorname
 	expect_behaviour = behaviour
@@ -102,13 +133,41 @@ func _process(delta):
 	if state=="stopped":
 		velocity = max(velocity-2*deceleration*delta, 0.0)
 	
-	track_pos = track_pos + velocity*delta
+	var distance_modulation = 1.0
+	if not allow_sensor_advance:
+		distance_modulation = min(next_sensor_distance/1.0, 1.0)
+		# if distance_modulation < 1.0:
+		# 	distance_modulation = 0.0
+	var delta_pos = velocity*delta*distance_modulation
+	advance_position(delta_pos)
+
+func advance_position(delta_pos):
+	track_pos += delta_pos
+	next_sensor_distance -= delta_pos
+	wrap_dirtrack()
 	update_position()
 
-func update_position():
+func wrap_dirtrack():
 	while track_pos > length:
 		track_pos -= length
 		set_dirtrack(dirtrack.get_next(turn))
+		if dirtrack == next_sensor_track and allow_sensor_advance:
+			var sensor = dirtrack.track.sensor
+			pass_sensor(sensor)
+
+func pass_sensor(sensor):
+	if expect_marker != null:
+		assert(sensor.get_colorname() == expect_marker)
+		if expect_behaviour == "stop":
+			stop()
+		if expect_behaviour == "slow":
+			slow()
+		if expect_behaviour == "flip_heading":
+			flip_heading()
+	if allow_sensor_advance:
+		sensor.trigger(null)
+
+func update_position():
 	var interpolation = dirtrack.interpolate(track_pos, turn)
 	position = dirtrack.to_world(interpolation.position)
 	rotation = interpolation.rotation
@@ -129,17 +188,6 @@ func set_dirtrack(p_dirtrack):
 	position = LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx) + track.get_center())
 	rotation = dirtrack.get_rotation()
 	track_pos = 0.0
-	if dirtrack.track.sensor!=null:
-		var sensor = dirtrack.track.sensor
-		if expect_marker != null:
-			assert(sensor.get_colorname() == expect_marker)
-			if expect_behaviour == "stop":
-				stop()
-			if expect_behaviour == "slow":
-				slow()
-			if expect_behaviour == "flip_heading":
-				flip_heading()
-		sensor.trigger(null)
 
 func _init():
 	pass

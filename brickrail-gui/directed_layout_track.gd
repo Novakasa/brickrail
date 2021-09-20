@@ -46,9 +46,9 @@ func get_next_turn():
 	return track.connections[next_slot].keys()[0]
 
 func get_connection_length(turn=null):
-	var next = get_next(turn)
 	if turn == null:
-		turn = next.get_turn_from(next.prev_slot)
+		turn = get_next_turn()
+	var next = get_next(turn)
 	var this_length = track.get_connection_length(next_slot, turn)
 	var reverse_connection = next.track.get_connection_to(track)
 	var next_length = next.track.get_connection_length(reverse_connection.slot, reverse_connection.turn)
