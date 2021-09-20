@@ -187,7 +187,6 @@ func set_dirtrack(p_dirtrack):
 	length = dirtrack.get_connection_length(turn)
 	position = LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx) + track.get_center())
 	rotation = dirtrack.get_rotation()
-	track_pos = 0.0
 
 func _init():
 	pass
