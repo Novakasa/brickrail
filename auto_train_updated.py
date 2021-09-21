@@ -34,36 +34,6 @@ class Timer:
             self.time = None
             self.callback = None
 
-class SleeperCounter:
-    def __init__(self):
-        self.last_ctype = None
-        self.transition_times = []
-        self.watch = StopWatch()
-        self.period = 200
-    
-    def reset(self):
-        self.transition_times = []
-        self.last_ctype = None
-        self.watch.reset()
-    
-    def update(self):
-        current_time = self.watch.time()
-        while self.transition_times and current_time-self.transition_times[0]>self.period:
-            del self.transition_times[0]
-
-    def on_ctype(self, ctype):
-        if self.last_ctype == ctype:
-            return
-        self.last_ctype = ctype
-        current_time = self.watch.time()
-        self.transition_times.append(current_time)
-        
-        return
-    
-    def get_speed(self):
-        return len(self.transition_times)
-
-
 class TrainSensor:
 
     def __init__(self, marker_callback, marker_exit_callback):
@@ -76,8 +46,6 @@ class TrainSensor:
         self.speed_b = None
         self.marker_callback = marker_callback
         self.marker_exit_callback = marker_exit_callback
-        self.sleeper_counter = SleeperCounter()
-        self.measure_speed = False
         self.last_color = None
     
     def set_color(self, name, colors, type):
@@ -107,8 +75,6 @@ class TrainSensor:
                 return colorname
     
     def update(self, delta):
-        if self.measure_speed:
-            self.sleeper_counter.update()
         if self.blind:
             return
         colorname = self.get_colorname(self.sensor.color())
@@ -120,14 +86,6 @@ class TrainSensor:
         if colorname in self.marker_colors:
             self.marker_callback(colorname)
             return
-        if self.measure_speed:
-            if colorname == self.speed_a:
-                self.sleeper_counter.on_ctype(0)
-            if colorname == self.speed_b:
-                    self.sleeper_counter.on_ctype(1)
-
-    def estimate_speed(self):
-        return self.sleeper_counter.get_speed()
     
     def get_hsv(self):
         return self.sensor.hsv()
@@ -234,19 +192,15 @@ class Train:
     
     def slow(self):
         # print("slowing...")
-        self.sensor.measure_speed=True
-        self.sensor.sleeper_counter.reset()
         self.motor.set_target(40)
         self.set_state("slow")
     
     def stop(self):
         # print("stopping...")
-        self.sensor.measure_speed=False
         self.motor.brake()
         self.set_state("stopped")
     
     def start(self):
-        self.sensor.measure_speed=False
         self.motor.set_target(100)
         self.sensor.make_blind(1500)
         self.set_state("started")
@@ -262,15 +216,22 @@ class Train:
         self.heading *= -1
         self.motor.direction = self.heading
     
+    def set_expect_marker_handled(self):
+        self.queue_data("handled_marker", self.expect_marker)
+        self.expect_marker = None
+        self.expect_behaviour = None
+    
     def on_marker(self, colorname):
         
         if colorname == self.expect_marker:
             if self.expect_behaviour=="slow":
                 self.slow()
-                self.queue_data("handled_marker", colorname)
+                self.set_expect_marker_handled()
             if self.expect_behaviour=="start":
                 self.start()
-                self.queue_data("handled_marker", colorname)
+                self.set_expect_marker_handled()
+            if self.expect_behaviour=="ignore":
+                self.set_expect_marker_handled()
             self.sensor.make_blind(400)
         else:
             self.queue_data("detected_unexpected_marker", colorname)
@@ -279,10 +240,10 @@ class Train:
         if colorname == self.expect_marker:
             if self.expect_behaviour=="stop":
                 self.stop()
-                self.queue_data("handled_marker", colorname)
+                self.set_expect_marker_handled()
             if self.expect_behaviour=="flip_heading":
                 self.flip_heading()
-                self.queue_data("handled_marker", colorname)
+                self.set_expect_marker_handled()
     
     def on_wait_timer(self):
         self.sensor.make_blind(1500)

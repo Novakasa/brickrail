@@ -52,8 +52,8 @@
 		"switches": [
 			{
 				"name": "switch0",
-				"controller": null,
-				"port": null
+				"controller": "controller0",
+				"port": 0
 			}
 		]
 	},
