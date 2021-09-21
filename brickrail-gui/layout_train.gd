@@ -155,8 +155,19 @@ func _on_next_sensor_triggered(p_train):
 	if not virtual_train.allow_sensor_advance:
 		virtual_train.advance_to_next_sensor_track()
 	
-	if target != null:
+	if next_sensor_track == target.sensors["in"]:
+		set_current_block(target, false)
+		set_target(null)
+	
+		if route.advance_leg()==null:
+			set_route(null)
+		else:
+			start_leg()
+	
+	elif target != null:
 		set_next_sensor()
+	
+	
 
 func _on_target_train_entered(p_train):
 	if p_train != null:
@@ -165,13 +176,6 @@ func _on_target_train_entered(p_train):
 func _on_target_train_in(p_train):
 	if p_train != null:
 		assert(p_train==self)
-	set_current_block(target, false)
-	set_target(null)
-	
-	if route.advance_leg()==null:
-		set_route(null)
-	else:
-		start_leg()
 
 func stop_hover():
 	virtual_train.set_hover(false)
