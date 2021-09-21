@@ -166,8 +166,6 @@ func _on_next_sensor_triggered(p_train):
 	
 	elif target != null:
 		set_next_sensor()
-	
-	
 
 func _on_target_train_entered(p_train):
 	if p_train != null:
