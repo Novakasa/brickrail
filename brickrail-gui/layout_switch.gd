@@ -34,6 +34,14 @@ func _init(p_directed_track):
 	
 	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
 
+func serialize():
+	var struct = {}
+	var ble_switch_name = null
+	if ble_switch != null:
+		ble_switch_name = ble_switch.name
+	struct["ble_switch"] = ble_switch_name
+	return struct
+
 func remove():
 	if selected:
 		unselect()

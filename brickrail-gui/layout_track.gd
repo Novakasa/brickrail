@@ -87,12 +87,17 @@ func serialize(reference=false):
 	result["slot0"] = slot0
 	result["slot1"] = slot1
 	var connections_result = {}
+	var switches_struct = {}
 	if not reference:
 		for slot in connections:
 			connections_result[slot] = []
 			for turn in connections[slot]:
 				connections_result[slot].append(turn)
+			if switches[slot] != null:
+				switches_struct[slot] = switches[slot].serialize()
+				
 		result["connections"] = connections_result
+		result["switches"] = switches_struct
 		
 		if sensor != null:
 			result["sensor"] = sensor.serialize()
@@ -129,6 +134,12 @@ func load_connections(struct):
 			if track in connections[slot].values():
 				continue
 			connect_track(slot, track)
+
+func load_switches(struct):
+	for slot in struct:
+		assert(switches[slot] != null)
+		if struct[slot].ble_switch != null:
+			switches[slot].set_ble_switch(Devices.switches[struct[slot].ble_switch])
 		
 func get_slot_cell(slot):
 	if slot=="N":

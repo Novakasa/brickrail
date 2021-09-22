@@ -103,6 +103,8 @@ func load(struct):
 		var orientation = track.slot0 + track.slot1
 		var track_obj = cells[i][j].tracks[orientation]
 		track_obj.load_connections(track.connections)
+		if "switches" in track:
+			track_obj.load_switches(track.switches)
 		if "sensor" in track:
 			track_obj.load_sensor(track.sensor)
 	
