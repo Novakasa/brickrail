@@ -69,17 +69,13 @@ class TrainSensor:
         if self.speed_b == name:
             self.speed_b = None
     
-    def get_colorname(self, color):
+    def match_colorname(self, color):
         best_color = None
         best_err = 100
         for colorname, colors in self.colors.items():
             for test_color in colors:
-                sdelta = 2*(color.s-test_color.s)
-                hdelta = 2*(color.h-test_color.h)
-                while hdelta > 180:
-                    hdelta -= 360
-                while hdelta < -180:
-                    hdelta += 360
+                sdelta = (color.s-test_color.s)
+                hdelta = ((color.h-test_color.h + 180) % 360) - 180
                 vdelta = color.v-test_color.v
                 err = 2*sdelta*sdelta + hdelta*hdelta + vdelta*vdelta
                 if err < best_err:
@@ -90,7 +86,7 @@ class TrainSensor:
     def update(self, delta):
         if self.blind:
             return
-        colorname = self.get_colorname(self.sensor.hsv())
+        colorname = self.match_colorname(self.sensor.hsv())
         if colorname == self.last_color:
             return
         if self.last_color in self.marker_colors:
@@ -187,7 +183,7 @@ class Train:
     def report_hsv(self):
         color = self.sensor.get_hsv()
         self.queue_data("hsv", [color.h, color.s, color.v])
-        colorname = self.sensor.get_colorname(self.sensor.sensor.hsv())
+        colorname = self.sensor.match_colorname(self.sensor.sensor.hsv())
         self.queue_data("colorname", colorname)
     
     def set_color(self, name, colorlist, type):
