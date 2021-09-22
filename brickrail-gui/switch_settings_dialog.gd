@@ -23,8 +23,7 @@ func show():
 	controller_input_node.add_item("no controller set")
 	for controller in Devices.layout_controllers.values():
 		controller_input_node.add_item(controller.name)
-		if controller.name == switch.controller:
-			controller_input_node.select(-1)
+	controller_input_node.select(Devices.layout_controllers.keys().find(switch.controller)+1)
 	if switch.controller == null:
 		controller_input_node.select(0)
 	
