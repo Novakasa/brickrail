@@ -63,7 +63,7 @@ func set_ble_switch(p_ble_switch):
 		ble_switch.disconnect("position_changed", self, "_on_ble_switch_position_changed")
 		ble_switch.disconnect("hub_responsiveness_changed", self, "_on_ble_switch_responsiveness_changed")
 	ble_switch = p_ble_switch
-	if ble_switch.position != "unkown":
+	if ble_switch.position != "unknown":
 		var pos = dev1_to_pos(ble_switch.position)
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", slot, pos)
@@ -106,7 +106,7 @@ func dev1_to_pos(ble_pos):
 	return "center"
 	
 func switch(pos):
-	if ble_switch != null:
+	if ble_switch != null and LayoutInfo.control_devices:
 		var ble_pos = pos_to_dev1(pos)
 		prints("switching ble_switch:", ble_pos)
 		ble_switch.switch(ble_pos)
