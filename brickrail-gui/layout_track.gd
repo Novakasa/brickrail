@@ -600,6 +600,7 @@ func get_connection_length(slot, turn):
 	return interpolation_params[slot][turn].connection_length
 
 func interpolate_connection(to_slot, turn, t, normalized=false):
+	assert(t>=0.0)
 	var params = interpolation_params[to_slot][turn]
 	var x = t
 	if normalized:

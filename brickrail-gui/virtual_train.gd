@@ -74,12 +74,13 @@ func _unhandled_input(event):
 func update_next_sensor_info():
 	var distance
 	var itertrack
+	prev_sensor_track = next_sensor_track
 	if prev_sensor_track == null:
 		itertrack = dirtrack.get_next()
 		distance = length - track_pos
 	else:
-		itertrack = prev_sensor_track.get_next()
 		distance = next_sensor_distance + prev_sensor_track.get_connection_length()
+		itertrack = prev_sensor_track.get_next()
 	while itertrack.track.sensor==null:
 		var next_turn = itertrack.get_next_turn()
 		if next_turn == null:
@@ -88,14 +89,13 @@ func update_next_sensor_info():
 			return
 		distance += itertrack.get_connection_length(next_turn)
 		itertrack = itertrack.get_next(next_turn)
+
 	next_sensor_track = itertrack
 	next_sensor_distance = distance
 
 func advance_to_next_sensor_track():
 	advance_position(next_sensor_distance)
 	pass_sensor(next_sensor_track.track.sensor)
-	prev_sensor_track = next_sensor_track
-	next_sensor_track = null
 
 func set_expect_marker(colorname, behaviour):
 	expect_marker = colorname
@@ -137,8 +137,6 @@ func _process(delta):
 	var distance_modulation = 1.0
 	if not allow_sensor_advance:
 		distance_modulation = min(next_sensor_distance/1.0, 1.0)
-		# if distance_modulation < 1.0:
-		# 	distance_modulation = 0.0
 	var delta_pos = velocity*delta*distance_modulation
 	advance_position(delta_pos)
 
@@ -155,8 +153,6 @@ func wrap_dirtrack():
 		if dirtrack == next_sensor_track and allow_sensor_advance:
 			var sensor = dirtrack.track.sensor
 			pass_sensor(sensor)
-			prev_sensor_track = next_sensor_track
-			next_sensor_track = null
 
 func pass_sensor(sensor):
 	if expect_marker != null:
