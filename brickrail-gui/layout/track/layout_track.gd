@@ -440,6 +440,10 @@ func stop_hover():
 	emit_signal("states_changed", get_orientation())
 
 func process_mouse_button(event, pos):
+	if event.button_index == BUTTON_RIGHT and event.pressed:
+		if LayoutInfo.input_mode == "draw":
+			remove()
+	
 	if event.button_index == BUTTON_LEFT and event.pressed:
 		var switch = get_switch_at(pos)
 		if LayoutInfo.input_mode == "draw":
