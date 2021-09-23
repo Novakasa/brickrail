@@ -12,128 +12,124 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "BLECommand",
 "language": "GDScript",
-"path": "res://ble_command.gd"
+"path": "res://ble/ble_command.gd"
 }, {
 "base": "Node",
 "class": "BLECommunicator",
 "language": "GDScript",
-"path": "res://ble_communicator.gd"
+"path": "res://ble/ble_communicator.gd"
 }, {
-"base": "Node",
+"base": "Reference",
 "class": "BLEController",
 "language": "GDScript",
-"path": "res://ble_controller.gd"
+"path": "res://ble/ble_controller.gd"
 }, {
 "base": "Reference",
 "class": "BLEHub",
 "language": "GDScript",
-"path": "res://ble_hub.gd"
+"path": "res://ble/ble_hub.gd"
+}, {
+"base": "Reference",
+"class": "BLESwitch",
+"language": "GDScript",
+"path": "res://devices/switch/ble_switch.gd"
 }, {
 "base": "Reference",
 "class": "BLETrain",
 "language": "GDScript",
-"path": "res://ble_train.gd"
+"path": "res://devices/train/ble_train.gd"
 }, {
 "base": "VBoxContainer",
 "class": "CalibratedColor",
 "language": "GDScript",
-"path": "res://calibrated_color.gd"
+"path": "res://devices/color/calibrated_color.gd"
 }, {
 "base": "Reference",
 "class": "DirectedLayoutTrack",
 "language": "GDScript",
-"path": "res://directed_layout_track.gd"
+"path": "res://layout/track/directed_layout_track.gd"
 }, {
 "base": "Node2D",
 "class": "LayoutBlock",
 "language": "GDScript",
-"path": "res://layout_block.gd"
+"path": "res://layout/block/layout_block.gd"
 }, {
 "base": "Node2D",
 "class": "LayoutCell",
 "language": "GDScript",
-"path": "res://layout_cell.gd"
+"path": "res://layout/grid/layout_cell.gd"
 }, {
 "base": "Reference",
 "class": "LayoutController",
 "language": "GDScript",
-"path": "res://layout_controller.gd"
+"path": "res://devices/layout_controller/layout_controller.gd"
 }, {
 "base": "Reference",
 "class": "LayoutEdge",
 "language": "GDScript",
-"path": "res://layout_edge.gd"
+"path": "res://layout/route/layout_edge.gd"
 }, {
 "base": "Node",
 "class": "LayoutLogicalBlock",
 "language": "GDScript",
-"path": "res://layout_logical_block.gd"
+"path": "res://layout/block/layout_logical_block.gd"
 }, {
 "base": "Reference",
 "class": "LayoutNode",
 "language": "GDScript",
-"path": "res://layout_node.gd"
+"path": "res://layout/route/layout_node.gd"
 }, {
 "base": "Reference",
 "class": "LayoutRoute",
 "language": "GDScript",
-"path": "res://layout_route.gd"
+"path": "res://layout/route/layout_route.gd"
 }, {
 "base": "Reference",
 "class": "LayoutRouteLeg",
 "language": "GDScript",
-"path": "res://layout_route_leg.gd"
+"path": "res://layout/route/layout_route_leg.gd"
 }, {
 "base": "Reference",
 "class": "LayoutSection",
 "language": "GDScript",
-"path": "res://layout_section.gd"
+"path": "res://layout/track/layout_section.gd"
 }, {
 "base": "Reference",
 "class": "LayoutSensor",
 "language": "GDScript",
-"path": "res://layout_sensor.gd"
+"path": "res://layout/track/layout_sensor.gd"
 }, {
 "base": "Node2D",
 "class": "LayoutSwitch",
 "language": "GDScript",
-"path": "res://layout_switch.gd"
+"path": "res://layout/switch/layout_switch.gd"
 }, {
 "base": "Node2D",
 "class": "LayoutTrack",
 "language": "GDScript",
-"path": "res://layout_track.gd"
+"path": "res://layout/track/layout_track.gd"
 }, {
 "base": "Node2D",
 "class": "LayoutTrain",
 "language": "GDScript",
-"path": "res://layout_train.gd"
-}, {
-"base": "Reference",
-"class": "PhysicalSwitch",
-"language": "GDScript",
-"path": "res://PhysicalSwitch.gd"
+"path": "res://layout/train/layout_train.gd"
 }, {
 "base": "OptionButton",
 "class": "Selector",
 "language": "GDScript",
-"path": "res://selector.gd"
-}, {
-"base": "Reference",
-"class": "TrainCommand",
-"language": "GDScript",
-"path": "res://train_command.gd"
+"path": "res://tools/selector.gd"
 }, {
 "base": "Node2D",
 "class": "VirtualTrain",
 "language": "GDScript",
-"path": "res://virtual_train.gd"
+"path": "res://layout/train/virtual_train.gd"
 } ]
 _global_script_class_icons={
 "BLECommand": "",
 "BLECommunicator": "",
 "BLEController": "",
 "BLEHub": "",
+"BLESwitch": "",
 "BLETrain": "",
 "CalibratedColor": "",
 "DirectedLayoutTrack": "",
@@ -150,23 +146,21 @@ _global_script_class_icons={
 "LayoutSwitch": "",
 "LayoutTrack": "",
 "LayoutTrain": "",
-"PhysicalSwitch": "",
 "Selector": "",
-"TrainCommand": "",
 "VirtualTrain": ""
 }
 
 [application]
 
 config/name="brickrail-gui"
-run/main_scene="res://main.tscn"
+run/main_scene="res://gui/main.tscn"
 config/icon="res://icon1.png"
 
 [autoload]
 
-LayoutInfo="*res://layout_info.gd"
-Devices="*res://devices.tscn"
-Settings="*res://settings.gd"
+LayoutInfo="*res://layout/layout_info.gd"
+Devices="*res://devices/devices.tscn"
+Settings="*res://gui/settings.gd"
 
 [display]
 

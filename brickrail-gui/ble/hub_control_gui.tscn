@@ -1,0 +1,36 @@
+[gd_scene load_steps=2 format=2]
+
+[ext_resource path="res://ble/hub_controls.gd" type="Script" id=1]
+
+[node name="HubControl" type="HBoxContainer"]
+margin_top = 24.0
+margin_right = 237.0
+margin_bottom = 44.0
+size_flags_horizontal = 3
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+connect_button = NodePath("connect_button")
+run_button = NodePath("run_button")
+
+[node name="connect_button" type="Button" parent="."]
+margin_right = 63.0
+margin_bottom = 20.0
+text = "connect"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="run_button" type="Button" parent="."]
+margin_left = 67.0
+margin_right = 100.0
+margin_bottom = 20.0
+disabled = true
+text = "run"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[connection signal="pressed" from="connect_button" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="run_button" to="." method="_on_run_button_pressed"]
