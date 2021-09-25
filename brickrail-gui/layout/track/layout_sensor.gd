@@ -22,15 +22,20 @@ func get_colorname():
 func set_marker_color(p_marker_colorname):
 	if marker_color != null:
 		marker_color.disconnect("colors_changed", self, "_on_marker_colors_changed")
+		marker_color.disconnect("removing", self, "_on_marker_color_removing")
 	if p_marker_colorname == null:
 		marker_color = null
 	else:
 		marker_color = Devices.colors[p_marker_colorname]
 		marker_color.connect("colors_changed", self, "_on_marker_colors_changed")
+		marker_color.connect("removing", self, "_on_marker_color_removing")
 	emit_signal("marker_color_changed")
 
 func _on_marker_colors_changed(colorname):
 	emit_signal("marker_color_changed")
+
+func _on_marker_color_removing(colorname):
+	set_marker_color(null)
 
 func serialize():
 	var cname = null
