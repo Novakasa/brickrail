@@ -18,8 +18,11 @@ func _init(p_from_node, p_to_node, p_type, p_section=null):
 		weight = 0.0
 
 func get_locked():
-	if to_node.type=="block" and to_node.obj.get_locked() != null:
-		return to_node.obj.get_locked()
+	var locked = []
 	if section != null:
-		return section.get_locked()
-	return null
+		locked = section.get_locked()
+	if to_node.type=="block":
+		var locked_train = to_node.obj.get_locked()
+		if locked_train != null and not locked_train in locked:
+			locked.append(locked_train)
+	return locked

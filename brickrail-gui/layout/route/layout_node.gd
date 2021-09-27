@@ -62,7 +62,7 @@ func calculate_routes(fixed_facing, trainname=null):
 				continue
 			if trainname != null:
 				var edge_locked = edge.get_locked()
-				if edge.get_locked() != null and edge.get_locked() != trainname:
+				if len(edge_locked)>0 and edge_locked != [trainname]:
 					continue
 				
 			var new_dist = distances[current_id] + edge.weight

@@ -197,8 +197,9 @@ func get_next_segments():
 	return segments
 
 func get_locked():
+	var locked = []
 	for track in tracks:
 		var locked_train = track.get_locked()
-		if locked_train != null:
-			return locked_train
-	return null
+		if locked_train != null and not locked_train in locked:
+			locked.append(locked_train)
+	return locked

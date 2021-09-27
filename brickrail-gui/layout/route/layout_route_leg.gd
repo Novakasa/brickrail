@@ -44,3 +44,16 @@ func lock_tracks(trainname):
 
 func unlock_tracks():
 	get_full_section().set_track_attributes("locked", null, "<>")
+
+func get_locked():
+	var locked = []
+	var trainname = get_start().obj.get_locked()
+	if trainname != null:
+		locked.append(trainname)
+	trainname = get_target().obj.get_locked()
+	if trainname != null and not trainname in locked:
+		locked.append(trainname)
+	for trainname2 in get_full_section().get_locked():
+		if not trainname2 in locked:
+			locked.append(trainname2)
+	return locked

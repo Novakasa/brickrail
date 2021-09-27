@@ -99,6 +99,8 @@ func set_route(p_route):
 
 func start_leg():
 	var leg = route.get_current_leg()
+	if not is_leg_allowed(leg):
+		return
 	leg.lock_tracks(trainname)
 	if leg.get_type() == "flip":
 		flip_heading()
@@ -146,12 +148,19 @@ func set_next_sensor():
 			else:
 				set_expect_marker(next_colorname, "slow")
 		elif next_sensor_track == target.sensors["in"]:
-			if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
-				route.get_next_leg().set_switches()
+			var next_leg = route.get_next_leg()
+			if next_leg!=null and next_leg.get_type()=="travel" and is_leg_allowed(next_leg):
+				next_leg.set_switches()
 				route.get_next_leg().lock_tracks(trainname)
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "stop")
+
+func is_leg_allowed(leg):
+	var leg_locked = leg.get_locked()
+	if len(leg_locked)>0 and leg_locked != [trainname]:
+		return false
+	return true
 
 func _on_next_sensor_triggered(p_train):
 	if p_train != null:
@@ -159,6 +168,13 @@ func _on_next_sensor_triggered(p_train):
 	
 	if not virtual_train.allow_sensor_advance:
 		virtual_train.advance_to_next_sensor_track()
+	
+	if next_sensor_track == target.sensors["enter"]:
+		var next_leg = route.get_next_leg()
+		if next_leg!=null and next_leg.get_type()=="travel" and not is_leg_allowed(next_leg):
+			virtual_train.slow()
+			if can_control_ble_train():
+				ble_train.slow()
 	
 	if next_sensor_track == target.sensors["in"]:
 		set_current_block(target, false)
@@ -168,7 +184,10 @@ func _on_next_sensor_triggered(p_train):
 		if route.advance_leg()==null:
 			set_route(null)
 		else:
-			start_leg()
+			if is_leg_allowed(route.get_current_leg()):
+				start_leg()
+			else:
+				set_route(null)
 	
 	elif target != null:
 		set_next_sensor()
