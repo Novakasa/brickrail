@@ -1,3 +1,4 @@
+from math import sin, cos, pi
 from uselect import poll
 from usys import stdin
 
@@ -72,12 +73,19 @@ class TrainSensor:
     def match_colorname(self, color):
         best_color = None
         best_err = 100
+        h2 = color.h*pi/180
+        s2 = color.s/100
+        v2 = color.v/100
         for colorname, colors in self.colors.items():
             for test_color in colors:
-                sdelta = (color.s-test_color.s)
-                hdelta = ((color.h-test_color.h + 180) % 360) - 180
-                vdelta = color.v-test_color.v
-                err = 2*sdelta*sdelta + hdelta*hdelta + vdelta*vdelta
+                h1 = test_color.h*pi/180
+                s1 = test_color.s/100
+                v1 = test_color.v
+                dx = cos(h1)*s1*v1 - cos(h2)*s2*v2
+                dy = sin(h1)*s1*v1 - sin(h2)*s2*v2
+                dz = v1-v2
+                err = dx*dx + dy*dy + dz*dz
+                
                 if err < best_err:
                     best_color = colorname
                     best_err = err
