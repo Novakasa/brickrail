@@ -21,7 +21,7 @@ var directed_tracks = {}
 var sensor = null
 
 var metadata = {}
-var default_meta = {"selected": false, "hover": false, "arrow": false, "locked": null}
+var default_meta = {"selected": false, "hover": false, "arrow": false, "locked": null, "block": null}
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
@@ -106,7 +106,7 @@ func serialize(reference=false):
 func get_block():
 	for slot in metadata:
 		for turn in metadata[slot]:
-			if "block" in metadata[slot][turn]:
+			if metadata[slot][turn]["block"]!=null:
 				return LayoutInfo.blocks[metadata[slot][turn]["block"]]
 	return null
 
@@ -479,7 +479,7 @@ func get_shader_states(to_slot):
 
 func get_shader_state(to_slot, turn):
 	var state = 0
-	if "block" in metadata[to_slot][turn]:
+	if metadata[to_slot][turn]["block"] != null:
 		state |= STATE_BLOCK
 		var block = LayoutInfo.blocks[metadata[to_slot][turn]["block"]]
 		for logical_block in block.logical_blocks:

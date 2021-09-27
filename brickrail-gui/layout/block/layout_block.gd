@@ -78,7 +78,7 @@ func remove():
 	for logical_block in logical_blocks:
 		if logical_block.selected:
 			logical_block.unselect()
-	section.unset_track_attributes("block")
+	section.set_track_attributes("block", null)
 	emit_signal("removing", blockname)
 	for logical_block in logical_blocks:
 		logical_block.emit_signal("removing", blockname)
