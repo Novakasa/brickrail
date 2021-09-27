@@ -367,6 +367,9 @@ vec4 get_inner_color(int state) {
 	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
 		color = occupied_color;
 	}
+	if ((state & STATE_LOCKED) == STATE_LOCKED) {
+		color = occupied_color;
+	}
 	if ((state & STATE_SELECTED) == STATE_SELECTED) {
 		color = selected_color;
 	}

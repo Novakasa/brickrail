@@ -21,7 +21,7 @@ var directed_tracks = {}
 var sensor = null
 
 var metadata = {}
-var default_meta = {"selected": false, "hover": false, "arrow": false}
+var default_meta = {"selected": false, "hover": false, "arrow": false, "locked": false}
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
@@ -526,6 +526,8 @@ func get_shader_state(to_slot, turn):
 		state |= STATE_HOVER
 	if metadata[to_slot][turn]["arrow"]:
 		state |= STATE_ARROW
+	if metadata[to_slot][turn]["locked"]:
+		state |= STATE_LOCKED
 	if hover:
 		state |= STATE_HOVER
 	if hover_slot==to_slot:
@@ -604,7 +606,6 @@ func get_connection_length(slot, turn):
 	return interpolation_params[slot][turn].connection_length
 
 func interpolate_connection(to_slot, turn, t, normalized=false):
-	assert(t>=0.0)
 	var params = interpolation_params[to_slot][turn]
 	var x = t
 	if normalized:

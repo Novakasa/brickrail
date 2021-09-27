@@ -2,6 +2,7 @@ class_name LayoutRouteLeg
 extends Reference
 
 var edges
+var full_section
 
 func _init(p_edges):
 	edges = p_edges
@@ -15,6 +16,19 @@ func get_target():
 func get_type():
 	return edges[0].type
 
+func get_full_section():
+	if full_section == null:
+		full_section = LayoutSection.new()
+		if edges[0].from_node.type=="block":
+			full_section.append(edges[0].from_node.obj.section)
+		for edge in edges:
+			if edge.section != null:
+				full_section.append(edge.section)
+			if edge.to_node.type=="block":
+				full_section.append(edge.to_node.obj.section)
+	return full_section
+		
+
 func set_switches():
 	var last_track = get_start().obj.section.tracks[-1]
 	for edge in edges:
@@ -24,3 +38,9 @@ func set_switches():
 			dirtrack.track.set_switch_to_track(last_track.track)
 			last_track.track.set_switch_to_track(dirtrack.track)
 			last_track = dirtrack
+
+func lock_tracks():
+	get_full_section().set_track_attributes("locked", true, "<>")
+
+func unlock_tracks():
+	get_full_section().set_track_attributes("locked", false, "<>")

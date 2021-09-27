@@ -96,6 +96,7 @@ func set_route(p_route):
 
 func start_leg():
 	var leg = route.get_current_leg()
+	leg.lock_tracks()
 	if leg.get_type() == "flip":
 		flip_heading()
 	else:
@@ -144,6 +145,7 @@ func set_next_sensor():
 		elif next_sensor_track == target.sensors["in"]:
 			if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
 				route.get_next_leg().set_switches()
+				route.get_next_leg().lock_tracks()
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "stop")
@@ -158,7 +160,8 @@ func _on_next_sensor_triggered(p_train):
 	if next_sensor_track == target.sensors["in"]:
 		set_current_block(target, false)
 		set_target(null)
-	
+		route.get_current_leg().unlock_tracks()
+		
 		if route.advance_leg()==null:
 			set_route(null)
 		else:
