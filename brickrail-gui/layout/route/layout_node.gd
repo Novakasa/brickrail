@@ -27,7 +27,7 @@ func is_smaller_null(val1, val2):
 		return false
 	return val1<val2
 
-func calculate_routes(fixed_facing):
+func calculate_routes(fixed_facing, trainname=null):
 	#dijkstra algorithm
 	
 	var distances = {}
@@ -60,6 +60,11 @@ func calculate_routes(fixed_facing):
 			var edge = current_node.edges[neighbour_id]
 			if fixed_facing and edge.type == "flip":
 				continue
+			if trainname != null:
+				var edge_locked = edge.get_locked()
+				if edge.get_locked() != null and edge.get_locked() != trainname:
+					continue
+				
 			var new_dist = distances[current_id] + edge.weight
 			if is_smaller_null(new_dist, distances[neighbour_id]):
 				distances[neighbour_id] = new_dist

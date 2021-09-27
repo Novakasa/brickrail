@@ -83,8 +83,11 @@ func unselect():
 func _on_virtual_train_hover():
 	virtual_train.set_hover(true)
 
-func find_route(target):
-	var route = block.get_route_to(facing, target, fixed_facing)
+func find_route(target, no_locked=true):
+	var locked_trainname = trainname
+	if not no_locked:
+		locked_trainname = null
+	var route = block.get_route_to(facing, target, fixed_facing, locked_trainname)
 	if route == null:
 		push_error("no route to selected target "+target)
 	else:
@@ -96,7 +99,7 @@ func set_route(p_route):
 
 func start_leg():
 	var leg = route.get_current_leg()
-	leg.lock_tracks()
+	leg.lock_tracks(trainname)
 	if leg.get_type() == "flip":
 		flip_heading()
 	else:
@@ -145,7 +148,7 @@ func set_next_sensor():
 		elif next_sensor_track == target.sensors["in"]:
 			if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
 				route.get_next_leg().set_switches()
-				route.get_next_leg().lock_tracks()
+				route.get_next_leg().lock_tracks(trainname)
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "stop")

@@ -102,3 +102,11 @@ func get_node_obj():
 	if switch != null:
 		return switch
 	return get_next_block()
+
+func get_locked(turn=null):
+	if turn==null:
+		turn = get_next_turn()
+	var locked_trainname = track.metadata[next_slot][turn]["locked"]
+	if locked_trainname != null:
+		return locked_trainname
+	return null

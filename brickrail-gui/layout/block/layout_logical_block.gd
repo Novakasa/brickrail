@@ -69,8 +69,8 @@ func set_occupied(p_occupied, p_train=null):
 	train = p_train
 	section.set_track_attributes("block", blockname)
 
-func get_route_to(from_facing, node_id, fixed_facing):
-	return nodes[from_facing].calculate_routes(fixed_facing)[node_id]
+func get_route_to(from_facing, node_id, fixed_facing, trainname):
+	return nodes[from_facing].calculate_routes(fixed_facing, trainname)[node_id]
 
 func collect_edges(facing):
 	var edges = []
@@ -90,6 +90,19 @@ func collect_edges(facing):
 
 func get_opposite_block():
 	return LayoutInfo.blocks[blockname].logical_blocks[1-index]
+
+func get_train():
+	if not occupied:
+		return null
+	return train
+
+func get_locked():
+	var locked_train = get_train()
+	if locked_train == null:
+		locked_train = get_opposite_block().get_train()
+	if locked_train == null:
+		return null
+	return locked_train.trainname
 
 func get_inspector():
 	var inspector = LayoutBlockInspector.instance()

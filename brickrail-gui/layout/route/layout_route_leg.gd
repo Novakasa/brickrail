@@ -39,8 +39,8 @@ func set_switches():
 			last_track.track.set_switch_to_track(dirtrack.track)
 			last_track = dirtrack
 
-func lock_tracks():
-	get_full_section().set_track_attributes("locked", true, "<>")
+func lock_tracks(trainname):
+	get_full_section().set_track_attributes("locked", trainname, "<>")
 
 func unlock_tracks():
-	get_full_section().set_track_attributes("locked", false, "<>")
+	get_full_section().set_track_attributes("locked", null, "<>")
