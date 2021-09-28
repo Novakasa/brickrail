@@ -4,7 +4,7 @@ extends Reference
 var section
 var from_node
 var to_node
-var weight
+var weight = 0.0
 var type
 
 func _init(p_from_node, p_to_node, p_type, p_section=null):
@@ -13,9 +13,9 @@ func _init(p_from_node, p_to_node, p_type, p_section=null):
 	section = p_section
 	type = p_type
 	if section!=null:
-		weight = float(len(section.tracks))
-	else:
-		weight = 0.0
+		weight += float(len(section.tracks))
+	if from_node.type == "block":
+		weight += float(len(from_node.obj.section.tracks))
 
 func get_locked():
 	var locked = []
