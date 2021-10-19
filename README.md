@@ -11,11 +11,9 @@ As of now, trains detect their location via a Boost Color and Distance Sensor po
 # How to run
 Download godot engine binary from the official website. Open the project `brickrail-gui/project.godot`, hit F5.
 
-To run actual LEGO Train, the ble-server needs to run. This is currently still using absolute paths for my environment. The user experience will improve in the future, but to make it run on your setup right now, I recommend to use anaconda, create an environment via:
+To run actual LEGO Train, the ble-server needs to run. This is currently still using absolute paths for my environment. The user experience will improve in the future, but to make it run on your setup right now, I recommend to use anaconda, use an environment with python3.9, and then:
 
 ```bash
-conda create -n brickrail
-conda activate brickrail
 pip install pybricksdev
 ```
 
