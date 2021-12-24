@@ -175,6 +175,7 @@ tabs_visible = false
 margin_top = 45.0
 margin_right = 493.0
 margin_bottom = 123.0
+rect_min_size = Vector2( 300, 105 )
 window_title = "Add new color"
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/Colors/NewColorDialog"]
@@ -393,6 +394,7 @@ __meta__ = {
 [node name="SaveLayoutDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 700.0
 margin_bottom = 400.0
+rect_min_size = Vector2( 300, 105 )
 window_title = "Save project"
 resizable = true
 filters = PoolStringArray( "*.brl ; brickrail layout" )
@@ -402,6 +404,7 @@ current_path = "res://user/"
 [node name="OpenLayoutDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 700.0
 margin_bottom = 400.0
+rect_min_size = Vector2( 300, 105 )
 window_title = "Open a File"
 resizable = true
 mode = 0

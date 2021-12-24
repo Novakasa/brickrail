@@ -43,6 +43,7 @@ func _on_settings_colors_changed():
 	material.set_shader_param("block_color", Settings.colors["primary"])
 	material.set_shader_param("switch_color", Settings.colors["primary"])
 	material.set_shader_param("occupied_color", Settings.colors["secondary"])
+	material.set_shader_param("arrow_color", Settings.colors["white"])
 
 func hover_at(pos):
 	
