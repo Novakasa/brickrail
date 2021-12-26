@@ -54,11 +54,6 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://layout/block/layout_block.gd"
 }, {
-"base": "Node2D",
-"class": "LayoutCell",
-"language": "GDScript",
-"path": "res://layout/grid/layout_cell.gd"
-}, {
 "base": "Reference",
 "class": "LayoutController",
 "language": "GDScript",
@@ -134,7 +129,6 @@ _global_script_class_icons={
 "CalibratedColor": "",
 "DirectedLayoutTrack": "",
 "LayoutBlock": "",
-"LayoutCell": "",
 "LayoutController": "",
 "LayoutEdge": "",
 "LayoutLogicalBlock": "",
