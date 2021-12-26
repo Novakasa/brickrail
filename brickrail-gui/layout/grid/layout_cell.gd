@@ -11,7 +11,9 @@ var connection_matrix = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_left = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_center = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_right = [Vector3(), Vector3(), Vector3(), Vector3()]
-var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]
+var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]\
+
+#test
 
 onready var track_material = preload("res://layout/grid/layout_cell_shader.tres")
 
