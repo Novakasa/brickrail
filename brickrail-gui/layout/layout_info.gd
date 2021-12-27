@@ -90,7 +90,6 @@ func load(struct):
 		markers = {}
 		for markername in struct["markers"]:
 			markers[markername] = Color(struct["markers"][markername])
-		
 	
 	for track in struct.tracks:
 		var i = track.x_idx
@@ -349,6 +348,9 @@ func draw_track_add_cell(draw_cell):
 			track = drawing_last.add_track(track)
 		else:
 			track = drawing_last.tracks[track.get_orientation()]
+		if drawing_last_track != null and (track.get_block() != null or drawing_last_track.get_block()!=null):
+			#don't allow switches within blocks
+			set_drawing_last_track(null)
 		if drawing_last_track != null:
 			if track.can_connect_track(slot0, drawing_last_track):
 				track.connect_track(slot0, drawing_last_track)

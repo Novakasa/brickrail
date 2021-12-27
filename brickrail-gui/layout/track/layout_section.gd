@@ -203,3 +203,15 @@ func get_locked():
 		if locked_train != null and not locked_train in locked:
 			locked.append(locked_train)
 	return locked
+
+func has_switch():
+	for track in tracks:
+		if len(track.get_switches())>0:
+			return true
+	return false
+
+func has_block():
+	for track in tracks:
+		if track.get_block() != null:
+			return true
+	return false

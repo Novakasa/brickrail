@@ -33,7 +33,15 @@ func _on_section_track_added(track):
 
 
 func _on_CreateBlock_pressed():
-	assert(len(section.tracks)>1)
+	if not len(section.tracks)>1:
+		push_error("Can't create block on sections with length < 2")
+		return
+	if section.has_switch():
+		push_error("Can't create block on sections with switches")
+		return
+	if section.has_block():
+		push_error("Can't create block on sections with other blocks")
+		return
 	var new_name = "block" + str(len(LayoutInfo.blocks))
 	while new_name in LayoutInfo.blocks:
 		new_name = new_name + "_"

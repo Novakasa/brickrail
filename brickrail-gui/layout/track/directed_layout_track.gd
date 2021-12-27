@@ -76,6 +76,15 @@ func set_track_connection_attribute(to_track, key, value):
 func get_switch():
 	return track.switches[next_slot]
 
+func get_switches():
+	var switches = []
+	if track.switches[next_slot]!=null:
+		switches.append(track.switches[next_slot])
+	if track.switches[prev_slot]!=null:
+		switches.append(track.switches[prev_slot])
+	return switches
+	
+
 func get_opposite():
 	return track.get_directed_from(next_slot)
 
