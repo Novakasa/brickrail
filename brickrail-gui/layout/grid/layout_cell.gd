@@ -1,4 +1,3 @@
-class_name LayoutCell
 extends Node2D
 
 var x_idx
@@ -15,37 +14,60 @@ var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]\
 
 #test
 
-onready var track_material = preload("res://layout/grid/layout_cell_shader.tres")
+var _redraw=false
+
+var track_material = preload("res://layout/grid/layout_cell_shader.tres")
 
 signal track_selected(cell, orientation)
 
-func _init(p_x_idx, p_y_idx):
+func setup(p_x_idx, p_y_idx):
 	x_idx = p_x_idx
 	y_idx = p_y_idx
 	
 	position = Vector2(x_idx, y_idx)*LayoutInfo.spacing
 	
-func _ready():
-	material = track_material.duplicate()
-	material.set_shader_param("connections", transform_from_matrix(connection_matrix))
-	material.set_shader_param("state_left", transform_from_matrix(state_matrix_left))
-	material.set_shader_param("state_center", transform_from_matrix(state_matrix_center))
-	material.set_shader_param("state_right", transform_from_matrix(state_matrix_right))
-	material.set_shader_param("state_none", transform_from_matrix(state_matrix_none))
-	material.set_shader_param("has_switch", false)
+func _enter_tree():
+	$RenderCache.scale = Vector2(1,1)*LayoutInfo.spacing / 64
+	$RenderDynamic.scale = Vector2(1,1)*LayoutInfo.spacing / 64
+	$RenderCacheViewport/Render.material = track_material.duplicate()
+	$RenderDynamic.material = $RenderCacheViewport/Render.material
+	set_shader_param("connections", transform_from_matrix(connection_matrix))
+	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
+	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
+	set_shader_param("state_right", transform_from_matrix(state_matrix_right))
+	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+	set_shader_param("has_switch", false)
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
+	get_tree().connect("idle_frame", self, "_on_idle_frame")
+
+func _on_idle_frame():
+	if _redraw:
+		_redraw=false
+		# prints("redrawing cell at", x_idx, y_idx)
+		$RenderCacheViewport.set_update_mode(Viewport.UPDATE_ONCE)
+
+func _on_settings_render_mode_changed(mode):
+	if mode == "dynamic":
+		$RenderDynamic.visible=true
+		$RenderCache.visible=false
+	if mode == "cached":
+		$RenderDynamic.visible=false
+		$RenderCache.visible=true
+		# $RenderDynamic.texture.size = Vector2(LayoutInfo.spacing, LayoutInfo.spacing)
+		_redraw=true
 
 func _on_settings_colors_changed():
-	material.set_shader_param("background", Settings.colors["background"])
-	material.set_shader_param("grid_color", Settings.colors["surface"])
-	material.set_shader_param("track_base", Settings.colors["white"])
-	material.set_shader_param("track_inner", Settings.colors["surface"])
-	material.set_shader_param("selected_color", Settings.colors["tertiary"])
-	material.set_shader_param("block_color", Settings.colors["primary"])
-	material.set_shader_param("switch_color", Settings.colors["primary"])
-	material.set_shader_param("occupied_color", Settings.colors["secondary"])
-	material.set_shader_param("arrow_color", Settings.colors["white"])
+	set_shader_param("background", Settings.colors["background"])
+	set_shader_param("grid_color", Settings.colors["surface"])
+	set_shader_param("track_base", Settings.colors["white"])
+	set_shader_param("track_inner", Settings.colors["surface"])
+	set_shader_param("selected_color", Settings.colors["tertiary"])
+	set_shader_param("block_color", Settings.colors["primary"])
+	set_shader_param("switch_color", Settings.colors["primary"])
+	set_shader_param("occupied_color", Settings.colors["secondary"])
+	set_shader_param("arrow_color", Settings.colors["white"])
 
 func hover_at(pos):
 	
@@ -205,10 +227,10 @@ func _on_track_removing(orientation):
 		state_matrix_center[from_slot_id][to_slot_id] = 0
 		state_matrix_none[from_slot_id][to_slot_id] = 0
 		
-	material.set_shader_param("state_left", transform_from_matrix(state_matrix_left))
-	material.set_shader_param("state_center", transform_from_matrix(state_matrix_center))
-	material.set_shader_param("state_right", transform_from_matrix(state_matrix_right))
-	material.set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
+	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
+	set_shader_param("state_right", transform_from_matrix(state_matrix_right))
+	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
 
 func _on_track_selected(track):
 	emit_signal("track_selected", self, track.get_orientation())
@@ -225,16 +247,16 @@ func set_hover(p_hover):
 	update_state()
 
 func update_state():
-	material.set_shader_param("cell_hover", hover)
+	set_shader_param("cell_hover", hover)
 
 func _on_track_connections_changed(orientation):
 	var has_switch = false
 	for track in tracks.values():
 		if track.has_switch() or track.borders_switch():
 			has_switch=true
-	material.set_shader_param("has_switch", has_switch)
+	set_shader_param("has_switch", has_switch)
 	_on_track_states_changed(orientation)
-	# update()
+	# update() 
 
 func _on_track_states_changed(orientation=null):
 	var track = tracks[orientation]
@@ -252,10 +274,18 @@ func _on_track_states_changed(orientation=null):
 		state_matrix_none[from_slot_id][to_slot_id] = states["none"]
 	
 			
-	material.set_shader_param("state_left", transform_from_matrix(state_matrix_left))
-	material.set_shader_param("state_center", transform_from_matrix(state_matrix_center))
-	material.set_shader_param("state_right", transform_from_matrix(state_matrix_right))
-	material.set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
+	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
+	set_shader_param("state_right", transform_from_matrix(state_matrix_right))
+	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+
+func set_shader_param(key, value):
+	if Settings.render_mode == "cached":
+		$RenderCacheViewport/Render.material.set_shader_param(key, value)
+		_redraw=true
+	if Settings.render_mode == "dynamic":
+		$RenderDynamic.material.set_shader_param(key, value)
+	# $RenderCacheViewport.update_worlds()
 
 func _draw():
 	var spacing = LayoutInfo.spacing

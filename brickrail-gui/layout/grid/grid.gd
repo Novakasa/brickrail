@@ -11,14 +11,17 @@ var dragging_view = false
 var dragging_view_reference = null
 var dragging_view_camera_reference = null
 
+onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
+
 signal grid_view_changed(p_pretty_tracks)
 
 func setup_grid():
 	for i in range(nx):
 		LayoutInfo.cells.append([])
 		for j in range(ny):
-			LayoutInfo.cells[i].append(LayoutCell.new(i, j))
+			LayoutInfo.cells[i].append(LayoutCell.instance())
 			add_child(LayoutInfo.cells[i][j])
+			LayoutInfo.cells[i][j].setup(i, j)
 			connect("grid_view_changed", LayoutInfo.cells[i][j], "_on_grid_view_changed")
 			LayoutInfo.cells[i][j].connect("track_selected", self, "_on_cell_track_selected")
 

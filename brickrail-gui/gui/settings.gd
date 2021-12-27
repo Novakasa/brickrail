@@ -1,6 +1,9 @@
 tool
 extends Node
 
+var render_mode = "cached"
+
+
 var colors = {
 	"background": Color("161614"),
 	"surface": Color("292929"),
@@ -9,8 +12,13 @@ var colors = {
 	"tertiary": Color("91140F"),
 	"white": Color("EEEEEE")}
 
+signal render_mode_changed(mode)
 signal colors_changed()
 
 func set_color(cname, color):
 	colors[cname] = color
 	emit_signal("colors_changed")
+
+func set_render_mode(mode):
+	render_mode = mode
+	emit_signal("render_mode_changed", render_mode)
