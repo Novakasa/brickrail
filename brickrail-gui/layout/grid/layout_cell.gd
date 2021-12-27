@@ -61,7 +61,7 @@ func _on_settings_render_mode_changed(mode):
 
 func _on_settings_colors_changed():
 	set_shader_param("background", Settings.colors["background"])
-	set_shader_param("background_drawing_highlight", Settings.colors["tertiary"].darkened(0.5))
+	set_shader_param("background_drawing_highlight", Settings.colors["tertiary"].linear_interpolate(Settings.colors["background"], 0.8))
 	set_shader_param("grid_color", Settings.colors["surface"])
 	set_shader_param("track_base", Settings.colors["white"])
 	set_shader_param("track_inner", Settings.colors["surface"])
