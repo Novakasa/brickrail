@@ -121,5 +121,5 @@ func process_mouse_button(event, i, j, mpos_cell):
 	if event.button_index == BUTTON_LEFT:
 		if not event.pressed:
 			LayoutInfo.stop_draw_track()
-			LayoutInfo.drag_select = false
+			LayoutInfo.stop_drag_select()
 			LayoutInfo.stop_drag_train()

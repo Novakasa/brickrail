@@ -324,6 +324,11 @@ func stop_drag_train():
 		drag_virtual_train.queue_free()
 		dragged_train = null
 
+func stop_drag_select():
+	drag_select = false
+	for cell in drag_select_highlighted:
+		cell.set_drawing_highlight(false)
+
 func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
