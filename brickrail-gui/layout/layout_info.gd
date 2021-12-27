@@ -272,9 +272,11 @@ func _on_drawing_last_track_removing(orientation):
 
 func set_drawing_last_track(track):
 	if drawing_last_track != null:
+		drawing_last_track.set_drawing_highlight(false)
 		drawing_last_track.disconnect("removing", self, "_on_drawing_last_track_removing")
 	if track != null:
 		track.connect("removing", self, "_on_drawing_last_track_removing")
+		track.set_drawing_highlight(true)
 	drawing_last_track = track
 
 func init_draw_track(cell):

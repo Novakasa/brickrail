@@ -15,6 +15,7 @@ var route_lock=false
 var hover=false
 var hover_slot = null
 var hover_switch=null 
+var drawing_highlight=false
 
 var switches = {}
 var directed_tracks = {}
@@ -406,6 +407,10 @@ func remove_sensor():
 	emit_signal("sensor_changed", self)
 	update()
 
+func set_drawing_highlight(highlight):
+	drawing_highlight = highlight
+	emit_signal("states_changed", get_orientation())
+
 func hover(pos):
 
 	var hover_candidate = get_switch_at(pos)
@@ -529,6 +534,8 @@ func get_shader_state(to_slot, turn):
 		state |= STATE_HOVER
 	if hover_slot==to_slot:
 		state |= STATE_ARROW
+	if drawing_highlight:
+		state |= STATE_SELECTED
 	return state
 
 func get_tangent_to(slot):
