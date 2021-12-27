@@ -31,3 +31,8 @@ func _on_TertiaryColor_color_changed(color):
 
 func _on_WhiteColor_color_changed(color):
 	Settings.set_color("white", color)
+
+
+func _on_RenderModeOption_item_selected(index):
+	var render_mode = ["dynamic", "cached"][index]
+	Settings.set_render_mode(render_mode)

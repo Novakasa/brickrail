@@ -14,7 +14,7 @@ var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]
 
 var _redraw=false
 
-onready var track_material = preload("res://layout/grid/layout_cell_shader.tres")
+var track_material = preload("res://layout/grid/layout_cell_shader.tres")
 
 signal track_selected(cell, orientation)
 
@@ -26,7 +26,9 @@ func setup(p_x_idx, p_y_idx):
 	
 func _enter_tree():
 	$RenderCache.scale = Vector2(1,1)*LayoutInfo.spacing / 64
-	$RenderCacheViewport/Render.material = $RenderCacheViewport/Render.material.duplicate()
+	$RenderDynamic.scale = Vector2(1,1)*LayoutInfo.spacing / 64
+	$RenderCacheViewport/Render.material = track_material.duplicate()
+	$RenderDynamic.material = $RenderCacheViewport/Render.material
 	set_shader_param("connections", transform_from_matrix(connection_matrix))
 	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
 	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
@@ -35,6 +37,7 @@ func _enter_tree():
 	set_shader_param("has_switch", false)
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
 	get_tree().connect("idle_frame", self, "_on_idle_frame")
 
 func _on_idle_frame():
@@ -42,6 +45,16 @@ func _on_idle_frame():
 		_redraw=false
 		# prints("redrawing cell at", x_idx, y_idx)
 		$RenderCacheViewport.set_update_mode(Viewport.UPDATE_ONCE)
+
+func _on_settings_render_mode_changed(mode):
+	if mode == "dynamic":
+		$RenderDynamic.visible=true
+		$RenderCache.visible=false
+	if mode == "cached":
+		$RenderDynamic.visible=false
+		$RenderCache.visible=true
+		# $RenderDynamic.texture.size = Vector2(LayoutInfo.spacing, LayoutInfo.spacing)
+		_redraw=true
 
 func _on_settings_colors_changed():
 	set_shader_param("background", Settings.colors["background"])
@@ -265,8 +278,11 @@ func _on_track_states_changed(orientation=null):
 	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
 
 func set_shader_param(key, value):
-	$RenderCacheViewport/Render.material.set_shader_param(key, value)
-	_redraw=true
+	if Settings.render_mode == "cached":
+		$RenderCacheViewport/Render.material.set_shader_param(key, value)
+		_redraw=true
+	if Settings.render_mode == "dynamic":
+		$RenderDynamic.material.set_shader_param(key, value)
 	# $RenderCacheViewport.update_worlds()
 
 func _draw():
