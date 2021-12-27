@@ -285,6 +285,12 @@ func init_draw_track(cell):
 	drawing_last2 = null
 	set_drawing_last_track(null)
 
+func stop_draw_track():
+	drawing_track = false
+	for neighbor in drawing_last.get_neighbors():
+		neighbor.set_drawing_highlight(false)
+	set_drawing_last_track(null)
+
 func init_connected_draw_track(track):
 	var cell = cells[track.x_idx][track.y_idx]
 	init_draw_track(cell)
@@ -345,6 +351,12 @@ func draw_track_add_cell(draw_cell):
 		set_drawing_last_track(track)
 	drawing_last2 = drawing_last
 	drawing_last = draw_cell
+	for neighbor in drawing_last2.get_neighbors():
+		neighbor.set_drawing_highlight(false)
+	for neighbor in drawing_last.get_neighbors():
+		if neighbor == drawing_last2:
+			continue
+		neighbor.set_drawing_highlight(true)
 
 func drag_select_hover_cell(cell):
 	if not cell == drawing_last:

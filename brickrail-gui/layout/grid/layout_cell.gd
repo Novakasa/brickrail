@@ -10,7 +10,8 @@ var connection_matrix = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_left = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_center = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_right = [Vector3(), Vector3(), Vector3(), Vector3()]
-var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]\
+var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]
+var drawing_highlight = false
 
 #test
 
@@ -60,6 +61,7 @@ func _on_settings_render_mode_changed(mode):
 
 func _on_settings_colors_changed():
 	set_shader_param("background", Settings.colors["background"])
+	set_shader_param("background_drawing_highlight", Settings.colors["tertiary"].darkened(0.5))
 	set_shader_param("grid_color", Settings.colors["surface"])
 	set_shader_param("track_base", Settings.colors["white"])
 	set_shader_param("track_inner", Settings.colors["surface"])
@@ -178,6 +180,18 @@ func get_slot_to_cell(cell):
 		return "N"
 	return null
 
+func get_neighbors():
+	var neighbors = []
+	if x_idx>0:
+		neighbors.append(LayoutInfo.cells[x_idx-1][y_idx])
+	if y_idx>0:
+		neighbors.append(LayoutInfo.cells[x_idx][y_idx-1])
+	if x_idx<len(LayoutInfo.cells)-1:
+		neighbors.append(LayoutInfo.cells[x_idx+1][y_idx])
+	if y_idx<len(LayoutInfo.cells[0])-1:
+		neighbors.append(LayoutInfo.cells[x_idx][y_idx+1])
+	return neighbors
+
 func get_turn_track_from(slot, turn):
 	for track in tracks.values():
 		if not slot in track.connections:
@@ -246,8 +260,13 @@ func set_hover(p_hover):
 	hover = p_hover
 	update_state()
 
+func set_drawing_highlight(highlight):
+	drawing_highlight = highlight
+	update_state()
+
 func update_state():
 	set_shader_param("cell_hover", hover)
+	set_shader_param("cell_drawing_highlight", drawing_highlight)
 
 func _on_track_connections_changed(orientation):
 	var has_switch = false
