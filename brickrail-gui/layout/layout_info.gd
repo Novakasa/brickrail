@@ -32,6 +32,7 @@ var drawing_mode = null
 
 var drag_select = false
 var drag_selection = null
+var drag_select_highlighted = []
 
 var drag_train = false
 var dragged_train = null
@@ -287,9 +288,11 @@ func init_draw_track(cell):
 
 func stop_draw_track():
 	drawing_track = false
+	set_drawing_last_track(null)
+	if drawing_last == null:
+		return
 	for neighbor in drawing_last.get_neighbors():
 		neighbor.set_drawing_highlight(false)
-	set_drawing_last_track(null)
 
 func init_connected_draw_track(track):
 	var cell = cells[track.x_idx][track.y_idx]
@@ -326,7 +329,8 @@ func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
 		for p in line:
-			draw_track_add_cell(cells[p[0]][p[1]])
+			var iter_cell = cells[p[0]][p[1]]
+			draw_track_add_cell(iter_cell)
 	
 func draw_track_add_cell(draw_cell):
 	if draw_cell == drawing_last2:
@@ -360,9 +364,17 @@ func draw_track_add_cell(draw_cell):
 
 func drag_select_hover_cell(cell):
 	if not cell == drawing_last:
+		for iter_cell in drag_select_highlighted:
+			iter_cell.set_drawing_highlight(false)
+		drag_select_highlighted = []
+		drag_select_highlighted.append(drawing_last)
+		drawing_last.set_drawing_highlight(true)
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
 		for p in line:
-			draw_select(cells[p[0]][p[1]])
+			var iter_cell = cells[p[0]][p[1]]
+			iter_cell.set_drawing_highlight(true)
+			drag_select_highlighted.append(iter_cell)
+			draw_select(iter_cell)
 
 func draw_select(draw_cell):
 	
