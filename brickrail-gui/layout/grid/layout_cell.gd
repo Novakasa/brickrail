@@ -40,7 +40,7 @@ func _enter_tree():
 func _on_idle_frame():
 	if _redraw:
 		_redraw=false
-		prints("redrawing cell at", x_idx, y_idx)
+		# prints("redrawing cell at", x_idx, y_idx)
 		$RenderCacheViewport.set_update_mode(Viewport.UPDATE_ONCE)
 
 func _on_settings_colors_changed():
