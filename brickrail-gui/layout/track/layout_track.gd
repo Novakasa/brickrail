@@ -22,7 +22,7 @@ var directed_tracks = {}
 var sensor = null
 
 var metadata = {}
-var default_meta = {"selected": false, "hover": false, "arrow": false, "locked": null, "block": null}
+var default_meta = {"selected": false, "hover": false, "arrow": false, "locked": null, "block": null, "mark": 0}
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
@@ -37,6 +37,7 @@ const STATE_CONNECTED = 128
 const STATE_SWITCH = 256
 const STATE_SWITCH_PRIORITY = 512
 const STATE_ARROW = 1024
+const STATE_MARK = 8192
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
@@ -466,15 +467,18 @@ func process_mouse_button(event, pos):
 		if LayoutInfo.input_mode == "draw":
 			LayoutInfo.init_connected_draw_track(self)
 
-func set_connection_attribute(slot, turn, key, value):
-	metadata[slot][turn][key] = value
+func set_connection_attribute(slot, turn, key, value, operation):
+	if operation=="set":
+		metadata[slot][turn][key] = value
+	if operation=="increment":
+		metadata[slot][turn][key] += value
 	emit_signal("states_changed", get_orientation())
 
-func set_track_connection_attribute(track, key, value):
+func set_track_connection_attribute(track, key, value, operation):
 	var connection = get_connection_to(track)
 	if connection == null:
 		return
-	set_connection_attribute(connection.slot, connection.turn, key, value)
+	set_connection_attribute(connection.slot, connection.turn, key, value, operation)
 
 func get_shader_states(to_slot):
 	var states = {"left": 0, "right": 0, "center": 0, "none": 0}
@@ -530,6 +534,8 @@ func get_shader_state(to_slot, turn):
 		state |= STATE_ARROW
 	if metadata[to_slot][turn]["locked"]!=null:
 		state |= STATE_LOCKED
+	if metadata[to_slot][turn]["mark"]>0:
+		state |= STATE_MARK
 	if hover:
 		state |= STATE_HOVER
 	if hover_slot==to_slot:

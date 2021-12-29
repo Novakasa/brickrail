@@ -95,11 +95,16 @@ func find_route(target, no_locked=true):
 		start_leg()
 
 func set_route(p_route):
+	if route != null:
+		route.decrement_marks()
 	route = p_route
+	if route != null:
+		route.increment_marks()
 
 func start_leg():
 	var leg = route.get_current_leg()
 	if not is_leg_allowed(leg):
+		set_route(null)
 		return
 	leg.lock_tracks(trainname)
 	if leg.get_type() == "flip":

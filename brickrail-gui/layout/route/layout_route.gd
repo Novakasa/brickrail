@@ -59,3 +59,11 @@ func get_next_leg():
 
 func get_current_leg():
 	return legs[current_leg]
+
+func increment_marks():
+	for leg in legs:
+		leg.increment_marks()
+
+func decrement_marks():
+	for leg in legs:
+		leg.decrement_marks()

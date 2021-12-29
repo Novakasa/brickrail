@@ -67,11 +67,11 @@ func get_next_tracks():
 		next_tracks.append(next_track.get_directed_from(track.get_neighbour_slot(next_slot)))
 	return next_tracks
 
-func set_connection_attribute(slot, turn, key, value):
-	track.set_connection_attribute(slot, turn, key, value)
+func set_connection_attribute(slot, turn, key, value, operation):
+	track.set_connection_attribute(slot, turn, key, value, operation)
 
-func set_track_connection_attribute(to_track, key, value):
-	track.set_track_connection_attribute(to_track.track, key, value)
+func set_track_connection_attribute(to_track, key, value, operation):
+	track.set_track_connection_attribute(to_track.track, key, value, operation)
 
 func get_switch():
 	return track.switches[next_slot]

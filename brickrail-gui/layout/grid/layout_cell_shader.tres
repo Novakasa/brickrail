@@ -10,6 +10,7 @@ uniform vec4 track_base: hint_color;
 uniform vec4 track_inner: hint_color;
 uniform vec4 arrow_color: hint_color;
 uniform vec4 occupied_color: hint_color;
+uniform vec4 mark_color: hint_color;
 uniform vec4 switch_color: hint_color;
 uniform vec4 grid_color: hint_color;
 uniform vec4 switch_inner_color: hint_color;
@@ -52,6 +53,7 @@ const int STATE_CONNECTED = 128;
 const int STATE_SWITCH = 256;
 const int STATE_SWITCH_PRIORITY = 512;
 const int STATE_ARROW = 1024;
+const int STATE_MARK = 8192;
 
 const float PI = 3.14159265358979323846;
 
@@ -369,6 +371,9 @@ vec4 get_inner_color(int state) {
 	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
 		color = occupied_color;
 	}
+	if ((state & STATE_MARK) == STATE_MARK) {
+		color = mark_color;
+	}
 	if ((state & STATE_LOCKED) == STATE_LOCKED) {
 		color = occupied_color;
 	}
@@ -495,6 +500,7 @@ shader_param/track_base = Color( 1, 1, 1, 1 )
 shader_param/track_inner = Color( 0, 0, 0, 1 )
 shader_param/arrow_color = Color( 0.0666667, 0.0588235, 0.164706, 1 )
 shader_param/occupied_color = Color( 0.945098, 0, 1, 1 )
+shader_param/mark_color = Color( 0.2, 0, 0.4, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
 shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
 shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )

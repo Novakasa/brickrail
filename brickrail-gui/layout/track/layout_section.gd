@@ -152,14 +152,14 @@ func select():
 func unset_track_attributes(key):
 	set_track_attributes(key, null)
 
-func set_track_attributes(key, value, direction="<>"):
+func set_track_attributes(key, value, direction="<>", operation="set"):
 	if len(tracks)==0:
 		return
 	if len(tracks)==1:
 		if "<" in direction:
-			tracks[0].set_connection_attribute(tracks[0].prev_slot, "none", key, value)
+			tracks[0].set_connection_attribute(tracks[0].prev_slot, "none", key, value, operation)
 		if ">" in direction:
-			tracks[0].set_connection_attribute(tracks[0].next_slot, "none", key, value)
+			tracks[0].set_connection_attribute(tracks[0].next_slot, "none", key, value, operation)
 		return
 	var track0 = null
 	for track1 in tracks:
@@ -167,15 +167,15 @@ func set_track_attributes(key, value, direction="<>"):
 			track0 = track1
 			continue
 		if ">" in direction:
-			track0.set_track_connection_attribute(track1, key, value)
+			track0.set_track_connection_attribute(track1, key, value, operation)
 		if "<" in direction:
-			track1.set_track_connection_attribute(track0, key, value)
+			track1.set_track_connection_attribute(track0, key, value, operation)
 		track0 = track1
 	
 	if "<" in direction:
-		tracks[0].set_connection_attribute(get_start_slot(), "none", key, value)
+		tracks[0].set_connection_attribute(get_start_slot(), "none", key, value, operation)
 	if ">" in direction:
-		tracks[-1].set_connection_attribute(get_stop_slot(), "none", key, value)
+		tracks[-1].set_connection_attribute(get_stop_slot(), "none", key, value, operation)
 	
 func unselect():
 	selected = false

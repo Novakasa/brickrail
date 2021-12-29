@@ -42,8 +42,14 @@ func set_switches():
 func lock_tracks(trainname):
 	get_full_section().set_track_attributes("locked", trainname, "<>")
 
+func increment_marks():
+	get_full_section().set_track_attributes("mark", 1, "<>", "increment")
+
 func unlock_tracks():
 	get_full_section().set_track_attributes("locked", null, "<>")
+
+func decrement_marks():
+	get_full_section().set_track_attributes("mark", -1, "<>", "increment")
 
 func get_locked():
 	var locked = []
