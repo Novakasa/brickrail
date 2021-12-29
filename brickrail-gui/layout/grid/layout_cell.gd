@@ -70,6 +70,7 @@ func _on_settings_colors_changed():
 	set_shader_param("switch_color", Settings.colors["primary"])
 	set_shader_param("occupied_color", Settings.colors["secondary"])
 	set_shader_param("arrow_color", Settings.colors["white"])
+	set_shader_param("mark_color", Settings.colors["primary"].darkened(0.5))
 
 func hover_at(pos):
 	
