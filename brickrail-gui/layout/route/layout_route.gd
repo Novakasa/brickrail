@@ -45,7 +45,7 @@ func get_target():
 	return legs[0].get_target()
 
 func advance_leg():
-	# legs[current_leg].unlock()
+	legs[current_leg].decrement_marks()
 	current_leg += 1
 	if current_leg<len(legs):
 		return legs[current_leg]
@@ -65,5 +65,9 @@ func increment_marks():
 		leg.increment_marks()
 
 func decrement_marks():
+	var i = 0
 	for leg in legs:
+		if i<current_leg:
+			continue
 		leg.decrement_marks()
+		i+=1
