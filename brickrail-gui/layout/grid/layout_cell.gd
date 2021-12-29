@@ -249,6 +249,16 @@ func _on_track_removing(orientation):
 func _on_track_selected(track):
 	emit_signal("track_selected", self, track.get_orientation())
 
+func get_colliding_tracks(orientation):
+	assert(orientation in tracks)
+	var coll_tracks = []
+	var slot0 = tracks[orientation].slot0
+	var slot1 = tracks[orientation].slot1
+	for track in tracks.values():
+		if track.collides_with(tracks[orientation]):
+			coll_tracks.append(track)
+	return coll_tracks
+
 func clear():
 	for track in tracks.values():
 		track.remove()

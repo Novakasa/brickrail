@@ -129,6 +129,14 @@ func get_center():
 func get_tangent():
 	return (pos1-pos0).normalized()
 
+func collides_with(track):
+	assert(track.x_idx == x_idx and track.y_idx == y_idx)
+	if track.slot0 in  [slot0, slot1] or track.slot1 in [slot0, slot1]:
+		return true
+	if is_zero_approx(track.get_tangent().dot(get_tangent())):
+		return true
+	return false
+
 func load_connections(struct):
 	for slot in struct:
 		for turn in struct[slot]:
@@ -385,6 +393,15 @@ func get_switch_at(pos):
 			if (LayoutInfo.slot_positions[slot]-pos).length() < 0.3:
 				return switches[slot]
 	return null
+
+func get_locked():
+	var locked = []
+	for turns in metadata.values():
+		for data in turns.values():
+			var val = data["locked"]
+			if val != null and not val in locked:
+				locked.append(val)
+	return locked
 
 func add_sensor(p_sensor):
 	sensor = p_sensor

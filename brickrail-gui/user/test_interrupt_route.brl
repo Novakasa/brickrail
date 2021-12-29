@@ -22,6 +22,23 @@
 		"tracks": [
 			{
 				"x_idx": 1,
+				"y_idx": 1,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 1,
 				"y_idx": 2,
 				"slot0": "E",
 				"slot1": "W",
@@ -35,14 +52,11 @@
 				},
 				"switches": {
 
-				},
-				"sensor": {
-					"markername": null
 				}
 			},
 			{
-				"x_idx": 1,
-				"y_idx": 3,
+				"x_idx": 2,
+				"y_idx": 1,
 				"slot0": "E",
 				"slot1": "W",
 				"connections": {
@@ -50,7 +64,7 @@
 						"center"
 					],
 					"W": [
-
+						"center"
 					]
 				},
 				"switches": {
@@ -75,11 +89,14 @@
 				},
 				"switches": {
 
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
-				"x_idx": 2,
-				"y_idx": 3,
+				"x_idx": 3,
+				"y_idx": 1,
 				"slot0": "E",
 				"slot1": "W",
 				"connections": {
@@ -112,8 +129,8 @@
 				}
 			},
 			{
-				"x_idx": 3,
-				"y_idx": 3,
+				"x_idx": 4,
+				"y_idx": 1,
 				"slot0": "E",
 				"slot1": "W",
 				"connections": {
@@ -126,44 +143,13 @@
 				},
 				"switches": {
 
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
 				"x_idx": 4,
-				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 4,
-				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 5,
 				"y_idx": 2,
 				"slot0": "E",
 				"slot1": "W",
@@ -183,12 +169,117 @@
 				}
 			},
 			{
+				"x_idx": 4,
+				"y_idx": 3,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 5,
+				"y_idx": 1,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 5,
+				"y_idx": 2,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
 				"x_idx": 5,
 				"y_idx": 3,
 				"slot0": "E",
 				"slot1": "W",
 				"connections": {
 					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 5,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 5,
+				"y_idx": 13,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 6,
+				"y_idx": 1,
+				"slot0": "S",
+				"slot1": "W",
+				"connections": {
+					"S": [
 						"left"
 					],
 					"W": [
@@ -197,9 +288,6 @@
 				},
 				"switches": {
 
-				},
-				"sensor": {
-					"markername": null
 				}
 			},
 			{
@@ -222,11 +310,11 @@
 			{
 				"x_idx": 6,
 				"y_idx": 2,
-				"slot0": "S",
+				"slot0": "N",
 				"slot1": "E",
 				"connections": {
-					"S": [
-						"right"
+					"N": [
+						"left"
 					],
 					"E": [
 						"center"
@@ -239,11 +327,45 @@
 			{
 				"x_idx": 6,
 				"y_idx": 3,
-				"slot0": "N",
+				"slot0": "E",
 				"slot1": "W",
 				"connections": {
-					"N": [
-						"right"
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 6,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 6,
+				"y_idx": 13,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
 					],
 					"W": [
 						"center"
@@ -264,13 +386,73 @@
 					],
 					"W": [
 						"center",
-						"left"
+						"right"
 					]
 				},
 				"switches": {
 					"W": {
 						"ble_switch": null
 					}
+				}
+			},
+			{
+				"x_idx": 7,
+				"y_idx": 3,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 7,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 7,
+				"y_idx": 13,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
@@ -283,6 +465,74 @@
 						"center"
 					],
 					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 8,
+				"y_idx": 3,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 8,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 8,
+				"y_idx": 13,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 9,
+				"y_idx": 1,
+				"slot0": "S",
+				"slot1": "E",
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
 						"center"
 					]
 				},
@@ -308,6 +558,97 @@
 				}
 			},
 			{
+				"x_idx": 9,
+				"y_idx": 2,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"right"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 9,
+				"y_idx": 3,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 9,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 9,
+				"y_idx": 13,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 10,
+				"y_idx": 1,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
 				"x_idx": 10,
 				"y_idx": 2,
 				"slot0": "E",
@@ -325,8 +666,241 @@
 				}
 			},
 			{
+				"x_idx": 10,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 10,
+				"y_idx": 12,
+				"slot0": "S",
+				"slot1": "E",
+				"connections": {
+					"S": [
+						"right"
+					],
+					"E": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 10,
+				"y_idx": 13,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 1,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
 				"x_idx": 11,
 				"y_idx": 2,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 6,
+				"slot0": "S",
+				"slot1": "E",
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 7,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 8,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 9,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 10,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 11,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"right"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 12,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 12,
+				"y_idx": 1,
 				"slot0": "E",
 				"slot1": "W",
 				"connections": {
@@ -348,7 +922,6 @@
 				"slot1": "W",
 				"connections": {
 					"E": [
-						"center",
 						"right"
 					],
 					"W": [
@@ -356,55 +929,53 @@
 					]
 				},
 				"switches": {
-					"E": {
-						"ble_switch": null
-					}
-				}
-			},
-			{
-				"x_idx": 13,
-				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
 
 				}
 			},
 			{
-				"x_idx": 13,
-				"y_idx": 2,
+				"x_idx": 12,
+				"y_idx": 5,
 				"slot0": "S",
-				"slot1": "W",
-				"connections": {
-					"S": [
-						"left"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 13,
-				"y_idx": 3,
-				"slot0": "N",
 				"slot1": "E",
 				"connections": {
-					"N": [
-						"left"
+					"S": [
+						"right"
 					],
 					"E": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 12,
+				"y_idx": 6,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 12,
+				"y_idx": 12,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
 						"center"
 					]
 				},
@@ -414,24 +985,7 @@
 			},
 			{
 				"x_idx": 13,
-				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 14,
-				"y_idx": 2,
+				"y_idx": 1,
 				"slot0": "E",
 				"slot1": "W",
 				"connections": {
@@ -450,260 +1004,7 @@
 				}
 			},
 			{
-				"x_idx": 14,
-				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"right"
-					]
-				},
-				"switches": {
-
-				},
-				"sensor": {
-					"markername": null
-				}
-			},
-			{
-				"x_idx": 14,
-				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				},
-				"sensor": {
-					"markername": null
-				}
-			},
-			{
-				"x_idx": 15,
-				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 15,
-				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 15,
-				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 16,
-				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 16,
-				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 16,
-				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 17,
-				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				},
-				"sensor": {
-					"markername": null
-				}
-			},
-			{
-				"x_idx": 17,
-				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				},
-				"sensor": {
-					"markername": null
-				}
-			},
-			{
-				"x_idx": 17,
-				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				},
-				"sensor": {
-					"markername": null
-				}
-			},
-			{
-				"x_idx": 18,
-				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"right"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 18,
-				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"right"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 18,
-				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
-				"connections": {
-					"E": [
-						"left"
-					],
-					"W": [
-						"center"
-					]
-				},
-				"switches": {
-
-				}
-			},
-			{
-				"x_idx": 19,
+				"x_idx": 13,
 				"y_idx": 2,
 				"slot0": "S",
 				"slot1": "W",
@@ -717,27 +1018,13 @@
 				},
 				"switches": {
 
-				}
-			},
-			{
-				"x_idx": 19,
-				"y_idx": 3,
-				"slot0": "S",
-				"slot1": "W",
-				"connections": {
-					"S": [
-						"center"
-					],
-					"W": [
-						"center"
-					]
 				},
-				"switches": {
-
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
-				"x_idx": 19,
+				"x_idx": 13,
 				"y_idx": 3,
 				"slot0": "N",
 				"slot1": "S",
@@ -754,31 +1041,41 @@
 				}
 			},
 			{
-				"x_idx": 19,
+				"x_idx": 13,
 				"y_idx": 4,
 				"slot0": "N",
 				"slot1": "S",
 				"connections": {
 					"N": [
-						"left",
 						"center"
 					],
 					"S": [
-						"center",
-						"right"
+						"center"
 					]
 				},
 				"switches": {
-					"N": {
-						"ble_switch": null
-					},
-					"S": {
-						"ble_switch": null
-					}
+
 				}
 			},
 			{
-				"x_idx": 19,
+				"x_idx": 13,
+				"y_idx": 4,
+				"slot0": "S",
+				"slot1": "E",
+				"connections": {
+					"S": [
+						"right"
+					],
+					"E": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 13,
 				"y_idx": 5,
 				"slot0": "N",
 				"slot1": "S",
@@ -795,16 +1092,16 @@
 				}
 			},
 			{
-				"x_idx": 19,
+				"x_idx": 13,
 				"y_idx": 5,
 				"slot0": "N",
 				"slot1": "W",
 				"connections": {
 					"N": [
-						"center"
+						"right"
 					],
 					"W": [
-						"center"
+						"left"
 					]
 				},
 				"switches": {
@@ -812,7 +1109,7 @@
 				}
 			},
 			{
-				"x_idx": 19,
+				"x_idx": 13,
 				"y_idx": 6,
 				"slot0": "N",
 				"slot1": "S",
@@ -829,7 +1126,7 @@
 				}
 			},
 			{
-				"x_idx": 19,
+				"x_idx": 13,
 				"y_idx": 7,
 				"slot0": "N",
 				"slot1": "S",
@@ -838,7 +1135,200 @@
 						"center"
 					],
 					"S": [
+						"center"
+					]
+				},
+				"switches": {
 
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 13,
+				"y_idx": 8,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 13,
+				"y_idx": 9,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				},
+				"sensor": {
+					"markername": null
+				}
+			},
+			{
+				"x_idx": 13,
+				"y_idx": 10,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 13,
+				"y_idx": 11,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"right"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 13,
+				"y_idx": 12,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 14,
+				"y_idx": 1,
+				"slot0": "E",
+				"slot1": "W",
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 14,
+				"y_idx": 3,
+				"slot0": "S",
+				"slot1": "E",
+				"connections": {
+					"S": [
+						"right"
+					],
+					"E": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 14,
+				"y_idx": 4,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 15,
+				"y_idx": 1,
+				"slot0": "S",
+				"slot1": "W",
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 15,
+				"y_idx": 2,
+				"slot0": "N",
+				"slot1": "S",
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"right"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 15,
+				"y_idx": 3,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"left"
 					]
 				},
 				"switches": {
@@ -852,32 +1342,20 @@
 				"section": {
 					"tracks": [
 						{
-							"x_idx": 1,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 2,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 3,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 4,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
 							"x_idx": 5,
-							"y_idx": 2,
+							"y_idx": 3,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 6,
+							"y_idx": 3,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 7,
+							"y_idx": 3,
 							"slot0": "E",
 							"slot1": "W"
 						}
@@ -889,32 +1367,20 @@
 				"section": {
 					"tracks": [
 						{
-							"x_idx": 1,
-							"y_idx": 3,
+							"x_idx": 11,
+							"y_idx": 1,
 							"slot0": "E",
 							"slot1": "W"
 						},
 						{
-							"x_idx": 2,
-							"y_idx": 3,
+							"x_idx": 12,
+							"y_idx": 1,
 							"slot0": "E",
 							"slot1": "W"
 						},
 						{
-							"x_idx": 3,
-							"y_idx": 3,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 4,
-							"y_idx": 3,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 5,
-							"y_idx": 3,
+							"x_idx": 13,
+							"y_idx": 1,
 							"slot0": "E",
 							"slot1": "W"
 						}
@@ -926,28 +1392,22 @@
 				"section": {
 					"tracks": [
 						{
-							"x_idx": 14,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"x_idx": 13,
+							"y_idx": 7,
+							"slot0": "N",
+							"slot1": "S"
 						},
 						{
-							"x_idx": 15,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"x_idx": 13,
+							"y_idx": 8,
+							"slot0": "N",
+							"slot1": "S"
 						},
 						{
-							"x_idx": 16,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 17,
-							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"x_idx": 13,
+							"y_idx": 9,
+							"slot0": "N",
+							"slot1": "S"
 						}
 					]
 				}
@@ -957,28 +1417,22 @@
 				"section": {
 					"tracks": [
 						{
-							"x_idx": 14,
-							"y_idx": 3,
-							"slot0": "E",
-							"slot1": "W"
+							"x_idx": 11,
+							"y_idx": 7,
+							"slot0": "N",
+							"slot1": "S"
 						},
 						{
-							"x_idx": 15,
-							"y_idx": 3,
-							"slot0": "E",
-							"slot1": "W"
+							"x_idx": 11,
+							"y_idx": 8,
+							"slot0": "N",
+							"slot1": "S"
 						},
 						{
-							"x_idx": 16,
-							"y_idx": 3,
-							"slot0": "E",
-							"slot1": "W"
-						},
-						{
-							"x_idx": 17,
-							"y_idx": 3,
-							"slot0": "E",
-							"slot1": "W"
+							"x_idx": 11,
+							"y_idx": 9,
+							"slot0": "N",
+							"slot1": "S"
 						}
 					]
 				}
@@ -988,27 +1442,121 @@
 				"section": {
 					"tracks": [
 						{
-							"x_idx": 17,
-							"y_idx": 5,
+							"x_idx": 2,
+							"y_idx": 2,
 							"slot0": "E",
 							"slot1": "W"
 						},
 						{
-							"x_idx": 16,
-							"y_idx": 5,
+							"x_idx": 3,
+							"y_idx": 2,
 							"slot0": "E",
 							"slot1": "W"
 						},
 						{
-							"x_idx": 15,
-							"y_idx": 5,
+							"x_idx": 4,
+							"y_idx": 2,
+							"slot0": "E",
+							"slot1": "W"
+						}
+					]
+				}
+			},
+			{
+				"name": "block5",
+				"section": {
+					"tracks": [
+						{
+							"x_idx": 2,
+							"y_idx": 1,
 							"slot0": "E",
 							"slot1": "W"
 						},
 						{
-							"x_idx": 14,
-							"y_idx": 5,
+							"x_idx": 3,
+							"y_idx": 1,
 							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 4,
+							"y_idx": 1,
+							"slot0": "E",
+							"slot1": "W"
+						}
+					]
+				}
+			},
+			{
+				"name": "block6",
+				"section": {
+					"tracks": [
+						{
+							"x_idx": 9,
+							"y_idx": 12,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 8,
+							"y_idx": 12,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 7,
+							"y_idx": 12,
+							"slot0": "E",
+							"slot1": "W"
+						}
+					]
+				}
+			},
+			{
+				"name": "block7",
+				"section": {
+					"tracks": [
+						{
+							"x_idx": 9,
+							"y_idx": 13,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 8,
+							"y_idx": 13,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 7,
+							"y_idx": 13,
+							"slot0": "E",
+							"slot1": "W"
+						}
+					]
+				}
+			},
+			{
+				"name": "block8",
+				"section": {
+					"tracks": [
+						{
+							"x_idx": 11,
+							"y_idx": 2,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 12,
+							"y_idx": 2,
+							"slot0": "E",
+							"slot1": "W"
+						},
+						{
+							"x_idx": 13,
+							"y_idx": 2,
+							"slot0": "S",
 							"slot1": "W"
 						}
 					]
@@ -1020,14 +1568,14 @@
 				"name": "train0",
 				"facing": 1,
 				"fixed_facing": false,
-				"blockname": "block3",
+				"blockname": "block0",
 				"blockindex": 0
 			},
 			{
 				"name": "train1",
 				"facing": 1,
 				"fixed_facing": false,
-				"blockname": "block1",
+				"blockname": "block4",
 				"blockindex": 0
 			}
 		]
