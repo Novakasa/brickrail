@@ -76,11 +76,8 @@
 		]
 	},
 	"layout": {
-		"nx": 60,
-		"ny": 60,
-		"markers": {
-			"default": "ffffffff"
-		},
+		"nx": 20,
+		"ny": 20,
 		"tracks": [
 			{
 				"x_idx": 0,

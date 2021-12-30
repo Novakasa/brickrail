@@ -8,8 +8,6 @@ var blocks = {}
 var trains = {}
 var switches = {}
 
-var markers = {"default": Color.white}
-
 var nodes = {}
 
 var BlockScene = preload("res://layout/block/layout_block.tscn")
@@ -47,10 +45,6 @@ func serialize():
 	result["nx"] = len(cells)
 	result["ny"] = len(cells[0])
 	
-	result["markers"] = {}
-	for markername in markers:
-		result["markers"][markername] = markers[markername].to_html()
-	
 	var tracks = []
 	for row in cells:
 		for cell in row:
@@ -85,11 +79,6 @@ func clear():
 
 func load(struct):
 	clear()
-	
-	if "markers" in struct:
-		markers = {}
-		for markername in struct["markers"]:
-			markers[markername] = Color(struct["markers"][markername])
 	
 	for track in struct.tracks:
 		var i = track.x_idx
