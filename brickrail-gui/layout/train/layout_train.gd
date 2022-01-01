@@ -83,11 +83,14 @@ func unselect():
 func _on_virtual_train_hover():
 	virtual_train.set_hover(true)
 
-func find_route(target, no_locked=true):
+func get_route_to(p_target, no_locked=true):
 	var locked_trainname = trainname
 	if not no_locked:
 		locked_trainname = null
-	var route = block.get_route_to(facing, target, fixed_facing, locked_trainname)
+	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
+
+func find_route(target, no_locked=true):
+	var route = get_route_to(target, no_locked)
 	if route == null:
 		push_error("no route to selected target "+target)
 	else:
@@ -192,7 +195,14 @@ func _on_next_sensor_triggered(p_train):
 			if is_leg_allowed(route.get_current_leg()):
 				start_leg()
 			else:
-				set_route(null)
+				var route_target_node_id = route.get_target().id
+				var alt_route = get_route_to(route_target_node_id)
+				print(alt_route)
+				if alt_route != null:
+					set_route(alt_route)
+					start_leg()
+				else:
+					set_route(null)
 	
 	elif target != null:
 		set_next_sensor()

@@ -16,6 +16,7 @@ func _init(p_from_node, p_to_node, p_type, p_section=null):
 		weight += float(len(section.tracks))
 	if from_node.type == "block":
 		weight += float(len(from_node.obj.section.tracks))
+	var x
 
 func get_locked():
 	var locked = []

@@ -45,10 +45,12 @@ func calculate_routes(fixed_facing, trainname=null):
 			if is_smaller_null(distances[iter_id], mindist):
 				mindist = distances[iter_id]
 				minid = iter_id
+		# prints(minid, mindist)
 		assert(not minid==null)
 		if mindist == null:
 			break
 		current_id = minid
+		# print(distances[current_id])
 		# prints("current id:",current_id)
 		# print(distances)
 
@@ -58,11 +60,13 @@ func calculate_routes(fixed_facing, trainname=null):
 		current_node.collect_edges()
 		for neighbour_id in current_node.edges:
 			var edge = current_node.edges[neighbour_id]
+			# prints(edge.type, edge.from_node.id, edge.to_node.id, edge.weight, edge.get_locked())
 			if fixed_facing and edge.type == "flip":
 				continue
 			if trainname != null:
 				var edge_locked = edge.get_locked()
 				if len(edge_locked)>0 and edge_locked != [trainname]:
+					# print(edge_locked)
 					continue
 				
 			var new_dist = distances[current_id] + edge.weight
