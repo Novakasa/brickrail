@@ -212,9 +212,6 @@ func _on_target_in():
 		set_route(null)
 	else:
 		start_leg()
-			else:
-				set_route(null)
-	
 
 func _on_target_entered():
 	if route.is_train_blocked(trainname):
