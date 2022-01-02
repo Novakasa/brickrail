@@ -42,12 +42,37 @@ func get_start():
 	return legs[0].get_start()
 
 func get_target():
-	return legs[0].get_target()
+	return legs[-1].get_target()
+
+func can_train_pass(trainname):
+	var next_leg = get_next_leg()
+	if next_leg == null:
+		return false
+	if next_leg.get_type() != "travel":
+		return false
+	if not next_leg.is_train_allowed(trainname):
+		return false
+	return true
+
+func is_train_blocked(trainname):
+	var next_leg = get_next_leg()
+	if next_leg == null:
+		return false
+	if not next_leg.get_type()=="travel":
+		return false
+	if not next_leg.is_train_allowed(trainname):
+		return true
+	return false
+
+func switch_and_lock_next(trainname):
+	var next_leg = get_next_leg()
+	next_leg.set_switches()
+	next_leg.lock_tracks(trainname)
 
 func advance_leg():
-	legs[current_leg].decrement_marks()
 	current_leg += 1
 	if current_leg<len(legs):
+		legs[current_leg-1].decrement_marks()
 		return legs[current_leg]
 	current_leg -= 1
 	return null
@@ -61,13 +86,13 @@ func get_current_leg():
 	return legs[current_leg]
 
 func increment_marks():
-	for leg in legs:
-		leg.increment_marks()
-
-func decrement_marks():
-	var i = 0
-	for leg in legs:
+	for i in range(len(legs)):
 		if i<current_leg:
 			continue
-		leg.decrement_marks()
-		i+=1
+		legs[i].increment_marks()
+
+func decrement_marks():
+	for i in range(len(legs)):
+		if i<current_leg:
+			continue
+		legs[i].decrement_marks()

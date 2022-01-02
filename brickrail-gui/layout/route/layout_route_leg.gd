@@ -63,3 +63,9 @@ func get_locked():
 		if not trainname2 in locked:
 			locked.append(trainname2)
 	return locked
+
+func is_train_allowed(trainname):
+	var leg_locked = get_locked()
+	if len(leg_locked)>0 and leg_locked != [trainname]:
+		return false
+	return true

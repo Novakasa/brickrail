@@ -42,6 +42,21 @@ func set_ble_train(trainname):
 	ble_train.connect("handled_marker", self, "_on_ble_train_handled_marker")
 	update_control_ble_train()
 
+func slow():
+	virtual_train.slow()
+	if can_control_ble_train():
+		ble_train.slow()
+
+func stop():
+	virtual_train.stop()
+	if can_control_ble_train():
+		ble_train.stop()
+
+func start():
+	virtual_train.start()
+	if can_control_ble_train():
+		ble_train.start()
+
 func _on_ble_train_handled_marker(colorname):
 	assert(colorname==next_sensor_track.track.sensor.get_colorname())
 	next_sensor_track.track.sensor.trigger()
@@ -83,11 +98,14 @@ func unselect():
 func _on_virtual_train_hover():
 	virtual_train.set_hover(true)
 
-func find_route(target, no_locked=true):
+func get_route_to(p_target, no_locked=true):
 	var locked_trainname = trainname
 	if not no_locked:
 		locked_trainname = null
-	var route = block.get_route_to(facing, target, fixed_facing, locked_trainname)
+	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
+
+func find_route(target, no_locked=true):
+	var route = get_route_to(target, no_locked)
 	if route == null:
 		push_error("no route to selected target "+target)
 	else:
@@ -148,15 +166,13 @@ func set_next_sensor():
 		var next_colorname = next_sensor_track.track.sensor.get_colorname()
 		
 		if next_sensor_track == target.sensors["enter"]:
-			if route.get_next_leg()!=null and route.get_next_leg().get_type()=="travel":
+			if route.can_train_pass(trainname):
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "slow")
 		elif next_sensor_track == target.sensors["in"]:
-			var next_leg = route.get_next_leg()
-			if next_leg!=null and next_leg.get_type()=="travel" and is_leg_allowed(next_leg):
-				next_leg.set_switches()
-				route.get_next_leg().lock_tracks(trainname)
+			if route.can_train_pass(trainname):
+				route.switch_and_lock_next(trainname)
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "stop")
@@ -175,30 +191,34 @@ func _on_next_sensor_triggered(p_train):
 		virtual_train.advance_to_next_sensor_track()
 	
 	if next_sensor_track == target.sensors["enter"]:
-		var next_leg = route.get_next_leg()
-		if next_leg!=null and next_leg.get_type()=="travel" and not is_leg_allowed(next_leg):
-			virtual_train.slow()
-			if can_control_ble_train():
-				ble_train.slow()
+		_on_target_entered()
 	
 	if next_sensor_track == target.sensors["in"]:
-		set_current_block(target, false)
-		set_target(null)
-		route.get_current_leg().unlock_tracks()
-		
-		if route.advance_leg()==null:
-			set_route(null)
-		else:
-			if is_leg_allowed(route.get_current_leg()):
-				start_leg()
-			else:
-				set_route(null)
+		_on_target_in()
 	
 	elif target != null:
 		set_next_sensor()
 	else:
 		next_sensor_track = null
 		next_sensor_track.track.sensor.disconnect("triggered", self, "_on_next_sensor_triggered")
+	
+func _on_target_in():
+	set_current_block(target, false)
+	set_target(null)
+	route.get_current_leg().unlock_tracks()
+	if route.is_train_blocked(trainname):
+		return
+	if route.advance_leg()==null: # final target arrived
+		set_route(null)
+	else:
+		start_leg()
+			else:
+				set_route(null)
+	
+
+func _on_target_entered():
+	if route.is_train_blocked(trainname):
+		slow()	
 
 func _on_target_train_entered(p_train):
 	if p_train != null:
