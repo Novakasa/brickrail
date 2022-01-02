@@ -1,16 +1,78 @@
 {
 	"devices": {
 		"colors": [
-
+			{
+				"colorname": "red",
+				"type": "marker",
+				"colors": [
+					"ffc7100a",
+					"ffc40808"
+				]
+			},
+			{
+				"colorname": "blue",
+				"type": "marker",
+				"colors": [
+					"ff094ab3",
+					"ff0a49ad"
+				]
+			},
+			{
+				"colorname": "sleeper",
+				"type": "speedA",
+				"colors": [
+					"ff2a4a41",
+					"ff374a4a",
+					"ff222245",
+					"ff222f38",
+					"ff182342"
+				]
+			},
+			{
+				"colorname": "floor",
+				"type": "speedB",
+				"colors": [
+					"ff141417",
+					"ff121212"
+				]
+			}
 		],
 		"trains": [
-
+			{
+				"name": "train1",
+				"address": "90:84:2B:BD:5A:42"
+			},
+			{
+				"name": "train0",
+				"address": "90:84:2B:BE:1E:40"
+			}
 		],
 		"controllers": [
-
+			{
+				"name": "controller0",
+				"address": "90:84:2B:50:F5:82"
+			},
+			{
+				"name": "controller1",
+				"address": "90:84:2B:4D:1F:8E"
+			}
 		],
 		"switches": [
-
+			{
+				"name": "switch1",
+				"controller": "controller1",
+				"port": 0
+			},
+			{
+				"name": "switch2",
+				"controller": "controller1",
+				"port": 1
+			},
+			{
+				"name": "switch0",
+				"controller": "controller0",
+				"port": 0
+			}
 		]
 	},
 	"layout": {
@@ -796,11 +858,14 @@
 						"right"
 					],
 					"S": [
-						"center"
+						"center",
+						"left"
 					]
 				},
 				"switches": {
-
+					"S": {
+						"ble_switch": null
+					}
 				}
 			},
 			{
@@ -830,6 +895,23 @@
 						"center"
 					],
 					"W": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 3,
+				"slot0": "N",
+				"slot1": "E",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
 						"center"
 					]
 				},
@@ -952,11 +1034,14 @@
 						"right"
 					],
 					"W": [
-						"center"
+						"center",
+						"right"
 					]
 				},
 				"switches": {
-
+					"W": {
+						"ble_switch": null
+					}
 				}
 			},
 			{

@@ -22,7 +22,7 @@ func get_locked():
 	if section != null:
 		locked = section.get_locked()
 	if to_node.type=="block":
-		var locked_train = to_node.obj.get_locked()
-		if locked_train != null and not locked_train in locked:
-			locked.append(locked_train)
+		for locked_train in to_node.obj.section.get_locked():
+			if locked_train != null and not locked_train in locked:
+				locked.append(locked_train)
 	return locked
