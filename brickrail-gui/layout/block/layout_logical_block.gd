@@ -67,8 +67,11 @@ func find_sensors():
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
 	train = p_train
-	section.set_track_attributes("block", blockname)
-
+	# section.set_track_attributes("block", blockname)
+	if occupied:
+		section.set_track_attributes("locked", train.trainname, "<>")
+	else:
+		section.set_track_attributes("locked", null, "<>")
 func get_route_to(from_facing, node_id, fixed_facing, trainname):
 	return nodes[from_facing].calculate_routes(fixed_facing, trainname)[node_id]
 
