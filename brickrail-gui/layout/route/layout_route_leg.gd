@@ -13,6 +13,9 @@ func get_start():
 func get_target():
 	return edges[-1].to_node
 
+func get_from():
+	return edges[0].from_node
+
 func get_type():
 	return edges[0].type
 

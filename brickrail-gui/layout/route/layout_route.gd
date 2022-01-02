@@ -38,6 +38,28 @@ func setup_legs():
 				legs.append(LayoutRouteLeg.new(travel_edges))
 				travel_edges = []
 
+func redirect_with_route(route):
+	var from = get_current_leg().get_target()
+	var start=null
+	for i in range(len(route.legs)):
+		if route.legs[i].get_from() == from:
+			start=i
+			break
+	assert(start!=null)
+	for i in range(len(legs)-current_leg-1):
+		prints(legs[-1].get_from().id, legs[-1].get_target().id)
+		legs[-1].decrement_marks()
+		legs.remove(len(legs)-1)
+	for i in range(len(route.legs)-start):
+		legs.append(route.legs[i+start])
+		legs[-1].increment_marks()
+
+func recalculate_route(fixed_facing, trainname):
+	var target_id = get_target().id
+	var new_route = get_current_leg().get_target().calculate_routes(fixed_facing, trainname)[target_id]
+	if new_route != null:
+		redirect_with_route(new_route)
+
 func get_start():
 	return legs[0].get_start()
 
@@ -49,8 +71,6 @@ func can_train_pass(trainname):
 	if next_leg == null:
 		return false
 	if next_leg.get_type() != "travel":
-		return false
-	if not next_leg.is_train_allowed(trainname):
 		return false
 	return true
 

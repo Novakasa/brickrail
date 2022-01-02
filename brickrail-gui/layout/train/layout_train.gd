@@ -171,8 +171,7 @@ func set_next_sensor():
 			else:
 				set_expect_marker(next_colorname, "slow")
 		elif next_sensor_track == target.sensors["in"]:
-			if route.can_train_pass(trainname):
-				route.switch_and_lock_next(trainname)
+			if route.can_train_pass(trainname) and not route.is_train_blocked(trainname):
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "stop")
@@ -214,8 +213,14 @@ func _on_target_in():
 		start_leg()
 
 func _on_target_entered():
+	var passing = route.can_train_pass(trainname)
 	if route.is_train_blocked(trainname):
-		slow()	
+		route.recalculate_route(fixed_facing, trainname)
+		if passing and (not route.can_train_pass(trainname) or route.is_train_blocked(trainname)):
+			slow()
+			passing=false
+	if passing:
+		route.switch_and_lock_next(trainname)
 
 func _on_target_train_entered(p_train):
 	if p_train != null:
