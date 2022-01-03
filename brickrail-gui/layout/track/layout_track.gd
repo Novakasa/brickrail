@@ -324,6 +324,11 @@ func disconnect_turn(slot, turn):
 		update_switch(slot)
 	emit_signal("connections_changed", get_orientation())
 
+func has_connection_at(slot):
+	if not slot in connections:
+		return false
+	return len(connections[slot])>0
+
 func clear_connections():
 	for slot in [slot0, slot1]:
 		for turn in connections[slot]:
