@@ -202,9 +202,9 @@ func _on_next_sensor_triggered(p_train):
 		next_sensor_track.track.sensor.disconnect("triggered", self, "_on_next_sensor_triggered")
 	
 func _on_target_in():
+	route.get_current_leg().unlock_tracks()
 	set_current_block(target, false)
 	set_target(null)
-	route.get_current_leg().unlock_tracks()
 	if route.is_train_blocked(trainname):
 		return
 	if route.advance_leg()==null: # final target arrived

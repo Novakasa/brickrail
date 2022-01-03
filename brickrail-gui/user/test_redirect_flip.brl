@@ -736,14 +736,17 @@
 				"slot1": "W",
 				"connections": {
 					"E": [
-						"center"
+						"center",
+						"left"
 					],
 					"W": [
 						"center"
 					]
 				},
 				"switches": {
-
+					"E": {
+						"ble_switch": null
+					}
 				}
 			},
 			{
@@ -859,7 +862,8 @@
 					],
 					"S": [
 						"center",
-						"left"
+						"left",
+						"right"
 					]
 				},
 				"switches": {
@@ -912,6 +916,23 @@
 						"center"
 					],
 					"E": [
+						"center"
+					]
+				},
+				"switches": {
+
+				}
+			},
+			{
+				"x_idx": 11,
+				"y_idx": 3,
+				"slot0": "N",
+				"slot1": "W",
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
 						"center"
 					]
 				},
