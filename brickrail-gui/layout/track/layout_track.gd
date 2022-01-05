@@ -22,7 +22,7 @@ var directed_tracks = {}
 var sensor = null
 
 var metadata = {}
-var default_meta = {"selected": false, "hover": false, "arrow": false, "locked": null, "block": null, "mark": 0}
+var default_meta = {"selected": false, "hover": false, "arrow": 0, "locked": null, "block": null, "mark": 0}
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
@@ -492,8 +492,10 @@ func process_mouse_button(event, pos):
 func set_connection_attribute(slot, turn, key, value, operation):
 	if operation=="set":
 		metadata[slot][turn][key] = value
-	if operation=="increment":
+	elif operation=="increment":
 		metadata[slot][turn][key] += value
+	else:
+		push_error("invalid operation"+operation)
 	emit_signal("states_changed", get_orientation())
 
 func set_track_connection_attribute(track, key, value, operation):
@@ -552,7 +554,7 @@ func get_shader_state(to_slot, turn):
 		state |= STATE_SELECTED
 	if metadata[to_slot][turn]["hover"]:
 		state |= STATE_HOVER
-	if metadata[to_slot][turn]["arrow"]:
+	if metadata[to_slot][turn]["arrow"]>0:
 		state |= STATE_ARROW
 	if metadata[to_slot][turn]["locked"]!=null:
 		state |= STATE_LOCKED

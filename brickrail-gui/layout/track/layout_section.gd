@@ -81,7 +81,7 @@ func collect_segment(directed_track=null):
 func add_track(track):
 	if selected:
 		set_track_attributes("selected", false)
-		set_track_attributes("arrow", false, ">")
+		set_track_attributes("arrow", -1, ">", "increment")
 	var next_slot
 
 	if track is DirectedLayoutTrack:
@@ -112,7 +112,7 @@ func add_track(track):
 	
 	if selected:
 		set_track_attributes("selected", true)
-		set_track_attributes("arrow", true, ">")
+		set_track_attributes("arrow", 1, ">", "increment")
 	
 	emit_signal("track_added", tracks[-1])
 
@@ -146,7 +146,7 @@ func select():
 	LayoutInfo.select(self)
 	selected = true
 	set_track_attributes("selected", true)
-	set_track_attributes("arrow", true, ">")
+	set_track_attributes("arrow", 1, ">", "increment")
 	emit_signal("selected")
 
 func unset_track_attributes(key):
@@ -180,7 +180,7 @@ func set_track_attributes(key, value, direction="<>", operation="set"):
 func unselect():
 	selected = false
 	set_track_attributes("selected", false)
-	set_track_attributes("arrow", false, ">")
+	set_track_attributes("arrow", -1, ">", "increment")
 	emit_signal("unselected")
 
 func get_inspector():
