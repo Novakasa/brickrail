@@ -22,6 +22,8 @@ func get_type():
 func get_full_section():
 	if full_section == null:
 		full_section = LayoutSection.new()
+		if edges[0].type=="start":
+			return full_section
 		if edges[0].from_node.type=="block":
 			full_section.append(edges[0].from_node.obj.section)
 		for edge in edges:

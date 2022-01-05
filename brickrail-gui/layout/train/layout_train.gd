@@ -28,6 +28,7 @@ func _init(p_name):
 	virtual_train.connect("clicked", self, "_on_virtual_train_clicked")
 	virtual_train.visible=false
 	LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
+	LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 
 func can_control_ble_train():
 	return LayoutInfo.control_devices and ble_train != null and ble_train.hub.running
@@ -63,6 +64,16 @@ func _on_ble_train_handled_marker(colorname):
 
 func _on_LayoutInfo_control_devices_changed(control_devices):
 	update_control_ble_train()
+
+func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
+	if p_trainname == trainname:
+		return
+	if route == null:
+		return
+	prints(trainname, "checking for advance")
+	prints(block, target)
+	if block == route.get_current_leg().get_target().obj:
+		try_advancing()
 
 func update_control_ble_train():
 	if can_control_ble_train():
@@ -105,11 +116,20 @@ func get_route_to(p_target, no_locked=true):
 	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
 
 func find_route(p_target, no_locked=true):
-	var _route = get_route_to(p_target, no_locked)
+	var _route = get_route_to(p_target, true)
 	if _route == null:
-		push_error("no route to selected target "+target)
-	else:
-		set_route(_route)
+		_route = get_route_to(p_target, false)
+		if _route == null:
+			push_error("no route to target")
+			return
+	set_route(_route)
+	try_advancing()
+
+func try_advancing():
+	if route.is_train_blocked(trainname):
+		route.recalculate_route(fixed_facing, trainname)
+	if not route.is_train_blocked(trainname):
+		route.advance_leg()
 		start_leg()
 
 func set_route(p_route):
@@ -133,9 +153,7 @@ func start_leg():
 	
 	set_next_sensor()
 	
-	virtual_train.start()
-	if can_control_ble_train():
-		ble_train.start()
+	start()
 	
 func set_expect_marker(marker, behaviour):
 	virtual_train.set_expect_marker(marker, behaviour)
@@ -206,11 +224,13 @@ func _on_target_in():
 	set_current_block(target, false)
 	set_target(null)
 	if route.is_train_blocked(trainname):
+		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 		return
 	if route.advance_leg()==null: # final target arrived
 		set_route(null)
 	else:
 		start_leg()
+	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 
 func _on_target_entered():
 	var passing = route.can_train_pass(trainname)

@@ -28,6 +28,9 @@ func get_full_section():
 
 func setup_legs():
 	legs = []
+	var start_node = edges[0].from_node
+	# add initial null leg
+	legs.append(LayoutRouteLeg.new([LayoutEdge.new(null, start_node, "start")]))
 	var travel_edges = []
 	for edge in edges:
 		if edge.type == "flip":

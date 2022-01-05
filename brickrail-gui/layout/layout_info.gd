@@ -39,6 +39,7 @@ var drag_virtual_train = null
 signal input_mode_changed(mode)
 signal selected(obj)
 signal control_devices_changed(control_device)
+signal blocked_tracks_changed(trainname)
 
 func serialize():
 	var result = {}
