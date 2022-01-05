@@ -109,7 +109,7 @@ func find_route(p_target, no_locked=true):
 	if _route == null:
 		push_error("no route to selected target "+target)
 	else:
-		set_route(route)
+		set_route(_route)
 		start_leg()
 
 func set_route(p_route):
