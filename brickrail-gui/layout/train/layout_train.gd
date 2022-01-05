@@ -246,10 +246,13 @@ func set_current_block(p_block, teleport=true):
 	if block != null:
 		block.set_occupied(false, self)
 	block = p_block
-	block.set_occupied(true, self)
-	virtual_train.visible=true
-	if teleport:
-		virtual_train.set_dirtrack(block.sensors["in"])
+	if block != null:
+		block.set_occupied(true, self)
+		virtual_train.visible=true
+		if teleport:
+			virtual_train.set_dirtrack(block.sensors["in"])
+	else:
+		virtual_train.visible=false
 
 func flip_heading():
 	virtual_train.flip_heading()
@@ -267,6 +270,7 @@ func set_facing(p_facing):
 
 func remove():
 	unselect()
+	set_current_block(null)
 	emit_signal("removing", trainname)
 	queue_free()
 
