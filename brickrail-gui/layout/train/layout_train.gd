@@ -70,8 +70,6 @@ func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 		return
 	if route == null:
 		return
-	prints(trainname, "checking for advance")
-	prints(block, target)
 	if block == route.get_current_leg().get_target().obj:
 		try_advancing()
 
@@ -129,8 +127,10 @@ func try_advancing():
 	if route.is_train_blocked(trainname):
 		route.recalculate_route(fixed_facing, trainname)
 	if not route.is_train_blocked(trainname):
-		route.advance_leg()
-		start_leg()
+		if route.advance_leg()==null: # final target arrived
+			set_route(null)
+		else:
+			start_leg()
 
 func set_route(p_route):
 	if route != null:
@@ -223,13 +223,7 @@ func _on_target_in():
 	route.get_current_leg().unlock_tracks()
 	set_current_block(target, false)
 	set_target(null)
-	if route.is_train_blocked(trainname):
-		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
-		return
-	if route.advance_leg()==null: # final target arrived
-		set_route(null)
-	else:
-		start_leg()
+	try_advancing()
 	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 
 func _on_target_entered():
