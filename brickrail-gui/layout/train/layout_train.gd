@@ -104,9 +104,9 @@ func get_route_to(p_target, no_locked=true):
 		locked_trainname = null
 	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
 
-func find_route(target, no_locked=true):
-	var route = get_route_to(target, no_locked)
-	if route == null:
+func find_route(p_target, no_locked=true):
+	var _route = get_route_to(p_target, no_locked)
+	if _route == null:
 		push_error("no route to selected target "+target)
 	else:
 		set_route(route)
