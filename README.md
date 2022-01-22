@@ -6,7 +6,7 @@ This project contains microphython programs running on the LEGO hardware, a pyth
 Communication between GUI and python server is done through websockets.
 As of now, trains detect their location via a Boost Color and Distance Sensor pointed dowwards onto the track. Colored markers signal the bounds of block sections.
 
-![GUI screenshot](screenshot.PNG)
+![GUI screenshot](screenshot2.PNG)
 
 # How to run
 Download godot engine binary from the official website. Open the project `brickrail-gui/project.godot`, hit F5.
