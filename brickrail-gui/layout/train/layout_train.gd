@@ -65,12 +65,15 @@ func _on_ble_train_handled_marker(colorname):
 func _on_LayoutInfo_control_devices_changed(control_devices):
 	update_control_ble_train()
 
+func is_end_of_leg():
+	return block == route.get_current_leg().get_target().obj
+
 func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 	if p_trainname == trainname:
 		return
 	if route == null:
 		return
-	if block == route.get_current_leg().get_target().obj:
+	if is_end_of_leg():
 		try_advancing()
 
 func update_control_ble_train():
@@ -114,6 +117,9 @@ func get_route_to(p_target, no_locked=true):
 	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
 
 func find_route(p_target, no_locked=true):
+	if route != null and not is_end_of_leg():
+		push_error("Not at end of leg!")
+		return
 	var _route = get_route_to(p_target, true)
 	if _route == null:
 		_route = get_route_to(p_target, false)
