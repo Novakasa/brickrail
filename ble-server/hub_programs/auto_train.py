@@ -6,40 +6,10 @@ from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
 
-class Timer:
-
-    timers = []
-
-    def __init__(self):
-        self.watch = StopWatch()
-        self.watch.pause()
-        self.time = None
-        self.callback = None
-
-        Timer.timers.append(self)
-    
-    def arm(self, time, callback):
-        self.watch.reset()
-        self.watch.resume()
-        self.time = time
-        self.callback = callback 
-    
-    def update(self):
-        if self.time is None:
-            return
-        if self.watch.time()>self.time:
-            self.watch.pause()
-            self.watch.reset()
-            self.callback()
-            self.time = None
-            self.callback = None
-
 class TrainSensor:
 
     def __init__(self, marker_callback, marker_exit_callback):
         self.sensor = ColorDistanceSensor(Port.B)
-        self.blind_timer = Timer()
-        self.blind = False
         self.colors = {}
         self.marker_colors = []
         self.speed_a = None
@@ -84,8 +54,6 @@ class TrainSensor:
         return best_color
     
     def update(self, delta):
-        if self.blind:
-            return
         colorname = self.match_colorname(self.sensor.hsv())
         if colorname == self.last_color:
             return
@@ -98,14 +66,6 @@ class TrainSensor:
     
     def get_hsv(self):
         return self.sensor.hsv()
-    
-    def make_blind(self, duration=None):
-        if duration:
-            self.blind_timer.arm(duration, self.on_blind_timer)
-        self.blind = True
-    
-    def on_blind_timer(self):
-        self.blind = False
 
 class TrainMotor:
 
@@ -117,6 +77,9 @@ class TrainMotor:
         self.motor = DCMotor(Port.A)
         self.braking = False
         self.direction = 1
+    
+    def flip_direction(self):
+        self.direction*=-1
     
     def set_target(self, speed):
         self.target_speed = speed
@@ -152,14 +115,11 @@ class TrainMotor:
 class Train:
 
     def __init__(self):
-        self.wait_timer = Timer()
         self.hub = CityHub()
         self.hub.system.set_stop_button(None)
         self.motor = TrainMotor()
         self.sensor = TrainSensor(self.on_marker, self.on_marker_exit)
         self.button_pressed = False
-
-        self.heading = 1
 
         self.data_queue = []
         self.state = None
@@ -175,10 +135,6 @@ class Train:
     def set_state(self, state):
         self.state = state
         self.queue_data("state_changed", state)
-    
-    def report_speed(self):
-        speed = self.sensor.estimate_speed()
-        self.queue_data("speed", speed)
     
     def report_hsv(self):
         color = self.sensor.get_hsv()
@@ -211,19 +167,10 @@ class Train:
     
     def start(self):
         self.motor.set_target(70)
-        self.sensor.make_blind(1500)
         self.set_state("started")
-    
-    def wait(self, duration):
-        if self.state != "stopped":
-            self.stop()
-        # print("waiting...")
-        self.set_state("waiting")
-        self.wait_timer.arm(duration, self.on_wait_timer)
-    
+
     def flip_heading(self):
-        self.heading *= -1
-        self.motor.direction = self.heading
+        self.motor.flip_direction()
     
     def set_expect_marker_handled(self):
         self.queue_data("handled_marker", self.expect_marker)
@@ -254,10 +201,6 @@ class Train:
                 self.flip_heading()
                 self.set_expect_marker_handled()
     
-    def on_wait_timer(self):
-        self.sensor.make_blind(1500)
-        self.start()
-    
     def on_button_down(self, delta):
         self.report_hsv()
         print("delta", delta)
@@ -285,10 +228,6 @@ def send_data_queue(queue):
         obj = {"key": key, "data": data}
         msg += "data::"+repr(obj)+"$"
     print(msg)
-
-def update_timers():
-    for timer in Timer.timers:
-        timer.update()
 
 def input_handler(message):
     global running
@@ -328,7 +267,6 @@ def update_input(char):
         input_buffer += char
 
 def update(delta):
-    update_timers()
     device.update(delta)
     send_data_queue(device.data_queue)
     device.data_queue = []
