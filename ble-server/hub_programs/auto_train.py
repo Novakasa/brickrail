@@ -1,5 +1,6 @@
 from uselect import poll
 from usys import stdin
+from ustruct import pack
 
 from pybricks.hubs import CityHub
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
@@ -129,6 +130,11 @@ class Train:
         
         self.set_state("stopped")
 
+        self.hbuf = bytearray(200)
+        self.sbuf = bytearray(200)
+        self.vbuf = bytearray(200)
+        self.buf_index = 0
+
     def queue_data(self, key, data):
         self.data_queue.append((key, data))
     
@@ -204,10 +210,24 @@ class Train:
     def on_button_down(self, delta):
         self.report_hsv()
         print("delta", delta)
+        raise SystemExit
     
     def update(self, delta):
         if self.state in ["started", "slow", "stopped"]:
             self.sensor.update(delta)
+        self.buf_index+=1
+        if self.buf_index>=len(self.hbuf):
+            self.buf_index=0
+            print(self.hbuf)
+            print(self.sbuf)
+            print(self.vbuf)
+        color = self.sensor.get_hsv()
+        self.hbuf[self.buf_index] = color.h
+        self.sbuf[self.buf_index] = color.s
+        self.vbuf[self.buf_index] = color.v
+        #print(color.h)
+        #print(color.s)
+        #print(color.v)
         self.motor.update(delta)
         if self.hub.button.pressed():
             if not self.button_pressed:

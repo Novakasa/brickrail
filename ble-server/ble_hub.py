@@ -1,8 +1,9 @@
+import asyncio
+
 from pybricksdev.connections import PybricksHub
 from pybricksdev.ble import find_device
 from pybricksdev.connections import NUS_RX_UUID
 
-import asyncio
 
 from serial_data import SerialData
 
@@ -56,9 +57,16 @@ class BLEHub:
     async def wait_for_program_stop(self):
         await self.hub.user_program_stopped.wait()
 
-    async def handle_output(self, msg):
+    async def handle_output(self, raw):
         # print("[output handler]: got msg:", msg)
-        for line in msg.split("$")[:-1]:
+        if raw.decode().find("bytearray(") == 0:
+            bytearr = bytearray(eval(raw.decode()))
+            print("got bytearray line with length", len(bytearr))
+            print(list(bytearr))
+            return
+        for line in raw.decode().split("$"):
+            if not line:
+                continue
             # print("[output handler]: processing line:", msg)
             if line=="msg_ack":
                 # print("message acknowledged from hub!")
@@ -76,8 +84,8 @@ class BLEHub:
         print("starting output handler loop")
         while self.hub.program_running:
             while self.hub.output:
-                line = self.hub.output.pop(0).decode()
-                await self.handle_output(line)
+                raw = self.hub.output.pop(0)
+                await self.handle_output(raw)
             await asyncio.sleep(0.05)
         print("output loop finished!")
     
@@ -87,7 +95,7 @@ class BLEHub:
             print(f"hub {self.name} run start!")
             script_path = get_script_path(self.program)
             print("initiating run!")
-            await self.hub.run(script_path, wait=False, print_output=True)
+            await self.hub.run(script_path, wait=False, print_output=False)
             while not self.hub.program_running:
                 await asyncio.sleep(0.05)
             print("hub is now running!")
@@ -148,30 +156,9 @@ async def main():
     train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
-    await train.pipe_command("train.start()")
-    await asyncio.sleep(5)
-    await train.send_message("stop_program")
+    # await train.pipe_command("train.start()")
     await train.hub.user_program_stopped.wait()
-    await train.run()
-    await train.pipe_command("train.start()")
-    await asyncio.sleep(5)
-    await train.send_message("stop_program")
-    await train.hub.user_program_stopped.wait()
-    print(train.hub.output)
-    """
-
-    controller = BLEHub("layout_controller", "layout_controller", asyncio.Queue())
-    await controller.connect()
-    await controller.run()
-    await controller.pipe_command("controller.attach_device(Switch('switch0', Port.A))")
     await asyncio.sleep(1)
-    await controller.pipe_command("controller.devices['switch0'].switch('left')")
-    await asyncio.sleep(2)
-    await controller.pipe_command("controller.devices['switch0'].switch('right')")
-
-    await controller.hub.wait_until_state(controller.hub.IDLE)
-    print(controller.hub.output)
-    """
     print("done with main!")
 
 if __name__ == "__main__":
