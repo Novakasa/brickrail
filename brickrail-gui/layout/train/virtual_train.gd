@@ -76,7 +76,10 @@ func update_next_sensor_info():
 	var itertrack
 	prev_sensor_track = next_sensor_track
 	if prev_sensor_track == null:
-		itertrack = dirtrack.get_next()
+		if track_pos<0.0:
+			itertrack = dirtrack
+		else:
+			itertrack = dirtrack.get_next()
 		distance = length - track_pos
 	else:
 		distance = next_sensor_distance + prev_sensor_track.get_connection_length()
@@ -115,8 +118,12 @@ func flip_heading():
 		push_error("can't flip heading while state is " + state)
 		return
 	var prev_pos = track_pos
-	set_dirtrack(dirtrack.get_next(turn).get_opposite())
-	track_pos = length-prev_pos
+	if turn == null:
+		set_dirtrack(dirtrack.get_opposite())
+		track_pos = -prev_pos
+	else:
+		set_dirtrack(dirtrack.get_next(turn).get_opposite())
+		track_pos = length-prev_pos
 	set_facing(facing*-1)
 	update_position()
 	prev_sensor_track = null
@@ -144,9 +151,14 @@ func _process(delta):
 	advance_position(delta_pos)
 
 func advance_position(delta_pos):
+	var prev_pos = track_pos
 	track_pos += delta_pos
 	next_sensor_distance -= delta_pos
 	wrap_dirtrack()
+	if prev_pos<0.0 and track_pos>0.0:
+		if dirtrack == next_sensor_track and allow_sensor_advance:
+			var sensor = dirtrack.track.sensor
+			pass_sensor(sensor)
 	update_position()
 
 func wrap_dirtrack():

@@ -13,6 +13,7 @@ var nodes = {}
 var BlockScene = preload("res://layout/block/layout_block.tscn")
 
 var spacing = 1024.0
+var track_stopper_length = 0.6
 var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
 var pretty_tracks = true
 var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}

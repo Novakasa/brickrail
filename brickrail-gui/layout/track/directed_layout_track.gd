@@ -19,6 +19,12 @@ func _init(p_track, p_next_slot):
 func get_rotation():
 	return (next_pos-prev_pos).angle()
 
+func get_tangent():
+	return (next_pos-prev_pos).normalized()
+
+func get_position():
+	return LayoutInfo.spacing*Vector2(track.x_idx, track.y_idx)
+
 func get_turns():
 	return track.connections[next_slot].keys()
 
@@ -48,6 +54,8 @@ func get_next_turn():
 func get_connection_length(turn=null):
 	if turn == null:
 		turn = get_next_turn()
+		if turn==null:
+			return LayoutInfo.track_stopper_length
 	var next = get_next(turn)
 	var this_length = track.get_connection_length(next_slot, turn)
 	var reverse_connection = next.track.get_connection_to(track)
@@ -56,6 +64,10 @@ func get_connection_length(turn=null):
 
 func interpolate(pos, turn=null):
 	var next = get_next(turn)
+	if next == null:
+		var position = 0.5*(prev_pos+next_pos) + pos*get_tangent().normalized()
+		var rotation = get_rotation()
+		return {"position": position, "rotation": rotation}
 	return track.interpolate_track_connection(next.track, pos)
 
 func to_world(vec):

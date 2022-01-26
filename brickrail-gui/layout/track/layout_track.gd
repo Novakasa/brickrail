@@ -644,6 +644,11 @@ func interpolate_connection(to_slot, turn, t, normalized=false):
 	var x = t
 	if normalized:
 		x = t*params.connection_length
+	if x<0.0:
+		var result = {}
+		result["position"] = params.straight_start+x*(params.to_pos-params.from_pos).normalized()
+		result["rotation"] = (params.to_pos-params.from_pos).angle()
+		return result
 	if is_equal_approx(params.radius, 0.0):
 		var result = {}
 		result["position"] = lerp(params.straight_start, params.to_pos, x/params.connection_length)
