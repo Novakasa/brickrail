@@ -130,10 +130,11 @@ class Train:
         
         self.set_state("stopped")
 
-        self.hbuf = bytearray(200)
-        self.sbuf = bytearray(200)
-        self.vbuf = bytearray(200)
+        self.hbuf = bytearray(1000)
+        self.sbuf = bytearray(1000)
+        self.vbuf = bytearray(1000)
         self.buf_index = 0
+        self.dump=False
 
     def queue_data(self, key, data):
         self.data_queue.append((key, data))
@@ -212,15 +213,24 @@ class Train:
         print("delta", delta)
         raise SystemExit
     
+    def queue_dump_buffers(self):
+        self.dump=True
+    
+    def dump_buffers(self):
+        print(self.hbuf)
+        print(self.sbuf)
+        print(self.vbuf)
+        print(self.buf_index)
+    
     def update(self, delta):
         if self.state in ["started", "slow", "stopped"]:
             self.sensor.update(delta)
+        if self.dump:
+            self.dump=False
+            self.dump_buffers()
         self.buf_index+=1
         if self.buf_index>=len(self.hbuf):
             self.buf_index=0
-            print(self.hbuf)
-            print(self.sbuf)
-            print(self.vbuf)
         color = self.sensor.get_hsv()
         self.hbuf[self.buf_index] = color.h
         self.sbuf[self.buf_index] = color.s

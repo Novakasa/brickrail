@@ -92,6 +92,7 @@ class BLEHub:
     async def run(self):
         print("initiating run!")
         async def hub_run():
+
             print(f"hub {self.name} run start!")
             script_path = get_script_path(self.program)
             print("initiating run!")
@@ -135,7 +136,7 @@ class BLEHub:
             print("writing block:",block)
             await self.hub.client.write_gatt_char(NUS_RX_UUID, block, False)
             try:
-                await asyncio.wait_for(self.msg_acknowledged.wait(), timeout=1.0)
+                await asyncio.wait_for(self.msg_acknowledged.wait(), timeout=10.0)
             except asyncio.TimeoutError:
                 print("waiting for acknowledgement timed out!!")
     
@@ -143,6 +144,7 @@ class BLEHub:
         assert self.running
         message = "cmd::" + cmdstr
         await self.send_message(message)
+
     
     async def rpc(self, funcname, args):
         assert self.running
@@ -156,7 +158,10 @@ async def main():
     train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
-    # await train.pipe_command("train.start()")
+    await train.rpc("start", [])
+    input("waiting for input")
+    await train.rpc("queue_dump_buffers", [])
+    await train.stop()
     await train.hub.user_program_stopped.wait()
     await asyncio.sleep(1)
     print("done with main!")
