@@ -61,7 +61,7 @@ class BLEHub:
         # print("[output handler]: got msg:", msg)
         if raw.decode().find("bytearray(") == 0:
             bytearr = bytearray(eval(raw.decode()))
-            print("got bytearray line with length", len(bytearr))
+            # print("got bytearray line with length", len(bytearr))
             print(list(bytearr))
             return
         for line in raw.decode().split("$"):
@@ -158,7 +158,7 @@ async def main():
     train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
-    await train.rpc("start", [])
+    await train.rpc("slow", [])
     input("waiting for input")
     await train.rpc("queue_dump_buffers", [])
     await train.stop()

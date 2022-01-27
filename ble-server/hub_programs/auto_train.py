@@ -133,6 +133,7 @@ class Train:
         self.hbuf = bytearray(1000)
         self.sbuf = bytearray(1000)
         self.vbuf = bytearray(1000)
+        self.rbuf = bytearray(1000)
         self.buf_index = 0
         self.dump=False
 
@@ -173,7 +174,7 @@ class Train:
         self.set_state("stopped")
     
     def start(self):
-        self.motor.set_target(70)
+        self.motor.set_target(90)
         self.set_state("started")
 
     def flip_heading(self):
@@ -220,6 +221,7 @@ class Train:
         print(self.hbuf)
         print(self.sbuf)
         print(self.vbuf)
+        print(self.rbuf)
         print(self.buf_index)
     
     def update(self, delta):
@@ -232,9 +234,10 @@ class Train:
         if self.buf_index>=len(self.hbuf):
             self.buf_index=0
         color = self.sensor.get_hsv()
-        self.hbuf[self.buf_index] = color.h
+        self.hbuf[self.buf_index] = int(0.5*color.h)
         self.sbuf[self.buf_index] = color.s
         self.vbuf[self.buf_index] = color.v
+        self.rbuf[self.buf_index] = self.sensor.sensor.reflection()
         #print(color.h)
         #print(color.s)
         #print(color.v)
