@@ -1,111 +1,55 @@
 from uselect import poll
 from usys import stdin
+from ustruct import pack
 
 from pybricks.hubs import CityHub
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
 
-class Timer:
-
-    timers = []
-
-    def __init__(self):
-        self.watch = StopWatch()
-        self.watch.pause()
-        self.time = None
-        self.callback = None
-
-        Timer.timers.append(self)
-    
-    def arm(self, time, callback):
-        self.watch.reset()
-        self.watch.resume()
-        self.time = time
-        self.callback = callback 
-    
-    def update(self):
-        if self.time is None:
-            return
-        if self.watch.time()>self.time:
-            self.watch.pause()
-            self.watch.reset()
-            self.callback()
-            self.time = None
-            self.callback = None
+COLOR_HUES = {}
+COLOR_HUES["yellow"]  = 31
+COLOR_HUES["blue"] = 199
+# COLOR_HUES["orange"] = 338
+COLOR_HUES["green"] = 113
+COLOR_HUES["red"] = 339
 
 class TrainSensor:
 
-    def __init__(self, marker_callback, marker_exit_callback):
+    def __init__(self, marker_exit_callback):
         self.sensor = ColorDistanceSensor(Port.B)
-        self.blind_timer = Timer()
-        self.blind = False
         self.colors = {}
         self.marker_colors = []
         self.speed_a = None
         self.speed_b = None
-        self.marker_callback = marker_callback
         self.marker_exit_callback = marker_exit_callback
-        self.last_color = None
-    
-    def set_color(self, name, colors, type):
-        self.colors[name] = colors
-        if type=="marker":
-            if name not in self.marker_colors:
-                self.marker_colors.append(name)
-        if type=="speedA":
-            self.speed_a = name
-        if type=="speedB":
-            self.speed_b = name
-        all_colors = [color for cname in self.colors for color in self.colors[cname]]
-        self.sensor.detectable_colors(all_colors)
-    
-    def remove_color(self, name):
-        del self.colors[name]
-        if name in self.marker_colors:
-            self.marker_colors.remove(name)
-        if self.speed_a == name:
-            self.speed_a = None
-        if self.speed_b == name:
-            self.speed_b = None
-    
-    def match_colorname(self, color):
-        best_color = None
-        best_err = 100
-        for colorname, colors in self.colors.items():
-            for test_color in colors:
-                sdelta = (color.s-test_color.s)
-                hdelta = ((color.h-test_color.h + 180) % 360) - 180
-                vdelta = color.v-test_color.v
-                err = 2*sdelta*sdelta + hdelta*hdelta + vdelta*vdelta
-                if err < best_err:
-                    best_color = colorname
-                    best_err = err
-        return best_color
+
+        self.marker_samples = 0
+        self.marker_hue = 0
     
     def update(self, delta):
-        if self.blind:
+        color = self.get_hsv()
+        h, s, v = color.h, color.s, color.v
+        h = (h-20)%360
+        if s*v>3500:
+            self.marker_samples += 1
+            self.marker_hue += h
             return
-        colorname = self.match_colorname(self.sensor.hsv())
-        if colorname == self.last_color:
-            return
-        if self.last_color in self.marker_colors:
-            self.marker_exit_callback(self.last_color)
-        self.last_color = colorname
-        if colorname in self.marker_colors:
-            self.marker_callback(colorname)
-            return
+        if self.marker_samples>0:
+            self.marker_hue//=self.marker_samples
+            colorname = None
+            colorerr = 361
+            for color, chue in COLOR_HUES.items():
+                err = abs(chue-self.marker_hue)
+                if colorname is None or err<colorerr:
+                    colorname = color
+                    colorerr = err
+            self.marker_hue = 0
+            self.marker_samples = 0
+            self.marker_exit_callback(colorname)
     
     def get_hsv(self):
         return self.sensor.hsv()
-    
-    def make_blind(self, duration=None):
-        if duration:
-            self.blind_timer.arm(duration, self.on_blind_timer)
-        self.blind = True
-    
-    def on_blind_timer(self):
-        self.blind = False
 
 class TrainMotor:
 
@@ -117,6 +61,9 @@ class TrainMotor:
         self.motor = DCMotor(Port.A)
         self.braking = False
         self.direction = 1
+    
+    def flip_direction(self):
+        self.direction*=-1
     
     def set_target(self, speed):
         self.target_speed = speed
@@ -152,14 +99,11 @@ class TrainMotor:
 class Train:
 
     def __init__(self):
-        self.wait_timer = Timer()
         self.hub = CityHub()
         self.hub.system.set_stop_button(None)
         self.motor = TrainMotor()
-        self.sensor = TrainSensor(self.on_marker, self.on_marker_exit)
+        self.sensor = TrainSensor(self.on_marker_exit)
         self.button_pressed = False
-
-        self.heading = 1
 
         self.data_queue = []
         self.state = None
@@ -169,6 +113,13 @@ class Train:
         
         self.set_state("stopped")
 
+        self.hbuf = bytearray(1000)
+        self.sbuf = bytearray(1000)
+        self.vbuf = bytearray(1000)
+        self.rbuf = bytearray(1000)
+        self.buf_index = 0
+        self.dump=False
+
     def queue_data(self, key, data):
         self.data_queue.append((key, data))
     
@@ -176,24 +127,11 @@ class Train:
         self.state = state
         self.queue_data("state_changed", state)
     
-    def report_speed(self):
-        speed = self.sensor.estimate_speed()
-        self.queue_data("speed", speed)
-    
     def report_hsv(self):
         color = self.sensor.get_hsv()
         self.queue_data("hsv", [color.h, color.s, color.v])
         colorname = self.sensor.match_colorname(self.sensor.sensor.hsv())
         self.queue_data("colorname", colorname)
-    
-    def set_color(self, name, colorlist, type):
-        colors = []
-        for hsv in colorlist:
-            colors.append(Color(h=hsv[0], s=hsv[1], v=hsv[2]))
-        self.sensor.set_color(name, colors, type)
-    
-    def remove_color(self, name):
-        self.sensor.remove_color(name)
     
     def set_expect_marker(self, name, behaviour):
         self.expect_marker = name
@@ -210,28 +148,18 @@ class Train:
         self.set_state("stopped")
     
     def start(self):
-        self.motor.set_target(70)
-        self.sensor.make_blind(1500)
+        self.motor.set_target(90)
         self.set_state("started")
-    
-    def wait(self, duration):
-        if self.state != "stopped":
-            self.stop()
-        # print("waiting...")
-        self.set_state("waiting")
-        self.wait_timer.arm(duration, self.on_wait_timer)
-    
+
     def flip_heading(self):
-        self.heading *= -1
-        self.motor.direction = self.heading
+        self.motor.flip_direction()
     
     def set_expect_marker_handled(self):
         self.queue_data("handled_marker", self.expect_marker)
         self.expect_marker = None
         self.expect_behaviour = None
-    
-    def on_marker(self, colorname):
-        
+
+    def on_marker_exit(self, colorname):
         if colorname == self.expect_marker:
             if self.expect_behaviour=="slow":
                 self.slow()
@@ -241,30 +169,47 @@ class Train:
                 self.set_expect_marker_handled()
             if self.expect_behaviour=="ignore":
                 self.set_expect_marker_handled()
-            self.sensor.make_blind(400)
-        else:
-            self.queue_data("detected_unexpected_marker", colorname)
-
-    def on_marker_exit(self, colorname):
-        if colorname == self.expect_marker:
             if self.expect_behaviour=="stop":
                 self.stop()
                 self.set_expect_marker_handled()
             if self.expect_behaviour=="flip_heading":
                 self.flip_heading()
                 self.set_expect_marker_handled()
-    
-    def on_wait_timer(self):
-        self.sensor.make_blind(1500)
-        self.start()
+        else:
+            self.queue_data("detected_unexpected_marker", colorname)
     
     def on_button_down(self, delta):
         self.report_hsv()
         print("delta", delta)
+        raise SystemExit
+    
+    def queue_dump_buffers(self):
+        self.dump=True
+    
+    def dump_buffers(self):
+        print(self.hbuf)
+        print(self.sbuf)
+        print(self.vbuf)
+        print(self.rbuf)
+        print(self.buf_index)
     
     def update(self, delta):
         if self.state in ["started", "slow", "stopped"]:
             self.sensor.update(delta)
+        if self.dump:
+            self.dump=False
+            self.dump_buffers()
+        self.buf_index+=1
+        if self.buf_index>=len(self.hbuf):
+            self.buf_index=0
+        color = self.sensor.get_hsv()
+        self.hbuf[self.buf_index] = int(0.5*color.h)
+        self.sbuf[self.buf_index] = color.s
+        self.vbuf[self.buf_index] = color.v
+        self.rbuf[self.buf_index] = self.sensor.sensor.reflection()
+        #print(color.h)
+        #print(color.s)
+        #print(color.v)
         self.motor.update(delta)
         if self.hub.button.pressed():
             if not self.button_pressed:
@@ -285,10 +230,6 @@ def send_data_queue(queue):
         obj = {"key": key, "data": data}
         msg += "data::"+repr(obj)+"$"
     print(msg)
-
-def update_timers():
-    for timer in Timer.timers:
-        timer.update()
 
 def input_handler(message):
     global running
@@ -328,7 +269,6 @@ def update_input(char):
         input_buffer += char
 
 def update(delta):
-    update_timers()
     device.update(delta)
     send_data_queue(device.data_queue)
     device.data_queue = []
