@@ -38,7 +38,7 @@ func set_color(color):
 	var hsvlist = color.get_pybricks_colors()
 	color.connect("colors_changed", self, "_on_color_colors_changed")
 	color.connect("removing", self, "_on_color_removing")
-	hub.rpc("set_color", [color.colorname, hsvlist, color.type])
+	# hub.rpc("set_color", [color.colorname, hsvlist, color.type])
 
 func set_expect_marker(colorname, behaviour):
 	hub.rpc("set_expect_marker", [colorname, behaviour])
@@ -47,7 +47,7 @@ func _on_color_removing(colorname):
 	remove_color(colorname)
 
 func remove_color(colorname):
-	hub.rpc("remove_color", [colorname])
+	# hub.rpc("remove_color", [colorname])
 	if colorname in Devices.colors:
 		Devices.colors[colorname].disconnect("colors_changed", self, "_on_color_colors_changed")
 		Devices.colors[colorname].disconnect("removing", self, "_on_color_removing")
