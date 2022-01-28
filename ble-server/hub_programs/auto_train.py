@@ -148,7 +148,7 @@ class Train:
         self.set_state("stopped")
     
     def start(self):
-        self.motor.set_target(90)
+        self.motor.set_target(70)
         self.set_state("started")
 
     def flip_heading(self):
