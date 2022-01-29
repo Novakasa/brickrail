@@ -37,7 +37,7 @@ class Timer:
             self.callback = None
 
 class Switch:
-    def __init__(self, name, port, pulse_duration = 300):
+    def __init__(self, name, port, pulse_duration = 600):
         self.name = name
         self.motor = Motor(port)
         self.position = "unknown"
