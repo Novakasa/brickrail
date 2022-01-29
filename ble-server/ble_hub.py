@@ -3,6 +3,9 @@ import asyncio
 from pybricksdev.connections import PybricksHub
 from pybricksdev.ble import find_device
 from pybricksdev.connections import NUS_RX_UUID
+from pathlib import Path
+
+import xarray
 
 
 from serial_data import SerialData
@@ -31,6 +34,7 @@ class BLEHub:
         self.out_queue = out_queue
         self.run_task = None
         self.msg_acknowledged = asyncio.Event()
+        self.dataset = xarray.Dataset()
     
     def set_name(self, name):
         self.name = name
@@ -59,10 +63,12 @@ class BLEHub:
 
     async def handle_output(self, raw):
         # print("[output handler]: got msg:", msg)
-        if raw.decode().find("bytearray(") == 0:
-            bytearr = bytearray(eval(raw.decode()))
-            # print("got bytearray line with length", len(bytearr))
-            print(list(bytearr))
+        if " = " in raw.decode():
+            key = raw.decode().split("=")[0][:-1]
+            data = eval("=".join(raw.decode().split("=")[1:])[1:])
+            self.dataset[key] = data
+            print(f"added data {key} to dataset")
+            print(data)
             return
         for line in raw.decode().split("$"):
             if not line:
@@ -71,6 +77,10 @@ class BLEHub:
             if line=="msg_ack":
                 # print("message acknowledged from hub!")
                 self.msg_acknowledged.set()
+                continue
+            if line=="save_dataset":
+                self.dataset.to_netcdf("buffer_dump.nc")
+                print("dumped dataset to buffer_dump.nc")
                 continue
             if line.find("data::") == 0:
                 print("got return data from hub!", line)
@@ -117,7 +127,7 @@ class BLEHub:
         print(f"hub {self.name} is running now!") 
     
     async def stop(self):
-        await self.send_message("stop_program")
+        await self.send_message("stop_program", ack=False)
 
     @property
     def running(self):
@@ -127,7 +137,7 @@ class BLEHub:
     def connected(self):
         return self.hub.connected
 
-    async def send_message(self, message):
+    async def send_message(self, message, ack=True):
         if isinstance(message, str):
             message = bytearray(message + "$", encoding="utf8")
         
@@ -135,6 +145,8 @@ class BLEHub:
             self.msg_acknowledged.clear()
             print("writing block:",block)
             await self.hub.client.write_gatt_char(NUS_RX_UUID, block, False)
+            if not ack:
+                return
             try:
                 await asyncio.wait_for(self.msg_acknowledged.wait(), timeout=10.0)
             except asyncio.TimeoutError:
@@ -158,11 +170,12 @@ async def main():
     train = BLEHub("white train", "train", asyncio.Queue())
     await train.connect()
     await train.run()
-    await train.rpc("slow", [])
+    await train.rpc("start", [])
     input("waiting for input")
     await train.rpc("queue_dump_buffers", [])
     await train.stop()
     await train.hub.user_program_stopped.wait()
+    await train.disconnect()
     await asyncio.sleep(1)
     print("done with main!")
 

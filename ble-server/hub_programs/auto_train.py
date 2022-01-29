@@ -187,11 +187,12 @@ class Train:
         self.dump=True
     
     def dump_buffers(self):
-        print(self.hbuf)
-        print(self.sbuf)
-        print(self.vbuf)
-        print(self.rbuf)
-        print(self.buf_index)
+        print("hbuf =", self.hbuf)
+        print("sbuf =", self.sbuf)
+        print("vbuf =", self.vbuf)
+        print("rbuf =", self.rbuf)
+        print("buf_index =", self.buf_index)
+        print("save_dataset")
     
     def update(self, delta):
         if self.state in ["started", "slow", "stopped"]:
@@ -207,9 +208,6 @@ class Train:
         self.sbuf[self.buf_index] = color.s
         self.vbuf[self.buf_index] = color.v
         self.rbuf[self.buf_index] = self.sensor.sensor.reflection()
-        #print(color.h)
-        #print(color.s)
-        #print(color.v)
         self.motor.update(delta)
         if self.hub.button.pressed():
             if not self.button_pressed:
