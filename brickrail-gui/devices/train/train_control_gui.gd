@@ -50,3 +50,5 @@ func _on_change_heading_button_pressed():
 func _on_settings_button_pressed():
 	$TrainSettingsDialog.show()
 
+func _on_dump_buffers_button_pressed():
+	get_train().hub.rpc("queue_dump_buffers", [])
