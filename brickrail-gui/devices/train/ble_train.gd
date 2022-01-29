@@ -10,14 +10,14 @@ signal state_changed(state)
 signal name_changed(old_name, new_name)
 signal color_measured(data)
 signal handled_marker(colorname)
+signal unexpected_marker(colorname)
 
 func _init(p_name, p_address):
 	name = p_name
 	hub = BLEHub.new(p_name, "train", p_address)
 	hub.connect("data_received", self, "_on_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
-	Devices.connect("color_added", self, "_on_devices_color_added")
-	# TODO: color_removed
+
 
 func serialize():
 	var struct = {}
@@ -65,6 +65,8 @@ func _on_data_received(key, data):
 		emit_signal("color_measured", color)
 	if key == "handled_marker":
 		emit_signal("handled_marker", data)
+	if key == "detected_unexpected_marker":
+		emit_signal("unexpected_marker", data)
 
 func set_state(p_state):
 	state = p_state

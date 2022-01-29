@@ -36,11 +36,13 @@ func can_control_ble_train():
 func set_ble_train(trainname):
 	if ble_train != null:
 		ble_train.disconnect("handled_marker", self, "_on_ble_train_handled_marker")
+		ble_train.disconnect("unexpected_marker", self, "_on_ble_train_unexpected_marker")
 	if trainname == null:
 		ble_train = null
 		return
 	ble_train = Devices.trains[trainname]
 	ble_train.connect("handled_marker", self, "_on_ble_train_handled_marker")
+	ble_train.connect("unexpected_marker", self, "_on_ble_train_unexpected_marker")
 	update_control_ble_train()
 
 func slow():
@@ -61,6 +63,19 @@ func start():
 func _on_ble_train_handled_marker(colorname):
 	assert(colorname==next_sensor_track.track.sensor.get_colorname())
 	next_sensor_track.track.sensor.trigger()
+
+func _on_ble_train_unexpected_marker(colorname):
+	if colorname==next_sensor_track.track.sensor.get_colorname():
+		if virtual_train.expect_behaviour == "stop":
+			ble_train.stop()
+		if virtual_train.expect_behaviour == "slow":
+			ble_train.slow()
+		if virtual_train.expect_behaviour == "flip_heading":
+			ble_train.flip_heading()
+		next_sensor_track.track.sensor.trigger()
+	else:
+		push_error("unexpected marker not aligned with next sensor")
+		ble_train.hub.rpc("queue_dump_buffers", [])
 
 func _on_LayoutInfo_control_devices_changed(control_devices):
 	update_control_ble_train()
