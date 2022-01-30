@@ -36,12 +36,18 @@ func get_full_section():
 
 func set_switches():
 	var last_track = get_start().obj.section.tracks[-1]
+	var forward_switches = []
 	for edge in edges:
 		if edge.section == null:
 			continue
 		for dirtrack in edge.section.tracks:
-			dirtrack.track.set_switch_to_track(last_track.track)
-			last_track.track.set_switch_to_track(dirtrack.track)
+			var forward_switch = last_track.get_switch()
+			if forward_switch != null:
+				forward_switches.append(forward_switch)
+				last_track.track.set_switch_to_track(dirtrack.track)
+			var backward_switch = dirtrack.get_opposite().get_switch()
+			if backward_switch != null and not backward_switch in forward_switches:
+				dirtrack.track.set_switch_to_track(last_track.track)
 			last_track = dirtrack
 
 func lock_tracks(trainname):
