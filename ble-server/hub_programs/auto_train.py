@@ -36,17 +36,18 @@ class TrainSensor:
             self.marker_hue += h
             return
         if self.marker_samples>0:
-            self.marker_hue//=self.marker_samples
-            colorname = None
-            colorerr = 361
-            for color, chue in COLOR_HUES.items():
-                err = abs(chue-self.marker_hue)
-                if colorname is None or err<colorerr:
-                    colorname = color
-                    colorerr = err
+            if self.marker_samples>2:
+                self.marker_hue//=self.marker_samples
+                colorname = None
+                colorerr = 361
+                for color, chue in COLOR_HUES.items():
+                    err = abs(chue-self.marker_hue)
+                    if colorname is None or err<colorerr:
+                        colorname = color
+                        colorerr = err
+                self.marker_exit_callback(colorname)
             self.marker_hue = 0
             self.marker_samples = 0
-            self.marker_exit_callback(colorname)
     
     def get_hsv(self):
         return self.sensor.hsv()
