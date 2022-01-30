@@ -68,8 +68,8 @@ func _on_OpenLayoutDialog_file_selected(path):
 	if not "layout" in struct:
 		LayoutInfo.load(struct)
 		return
-	
-	Devices.load(struct.devices)
+	if "devices" in struct:
+		Devices.load(struct.devices)
 	LayoutInfo.load(struct.layout)
 
 
