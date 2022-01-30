@@ -98,6 +98,8 @@ func load(struct):
 			track_obj.load_switches(track.switches)
 		if "sensor" in track:
 			track_obj.load_sensor(track.sensor)
+		if "prohibited_slot" in track:
+			track_obj.directed_tracks[track.prohibited_slot].get_opposite().set_one_way(true)
 	
 	if "blocks" in struct:
 		for block_data in struct.blocks:

@@ -7,6 +7,7 @@ var prev_slot
 var next_pos
 var prev_pos
 var id
+var prohibited
 
 func _init(p_track, p_next_slot):
 	track = p_track
@@ -15,6 +16,7 @@ func _init(p_track, p_next_slot):
 	id = p_track.id + "_>"+next_slot
 	next_pos = LayoutInfo.slot_positions[next_slot]
 	prev_pos = LayoutInfo.slot_positions[prev_slot]
+	prohibited=false
 
 func get_rotation():
 	return (next_pos-prev_pos).angle()
@@ -131,3 +133,8 @@ func get_locked(turn=null):
 	if locked_trainname != null:
 		return locked_trainname
 	return null
+
+func set_one_way(one_way):
+	prohibited = false
+	get_opposite().prohibited = one_way
+	track.emit_signal("states_changed", track.get_orientation())

@@ -103,6 +103,11 @@ func serialize(reference=false):
 		
 		if sensor != null:
 			result["sensor"] = sensor.serialize()
+		
+		for slot in connections:
+			if directed_tracks[slot].prohibited:
+				result["prohibited_slot"] = slot
+				break
 	return result
 
 func get_block():
@@ -549,7 +554,8 @@ func get_shader_state(to_slot, turn):
 			if not switches[to_slot].disabled and switches[to_slot].get_position() == turn:
 				state |= STATE_SWITCH
 				state |= STATE_SWITCH_PRIORITY
-		
+	if directed_tracks[get_opposite_slot(to_slot)].prohibited:
+		state |= STATE_ARROW
 	if metadata[to_slot][turn]["selected"]:
 		state |= STATE_SELECTED
 	if metadata[to_slot][turn]["hover"]:

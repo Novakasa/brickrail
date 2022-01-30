@@ -20,6 +20,8 @@ func _on_section_unselected():
 func _on_section_track_added(track):
 	if len(section.tracks) == 1:
 		dirtrack = section.tracks[0]
+		$OneWayCheckbox.visible=true
+		$OneWayCheckbox.pressed = dirtrack.get_opposite().prohibited
 		if dirtrack.track.sensor == null:
 			$AddSensor.visible=true
 			$SensorPanel.visible=false
@@ -30,6 +32,7 @@ func _on_section_track_added(track):
 	else:
 		$AddSensor.visible=false
 		$SensorPanel.visible=false
+		$OneWayCheckbox.visible=false
 
 
 func _on_CreateBlock_pressed():
@@ -106,3 +109,7 @@ func _on_RemoveSensor_pressed():
 
 func _on_MarkerSelect_item_selected(index):
 	dirtrack.track.sensor.set_marker_color(get_selected_colorname())
+
+
+func _on_OneWayCheckbox_toggled(button_pressed):
+	section.tracks[0].set_one_way(button_pressed)
