@@ -65,6 +65,8 @@ func _on_ble_train_handled_marker(colorname):
 	next_sensor_track.track.sensor.trigger()
 
 func _on_ble_train_unexpected_marker(colorname):
+	if ble_train.state == "stopped":
+		return
 	if colorname==next_sensor_track.track.sensor.get_colorname():
 		if virtual_train.expect_behaviour == "stop":
 			ble_train.stop()
@@ -75,6 +77,7 @@ func _on_ble_train_unexpected_marker(colorname):
 		next_sensor_track.track.sensor.trigger()
 	else:
 		push_error("unexpected marker not aligned with next sensor")
+		ble_train.stop()
 		ble_train.hub.rpc("queue_dump_buffers", [])
 
 func _on_LayoutInfo_control_devices_changed(control_devices):
