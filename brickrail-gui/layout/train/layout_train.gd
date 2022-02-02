@@ -12,6 +12,7 @@ var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
 var selected=false
 var fixed_facing=false
 var next_sensor_track
+var wait_timer: Timer
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
@@ -29,6 +30,16 @@ func _init(p_name):
 	virtual_train.visible=false
 	LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
 	LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+	LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
+	wait_timer = Timer.new()
+	add_child(wait_timer)
+
+func _enter_tree():
+	if LayoutInfo.random_targets:
+		wait_timer.start()
+		yield(get_tree().create_timer(wait_timer.wait_time), "timeout")
+		if LayoutInfo.random_targets:
+			find_random_route()
 
 func can_control_ble_train():
 	return LayoutInfo.control_devices and ble_train != null and ble_train.hub.running
@@ -94,6 +105,10 @@ func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 	if is_end_of_leg():
 		try_advancing()
 
+func _on_LayoutInfo_random_targets_set(random_targets):
+	if random_targets and route==null:
+		find_random_route()
+
 func update_control_ble_train():
 	if can_control_ble_train():
 		virtual_train.allow_sensor_advance=false
@@ -134,6 +149,38 @@ func get_route_to(p_target, no_locked=true):
 		locked_trainname = null
 	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
 
+func get_all_routes(no_locked=true):
+	var locked_trainname = trainname
+	if not no_locked:
+		locked_trainname = null
+	return block.get_all_routes(facing, fixed_facing, locked_trainname)
+
+func find_random_route():
+	var target = block.nodes[facing].id
+	var valid_targets = []
+	var routes = get_all_routes(true)
+	for node_id in routes:
+		if routes[node_id] == null:
+			continue
+		if LayoutInfo.nodes[node_id].type!="block":
+			continue
+		if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
+			continue
+		valid_targets.append(node_id)
+	if len(valid_targets) == 0:
+		routes = get_all_routes(false)
+		for node_id in routes:
+			if routes[node_id] == null:
+				continue
+			if LayoutInfo.nodes[node_id].type!="block":
+				continue
+			if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
+				continue
+			valid_targets.append(node_id)
+	var random_target = valid_targets[randi()%len(valid_targets)]
+	set_route(routes[random_target])
+	try_advancing()
+
 func find_route(p_target, no_locked=true):
 	if route != null and not is_end_of_leg():
 		push_error("Not at end of leg!")
@@ -153,6 +200,11 @@ func try_advancing():
 	if not route.is_train_blocked(trainname):
 		if route.advance_leg()==null: # final target arrived
 			set_route(null)
+			if LayoutInfo.random_targets:
+				wait_timer.start()
+				yield(wait_timer, "timeout")
+				if LayoutInfo.random_targets:
+					find_random_route()
 		else:
 			start_leg()
 

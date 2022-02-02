@@ -79,3 +79,7 @@ func _on_LayoutNew_pressed():
 
 func _on_CheckBox_toggled(button_pressed):
 	LayoutInfo.set_control_devices(button_pressed)
+
+
+func _on_AutoTarget_toggled(button_pressed):
+	LayoutInfo.set_random_targets(button_pressed)

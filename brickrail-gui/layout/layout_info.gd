@@ -37,10 +37,13 @@ var drag_train = false
 var dragged_train = null
 var drag_virtual_train = null
 
+var random_targets = false
+
 signal input_mode_changed(mode)
 signal selected(obj)
 signal control_devices_changed(control_device)
 signal blocked_tracks_changed(trainname)
+signal random_targets_set(rand_target)
 
 func serialize():
 	var result = {}
@@ -187,6 +190,10 @@ func _on_switch_removing(id):
 func set_control_devices(p_control_devices):
 	control_devices = p_control_devices
 	emit_signal("control_devices_changed", control_devices)
+
+func set_random_targets(p_random_targets):
+	random_targets = p_random_targets
+	emit_signal("random_targets_set", p_random_targets)
 
 func _unhandled_input(event):
 	if event is InputEventKey:

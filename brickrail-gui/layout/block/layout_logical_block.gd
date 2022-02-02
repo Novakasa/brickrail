@@ -72,6 +72,10 @@ func set_occupied(p_occupied, p_train=null):
 		section.set_track_attributes("locked", train.trainname, "<>")
 	else:
 		section.set_track_attributes("locked", null, "<>")
+
+func get_all_routes(from_facing, fixed_facing, trainname):
+	return nodes[from_facing].calculate_routes(fixed_facing, trainname)
+
 func get_route_to(from_facing, node_id, fixed_facing, trainname):
 	return nodes[from_facing].calculate_routes(fixed_facing, trainname)[node_id]
 
