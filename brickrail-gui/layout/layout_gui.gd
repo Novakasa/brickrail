@@ -83,3 +83,7 @@ func _on_CheckBox_toggled(button_pressed):
 
 func _on_AutoTarget_toggled(button_pressed):
 	LayoutInfo.set_random_targets(button_pressed)
+
+
+func _on_SpinBox_value_changed(value):
+	LayoutInfo.time_scale = value

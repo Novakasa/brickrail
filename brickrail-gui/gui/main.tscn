@@ -331,14 +331,30 @@ margin_right = 282.0
 margin_bottom = 27.0
 text = "random targets"
 
-[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+[node name="Label" type="Label" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
 margin_left = 286.0
-margin_right = 290.0
+margin_right = 384.0
+margin_bottom = 27.0
+text = "virtual speed"
+
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+margin_left = 388.0
+margin_right = 464.0
+margin_bottom = 27.0
+min_value = 0.01
+max_value = 20.0
+step = 0.01
+value = 1.0
+exp_edit = true
+
+[node name="VSeparator2" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
+margin_left = 468.0
+margin_right = 472.0
 margin_bottom = 27.0
 
 [node name="LayoutControl" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 294.0
-margin_right = 355.0
+margin_left = 476.0
+margin_right = 537.0
 margin_bottom = 27.0
 focus_mode = 0
 toggle_mode = true
@@ -346,8 +362,8 @@ shortcut_in_tooltip = false
 text = "control"
 
 [node name="LayoutSelect" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 359.0
-margin_right = 412.0
+margin_left = 541.0
+margin_right = 594.0
 margin_bottom = 27.0
 focus_mode = 0
 toggle_mode = true
@@ -355,39 +371,39 @@ pressed = true
 text = "select"
 
 [node name="LayoutDraw" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 416.0
-margin_right = 463.0
+margin_left = 598.0
+margin_right = 645.0
 margin_bottom = 27.0
 focus_mode = 0
 toggle_mode = true
 text = "draw"
 
 [node name="VSeparator" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 467.0
-margin_right = 471.0
+margin_left = 649.0
+margin_right = 653.0
 margin_bottom = 27.0
 
 [node name="LayoutNew" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 475.0
-margin_right = 516.0
+margin_left = 657.0
+margin_right = 698.0
 margin_bottom = 27.0
 text = "new"
 
 [node name="LayoutSave" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 520.0
-margin_right = 565.0
+margin_left = 702.0
+margin_right = 747.0
 margin_bottom = 27.0
 text = "save"
 
 [node name="LayoutOpen" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 569.0
-margin_right = 616.0
+margin_left = 751.0
+margin_right = 798.0
 margin_bottom = 27.0
 text = "open"
 
 [node name="VSeparator3" type="VSeparator" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools"]
-margin_left = 620.0
-margin_right = 624.0
+margin_left = 802.0
+margin_right = 806.0
 margin_bottom = 27.0
 
 [node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit"]
@@ -456,6 +472,7 @@ current_path = "res://user/"
 [connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/WhiteColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/CheckBox" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/AutoTarget" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
+[connection signal="value_changed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/SpinBox" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutControl" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutSelect" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
 [connection signal="pressed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutDraw" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]

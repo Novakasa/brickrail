@@ -38,6 +38,7 @@ var dragged_train = null
 var drag_virtual_train = null
 
 var random_targets = false
+var time_scale = 1.0
 
 signal input_mode_changed(mode)
 signal selected(obj)

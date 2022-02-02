@@ -135,6 +135,7 @@ func set_state(p_state):
 	state = p_state
 
 func _process(delta):
+	delta *= LayoutInfo.time_scale
 	if state=="started":
 		velocity = min(velocity+acceleration*delta, max_velocity)
 	if state=="slow":
