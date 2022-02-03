@@ -149,16 +149,12 @@ func get_route_to(p_target, no_locked=true):
 		locked_trainname = null
 	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
 
-func get_all_routes(no_locked=true):
+func get_all_valid_routes(no_locked=true):
 	var locked_trainname = trainname
 	if not no_locked:
 		locked_trainname = null
-	return block.get_all_routes(facing, fixed_facing, locked_trainname)
-
-func find_random_route():
-	var target = block.nodes[facing].id
-	var valid_targets = []
-	var routes = get_all_routes(true)
+	var routes = block.get_all_routes(facing, fixed_facing, locked_trainname)
+	var valid_routes = {}
 	for node_id in routes:
 		if routes[node_id] == null:
 			continue
@@ -166,19 +162,22 @@ func find_random_route():
 			continue
 		if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
 			continue
-		valid_targets.append(node_id)
+		valid_routes[node_id] = routes[node_id]
+	return valid_routes
+
+func find_random_route():
+	var target = block.nodes[facing].id
+	var valid_routes = get_all_valid_routes(true)
+	var valid_targets = valid_routes.keys()
+	
 	if len(valid_targets) == 0:
-		routes = get_all_routes(false)
-		for node_id in routes:
-			if routes[node_id] == null:
-				continue
-			if LayoutInfo.nodes[node_id].type!="block":
-				continue
-			if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
-				continue
-			valid_targets.append(node_id)
+		valid_routes = get_all_valid_routes(false)
+		valid_targets = valid_routes.keys()
+	if len(valid_targets) == 0:
+		push_error("no route available")
+		return
 	var random_target = valid_targets[randi()%len(valid_targets)]
-	set_route(routes[random_target])
+	set_route(valid_routes[random_target])
 	try_advancing()
 
 func find_route(p_target, no_locked=true):
