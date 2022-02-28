@@ -75,9 +75,9 @@ func collect_segment(directed_track=null):
 	while iter_track != null:
 		if iter_track in tracks:
 			break
-		add_track(iter_track)
 		if iter_track.prohibited:
 			break
+		add_track(iter_track)
 		iter_track = iter_track.get_next_in_segment()
 
 func add_track(track):
