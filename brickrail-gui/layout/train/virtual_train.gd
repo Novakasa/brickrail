@@ -42,7 +42,7 @@ func _ready():
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 
 func _on_settings_colors_changed():
-	color = Settings.colors["secondary"]*1.5
+	color = Settings.colors["primary"]*1.5
 	selected_color = Settings.colors["tertiary"]
 
 func has_point(pos):
