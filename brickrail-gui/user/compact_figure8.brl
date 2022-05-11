@@ -1,21 +1,5 @@
 {
 	"devices": {
-		"colors": [
-			{
-				"colorname": "red",
-				"type": "marker",
-				"colors": [
-					"ffff0000"
-				]
-			},
-			{
-				"colorname": "blue",
-				"type": "marker",
-				"colors": [
-					"ff0016ff"
-				]
-			}
-		],
 		"trains": [
 			{
 				"name": "train0",

@@ -107,6 +107,9 @@ func dev1_to_pos(ble_pos):
 	
 func switch(pos):
 	if ble_switch != null and LayoutInfo.control_devices:
+		if dev1_to_pos(ble_switch.position) == pos and ble_switch.position != "unknown":
+			#check only here in case ble switch position is unknown
+			pass
 		var ble_pos = pos_to_dev1(pos)
 		prints("switching ble_switch:", ble_pos)
 		ble_switch.switch(ble_pos)

@@ -701,9 +701,5 @@ func interpolate_position_linear(from_slot, t):
 
 func _draw():
 	if sensor != null:
-		var color
-		if sensor.marker_color != null:
-			color = sensor.marker_color.get_preview_color()
-		else:
-			color = Color.white
+		var color = sensor.get_color()
 		draw_circle(get_center()*LayoutInfo.spacing, 0.05*LayoutInfo.spacing, color)

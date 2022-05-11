@@ -8,11 +8,6 @@ func set_section(obj):
 	section.connect("unselected", self, "_on_section_unselected")
 	section.connect("track_added", self, "_on_section_track_added")
 	_on_section_track_added(null)
-	Devices.connect("color_added", self, "_on_devices_colors_changed")
-	Devices.connect("color_removed", self, "_on_devices_colors_changed")
-
-func _on_devices_colors_changed(param):
-	update_marker_select()
 
 func _on_section_unselected():
 	queue_free()
@@ -80,16 +75,14 @@ func update_marker_select():
 	marker_select.add_item("None")
 	marker_select.set_item_metadata(0, null)
 	var i = 1
-	for colorname in Devices.colors:
-		if Devices.colors[colorname].type != "marker":
-			continue
+	for colorname in Devices.marker_colors:
 		marker_select.add_item(colorname)
 		marker_select.set_item_metadata(i, colorname)
 		i += 1
 	var sensor = dirtrack.track.sensor
 	if sensor != null:
 		if sensor.marker_color != null:
-			marker_select.select(get_colorname_index(sensor.marker_color.colorname))
+			marker_select.select(get_colorname_index(sensor.marker_color))
 
 func get_selected_colorname():
 	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
