@@ -8,7 +8,6 @@ var state = "stopped"
 
 signal state_changed(state)
 signal name_changed(old_name, new_name)
-signal color_measured(data)
 signal handled_marker(colorname)
 signal unexpected_marker(colorname)
 
@@ -17,7 +16,6 @@ func _init(p_name, p_address):
 	hub = BLEHub.new(p_name, "train", p_address)
 	hub.connect("data_received", self, "_on_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
-
 
 func serialize():
 	var struct = {}
@@ -42,19 +40,6 @@ func set_color(color):
 
 func set_expect_marker(colorname, behaviour):
 	hub.rpc("set_expect_marker", [colorname, behaviour])
-
-func _on_color_removing(colorname):
-	remove_color(colorname)
-
-func remove_color(colorname):
-	# hub.rpc("remove_color", [colorname])
-	if colorname in Devices.colors:
-		Devices.colors[colorname].disconnect("colors_changed", self, "_on_color_colors_changed")
-		Devices.colors[colorname].disconnect("removing", self, "_on_color_removing")
-
-func _on_color_colors_changed(colorname):
-	remove_color(colorname)
-	set_color(Devices.colors[colorname])
 
 func _on_data_received(key, data):
 	prints("train received:", key, data)
