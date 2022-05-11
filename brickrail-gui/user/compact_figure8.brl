@@ -72,8 +72,6 @@
 			{
 				"x_idx": 2,
 				"y_idx": 1,
-				"slot0": "S",
-				"slot1": "E",
 				"connections": {
 					"S": [
 						"center"
@@ -81,16 +79,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 2,
 				"y_idx": 2,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"right"
@@ -98,16 +91,11 @@
 					"S": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 2,
 				"y_idx": 2,
-				"slot0": "S",
-				"slot1": "E",
 				"connections": {
 					"S": [
 						"center"
@@ -115,16 +103,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 2,
 				"y_idx": 3,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"center",
@@ -143,8 +126,6 @@
 			{
 				"x_idx": 2,
 				"y_idx": 4,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"center"
@@ -163,8 +144,6 @@
 			{
 				"x_idx": 2,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "E",
 				"connections": {
 					"N": [
 						"center"
@@ -172,16 +151,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 2,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"center"
@@ -189,16 +163,11 @@
 					"S": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 2,
 				"y_idx": 6,
-				"slot0": "N",
-				"slot1": "E",
 				"connections": {
 					"N": [
 						"center"
@@ -206,16 +175,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 1,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -223,16 +187,11 @@
 					"W": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -240,16 +199,11 @@
 					"W": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 3,
-				"slot0": "S",
-				"slot1": "E",
 				"connections": {
 					"S": [
 						"center"
@@ -257,16 +211,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 4,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"right"
@@ -274,16 +223,11 @@
 					"S": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "E",
 				"connections": {
 					"N": [
 						"center"
@@ -291,16 +235,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -308,16 +247,11 @@
 					"W": [
 						"right"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 3,
 				"y_idx": 6,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -325,16 +259,11 @@
 					"W": [
 						"right"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 4,
 				"y_idx": 1,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -342,9 +271,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				},
 				"sensor": {
 					"markername": "red"
@@ -353,8 +279,6 @@
 			{
 				"x_idx": 4,
 				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -362,9 +286,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				},
 				"sensor": {
 					"markername": "blue"
@@ -373,8 +294,6 @@
 			{
 				"x_idx": 4,
 				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"right"
@@ -382,16 +301,11 @@
 					"W": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 4,
 				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center",
@@ -414,8 +328,6 @@
 			{
 				"x_idx": 4,
 				"y_idx": 6,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -423,9 +335,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				},
 				"sensor": {
 					"markername": "blue"
@@ -434,8 +343,6 @@
 			{
 				"x_idx": 5,
 				"y_idx": 1,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -443,16 +350,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -460,16 +362,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 3,
-				"slot0": "S",
-				"slot1": "W",
 				"connections": {
 					"S": [
 						"left"
@@ -477,16 +374,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 4,
-				"slot0": "N",
-				"slot1": "E",
 				"connections": {
 					"N": [
 						"left"
@@ -494,17 +386,12 @@
 					"E": [
 						"right"
 					]
-				},
-				"switches": {
-
 				},
 				"prohibited_slot": "E"
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 4,
-				"slot0": "S",
-				"slot1": "E",
 				"connections": {
 					"S": [
 						"right"
@@ -512,16 +399,11 @@
 					"E": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -529,16 +411,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "W",
 				"connections": {
 					"N": [
 						"right"
@@ -546,16 +423,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 5,
 				"y_idx": 6,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -563,16 +435,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 1,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -580,16 +447,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -597,16 +459,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 3,
-				"slot0": "S",
-				"slot1": "E",
 				"connections": {
 					"S": [
 						"right"
@@ -614,16 +471,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 4,
-				"slot0": "S",
-				"slot1": "W",
 				"connections": {
 					"S": [
 						"left"
@@ -631,16 +483,11 @@
 					"W": [
 						"right"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 4,
-				"slot0": "N",
-				"slot1": "W",
 				"connections": {
 					"N": [
 						"right"
@@ -648,17 +495,12 @@
 					"W": [
 						"left"
 					]
-				},
-				"switches": {
-
 				},
 				"prohibited_slot": "W"
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "E",
 				"connections": {
 					"N": [
 						"left"
@@ -666,16 +508,11 @@
 					"E": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -683,16 +520,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 6,
 				"y_idx": 6,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -700,16 +532,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 7,
 				"y_idx": 1,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -717,9 +544,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				},
 				"sensor": {
 					"markername": "blue"
@@ -728,8 +552,6 @@
 			{
 				"x_idx": 7,
 				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -737,9 +559,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				},
 				"sensor": {
 					"markername": "red"
@@ -748,8 +567,6 @@
 			{
 				"x_idx": 7,
 				"y_idx": 3,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"right"
@@ -757,16 +574,11 @@
 					"W": [
 						"left"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 7,
 				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"left",
@@ -789,8 +601,6 @@
 			{
 				"x_idx": 7,
 				"y_idx": 6,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"center"
@@ -798,9 +608,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				},
 				"sensor": {
 					"markername": "red"
@@ -809,8 +616,6 @@
 			{
 				"x_idx": 8,
 				"y_idx": 1,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"right"
@@ -818,16 +623,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 8,
 				"y_idx": 2,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"right"
@@ -835,16 +635,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 8,
 				"y_idx": 3,
-				"slot0": "S",
-				"slot1": "W",
 				"connections": {
 					"S": [
 						"center"
@@ -852,16 +647,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 8,
 				"y_idx": 4,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"left"
@@ -869,16 +659,11 @@
 					"S": [
 						"right"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 8,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "W",
 				"connections": {
 					"N": [
 						"center"
@@ -886,16 +671,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 8,
 				"y_idx": 5,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"left"
@@ -903,16 +683,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 8,
 				"y_idx": 6,
-				"slot0": "E",
-				"slot1": "W",
 				"connections": {
 					"E": [
 						"left"
@@ -920,16 +695,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 9,
 				"y_idx": 1,
-				"slot0": "S",
-				"slot1": "W",
 				"connections": {
 					"S": [
 						"center"
@@ -937,16 +707,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 9,
 				"y_idx": 2,
-				"slot0": "S",
-				"slot1": "W",
 				"connections": {
 					"S": [
 						"center"
@@ -954,16 +719,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 9,
 				"y_idx": 2,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"left"
@@ -971,16 +731,11 @@
 					"S": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 9,
 				"y_idx": 3,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"left",
@@ -999,8 +754,6 @@
 			{
 				"x_idx": 9,
 				"y_idx": 4,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"center"
@@ -1019,8 +772,6 @@
 			{
 				"x_idx": 9,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "S",
 				"connections": {
 					"N": [
 						"center"
@@ -1028,16 +779,11 @@
 					"S": [
 						"right"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 9,
 				"y_idx": 5,
-				"slot0": "N",
-				"slot1": "W",
 				"connections": {
 					"N": [
 						"center"
@@ -1045,16 +791,11 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			},
 			{
 				"x_idx": 9,
 				"y_idx": 6,
-				"slot0": "N",
-				"slot1": "W",
 				"connections": {
 					"N": [
 						"center"
@@ -1062,9 +803,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"switches": {
-
 				}
 			}
 		],
@@ -1076,26 +814,22 @@
 						{
 							"x_idx": 4,
 							"y_idx": 1,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 5,
 							"y_idx": 1,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 6,
 							"y_idx": 1,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 7,
 							"y_idx": 1,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						}
 					]
 				}
@@ -1107,26 +841,22 @@
 						{
 							"x_idx": 4,
 							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 5,
 							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 6,
 							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 7,
 							"y_idx": 2,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						}
 					]
 				}
@@ -1138,26 +868,22 @@
 						{
 							"x_idx": 4,
 							"y_idx": 6,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 5,
 							"y_idx": 6,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 6,
 							"y_idx": 6,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						},
 						{
 							"x_idx": 7,
 							"y_idx": 6,
-							"slot0": "E",
-							"slot1": "W"
+							"orientation": "EW"
 						}
 					]
 				}

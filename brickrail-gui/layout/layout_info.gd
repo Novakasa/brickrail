@@ -89,13 +89,17 @@ func load(struct):
 	for track in struct.tracks:
 		var i = track.x_idx
 		var j = track.y_idx
-		var track_obj = cells[i][j].create_track(track.slot0, track.slot1)
+		var slot0 = track.connections.keys()[0]
+		var slot1 = track.connections.keys()[1]
+		var track_obj = cells[i][j].create_track(slot0, slot1)
 		cells[i][j].add_track(track_obj)
 	
 	for track in struct.tracks:
 		var i = track.x_idx
 		var j = track.y_idx
-		var orientation = track.slot0 + track.slot1
+		var slot0 = track.connections.keys()[0]
+		var slot1 = track.connections.keys()[1]
+		var orientation = slot0 + slot1
 		var track_obj = cells[i][j].tracks[orientation]
 		track_obj.load_connections(track.connections)
 		if "switches" in track:
@@ -133,7 +137,11 @@ func get_hover_lock():
 func get_track_from_struct(struct):
 	var i = struct.x_idx
 	var j = struct.y_idx
-	var orientation = struct.slot0+struct.slot1
+	var orientation
+	if "orientation" in struct:
+		orientation = struct.orientation
+	else:
+		orientation = struct["slot0"] + struct["slot1"]
 	return cells[i][j].tracks[orientation]
 
 func create_block(p_name, section):

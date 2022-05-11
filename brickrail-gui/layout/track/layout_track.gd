@@ -86,8 +86,6 @@ func serialize(reference=false):
 	var result = {}
 	result["x_idx"] = x_idx
 	result["y_idx"] = y_idx
-	result["slot0"] = slot0
-	result["slot1"] = slot1
 	var connections_result = {}
 	var switches_struct = {}
 	if not reference:
@@ -99,7 +97,8 @@ func serialize(reference=false):
 				switches_struct[slot] = switches[slot].serialize()
 				
 		result["connections"] = connections_result
-		result["switches"] = switches_struct
+		if len(switches_struct) > 0:
+			result["switches"] = switches_struct
 		
 		if sensor != null:
 			result["sensor"] = sensor.serialize()
@@ -108,6 +107,8 @@ func serialize(reference=false):
 			if directed_tracks[slot].prohibited:
 				result["prohibited_slot"] = slot
 				break
+	else:
+		result["orientation"] = get_orientation()
 	return result
 
 func get_block():
