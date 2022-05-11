@@ -6,6 +6,7 @@ var virtual_train
 var route
 var block
 var target
+var blocked_by
 var trainname
 var facing: int = 1
 var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
@@ -13,6 +14,7 @@ var selected=false
 var fixed_facing=false
 var next_sensor_track
 var wait_timer: Timer
+var committed = true
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
@@ -33,6 +35,7 @@ func _init(p_name):
 	LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
 	wait_timer = Timer.new()
 	add_child(wait_timer)
+	blocked_by = null
 
 func _enter_tree():
 	if LayoutInfo.random_targets:
@@ -177,6 +180,7 @@ func find_random_route():
 		push_error("no route available")
 		return
 	var random_target = valid_targets[randi()%len(valid_targets)]
+	committed = false
 	set_route(valid_routes[random_target])
 	try_advancing()
 
@@ -190,8 +194,28 @@ func find_route(p_target, no_locked=true):
 		if _route == null:
 			push_error("no route to target")
 			return
+	committed = true
 	set_route(_route)
 	try_advancing()
+
+func is_there_hope():
+	if route == null:
+		return true
+	if not is_end_of_leg():
+		return true
+	if blocked_by != null:
+		return false
+	blocked_by = route.get_blocking_trains()
+	for blocked_trainname in blocked_by:
+		if blocked_trainname == trainname:
+			continue
+		var train = LayoutInfo.trains[blocked_trainname]
+		if train.is_there_hope():
+			blocked_by = null
+			return true
+	blocked_by = null
+	return false
+	
 
 func try_advancing():
 	if route.is_train_blocked(trainname):
@@ -206,6 +230,12 @@ func try_advancing():
 					find_random_route()
 		else:
 			start_leg()
+		return
+	var hope = is_there_hope()
+	prints("hope:", hope)
+	if not hope:
+		if LayoutInfo.random_targets and not committed:
+			find_random_route() #FIXME: chance of infinite recursion 
 
 func set_route(p_route):
 	if route != null:

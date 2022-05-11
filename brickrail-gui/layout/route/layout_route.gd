@@ -77,6 +77,14 @@ func can_train_pass(trainname):
 		return false
 	return true
 
+func get_blocking_trains():
+	var next_leg = get_next_leg()
+	if next_leg == null:
+		return []
+	if not next_leg.get_type()=="travel":
+		return []
+	return next_leg.get_locked()
+
 func is_train_blocked(trainname):
 	var next_leg = get_next_leg()
 	if next_leg == null:
