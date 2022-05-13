@@ -41,6 +41,7 @@ func _enter_tree():
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
+	_on_settings_render_mode_changed(Settings.render_mode)
 	get_tree().connect("idle_frame", self, "_on_idle_frame")
 
 func _on_idle_frame():

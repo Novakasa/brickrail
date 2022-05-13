@@ -1,7 +1,7 @@
 tool
 extends Node
 
-var render_mode = "cached"
+var render_mode = "dynamic"
 
 
 var colors = {
