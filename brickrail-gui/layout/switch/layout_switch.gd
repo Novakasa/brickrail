@@ -1,6 +1,6 @@
 
 class_name LayoutSwitch
-extends Node2D
+extends Reference
 
 var position_index = 0
 var ble_switch = null
@@ -31,8 +31,6 @@ func _init(p_directed_track):
 	
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "switch")
-	
-	position = LayoutInfo.slot_positions[slot]*LayoutInfo.spacing
 
 func serialize():
 	var struct = {}
@@ -46,17 +44,6 @@ func remove():
 	if selected:
 		unselect()
 	emit_signal("removing", id)
-	queue_free()
-
-func drop_data(position, data):
-	prints("dropping switch!", data.name)
-	ble_switch = data
-
-func can_drop_data(position, data):
-	print("can drop switch!")
-	if data is BLESwitch:
-		return true
-	return false
 
 func set_ble_switch(p_ble_switch):
 	if ble_switch != null:

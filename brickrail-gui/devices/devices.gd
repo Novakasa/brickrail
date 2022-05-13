@@ -33,11 +33,6 @@ func serialize():
 		controllerdata.append(controller.serialize())
 	struct["controllers"] = controllerdata
 	
-	var switchdata = []
-	for switch in switches.values():
-		switchdata.append(switch.serialize())
-	struct["switches"] = switchdata
-	
 	return struct
 
 func load(struct):
@@ -49,10 +44,6 @@ func load(struct):
 	for controller_data in struct.controllers:
 		var controller = add_layout_controller(controller_data.name, controller_data.address)
 		# controller.load(controller_data)
-	
-	for switch_data in struct.switches:
-		var switch = add_switch(switch_data.name, switch_data.controller, switch_data.port)
-		# switch.load(switch_data)
 
 func add_train(p_name, p_address=null):
 	var train = BLETrain.new(p_name, p_address)
@@ -83,30 +74,6 @@ func _on_controller_name_changed(p_name, p_new_name):
 	layout_controllers.erase(p_name)
 	layout_controllers[p_new_name] = controller
 	emit_signal("layout_controllers_changed")
-
-func add_switch(p_name, p_controller, p_port):
-	var switch = BLESwitch.new(p_name, p_controller, p_port)
-	switch.connect("name_changed", self, "_on_switch_name_changed")
-	switch.connect("controller_changed", self, "_on_switch_controller_changed")
-	switches[p_name] = switch
-	if p_controller != null:
-		layout_controllers[p_controller].attach_device(switch)
-	emit_signal("switches_changed")
-	emit_signal("switch_added", p_name)
-	return switch
-
-func _on_switch_name_changed(p_old_name, p_name):
-	var switch = switches[p_old_name]
-	switches.erase(p_old_name)
-	switches[p_name] = switch
-	emit_signal("switches_changed")
-
-func _on_switch_controller_changed(p_name, p_old_controller, p_controller):
-	var switch = switches[p_name]
-	if p_old_controller != null:
-		layout_controllers[p_old_controller].remove_device(p_name)
-	if p_controller != null:
-		layout_controllers[p_controller].attach_device(switch)
 
 func find_device(return_key):
 	$BLEController.send_command(null, "find_device", [], return_key)

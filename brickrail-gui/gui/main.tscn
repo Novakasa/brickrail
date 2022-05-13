@@ -21,7 +21,6 @@ __meta__ = {
 layout = NodePath("VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport/Layout")
 train_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/trains")
 layout_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/controllers")
-switch_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/switches")
 
 [node name="Panel" type="Panel" parent="."]
 anchor_right = 1.0
@@ -58,12 +57,6 @@ margin_right = 236.0
 margin_bottom = 27.0
 text = "add layout controller"
 
-[node name="AddSwitch" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 240.0
-margin_right = 329.0
-margin_bottom = 27.0
-text = "add switch"
-
 [node name="HSplitContainer" type="HSplitContainer" parent="VBoxContainer"]
 margin_top = 31.0
 margin_right = 1280.0
@@ -91,17 +84,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="controllers" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 34.0
-margin_right = -5.0
-margin_bottom = -5.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
-
-[node name="switches" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -338,7 +320,6 @@ current_path = "res://user/"
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer/AddSwitch" to="." method="_on_AddSwitch_pressed"]
 [connection signal="item_selected" from="VBoxContainer/HSplitContainer/TabContainer/Settings/GridContainer/RenderModeOption" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_RenderModeOption_item_selected"]
 [connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/BackgroundColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_BackgroundColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer/HSplitContainer/TabContainer/Settings/SurfaceColor" to="VBoxContainer/HSplitContainer/TabContainer/Settings" method="_on_SurfaceColor_color_changed"]

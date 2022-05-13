@@ -1,0 +1,37 @@
+[gd_scene load_steps=3 format=2]
+
+[ext_resource path="res://tools/selector.gd" type="Script" id=1]
+[ext_resource path="res://devices/layout_controller/layout_controller_device_gui.gd" type="Script" id=2]
+
+[node name="PortSelector" type="HBoxContainer"]
+margin_top = 18.0
+margin_right = 493.0
+margin_bottom = 38.0
+script = ExtResource( 2 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="PortLabel" type="Label" parent="."]
+margin_top = 3.0
+margin_right = 52.0
+margin_bottom = 17.0
+text = "dsadsad"
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="DeviceOption" type="OptionButton" parent="."]
+margin_left = 56.0
+margin_right = 119.0
+margin_bottom = 20.0
+text = "None"
+items = [ "None", null, false, 0, null ]
+selected = 0
+script = ExtResource( 1 )
+__meta__ = {
+"_edit_use_anchors_": false
+}
+none_meta = null
+
+[connection signal="meta_selected" from="DeviceOption" to="." method="_on_DeviceOption_meta_selected"]

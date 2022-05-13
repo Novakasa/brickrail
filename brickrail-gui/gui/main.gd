@@ -7,7 +7,6 @@ export(NodePath) var switch_container
 
 onready var TrainControllerGUI = preload("res://devices/train/train_control_gui.tscn")
 onready var LayoutControllerGUI = preload("res://devices/layout_controller/layout_controller_gui.tscn")
-onready var SwitchGUI = preload("res://devices/switch/switch_gui.tscn")
 
 func _ready():
 	Devices.connect("data_received", self, "_on_devices_data_received")
@@ -42,11 +41,6 @@ func _on_devices_layout_controller_added(p_name):
 	var layout_controller_gui = LayoutControllerGUI.instance()
 	layout_controller_gui.setup(p_name)
 	get_node(layout_controller_container).add_child(layout_controller_gui)
-
-func _on_devices_switch_added(p_name):
-	var switch_gui = SwitchGUI.instance()
-	switch_gui.setup(p_name)
-	get_node(switch_container).add_child(switch_gui)
 
 func _on_Devices_data_received(key, data):
 	pass

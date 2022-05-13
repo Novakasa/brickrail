@@ -30,11 +30,6 @@ _global_script_classes=[ {
 "path": "res://ble/ble_hub.gd"
 }, {
 "base": "Reference",
-"class": "BLESwitch",
-"language": "GDScript",
-"path": "res://devices/switch/ble_switch.gd"
-}, {
-"base": "Reference",
 "class": "BLETrain",
 "language": "GDScript",
 "path": "res://devices/train/ble_train.gd"
@@ -89,7 +84,7 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://layout/track/layout_sensor.gd"
 }, {
-"base": "Node2D",
+"base": "Reference",
 "class": "LayoutSwitch",
 "language": "GDScript",
 "path": "res://layout/switch/layout_switch.gd"
@@ -109,6 +104,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://tools/selector.gd"
 }, {
+"base": "Reference",
+"class": "SwitchMotor",
+"language": "GDScript",
+"path": "res://devices/switch/switch_motor.gd"
+}, {
 "base": "Node2D",
 "class": "VirtualTrain",
 "language": "GDScript",
@@ -119,7 +119,6 @@ _global_script_class_icons={
 "BLECommunicator": "",
 "BLEController": "",
 "BLEHub": "",
-"BLESwitch": "",
 "BLETrain": "",
 "DirectedLayoutTrack": "",
 "LayoutBlock": "",
@@ -135,6 +134,7 @@ _global_script_class_icons={
 "LayoutTrack": "",
 "LayoutTrain": "",
 "Selector": "",
+"SwitchMotor": "",
 "VirtualTrain": ""
 }
 

@@ -4,38 +4,27 @@ var switch
 export(NodePath) var device1_option
 export(NodePath) var device2_option
 
+var SwitchInspectorMotorSettings = preload("res://layout/switch/switch_inspector_motor_settings.tscn")
+
 func set_switch(p_switch):
 	switch = p_switch
 	switch.connect("unselected", self, "_on_switch_unselected")
+	
+	var inspector1 = SwitchInspectorMotorSettings.instance()
+	$VBoxContainer.add_child(inspector1)
+	inspector1.connect("motor_selected", self, "_on_motor1_selected")
+	inspector1.setup(null, null)
+	if len(switch.switch_positions) > 2:
+		var inspector2 = SwitchInspectorMotorSettings.instance()
+		$VBoxContainer.add_child(inspector2)
+		inspector2.connect("motor_selected", self, "_on_motor2_selected")
+		inspector2.setup(null, null)
+
+func _on_motor1_selected(motor):
+	switch.set_motor1(motor)
+
+func _on_motor2_selected(motor):
+	switch.set_motor2(motor)
 
 func _on_switch_unselected():
 	queue_free()
-
-func _ready():
-	Devices.connect("switches_changed", self, "_on_device_switches_changed")
-	set_device_labels()
-
-func _on_device_switches_changed():
-	set_device_labels()
-
-func set_device_labels():
-	var option1 = get_node(device1_option)
-	var option2 = get_node(device2_option)
-	for option in [option1, option2]:
-		option.clear()
-		option.add_item("None")
-		for ble_switch in Devices.switches.values():
-			option.add_item(ble_switch.name)
-	
-	if switch.ble_switch != null:
-		option1.select(Devices.switches.keys().find(switch.ble_switch.name)+1)
-	else:
-		option1.select(0)
-		
-
-func _on_Device2Option_item_selected(index):
-	pass
-
-
-func _on_Device1Option_item_selected(index):
-	switch.set_ble_switch(Devices.switches.values()[index-1])

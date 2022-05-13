@@ -62,6 +62,19 @@ text = "settings"
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 1 )]
 margin_right = 493.0
 
+[node name="PortSelectorContainer" type="VBoxContainer" parent="VBoxContainer"]
+margin_top = 48.0
+margin_right = 493.0
+margin_bottom = 62.0
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
+[node name="Label" type="Label" parent="VBoxContainer/PortSelectorContainer"]
+margin_right = 493.0
+margin_bottom = 14.0
+text = "Connected devices"
+
 [node name="LayoutControllerSettingsDialog" parent="." instance=ExtResource( 2 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
