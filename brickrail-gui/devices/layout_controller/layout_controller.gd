@@ -20,6 +20,9 @@ func _init(p_name, p_address):
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 
+func _on_hub_program_started():
+	pass
+
 func serialize():
 	var struct = {}
 	struct["name"] = name
@@ -59,7 +62,7 @@ func device_call(port, funcname, args):
 	hub.rpc("device_call", [port, funcname, args])
 
 func _on_hub_responsiveness_changed(value):
-	emit_signal("hub_responsiveness_changed")
+	pass
 
 func set_name(p_new_name):
 	var old_name = name

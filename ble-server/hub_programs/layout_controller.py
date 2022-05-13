@@ -37,9 +37,9 @@ class Timer:
             self.callback = None
 
 class Switch:
-    def __init__(self, name, port, pulse_duration = 600):
-        self.name = name
-        self.motor = Motor(port)
+    def __init__(self, port, pulse_duration = 600):
+        pb_port = [Port.A, Port.B, Port.C, Port.D][port]
+        self.motor = Motor(pb_port)
         self.position = "unknown"
         self.port = port
         self.pulse_duration = pulse_duration
@@ -47,7 +47,7 @@ class Switch:
         self.data_queue = []
 
     def queue_data(self, key, data):
-        self.data_queue.append({"key": "device_data", "data": {"device": self.name, "key": key, "data": data}})
+        self.data_queue.append({"key": "device_data", "data": {"port": self.port, "key": key, "data": data}})
     
     def switch(self, position):
         assert position in ["left", "right"]
@@ -82,9 +82,8 @@ class Controller:
         self.devices = {}
         self.data_queue = []
     
-    def add_switch(self, name, port):
-        port = [Port.A, Port.B, Port.C, Port.D][port]
-        switch = Switch(name, port)
+    def add_switch(self, port):
+        switch = Switch(port)
         self.attach_device(switch)
 
     def attached_ports(self):
@@ -96,7 +95,7 @@ class Controller:
     def attach_device(self, device):
         assert device.port not in self.attached_ports()
 
-        self.devices[device.name] = device
+        self.devices[device.port] = device
         device.queue_data("attached_at_port", repr(device.port))
     
     def update(self, delta):
@@ -105,8 +104,8 @@ class Controller:
             self.data_queue += device.data_queue
             device.data_queue = []
     
-    def device_call(self, name, funcname, args):
-        func = getattr(self.devices[name], funcname)
+    def device_call(self, port, funcname, args):
+        func = getattr(self.devices[port], funcname)
         func(*args)
     
     def queue_data(self, key, data):

@@ -23,18 +23,27 @@ func _init(p_hub, p_port, p_controllername):
 func set_hub(p_hub):
 	if hub != null:
 		hub.disconnect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
+		hub.disconnect("data_received", self, "_on_hub_data_received")
 	hub = p_hub
 	if hub != null:
 		hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
+		hub.connect("data_received", self, "_on_hub_data_received")
+
+func _on_hub_data_received(key, data):
+	if key != "device_data":
+		return
+	if data.port != port:
+		return
+	var devkey = data.key
+	var devdata = data.data
+	_on_device_data_received(devkey, devdata)
 
 func serialize():
 	var struct = {}
 	struct["type"] = "switch_motor"
 	return struct
 
-func _on_device_data_received(p_port, key, data):
-	if p_port != port:
-		return
+func _on_device_data_received(key, data):
 	prints("switch got data", key)
 	if key == "position_changed":
 		position = data
@@ -51,7 +60,7 @@ func _on_hub_responsiveness_changed(value):
 		set_unresponsive()
 
 func setup_on_hub():
-	hub.rpc("add_switch", port)
+	hub.rpc("add_switch", [port])
 
 func device_call(funcname, args):
 	hub.rpc("device_call", [port, funcname, args])

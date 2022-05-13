@@ -70,6 +70,7 @@ class BLEHub:
             print(f"added data {key} to dataset")
             print(data)
             return
+        print(raw.decode())
         for line in raw.decode().split("$"):
             if not line:
                 continue
