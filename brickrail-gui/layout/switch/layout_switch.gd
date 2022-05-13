@@ -3,7 +3,8 @@ class_name LayoutSwitch
 extends Reference
 
 var position_index = 0
-var ble_switch = null
+var motor1 = null
+var motor2 = null
 var slot
 var switch_positions
 var button
@@ -34,10 +35,12 @@ func _init(p_directed_track):
 
 func serialize():
 	var struct = {}
-	var ble_switch_name = null
-	if ble_switch != null:
-		ble_switch_name = ble_switch.name
-	struct["ble_switch"] = ble_switch_name
+	if motor1 != null:
+		var motor_struct = motor1.serialize()
+		struct["motor1"] = motor_struct
+	if motor2 != null:
+		var motor_struct = motor2.serialize()
+		struct["motor2"] = motor_struct
 	return struct
 
 func remove():
@@ -45,24 +48,34 @@ func remove():
 		unselect()
 	emit_signal("removing", id)
 
-func set_ble_switch(p_ble_switch):
-	if ble_switch != null:
-		ble_switch.disconnect("position_changed", self, "_on_ble_switch_position_changed")
-		ble_switch.disconnect("hub_responsiveness_changed", self, "_on_ble_switch_responsiveness_changed")
-	ble_switch = p_ble_switch
-	if ble_switch.position != "unknown":
-		var pos = dev1_to_pos(ble_switch.position)
+func set_motor1(motor):
+	if motor1 != null:
+		motor1.disconnect("position_changed", self, "_on_motor1_position_changed")
+		motor1.disconnect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
+		motor1.disconnect("removing", self, "_on_motor1_removing")
+	motor1 = motor
+	
+	if motor1 == null:
+		return
+		
+	if motor1.position != "unknown":
+		var pos = dev1_to_pos(motor1.position)
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", slot, pos)
-	ble_switch.connect("position_changed", self, "_on_ble_switch_position_changed")
-	ble_switch.connect("responsiveness_changed", self, "_on_ble_switch_responsiveness_changed")
+	
+	motor1.connect("position_changed", self, "_on_motor1_position_changed")
+	motor1.connect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
+	motor1.connect("removing", self, "_on_motor1_removing")
 
-func _on_ble_switch_responsiveness_changed(responsiveness):
+func _on_motor1_removing(_controllername, _port):
+	set_motor1(null)
+
+func _on_motor1_responsiveness_changed(responsiveness):
 	disabled = not responsiveness
 	prints("switch responsiveness:", responsiveness)
 	emit_signal("position_changed", slot, switch_positions[position_index])
 
-func _on_ble_switch_position_changed(ble_pos):
+func _on_motor1_position_changed(ble_pos):
 	var pos = dev1_to_pos(ble_pos)
 	position_index = switch_positions.find(pos)
 	emit_signal("position_changed", slot, pos)
@@ -93,13 +106,13 @@ func dev1_to_pos(ble_pos):
 	return "center"
 	
 func switch(pos):
-	if ble_switch != null and LayoutInfo.control_devices:
-		if dev1_to_pos(ble_switch.position) == pos and ble_switch.position != "unknown":
+	if motor1 != null and LayoutInfo.control_devices:
+		if dev1_to_pos(motor1.position) == pos and motor1.position != "unknown":
 			#check only here in case ble switch position is unknown
 			pass
-		var ble_pos = pos_to_dev1(pos)
-		prints("switching ble_switch:", ble_pos)
-		ble_switch.switch(ble_pos)
+		var motor_pos = pos_to_dev1(pos)
+		prints("switching motor1:", motor_pos)
+		motor1.switch(motor_pos)
 		position_index = switch_positions.find(pos)
 	else:
 		position_index = switch_positions.find(pos)

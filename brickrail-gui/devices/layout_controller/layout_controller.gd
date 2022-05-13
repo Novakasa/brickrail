@@ -28,12 +28,13 @@ func serialize():
 
 func set_device(port, type):
 	if devices[port] != null:
-		devices[port].disconnect("removing", self, "_on_device_removing")
+		devices[port].remove()
 	var device
 	if type == "switch_motor":
 		device = SwitchMotor.new(hub, port, name)
 	elif type == null:
-		devices[port] = null
+		if devices[port] != null:
+			devices[port].remove()
 		return
 	else:
 		assert(false)
@@ -43,7 +44,8 @@ func set_device(port, type):
 	return device
 
 func _on_device_removing(_controllername, port):
-	devices[port] == null
+	devices[port].disconnect("removing", self, "_on_device_removing")
+	devices[port] = null
 	emit_signal("devices_changed", name)
 
 func _on_data_received(key, data):

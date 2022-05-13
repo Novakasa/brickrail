@@ -7,10 +7,13 @@ var controllername
 var port
 var switch_motor
 
-func setup(p_controllername, p_port):
-	
-	controllername = p_controllername
-	port = p_port
+func setup(p_motor):
+	if p_motor == null:
+		controllername = null
+		port = null
+	else:
+		controllername = p_motor.controllername
+		port = p_motor.port
 	
 	setup_options()
 	
@@ -42,6 +45,7 @@ func _on_InvertCheckBox_toggled(button_pressed):
 
 func set_motor():
 	if port == null or controllername == null:
+		emit_signal("motor_selected", null)
 		return
 	var controller: LayoutController = Devices.layout_controllers[controllername]
 	if controller.devices[port] == null:

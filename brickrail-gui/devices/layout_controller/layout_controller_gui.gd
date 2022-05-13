@@ -39,8 +39,9 @@ func set_controller_name(p_controller_name):
 func _on_controller_devices_changed(p_name):
 	for port in controller.devices:
 		if controller.devices[port] == null:
-			continue
-		port_selectors[port].select_device(controller.devices[port].device_type)
+			port_selectors[port].select_device(null)
+		else:
+			port_selectors[port].select_device(controller.devices[port].device_type)
 
 func get_controller():
 	return Devices.layout_controllers[controller_name]
