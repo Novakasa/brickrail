@@ -35,4 +35,5 @@ func set_items(labels, meta):
 	for i in range(len(labels)):
 		add_meta_item(labels[i], meta[i])
 	if selected_meta != null:
-		select_meta(selected_meta)
+		if get_meta_index(selected_meta) != null:
+			select_meta(selected_meta)

@@ -61,6 +61,9 @@ func _on_LayoutOpen_pressed():
 
 
 func _on_OpenLayoutDialog_file_selected(path):
+	Devices.clear()
+	LayoutInfo.clear()
+	
 	var file = File.new()
 	file.open(path, 1)
 	var serial = file.get_as_text()
@@ -74,6 +77,7 @@ func _on_OpenLayoutDialog_file_selected(path):
 
 
 func _on_LayoutNew_pressed():
+	Devices.clear()
 	LayoutInfo.clear()
 
 

@@ -8,6 +8,7 @@ var devices = {}
 signal name_changed(p_name, p_new_name)
 signal device_data_received(p_port, p_key, p_data)
 signal devices_changed(p_name)
+signal removing(p_name)
 
 func _init(p_name, p_address):
 	name = p_name
@@ -78,3 +79,12 @@ func set_name(p_new_name):
 
 func set_address(p_address):
 	hub.set_address(p_address)
+
+func remove():
+	for device in devices.values():
+		if device == null:
+			continue
+		device.remove()
+
+	hub.remove()
+	emit_signal("removing", name)

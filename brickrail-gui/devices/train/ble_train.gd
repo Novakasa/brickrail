@@ -10,6 +10,7 @@ signal state_changed(state)
 signal name_changed(old_name, new_name)
 signal handled_marker(colorname)
 signal unexpected_marker(colorname)
+signal removing(p_name)
 
 func _init(p_name, p_address):
 	name = p_name
@@ -65,3 +66,7 @@ func slow():
 
 func flip_heading():
 	hub.rpc("flip_heading", [])
+
+func remove():
+	hub.remove()
+	emit_signal("removing", name)

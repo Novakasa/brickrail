@@ -13,9 +13,14 @@ func add_hub(hub):
 	hubs[hub.name] = hub
 	hub.connect("ble_command", self, "_on_hub_command")
 	hub.connect("name_changed", self, "_on_hub_name_changed")
+	hub.connect("removing", self, "_on_hub_removing")
 
 func _on_hub_name_changed(hubname, new_hubname):
 	rename_hub(hubname, new_hubname)
+
+func _on_hub_removing(hubname):
+	send_command(null, "remove_hub", [hubname], null)
+	hubs.erase(hubname)
 
 func rename_hub(p_name, p_new_name):
 	var hub = hubs[p_name]

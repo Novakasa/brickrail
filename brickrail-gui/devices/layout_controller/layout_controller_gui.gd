@@ -14,6 +14,7 @@ signal train_action(train, action)
 func setup(p_controller_name):
 	set_controller_name(p_controller_name)
 	get_controller().connect("name_changed", self, "_on_controller_name_changed")
+	get_controller().connect("removing", self, "_on_controller_removing")
 	get_node(hub_controls).setup(get_controller().hub)
 	$LayoutControllerSettingsDialog.setup(p_controller_name)
 	# $LayoutControllerSettingsDialog.show()
@@ -29,6 +30,9 @@ func _on_port_selector_device_selected(port, type):
 
 func _on_controller_name_changed(p_old_name, p_new_name):
 	set_controller_name(p_new_name)
+
+func _on_controller_removing(p_name):
+	queue_free()
 
 func set_controller_name(p_controller_name):
 	controller_name = p_controller_name

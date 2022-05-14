@@ -20,6 +20,9 @@ class BLEProject:
         self.hubs[new_name] = hub
         hub.set_name(new_name)
     
+    def remove_hub(self, name):
+        del self.hubs[name]
+    
     async def find_device(self):
         device =  await find_device()
         return device.address

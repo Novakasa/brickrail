@@ -8,14 +8,14 @@ func set_train(obj):
 	$FixedFacingCheckbox.pressed = train.fixed_facing
 	Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
+	if train.ble_train != null:
+		$BLETrainContainer/BLETrainSelector.select_meta(train.ble_train.name)
 
 func _on_devices_trains_changed():
 	update_ble_train_selector()
 
 func update_ble_train_selector():
 	$BLETrainContainer/BLETrainSelector.set_items(Devices.trains.keys(), Devices.trains.keys())
-	if train.ble_train != null:
-		$BLETrainContainer/BLETrainSelector.select_meta(train.ble_train.name)
 
 func _on_train_unselected():
 	queue_free()

@@ -51,6 +51,7 @@ func add_train(p_name, p_address=null):
 	get_node("BLEController").add_hub(train.hub)
 	trains[p_name] = train
 	train.connect("name_changed", self, "_on_train_name_changed")
+	train.connect("removing", self, "_on_train_removing")
 	emit_signal("trains_changed")
 	emit_signal("train_added", p_name)
 	return train
@@ -61,11 +62,16 @@ func _on_train_name_changed(p_name, p_new_name):
 	trains[p_new_name] = train
 	emit_signal("trains_changed")
 
+func _on_train_removing(p_name):
+	trains.erase(p_name)
+	emit_signal("trains_changed")
+
 func add_layout_controller(p_name, p_address=null):
 	var controller = LayoutController.new(p_name, p_address)
 	$BLEController.add_hub(controller.hub)
 	layout_controllers[p_name] = controller
 	controller.connect("name_changed", self, "_on_controller_name_changed")
+	controller.connect("removing", self, "_on_controller_removing")
 	emit_signal("layout_controllers_changed")
 	emit_signal("layout_controller_added", p_name)
 	return controller
@@ -76,5 +82,16 @@ func _on_controller_name_changed(p_name, p_new_name):
 	layout_controllers[p_new_name] = controller
 	emit_signal("layout_controllers_changed")
 
+func _on_controller_removing(p_name):
+	layout_controllers.erase(p_name)
+	emit_signal("layout_controllers_changed")
+
 func find_device(return_key):
 	$BLEController.send_command(null, "find_device", [], return_key)
+
+func clear():
+	for train in trains.values():
+		train.remove()
+	
+	for controller in layout_controllers.values():
+		controller.remove()

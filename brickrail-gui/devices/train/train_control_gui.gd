@@ -11,6 +11,7 @@ var modes = ["block", "auto", "manual"]
 func setup(p_train_name):
 	set_train_name(p_train_name)
 	get_train().connect("name_changed", self, "_on_train_name_changed")
+	get_train().connect("removing", self, "_on_train_removing")
 	get_train().hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 	
 	set_controls_disabled(true)
@@ -27,6 +28,9 @@ func set_controls_disabled(mode):
 
 func _on_train_name_changed(old_name, new_name):
 	set_train_name(new_name)
+
+func _on_train_removing(p_name):
+	queue_free()
 
 func set_train_name(p_train_name):
 	train_name = p_train_name

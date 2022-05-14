@@ -18,6 +18,7 @@ signal connect_error(data)
 signal program_started
 signal program_stopped
 signal responsiveness_changed(value)
+signal removing(name)
 
 func _init(p_name, p_program, p_address):
 	name = p_name
@@ -92,3 +93,7 @@ func hub_command(python_expression):
 
 func rpc(funcname, args):
 	send_command("rpc", [funcname, args])
+
+func remove():
+	assert(not connected)
+	emit_signal("removing", name)
