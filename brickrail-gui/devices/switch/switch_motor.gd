@@ -40,7 +40,13 @@ func _on_hub_data_received(key, data):
 
 func serialize():
 	var struct = {}
-	struct["type"] = "switch_motor"
+	struct["type"] = device_type
+	return struct
+
+func serialize_reference():
+	var struct = {}
+	struct["controller"] = controllername
+	struct["port"] = port
 	return struct
 
 func _on_device_data_received(key, data):

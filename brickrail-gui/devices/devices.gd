@@ -43,6 +43,9 @@ func load(struct):
 	
 	for controller_data in struct.controllers:
 		var controller = add_layout_controller(controller_data.name, controller_data.address)
+		if "devices" in controller_data:
+			for port in controller_data.devices:
+				controller.set_device(int(port), controller_data.devices[port])
 		# controller.load(controller_data)
 
 func add_train(p_name, p_address=null):

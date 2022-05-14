@@ -154,8 +154,7 @@ func load_connections(struct):
 func load_switches(struct):
 	for slot in struct:
 		assert(switches[slot] != null)
-		if struct[slot].ble_switch != null:
-			switches[slot].set_ble_switch(Devices.switches[struct[slot].ble_switch])
+		switches[slot].load_struct(struct[slot])
 		
 func get_slot_cell(slot):
 	if slot=="N":

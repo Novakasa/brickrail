@@ -36,12 +36,23 @@ func _init(p_directed_track):
 func serialize():
 	var struct = {}
 	if motor1 != null:
-		var motor_struct = motor1.serialize()
-		struct["motor1"] = motor_struct
+		struct["motor1"] = motor1.serialize_reference()
 	if motor2 != null:
-		var motor_struct = motor2.serialize()
-		struct["motor2"] = motor_struct
+		struct["motor2"] = motor2.serialize_reference()
 	return struct
+
+func load_struct(struct):
+	if "motor1" in struct:
+		var motorstruct = struct.motor1
+		var controller = Devices.layout_controllers[motorstruct.controller]
+		print(typeof(motorstruct.port))
+		var motor = controller.devices[int(motorstruct.port)]
+		set_motor1(motor)
+	if "motor2" in struct:
+		var motorstruct = struct.motor2
+		var controller = Devices.layout_controllers[motorstruct.controller]
+		var motor = controller.devices[motorstruct.port]
+		set_motor2(motor)
 
 func remove():
 	if selected:
@@ -66,6 +77,9 @@ func set_motor1(motor):
 	motor1.connect("position_changed", self, "_on_motor1_position_changed")
 	motor1.connect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
 	motor1.connect("removing", self, "_on_motor1_removing")
+
+func set_motor2(motor):
+	pass
 
 func _on_motor1_removing(_controllername, _port):
 	set_motor1(null)

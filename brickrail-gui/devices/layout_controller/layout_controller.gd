@@ -27,6 +27,12 @@ func serialize():
 	var struct = {}
 	struct["name"] = name
 	struct["address"] = hub.address
+	struct["devices"] = {}
+	for port in devices:
+		if devices[port] == null:
+			struct["devices"][port] = null
+			continue
+		struct["devices"][port] = devices[port].device_type
 	return struct
 
 func set_device(port, type):
