@@ -11,5 +11,5 @@ class BLEProcess(Node):
 
 	def start_process(self):
 		print("executing python based ble control server")
-		os.chdir("../")
+		# os.chdir("../")
 		subprocess.run("start cmd /K ble-server\.env\python.exe ble-server/ble_server.py", shell=True)

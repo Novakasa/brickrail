@@ -13,7 +13,7 @@ func _exit_tree():
 func _ready():
 	
 	# OS.execute("cmd", ["start cmd /K"], false)
-	var process = load("res://ble/ble_process.py").new()
+	var process = load("res://ble/ble_process.gd").new()
 	process.start_process()
 
 	_client.connect("connection_closed", self, "_closed")
