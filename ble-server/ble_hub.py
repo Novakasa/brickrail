@@ -2,19 +2,17 @@ import asyncio
 
 from pybricksdev.connections import PybricksHub
 from pybricksdev.ble import find_device
-from pybricksdev.connections import NUS_RX_UUID
 from pathlib import Path
 
 import xarray
-
 
 from serial_data import SerialData
 
 def get_script_path(program):
     if program == "train":
-        return "E:/repos/brickrail/ble-server/hub_programs/auto_train.py"
+        return "ble-server/hub_programs/auto_train.py"
     if program == "layout_controller":
-        return "E:/repos/brickrail/ble-server/hub_programs/layout_controller.py"
+        return "ble-server/hub_programs/layout_controller.py"
     
 
 def chunk(data, size):
@@ -145,7 +143,7 @@ class BLEHub:
         for block in chunk(message, 80):
             self.msg_acknowledged.clear()
             print("writing block:",block)
-            await self.hub.client.write_gatt_char(NUS_RX_UUID, block, False)
+            await self.hub.write(block)
             if not ack:
                 return
             try:

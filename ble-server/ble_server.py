@@ -1,6 +1,7 @@
 import asyncio
 import websockets
 import json
+import os
 
 from ble_project import BLEProject
 from serial_data import SerialData
@@ -94,6 +95,7 @@ class BLEServer:
 
 if __name__ == "__main__":
     print("running ble server")
+    print(f"cwd: {os.getcwd()}")
     project = BLEProject()
     server = BLEServer()
     server.serve()

@@ -1,4 +1,5 @@
 import subprocess
+import os
 
 from godot import Node, exposed, export
 
@@ -10,4 +11,5 @@ class BLEProcess(Node):
 
 	def start_process(self):
 		print("executing python based ble control server")
-		subprocess.run("start cmd /K C:/Users/Lolli/miniconda3/envs/brickrail/python.exe E:/repos/brickrail/ble-server/ble_server.py", shell=True)
+		os.chdir("../")
+		subprocess.run("start cmd /K ble-server\.env\python.exe ble-server/ble_server.py", shell=True)

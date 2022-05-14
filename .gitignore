@@ -5,3 +5,4 @@ __pycache__/
 addons/pythonscript
 brickrail-gui/addons/pythonscript
 .ipynb_checkpoints/auto-train-calibrate-checkpoint.ipynb
+ble-server/.env/
