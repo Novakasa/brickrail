@@ -24,19 +24,7 @@ func serialize():
 	return struct
 
 func _on_hub_program_started():
-	for color in Devices.colors.values():
-		set_color(color)
-
-func _on_devices_color_added(colorname):
-	if hub.running:
-		var color = Devices.colors[colorname]
-		set_color(color)
-
-func set_color(color):
-	var hsvlist = color.get_pybricks_colors()
-	color.connect("colors_changed", self, "_on_color_colors_changed")
-	color.connect("removing", self, "_on_color_removing")
-	# hub.rpc("set_color", [color.colorname, hsvlist, color.type])
+	pass
 
 func set_expect_marker(colorname, behaviour):
 	hub.rpc("set_expect_marker", [colorname, behaviour])

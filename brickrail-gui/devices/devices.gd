@@ -6,12 +6,10 @@ var switches = {}
 var marker_colors = {}
 
 signal data_received(key,data)
-signal trains_changed
 signal train_added(trainname)
 signal layout_controller_added(p_name)
-signal switch_added(p_name)
-signal layout_controllers_changed
-signal switches_changed
+signal trains_changed()
+signal layout_controllers_changed()
 
 func _ready():
 	marker_colors = {"blue": Color.blue, "red": Color.red}

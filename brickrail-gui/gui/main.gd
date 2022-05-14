@@ -3,7 +3,6 @@ extends Control
 export(NodePath) var layout
 export(NodePath) var train_controller_container
 export(NodePath) var layout_controller_container
-export(NodePath) var switch_container
 
 onready var TrainControllerGUI = preload("res://devices/train/train_control_gui.tscn")
 onready var LayoutControllerGUI = preload("res://devices/layout_controller/layout_controller_gui.tscn")
@@ -11,7 +10,6 @@ onready var LayoutControllerGUI = preload("res://devices/layout_controller/layou
 func _ready():
 	Devices.connect("data_received", self, "_on_devices_data_received")
 	Devices.connect("train_added", self, "_on_devices_train_added")
-	Devices.connect("switch_added", self, "_on_devices_switch_added")
 	Devices.connect("layout_controller_added", self, "_on_devices_layout_controller_added")
 
 func _on_devices_data_received(key, data):
@@ -26,11 +24,6 @@ func _on_AddLayoutController_pressed():
 	var controllernum = len(Devices.layout_controllers)
 	var controllername = "controller"+str(controllernum)
 	Devices.add_layout_controller(controllername, null)
-
-func _on_AddSwitch_pressed():
-	var switchnum = len(Devices.switches)
-	var switchname = "switch"+str(switchnum)
-	Devices.add_switch(switchname, null, null)
 
 func _on_devices_train_added(p_name):
 	var train_controller_gui = TrainControllerGUI.instance()
