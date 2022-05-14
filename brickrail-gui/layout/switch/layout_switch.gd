@@ -45,7 +45,6 @@ func load_struct(struct):
 	if "motor1" in struct:
 		var motorstruct = struct.motor1
 		var controller = Devices.layout_controllers[motorstruct.controller]
-		print(typeof(motorstruct.port))
 		var motor = controller.devices[int(motorstruct.port)]
 		set_motor1(motor)
 	if "motor2" in struct:
@@ -125,6 +124,8 @@ func switch(pos):
 			#check only here in case ble switch position is unknown
 			pass
 		var motor_pos = pos_to_dev1(pos)
+		if motor_pos == motor1.position:
+			return
 		prints("switching motor1:", motor_pos)
 		motor1.switch(motor_pos)
 		position_index = switch_positions.find(pos)

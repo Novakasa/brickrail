@@ -542,7 +542,7 @@ func get_shader_state(to_slot, turn):
 				state |= STATE_SELECTED
 			if opposite_switch.hover:
 				state |= STATE_HOVER
-			if opposite_turn == opposite_switch.get_position():
+			if opposite_turn == opposite_switch.get_position() and not opposite_switch.disabled:
 				state |= STATE_SWITCH
 
 		if switches[to_slot] != null:
