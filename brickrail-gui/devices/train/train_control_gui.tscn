@@ -9,7 +9,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_right = -787.0
 margin_bottom = -458.0
-rect_min_size = Vector2( 0, 142 )
+rect_min_size = Vector2( 0, 105 )
 size_flags_horizontal = 3
 script = ExtResource( 3 )
 __meta__ = {
@@ -105,19 +105,6 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer3" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 72.0
-margin_right = 493.0
-margin_bottom = 92.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="dump_buffers_button" type="Button" parent="VBoxContainer/HBoxContainer3"]
-margin_right = 133.0
-margin_bottom = 20.0
-text = "dump color buffers"
-
 [node name="TrainSettingsDialog" parent="." instance=ExtResource( 1 )]
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
@@ -125,4 +112,3 @@ text = "dump color buffers"
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/slow_button" to="." method="_on_slow_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/change_heading_button" to="." method="_on_change_heading_button_pressed"]
-[connection signal="pressed" from="VBoxContainer/HBoxContainer3/dump_buffers_button" to="." method="_on_dump_buffers_button_pressed"]

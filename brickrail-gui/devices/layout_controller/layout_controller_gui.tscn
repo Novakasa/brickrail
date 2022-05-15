@@ -7,9 +7,9 @@
 [node name="LayoutControllerGui" type="Panel"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -787.0
-margin_bottom = -524.0
-rect_min_size = Vector2( 0, 44 )
+margin_right = -980.0
+margin_bottom = -520.0
+rect_min_size = Vector2( 0, 220 )
 size_flags_horizontal = 3
 script = ExtResource( 3 )
 __meta__ = {
@@ -29,7 +29,7 @@ __meta__ = {
 }
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 493.0
+margin_right = 300.0
 margin_bottom = 20.0
 __meta__ = {
 "_edit_use_anchors_": false
@@ -46,7 +46,7 @@ __meta__ = {
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 153.0
-margin_right = 426.0
+margin_right = 233.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
@@ -54,24 +54,24 @@ __meta__ = {
 }
 
 [node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 430.0
-margin_right = 493.0
+margin_left = 237.0
+margin_right = 300.0
 margin_bottom = 20.0
 text = "settings"
 
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 1 )]
-margin_right = 493.0
+margin_right = 300.0
 
 [node name="PortSelectorContainer" type="VBoxContainer" parent="VBoxContainer"]
 margin_top = 48.0
-margin_right = 493.0
+margin_right = 300.0
 margin_bottom = 62.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="VBoxContainer/PortSelectorContainer"]
-margin_right = 493.0
+margin_right = 300.0
 margin_bottom = 14.0
 text = "Connected devices"
 

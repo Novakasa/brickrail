@@ -19,8 +19,8 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 layout = NodePath("VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport/Layout")
-train_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/trains")
-layout_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/controllers")
+train_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/trains/trains")
+layout_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/controllers/controllers")
 
 [node name="Panel" type="Panel" parent="."]
 anchor_right = 1.0
@@ -73,7 +73,22 @@ mouse_filter = 1
 size_flags_vertical = 3
 tab_align = 0
 
-[node name="trains" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
+[node name="trains" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 34.0
+margin_right = -5.0
+margin_bottom = -5.0
+
+[node name="trains" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/trains"]
+margin_right = 260.0
+margin_bottom = 650.0
+size_flags_horizontal = 3
+size_flags_vertical = 3
+
+[node name="controllers" type="ScrollContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -82,15 +97,11 @@ margin_right = -5.0
 margin_bottom = -5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
+scroll_horizontal_enabled = false
 
-[node name="controllers" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer"]
-visible = false
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 34.0
-margin_right = -5.0
-margin_bottom = -5.0
+[node name="controllers" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/TabContainer/controllers"]
+margin_right = 260.0
+margin_bottom = 650.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
