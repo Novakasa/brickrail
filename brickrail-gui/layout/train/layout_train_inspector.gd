@@ -5,11 +5,20 @@ var train = null
 func set_train(obj):
 	train = obj
 	train.connect("unselected", self, "_on_train_unselected")
+	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
 	$FixedFacingCheckbox.pressed = train.fixed_facing
 	Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
-	if train.ble_train != null:
-		$BLETrainContainer/BLETrainSelector.select_meta(train.ble_train.name)
+	select_ble_train(train.ble_train)
+
+func select_ble_train(ble_train):
+	if ble_train == null:
+		$BLETrainContainer/BLETrainSelector.select_meta(null)
+	else:
+		$BLETrainContainer/BLETrainSelector.select_meta(ble_train.name)
+
+func _on_train_ble_train_changed():
+	select_ble_train(train.ble_train)
 
 func _on_devices_trains_changed():
 	update_ble_train_selector()

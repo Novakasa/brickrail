@@ -21,6 +21,7 @@ var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 signal removing(p_name)
 signal selected()
 signal unselected()
+signal ble_train_changed()
 
 func _init(p_name):
 	trainname = p_name
@@ -54,12 +55,14 @@ func set_ble_train(trainname):
 		ble_train.disconnect("removing", self, "_on_ble_train_removing")
 	if trainname == null:
 		ble_train = null
+		emit_signal("ble_train_changed")
 		return
 	ble_train = Devices.trains[trainname]
 	ble_train.connect("handled_marker", self, "_on_ble_train_handled_marker")
 	ble_train.connect("unexpected_marker", self, "_on_ble_train_unexpected_marker")
 	ble_train.connect("removing", self, "_on_ble_train_removing")
 	update_control_ble_train()
+	emit_signal("ble_train_changed")
 
 func slow():
 	virtual_train.slow()

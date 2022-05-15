@@ -8,6 +8,10 @@ var port
 var switch_motor
 
 func setup(p_motor):
+	select(p_motor)
+	Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
+
+func select(p_motor):
 	if p_motor == null:
 		controllername = null
 		port = null
@@ -16,8 +20,7 @@ func setup(p_motor):
 		port = p_motor.port
 	
 	setup_options()
-	
-	Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
+
 
 func _on_devices_layout_controllers_changed():
 	setup_options()
@@ -30,7 +33,7 @@ func setup_options():
 	if controllername == null:
 		port_option.set_items([], [])
 		return
-		
+	
 	controller_option.select_meta(controllername)
 		
 	var controller: LayoutController = Devices.layout_controllers[controllername]

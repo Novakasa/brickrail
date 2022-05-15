@@ -22,6 +22,7 @@ signal state_changed(slot)
 signal selected
 signal unselected
 signal removing(id)
+signal motors_changed()
 
 func _init(p_directed_track):
 	directed_track = p_directed_track
@@ -65,7 +66,9 @@ func set_motor1(motor):
 		motor1.disconnect("removing", self, "_on_motor1_removing")
 	motor1 = motor
 	
+	
 	if motor1 == null:
+		emit_signal("motors_changed")
 		return
 		
 	if motor1.position != "unknown":
@@ -76,6 +79,8 @@ func set_motor1(motor):
 	motor1.connect("position_changed", self, "_on_motor1_position_changed")
 	motor1.connect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
 	motor1.connect("removing", self, "_on_motor1_removing")
+	
+	emit_signal("motors_changed")
 
 func set_motor2(motor):
 	pass
