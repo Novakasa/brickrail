@@ -3,7 +3,7 @@ extends Node
 
 var grid = null
 
-var cells = []
+var cells = {}
 var blocks = {}
 var trains = {}
 var switches = {}
@@ -11,6 +11,8 @@ var switches = {}
 var nodes = {}
 
 var BlockScene = preload("res://layout/block/layout_block.tscn")
+
+var active_layer = 0
 
 var spacing = 1024.0
 var track_stopper_length = 0.6
@@ -48,14 +50,15 @@ signal random_targets_set(rand_target)
 
 func serialize():
 	var result = {}
-	result["nx"] = len(cells)
-	result["ny"] = len(cells[0])
+	result["nx"] = len(cells[0])
+	result["ny"] = len(cells[0][0])
 	
 	var tracks = []
-	for row in cells:
-		for cell in row:
-			for track in cell.tracks.values():
-				tracks.append(track.serialize())
+	for layer in cells:
+		for row in cells[layer]:
+			for cell in row:
+				for track in cell.tracks.values():
+					tracks.append(track.serialize())
 	
 	var blockdata = []
 	for block in blocks.values():
@@ -78,29 +81,36 @@ func clear():
 		train.remove()
 	for block in blocks.values():
 		block.remove()
-	for row in cells:
-		for cell in row:
-			for track in cell.tracks.values():
-				track.remove()
+	for layer in cells:
+		for row in cells[layer]:
+			for cell in row:
+				for track in cell.tracks.values():
+					track.remove()
 
 func load(struct):
 	clear()
 	
 	for track in struct.tracks:
+		var l = 0
+		if "l_idx" in track:
+			l = track.l_idx
 		var i = track.x_idx
 		var j = track.y_idx
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
-		var track_obj = cells[i][j].create_track(slot0, slot1)
-		cells[i][j].add_track(track_obj)
+		var track_obj = cells[l][i][j].create_track(slot0, slot1)
+		cells[l][i][j].add_track(track_obj)
 	
 	for track in struct.tracks:
+		var l = 0
+		if "l_idx" in track:
+			l = track.l_idx
 		var i = track.x_idx
 		var j = track.y_idx
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
 		var orientation = slot0 + slot1
-		var track_obj = cells[i][j].tracks[orientation]
+		var track_obj = cells[l][i][j].tracks[orientation]
 		track_obj.load_connections(track.connections)
 		if "switches" in track:
 			track_obj.load_switches(track.switches)
@@ -135,6 +145,9 @@ func get_hover_lock():
 	return false
 
 func get_track_from_struct(struct):
+	var l = 0
+	if "l_idx" in struct:
+		l = struct.l_idx
 	var i = struct.x_idx
 	var j = struct.y_idx
 	var orientation
@@ -142,7 +155,7 @@ func get_track_from_struct(struct):
 		orientation = struct.orientation
 	else:
 		orientation = struct["slot0"] + struct["slot1"]
-	return cells[i][j].tracks[orientation]
+	return cells[l][i][j].tracks[orientation]
 
 func create_block(p_name, section):
 	assert(not p_name in blocks)
@@ -303,7 +316,7 @@ func stop_draw_track():
 		neighbor.set_drawing_highlight(false)
 
 func init_connected_draw_track(track):
-	var cell = cells[track.x_idx][track.y_idx]
+	var cell = cells[track.l_idx][track.x_idx][track.y_idx]
 	init_draw_track(cell)
 	set_drawing_last_track(track)
 
@@ -311,7 +324,7 @@ func init_drag_select(track, slot):
 	drag_selection = LayoutSection.new()
 	drag_selection.add_track(track.get_directed_to(slot))
 	drag_select = true
-	drawing_last = cells[track.x_idx][track.y_idx]
+	drawing_last = cells[track.l_idx][track.x_idx][track.y_idx]
 	drawing_last2 = null
 	set_drawing_last_track(null)
 	drag_selection.select()
@@ -342,7 +355,7 @@ func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
 		for p in line:
-			var iter_cell = cells[p[0]][p[1]]
+			var iter_cell = cells[cell.l_idx][p[0]][p[1]]
 			draw_track_add_cell(iter_cell)
 	
 func draw_track_add_cell(draw_cell):
@@ -393,7 +406,7 @@ func drag_select_hover_cell(cell):
 		drawing_last.set_drawing_highlight(true)
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
 		for p in line:
-			var iter_cell = cells[p[0]][p[1]]
+			var iter_cell = cells[cell.l_idx][p[0]][p[1]]
 			iter_cell.set_drawing_highlight(true)
 			drag_select_highlighted.append(iter_cell)
 			draw_select(iter_cell)

@@ -13,3 +13,5 @@ ny = 20
 anchor_mode = 0
 current = true
 zoom = Vector2( 15, 15 )
+
+[node name="Node2D" type="Node2D" parent="Grid"]

@@ -16,14 +16,21 @@ onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 signal grid_view_changed(p_pretty_tracks)
 
 func setup_grid():
+	add_layer(0)
+
+func add_layer(l):
+	var layer = Node2D.new()
+	layer.name = "layer" + str(l)
+	assert(get_node_or_null(layer.name)==null)
+	add_child(layer)
+	LayoutInfo.cells[l] = []
 	for i in range(nx):
-		LayoutInfo.cells.append([])
+		LayoutInfo.cells[l].append([])
 		for j in range(ny):
-			LayoutInfo.cells[i].append(LayoutCell.instance())
-			add_child(LayoutInfo.cells[i][j])
-			LayoutInfo.cells[i][j].setup(i, j)
-			connect("grid_view_changed", LayoutInfo.cells[i][j], "_on_grid_view_changed")
-			LayoutInfo.cells[i][j].connect("track_selected", self, "_on_cell_track_selected")
+			LayoutInfo.cells[l][i].append(LayoutCell.instance())
+			layer.add_child(LayoutInfo.cells[l][i][j])
+			LayoutInfo.cells[l][i][j].setup(l, i, j)
+			LayoutInfo.cells[l][i][j].connect("track_selected", self, "_on_cell_track_selected")
 
 func _ready():
 	LayoutInfo.grid = self
@@ -65,21 +72,23 @@ func process_mouse_input(event):
 	var j = int(mpos.y/spacing)
 	if not (i>=0 and i<nx and j>=0 and j<ny):
 		return
-	var mpos_cell = mpos-LayoutInfo.cells[i][j].position
+	var l = LayoutInfo.active_layer
+	var mpos_cell = mpos-LayoutInfo.cells[l][i][j].position
 	if event is InputEventMouseMotion:
 		process_mouse_motion(event, i, j, mpos_cell)
 	if event is InputEventMouseButton:
 		process_mouse_button(event, i, j, mpos_cell)
 
 func process_mouse_motion(event, i, j, mpos_cell):
+	var l = LayoutInfo.active_layer
 	if dragging_view:
 		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
 
 	for train in LayoutInfo.trains.values():
 		train.stop_hover()
-	if hover_cell != null && hover_cell != LayoutInfo.cells[i][j]:
+	if hover_cell != null && hover_cell != LayoutInfo.cells[l][i][j]:
 		hover_cell.stop_hover()
-	hover_cell = LayoutInfo.cells[i][j]
+	hover_cell = LayoutInfo.cells[l][i][j]
 	hover_cell.hover_at(mpos_cell)
 
 func stop_hover():
@@ -116,8 +125,9 @@ func process_mouse_button(event, i, j, mpos_cell):
 				dragging_view = false
 				return
 	
-	LayoutInfo.cells[i][j].process_mouse_button(event, mpos_cell)
-
+	var l = LayoutInfo.active_layer
+	LayoutInfo.cells[l][i][j].process_mouse_button(event, mpos_cell)
+	
 	if event.button_index == BUTTON_LEFT:
 		if not event.pressed:
 			LayoutInfo.stop_draw_track()

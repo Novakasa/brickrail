@@ -1,5 +1,6 @@
 extends Node2D
 
+var l_idx
 var x_idx
 var y_idx
 var tracks = {}
@@ -21,7 +22,8 @@ var track_material = preload("res://layout/grid/layout_cell_shader.tres")
 
 signal track_selected(cell, orientation)
 
-func setup(p_x_idx, p_y_idx):
+func setup(p_l_idx, p_x_idx, p_y_idx):
+	l_idx = p_l_idx
 	x_idx = p_x_idx
 	y_idx = p_y_idx
 	
@@ -161,7 +163,7 @@ func create_track_at(pos, direction=null):
 	var closest_track = null
 	var normalized_pos = pos/LayoutInfo.spacing
 	for orientation in LayoutInfo.orientations:
-		var track = LayoutTrack.new(orientation[0], orientation[1], x_idx, y_idx)
+		var track = LayoutTrack.new(orientation[0], orientation[1], l_idx, x_idx, y_idx)
 		if direction!= null:
 			if track.get_direction()!=direction:
 				continue
@@ -185,13 +187,13 @@ func get_slot_to_cell(cell):
 func get_neighbors():
 	var neighbors = []
 	if x_idx>0:
-		neighbors.append(LayoutInfo.cells[x_idx-1][y_idx])
+		neighbors.append(LayoutInfo.cells[l_idx][x_idx-1][y_idx])
 	if y_idx>0:
-		neighbors.append(LayoutInfo.cells[x_idx][y_idx-1])
-	if x_idx<len(LayoutInfo.cells)-1:
-		neighbors.append(LayoutInfo.cells[x_idx+1][y_idx])
-	if y_idx<len(LayoutInfo.cells[0])-1:
-		neighbors.append(LayoutInfo.cells[x_idx][y_idx+1])
+		neighbors.append(LayoutInfo.cells[l_idx][x_idx][y_idx-1])
+	if x_idx<len(LayoutInfo.cells[l_idx])-1:
+		neighbors.append(LayoutInfo.cells[l_idx][x_idx+1][y_idx])
+	if y_idx<len(LayoutInfo.cells[l_idx][0])-1:
+		neighbors.append(LayoutInfo.cells[l_idx][x_idx][y_idx+1])
 	return neighbors
 
 func get_turn_track_from(slot, turn):
@@ -203,7 +205,7 @@ func get_turn_track_from(slot, turn):
 	assert(false)
 	
 func create_track(slot0, slot1):
-	var track = LayoutTrack.new(slot0, slot1, x_idx, y_idx)
+	var track = LayoutTrack.new(slot0, slot1, l_idx, x_idx, y_idx)
 	return track
 	
 func add_track(track):

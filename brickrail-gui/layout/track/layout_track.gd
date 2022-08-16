@@ -1,6 +1,7 @@
 class_name LayoutTrack
 extends Node2D
 
+var l_idx
 var x_idx
 var y_idx
 var slot0
@@ -50,15 +51,16 @@ signal unselected(obj)
 signal removing(orientation)
 signal sensor_changed(track)
 
-func _init(p_slot0, p_slot1, i, j):
+func _init(p_slot0, p_slot1, l, i, j):
 	
 	slot0 = p_slot0
 	slot1 = p_slot1
 	assert_slot_degeneracy()
 	
+	l_idx = l
 	x_idx = i
 	y_idx = j
-	id = "track_"+str(x_idx)+"_"+str(y_idx)+"_"+get_orientation()
+	id = "track_"+str(l_idx)+"_"+str(x_idx)+"_"+str(y_idx)+"_"+get_orientation()
 
 	connections[slot0] = {}
 	connections[slot1] = {}
@@ -84,6 +86,7 @@ func get_directed_from(slot):
 
 func serialize(reference=false):
 	var result = {}
+	result["l_idx"] = l_idx
 	result["x_idx"] = x_idx
 	result["y_idx"] = y_idx
 	var connections_result = {}
@@ -127,7 +130,7 @@ func get_logical_block():
 	return block.logical_blocks[1]
 
 func get_cell():
-	return LayoutInfo.cells[x_idx][y_idx]
+	return LayoutInfo.cells[l_idx][x_idx][y_idx]
 
 func get_center():
 	return (pos0 + pos1)*0.5
@@ -158,13 +161,13 @@ func load_switches(struct):
 		
 func get_slot_cell(slot):
 	if slot=="N":
-		return LayoutInfo.cells[x_idx][y_idx-1]
+		return LayoutInfo.cells[l_idx][x_idx][y_idx-1]
 	if slot=="S":
-		return LayoutInfo.cells[x_idx][y_idx+1]
+		return LayoutInfo.cells[l_idx][x_idx][y_idx+1]
 	if slot=="W":
-		return LayoutInfo.cells[x_idx-1][y_idx]
+		return LayoutInfo.cells[l_idx][x_idx-1][y_idx]
 	if slot=="E":
-		return LayoutInfo.cells[x_idx+1][y_idx]
+		return LayoutInfo.cells[l_idx][x_idx+1][y_idx]
 
 func remove():
 	clear_connections()
