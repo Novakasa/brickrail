@@ -5,10 +5,24 @@ export(NodePath) var input_select_button
 export(NodePath) var input_draw_button
 
 export(NodePath) var inspector_container
+export(NodePath) var layer_container
+export(NodePath) var layer_index_edit
 
 func _ready():
 	LayoutInfo.connect("input_mode_changed", self, "_on_input_mode_changed")
 	LayoutInfo.connect("selected", self, "_on_selected")
+	LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
+	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
+
+func _on_layers_changed():
+	var layers = get_node(layer_container)
+	layers.clear()
+	for layer in LayoutInfo.cells:
+		layers.add_item("layer "+str(layer))
+
+func _on_layer_container_item_selected(index):
+	var l = LayoutInfo.cells.keys()[index]
+	LayoutInfo.set_active_layer(l)
 
 func _on_input_mode_changed(mode):
 	var buttons = {
@@ -91,3 +105,8 @@ func _on_AutoTarget_toggled(button_pressed):
 
 func _on_SpinBox_value_changed(value):
 	LayoutInfo.time_scale = value
+
+
+func _on_add_layer_button_button_down():
+	var l = get_node(layer_index_edit).value
+	LayoutInfo.add_layer(l)

@@ -47,6 +47,19 @@ signal selected(obj)
 signal control_devices_changed(control_device)
 signal blocked_tracks_changed(trainname)
 signal random_targets_set(rand_target)
+signal layers_changed()
+signal active_layer_changed(l)
+
+func add_layer(l):
+	grid.add_layer(l)
+	emit_signal("layers_changed")
+	set_active_layer(l)
+
+func set_active_layer(l):
+	grid.get_node("layer"+str(active_layer)).visible=false
+	active_layer = l
+	grid.get_node("layer"+str(active_layer)).visible=true
+	emit_signal("active_layer_changed", l)
 
 func serialize():
 	var result = {}

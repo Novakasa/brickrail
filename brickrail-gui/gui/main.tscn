@@ -15,9 +15,6 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 theme = ExtResource( 7 )
 script = ExtResource( 5 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 layout = NodePath("VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport/Layout")
 train_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/trains/trains")
 layout_controller_container = NodePath("VBoxContainer/HSplitContainer/TabContainer/controllers/controllers")
@@ -175,7 +172,9 @@ script = ExtResource( 3 )
 input_control_button = NodePath("LayoutSplit/LayoutTools/LayoutControl")
 input_select_button = NodePath("LayoutSplit/LayoutTools/LayoutSelect")
 input_draw_button = NodePath("LayoutSplit/LayoutTools/LayoutDraw")
-inspector_container = NodePath("InspectorContainer")
+inspector_container = NodePath("VSplitContainer/InspectorContainer")
+layer_container = NodePath("VSplitContainer/VBoxContainer/LayerContainer")
+layer_index_edit = NodePath("VSplitContainer/VBoxContainer/HBoxContainer/layer_index_edit")
 
 [node name="LayoutSplit" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 806.0
@@ -300,13 +299,45 @@ render_target_update_mode = 3
 
 [node name="Layout" parent="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport" instance=ExtResource( 1 )]
 
-[node name="InspectorContainer" type="Panel" parent="VBoxContainer/HSplitContainer/LayoutGui"]
+[node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_left = 814.0
 margin_right = 1002.0
 margin_bottom = 689.0
+split_offset = 348
+
+[node name="InspectorContainer" type="Panel" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer"]
+margin_right = 188.0
+margin_bottom = 348.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer"]
+margin_top = 356.0
+margin_right = 188.0
+margin_bottom = 689.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
+margin_right = 188.0
+margin_bottom = 27.0
+
+[node name="add_layer_button" type="Button" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
+margin_right = 77.0
+margin_bottom = 27.0
+text = "add layer"
+
+[node name="layer_index_edit" type="SpinBox" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
+margin_left = 81.0
+margin_right = 157.0
+margin_bottom = 27.0
+min_value = -100.0
+rounded = true
+
+[node name="LayerContainer" type="ItemList" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 188.0
+margin_bottom = 333.0
+size_flags_vertical = 3
 
 [node name="SaveLayoutDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 700.0
@@ -343,5 +374,6 @@ filters = PoolStringArray( "*.brl ; brickrail layout" )
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/CheckBox" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
 [connection signal="toggled" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/AutoTarget" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
 [connection signal="value_changed" from="VBoxContainer/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/SpinBox" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
+[connection signal="button_down" from="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_add_layer_button_button_down"]
 [connection signal="file_selected" from="VBoxContainer/HSplitContainer/LayoutGui/SaveLayoutDialog" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_SaveLayoutDialog_file_selected"]
 [connection signal="file_selected" from="VBoxContainer/HSplitContainer/LayoutGui/OpenLayoutDialog" to="VBoxContainer/HSplitContainer/LayoutGui" method="_on_OpenLayoutDialog_file_selected"]

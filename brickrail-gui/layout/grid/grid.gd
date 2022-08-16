@@ -16,7 +16,7 @@ onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 signal grid_view_changed(p_pretty_tracks)
 
 func setup_grid():
-	add_layer(0)
+	LayoutInfo.add_layer(0)
 
 func add_layer(l):
 	var layer = Node2D.new()
