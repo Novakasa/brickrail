@@ -315,8 +315,6 @@ rect_min_size = Vector2( 300, 105 )
 window_title = "Save project"
 resizable = true
 filters = PoolStringArray( "*.brl ; brickrail layout" )
-current_dir = "res://user"
-current_path = "res://user/"
 
 [node name="OpenLayoutDialog" type="FileDialog" parent="VBoxContainer/HSplitContainer/LayoutGui"]
 margin_right = 700.0
@@ -326,8 +324,6 @@ window_title = "Open a File"
 resizable = true
 mode = 0
 filters = PoolStringArray( "*.brl ; brickrail layout" )
-current_dir = "res://user"
-current_path = "res://user/"
 
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/AddLayoutController" to="." method="_on_AddLayoutController_pressed"]

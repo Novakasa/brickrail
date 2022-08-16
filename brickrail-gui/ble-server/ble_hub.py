@@ -1,10 +1,8 @@
 import asyncio
 
-from pybricksdev.connections import PybricksHub
+from pybricksdev.connections.pybricks import PybricksHub
 from pybricksdev.ble import find_device
 from pathlib import Path
-
-import xarray
 
 from serial_data import SerialData
 
@@ -32,7 +30,8 @@ class BLEHub:
         self.out_queue = out_queue
         self.run_task = None
         self.msg_acknowledged = asyncio.Event()
-        self.dataset = xarray.Dataset()
+        self.running = False
+        self.initiated_run = False
     
     def set_name(self, name):
         self.name = name
@@ -64,7 +63,7 @@ class BLEHub:
         if " = " in raw.decode():
             key = raw.decode().split("=")[0][:-1]
             data = eval("=".join(raw.decode().split("=")[1:])[1:])
-            self.dataset[key] = data
+            # self.dataset[key] = data
             print(f"added data {key} to dataset")
             print(data)
             return
@@ -78,8 +77,16 @@ class BLEHub:
                 self.msg_acknowledged.set()
                 continue
             if line=="save_dataset":
-                self.dataset.to_netcdf("buffer_dump.nc")
+                # self.dataset.to_netcdf("buffer_dump.nc")
                 print("dumped dataset to buffer_dump.nc")
+                continue
+            if line.find("info::") == 0:
+                msg = line.split("info::")[1]
+                if msg == "ready":
+                    self.running = True
+                    self.initiated_run = False
+                    data = SerialData("program_started", self.name, None)
+                    await self.out_queue.put(data)
                 continue
             if line.find("data::") == 0:
                 print("got return data from hub!", line)
@@ -91,7 +98,7 @@ class BLEHub:
     
     async def output_loop(self):
         print("starting output handler loop")
-        while self.hub.program_running:
+        while self.running or self.initiated_run:
             while self.hub.output:
                 raw = self.hub.output.pop(0)
                 await self.handle_output(raw)
@@ -100,37 +107,27 @@ class BLEHub:
     
     async def run(self):
         print("initiating run!")
-        async def hub_run():
 
-            print(f"hub {self.name} run start!")
-            script_path = get_script_path(self.program)
+        script_path = get_script_path(self.program)
+        async def run_task():
             print("initiating run!")
-            await self.hub.run(script_path, wait=False, print_output=False)
-            while not self.hub.program_running:
-                await asyncio.sleep(0.05)
-            print("hub is now running!")
-            data = SerialData("program_started", self.name, None)
-            await self.out_queue.put(data)
-
-            await self.output_loop()
+            self.initiated_run = True
+            try:
+                await self.hub.run(script_path, wait=True, print_output=False)
+            finally:
+                self.running = False
+                self.initiated_run = False
+                data = SerialData("program_stopped", self.name, None)
+                await self.out_queue.put(data)
 
             print(f"hub {self.name} run complete!")
-            data = SerialData("program_stopped", self.name, None)
-            await self.out_queue.put(data)
-            self.run_task = None
-
-        self.run_task = asyncio.create_task(hub_run())
-        while not self.hub.program_running:
+        asyncio.create_task(run_task())
+        asyncio.create_task(self.output_loop())
+        while not self.running:
             await asyncio.sleep(0.05)
-        # await asyncio.sleep(1)
-        print(f"hub {self.name} is running now!") 
     
     async def stop(self):
         await self.send_message("stop_program", ack=False)
-
-    @property
-    def running(self):
-        return self.hub.program_running
     
     @property
     def connected(self):

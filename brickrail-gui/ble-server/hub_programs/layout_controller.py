@@ -174,6 +174,7 @@ def main_loop():
     loop_watch = StopWatch()
     loop_watch.resume()
     last_time = loop_watch.time()
+    print("info::ready$")
     while running:
         if p.poll(int(1000*max_delta)):
             char = stdin.read(1)
