@@ -24,10 +24,15 @@ func _on_section_track_added(track):
 			$AddSensor.visible=false
 			$SensorPanel.visible=true
 			update_marker_select()
+		if dirtrack.get_next() == null:
+			$AddPortal.visible=true
+		else:
+			$AddPortal.visible=false
 	else:
 		$AddSensor.visible=false
 		$SensorPanel.visible=false
 		$OneWayCheckbox.visible=false
+		$AddPortal.visible=false
 
 
 func _on_CreateBlock_pressed():
@@ -106,3 +111,8 @@ func _on_MarkerSelect_item_selected(index):
 
 func _on_OneWayCheckbox_toggled(button_pressed):
 	section.tracks[0].set_one_way(button_pressed)
+
+
+func _on_AddPortal_pressed():
+	LayoutInfo.set_portal_dirtrack(dirtrack)
+	LayoutInfo.set_input_mode("portal")

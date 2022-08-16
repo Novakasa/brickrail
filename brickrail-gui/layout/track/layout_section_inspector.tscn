@@ -33,10 +33,16 @@ margin_right = 156.0
 margin_bottom = 90.0
 text = "one way"
 
-[node name="SensorPanel" type="PanelContainer" parent="."]
+[node name="AddPortal" type="Button" parent="."]
 margin_top = 94.0
 margin_right = 156.0
-margin_bottom = 188.0
+margin_bottom = 114.0
+text = "add portal to..."
+
+[node name="SensorPanel" type="PanelContainer" parent="."]
+margin_top = 118.0
+margin_right = 156.0
+margin_bottom = 212.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -90,9 +96,9 @@ margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="CollectSegment" type="Button" parent="."]
-margin_top = 192.0
+margin_top = 216.0
 margin_right = 156.0
-margin_bottom = 212.0
+margin_bottom = 236.0
 text = "Collect segment"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -161,6 +167,7 @@ text = "OK"
 [connection signal="pressed" from="CreateBlock" to="." method="_on_CreateBlock_pressed"]
 [connection signal="pressed" from="AddSensor" to="." method="_on_AddSensor_pressed"]
 [connection signal="toggled" from="OneWayCheckbox" to="." method="_on_OneWayCheckbox_toggled"]
+[connection signal="pressed" from="AddPortal" to="." method="_on_AddPortal_pressed"]
 [connection signal="pressed" from="SensorPanel/SensorInspector/RemoveSensor" to="." method="_on_RemoveSensor_pressed"]
 [connection signal="item_selected" from="SensorPanel/SensorInspector/HBoxContainer/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
 [connection signal="pressed" from="CollectSegment" to="." method="_on_CollectSegment_pressed"]

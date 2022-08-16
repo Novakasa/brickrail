@@ -495,6 +495,12 @@ func process_mouse_button(event, pos):
 		
 		if LayoutInfo.input_mode == "draw":
 			LayoutInfo.init_connected_draw_track(self)
+		
+		if LayoutInfo.input_mode == "portal":
+			if (pos0-pos).length()<(pos1-pos).length():
+				LayoutInfo.set_portal_target(directed_tracks[slot0])
+			else:
+				LayoutInfo.set_portal_target(directed_tracks[slot1])
 
 func set_connection_attribute(slot, turn, key, value, operation):
 	if operation=="set":

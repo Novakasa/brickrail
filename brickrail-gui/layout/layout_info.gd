@@ -40,6 +40,9 @@ var drag_train = false
 var dragged_train = null
 var drag_virtual_train = null
 
+var portal_dirtrack = null
+var portal_target = null
+
 var random_targets = false
 var time_scale = 1.0
 
@@ -501,3 +504,22 @@ func draw_select(draw_cell):
 	elif drag_selection == null:
 		drawing_last2 = drawing_last
 		drawing_last = draw_cell
+
+func set_portal_dirtrack(dirtrack):
+	portal_dirtrack = dirtrack
+	if portal_target != null:
+		attempt_portal()
+
+func set_portal_target(track):
+	portal_target = track
+	if portal_dirtrack != null:
+		attempt_portal()
+
+func attempt_portal():
+	portal_dirtrack.track.connect_track(portal_dirtrack.next_slot, portal_target.track)
+	# FIXME
+	# TODO
+	
+	set_input_mode("select")
+	portal_dirtrack = null
+	portal_target = null
