@@ -93,7 +93,7 @@ func load(struct):
 	for track in struct.tracks:
 		var l = 0
 		if "l_idx" in track:
-			l = track.l_idx
+			l = int(track.l_idx)
 		var i = track.x_idx
 		var j = track.y_idx
 		var slot0 = track.connections.keys()[0]
@@ -104,7 +104,7 @@ func load(struct):
 	for track in struct.tracks:
 		var l = 0
 		if "l_idx" in track:
-			l = track.l_idx
+			l = int(track.l_idx)
 		var i = track.x_idx
 		var j = track.y_idx
 		var slot0 = track.connections.keys()[0]
@@ -147,7 +147,7 @@ func get_hover_lock():
 func get_track_from_struct(struct):
 	var l = 0
 	if "l_idx" in struct:
-		l = struct.l_idx
+		l = int(struct.l_idx)
 	var i = struct.x_idx
 	var j = struct.y_idx
 	var orientation
