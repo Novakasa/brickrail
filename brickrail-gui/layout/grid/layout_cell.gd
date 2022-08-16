@@ -20,6 +20,7 @@ var _redraw=false
 var track_material = preload("res://layout/grid/layout_cell_shader.tres")
 
 signal track_selected(cell, orientation)
+signal removing()
 
 func setup(p_l_idx, p_x_idx, p_y_idx):
 	l_idx = p_l_idx
@@ -27,6 +28,10 @@ func setup(p_l_idx, p_x_idx, p_y_idx):
 	y_idx = p_y_idx
 	
 	position = Vector2(x_idx, y_idx)*LayoutInfo.spacing
+
+func remove():
+	emit_signal("removing")
+	queue_free()
 	
 func _enter_tree():
 	$RenderCache.scale = Vector2(1,1)*LayoutInfo.spacing / 64

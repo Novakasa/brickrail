@@ -49,6 +49,8 @@ signal control_devices_changed(control_device)
 signal blocked_tracks_changed(trainname)
 signal random_targets_set(rand_target)
 signal layers_changed()
+signal layer_added(l)
+signal layer_removed(l)
 signal active_layer_changed(l)
 signal cell_added(cell)
 
@@ -62,14 +64,41 @@ func get_cell(l, i, j):
 	return cell
 
 func add_layer(l):
-	grid.add_layer(l)
+	assert(not l in cells)
+	cells[l] = []
+	for i in range(grid.nx):
+		cells[l].append([])
+		for j in range(grid.ny):
+			cells[l][i].append(null)
+	
+	emit_signal("layer_added", l)
 	emit_signal("layers_changed")
 	set_active_layer(l)
 
+func remove_layer(l):
+	assert(l in cells)
+	
+	if active_layer == l:
+		set_active_layer(null)
+	
+	for row in cells[l]:
+		for cell in row:
+			if cell == null:
+				continue
+			for track in cell.tracks.values():
+				track.remove()
+			cell.remove()
+	cells.erase(l)
+	
+	emit_signal("layer_removed", l)
+	emit_signal("layers_changed")
+
 func set_active_layer(l):
-	grid.get_node("layer"+str(active_layer)).visible=false
+	if active_layer != null:
+		grid.get_layer(active_layer).visible=false
 	active_layer = l
-	grid.get_node("layer"+str(active_layer)).visible=true
+	if active_layer != null:
+		grid.get_layer(active_layer).visible=true
 	emit_signal("active_layer_changed", l)
 
 func serialize():
@@ -81,6 +110,8 @@ func serialize():
 	for layer in cells:
 		for row in cells[layer]:
 			for cell in row:
+				if cell == null:
+					continue
 				for track in cell.tracks.values():
 					tracks.append(track.serialize())
 	
@@ -105,13 +136,10 @@ func clear():
 		train.remove()
 	for block in blocks.values():
 		block.remove()
-	for layer in cells:
-		for row in cells[layer]:
-			for cell in row:
-				if cell == null:
-					continue
-				for track in cell.tracks.values():
-					track.remove()
+	for layer in cells.keys():
+		remove_layer(layer)
+	
+	add_layer(0)
 
 func load(struct):
 	clear()
@@ -120,11 +148,13 @@ func load(struct):
 		var l = 0
 		if "l_idx" in track:
 			l = int(track.l_idx)
+		if not l in cells:
+			add_layer(l)
 		var i = track.x_idx
 		var j = track.y_idx
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
-		var track_obj = cells[l][i][j].create_track(slot0, slot1)
+		var track_obj = get_cell(l, i, j).create_track(slot0, slot1)
 		get_cell(l, i, j).add_track(track_obj)
 	
 	for track in struct.tracks:

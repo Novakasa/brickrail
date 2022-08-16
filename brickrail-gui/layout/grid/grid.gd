@@ -15,30 +15,32 @@ onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
 signal grid_view_changed(p_pretty_tracks)
 
-func setup_grid():
-	LayoutInfo.add_layer(0)
-
-func add_layer(l):
+func _on_layer_added(l):
 	var layer = Node2D.new()
 	layer.name = "layer" + str(l)
-	assert(get_node_or_null(layer.name)==null)
 	add_child(layer)
-	LayoutInfo.cells[l] = []
-	for i in range(nx):
-		LayoutInfo.cells[l].append([])
-		for j in range(ny):
-			LayoutInfo.cells[l][i].append(null)
+
+func _on_layer_removed(l):
+	var layer = get_layer(l)
+	remove_child(layer)
+	layer.queue_free()
+
+func get_layer(l):
+	return get_node("layer"+str(l))
 
 func _on_cell_added(cell):
-	var layer = get_node("layer"+str(cell.l_idx))
+	var layer = get_layer(cell.l_idx)
 	layer.add_child(cell)
 	cell.connect("track_selected", self, "_on_cell_track_selected")
 
 func _ready():
 	
 	LayoutInfo.connect("cell_added", self, "_on_cell_added")
+	LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
+	LayoutInfo.connect("layer_added", self, "_on_layer_added")
 	LayoutInfo.grid = self
-	setup_grid()
+	
+	LayoutInfo.add_layer(0)
 
 func _draw():
 	
@@ -92,8 +94,15 @@ func process_mouse_motion(event, i, j, mpos_cell):
 		train.stop_hover()
 	if hover_cell != null && hover_cell != LayoutInfo.get_cell(l, i, j):
 		hover_cell.stop_hover()
+		hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
 	hover_cell = LayoutInfo.get_cell(l, i, j)
 	hover_cell.hover_at(mpos_cell)
+	hover_cell.connect("removing", self, "_on_hover_cell_removing")
+
+func _on_hover_cell_removing():
+	hover_cell.stop_hover()
+	hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
+	hover_cell = null
 
 func stop_hover():
 	if hover_cell != null:
