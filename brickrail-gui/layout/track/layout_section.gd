@@ -201,7 +201,7 @@ func get_next_segments():
 func get_locked():
 	var locked = []
 	for track in tracks:
-		var cell = LayoutInfo.cells[track.track.l_idx][track.track.x_idx][track.track.y_idx]
+		var cell = LayoutInfo.get_cell(track.track.l_idx, track.track.x_idx, track.track.y_idx)
 		for coll_track in cell.get_colliding_tracks(track.track.get_orientation()):
 			for locked_train in coll_track.get_locked():
 				if not locked_train in locked:

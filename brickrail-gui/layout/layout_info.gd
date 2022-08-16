@@ -11,6 +11,7 @@ var switches = {}
 var nodes = {}
 
 var BlockScene = preload("res://layout/block/layout_block.tscn")
+onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
 var active_layer = 0
 
@@ -49,6 +50,16 @@ signal blocked_tracks_changed(trainname)
 signal random_targets_set(rand_target)
 signal layers_changed()
 signal active_layer_changed(l)
+signal cell_added(cell)
+
+func get_cell(l, i, j):
+	if cells[l][i][j] != null:
+		return cells[l][i][j]
+	var cell = LayoutCell.instance()
+	cells[l][i][j] = cell
+	cell.setup(l, i, j)
+	emit_signal("cell_added", cell)
+	return cell
 
 func add_layer(l):
 	grid.add_layer(l)
@@ -97,6 +108,8 @@ func clear():
 	for layer in cells:
 		for row in cells[layer]:
 			for cell in row:
+				if cell == null:
+					continue
 				for track in cell.tracks.values():
 					track.remove()
 
@@ -112,7 +125,7 @@ func load(struct):
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
 		var track_obj = cells[l][i][j].create_track(slot0, slot1)
-		cells[l][i][j].add_track(track_obj)
+		get_cell(l, i, j).add_track(track_obj)
 	
 	for track in struct.tracks:
 		var l = 0
@@ -123,7 +136,7 @@ func load(struct):
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
 		var orientation = slot0 + slot1
-		var track_obj = cells[l][i][j].tracks[orientation]
+		var track_obj = get_cell(l, i, j).tracks[orientation]
 		track_obj.load_connections(track.connections)
 		if "switches" in track:
 			track_obj.load_switches(track.switches)
@@ -168,7 +181,7 @@ func get_track_from_struct(struct):
 		orientation = struct.orientation
 	else:
 		orientation = struct["slot0"] + struct["slot1"]
-	return cells[l][i][j].tracks[orientation]
+	return get_cell(l, i, j).tracks[orientation]
 
 func create_block(p_name, section):
 	assert(not p_name in blocks)
@@ -329,7 +342,7 @@ func stop_draw_track():
 		neighbor.set_drawing_highlight(false)
 
 func init_connected_draw_track(track):
-	var cell = cells[track.l_idx][track.x_idx][track.y_idx]
+	var cell = get_cell(track.l_idx, track.x_idx, track.y_idx)
 	init_draw_track(cell)
 	set_drawing_last_track(track)
 
@@ -337,7 +350,7 @@ func init_drag_select(track, slot):
 	drag_selection = LayoutSection.new()
 	drag_selection.add_track(track.get_directed_to(slot))
 	drag_select = true
-	drawing_last = cells[track.l_idx][track.x_idx][track.y_idx]
+	drawing_last = get_cell(track.l_idx, track.x_idx, track.y_idx)
 	drawing_last2 = null
 	set_drawing_last_track(null)
 	drag_selection.select()
@@ -368,7 +381,7 @@ func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
 		for p in line:
-			var iter_cell = cells[cell.l_idx][p[0]][p[1]]
+			var iter_cell = get_cell(cell.l_idx, p[0], p[1])
 			draw_track_add_cell(iter_cell)
 	
 func draw_track_add_cell(draw_cell):
@@ -419,7 +432,7 @@ func drag_select_hover_cell(cell):
 		drawing_last.set_drawing_highlight(true)
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
 		for p in line:
-			var iter_cell = cells[cell.l_idx][p[0]][p[1]]
+			var iter_cell = get_cell(cell.l_idx, p[0], p[1])
 			iter_cell.set_drawing_highlight(true)
 			drag_select_highlighted.append(iter_cell)
 			draw_select(iter_cell)

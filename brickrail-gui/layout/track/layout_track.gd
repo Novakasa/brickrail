@@ -161,13 +161,13 @@ func load_switches(struct):
 		
 func get_slot_cell(slot):
 	if slot=="N":
-		return LayoutInfo.cells[l_idx][x_idx][y_idx-1]
+		return LayoutInfo.get_cell(l_idx, x_idx, y_idx-1)
 	if slot=="S":
-		return LayoutInfo.cells[l_idx][x_idx][y_idx+1]
+		return LayoutInfo.get_cell(l_idx, x_idx, y_idx+1)
 	if slot=="W":
-		return LayoutInfo.cells[l_idx][x_idx-1][y_idx]
+		return LayoutInfo.get_cell(l_idx, x_idx-1, y_idx)
 	if slot=="E":
-		return LayoutInfo.cells[l_idx][x_idx+1][y_idx]
+		return LayoutInfo.get_cell(l_idx, x_idx+1, y_idx)
 
 func remove():
 	clear_connections()

@@ -27,12 +27,16 @@ func add_layer(l):
 	for i in range(nx):
 		LayoutInfo.cells[l].append([])
 		for j in range(ny):
-			LayoutInfo.cells[l][i].append(LayoutCell.instance())
-			layer.add_child(LayoutInfo.cells[l][i][j])
-			LayoutInfo.cells[l][i][j].setup(l, i, j)
-			LayoutInfo.cells[l][i][j].connect("track_selected", self, "_on_cell_track_selected")
+			LayoutInfo.cells[l][i].append(null)
+
+func _on_cell_added(cell):
+	var layer = get_node("layer"+str(cell.l_idx))
+	layer.add_child(cell)
+	cell.connect("track_selected", self, "_on_cell_track_selected")
 
 func _ready():
+	
+	LayoutInfo.connect("cell_added", self, "_on_cell_added")
 	LayoutInfo.grid = self
 	setup_grid()
 
@@ -73,7 +77,7 @@ func process_mouse_input(event):
 	if not (i>=0 and i<nx and j>=0 and j<ny):
 		return
 	var l = LayoutInfo.active_layer
-	var mpos_cell = mpos-LayoutInfo.cells[l][i][j].position
+	var mpos_cell = mpos-LayoutInfo.spacing*Vector2(i,j)
 	if event is InputEventMouseMotion:
 		process_mouse_motion(event, i, j, mpos_cell)
 	if event is InputEventMouseButton:
@@ -86,9 +90,9 @@ func process_mouse_motion(event, i, j, mpos_cell):
 
 	for train in LayoutInfo.trains.values():
 		train.stop_hover()
-	if hover_cell != null && hover_cell != LayoutInfo.cells[l][i][j]:
+	if hover_cell != null && hover_cell != LayoutInfo.get_cell(l, i, j):
 		hover_cell.stop_hover()
-	hover_cell = LayoutInfo.cells[l][i][j]
+	hover_cell = LayoutInfo.get_cell(l, i, j)
 	hover_cell.hover_at(mpos_cell)
 
 func stop_hover():
@@ -126,7 +130,7 @@ func process_mouse_button(event, i, j, mpos_cell):
 				return
 	
 	var l = LayoutInfo.active_layer
-	LayoutInfo.cells[l][i][j].process_mouse_button(event, mpos_cell)
+	LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell)
 	
 	if event.button_index == BUTTON_LEFT:
 		if not event.pressed:

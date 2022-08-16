@@ -29,11 +29,11 @@ texture = SubResource( 1 )
 centered = false
 
 [node name="RenderDynamic" type="Sprite" parent="."]
-visible = false
 material = ExtResource( 2 )
 texture = SubResource( 3 )
 centered = false
 
 [node name="RenderCache" type="Sprite" parent="."]
+visible = false
 texture = SubResource( 2 )
 centered = false

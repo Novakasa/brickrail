@@ -14,7 +14,6 @@ var state_matrix_right = [Vector3(), Vector3(), Vector3(), Vector3()]
 var state_matrix_none = [Vector3(), Vector3(), Vector3(), Vector3()]
 var drawing_highlight = false
 
-#test
 
 var _redraw=false
 
@@ -187,13 +186,13 @@ func get_slot_to_cell(cell):
 func get_neighbors():
 	var neighbors = []
 	if x_idx>0:
-		neighbors.append(LayoutInfo.cells[l_idx][x_idx-1][y_idx])
+		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx-1, y_idx))
 	if y_idx>0:
-		neighbors.append(LayoutInfo.cells[l_idx][x_idx][y_idx-1])
+		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx, y_idx-1))
 	if x_idx<len(LayoutInfo.cells[l_idx])-1:
-		neighbors.append(LayoutInfo.cells[l_idx][x_idx+1][y_idx])
+		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx+1, y_idx))
 	if y_idx<len(LayoutInfo.cells[l_idx][0])-1:
-		neighbors.append(LayoutInfo.cells[l_idx][x_idx][y_idx+1])
+		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx, y_idx+1))
 	return neighbors
 
 func get_turn_track_from(slot, turn):
