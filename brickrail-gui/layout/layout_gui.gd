@@ -12,6 +12,7 @@ func _ready():
 	LayoutInfo.connect("input_mode_changed", self, "_on_input_mode_changed")
 	LayoutInfo.connect("selected", self, "_on_selected")
 	LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
+	LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
 	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
 
 func _on_layers_changed():
@@ -19,6 +20,13 @@ func _on_layers_changed():
 	layers.clear()
 	for layer in LayoutInfo.cells:
 		layers.add_item("layer "+str(layer))
+	
+	var edit = get_node(layer_index_edit)
+	edit.value = len(LayoutInfo.cells)
+
+func _on_active_layer_changed(l):
+	var index = LayoutInfo.cells.keys().find(l)
+	get_node(layer_container).select(index)
 
 func _on_layer_container_item_selected(index):
 	var l = LayoutInfo.cells.keys()[index]
@@ -108,5 +116,7 @@ func _on_SpinBox_value_changed(value):
 
 
 func _on_add_layer_button_button_down():
-	var l = get_node(layer_index_edit).value
+	var edit = get_node(layer_index_edit)
+	var l = int(edit.value)
+	edit.value = l+1
 	LayoutInfo.add_layer(l)

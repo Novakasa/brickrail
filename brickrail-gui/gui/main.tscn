@@ -331,6 +331,7 @@ margin_left = 81.0
 margin_right = 157.0
 margin_bottom = 27.0
 min_value = -100.0
+value = 1.0
 rounded = true
 
 [node name="LayerContainer" type="ItemList" parent="VBoxContainer/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
