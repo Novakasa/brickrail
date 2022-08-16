@@ -92,12 +92,14 @@ func process_mouse_motion(event, i, j, mpos_cell):
 
 	for train in LayoutInfo.trains.values():
 		train.stop_hover()
-	if hover_cell != null && hover_cell != LayoutInfo.get_cell(l, i, j):
+	var cell = LayoutInfo.get_cell(l, i, j)
+	if hover_cell != null && hover_cell != cell:
 		hover_cell.stop_hover()
 		hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
-	hover_cell = LayoutInfo.get_cell(l, i, j)
+	if hover_cell != cell:
+		hover_cell = cell
+		hover_cell.connect("removing", self, "_on_hover_cell_removing")
 	hover_cell.hover_at(mpos_cell)
-	hover_cell.connect("removing", self, "_on_hover_cell_removing")
 
 func _on_hover_cell_removing():
 	hover_cell.stop_hover()

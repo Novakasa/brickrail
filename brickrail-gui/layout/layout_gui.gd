@@ -25,6 +25,9 @@ func _on_layers_changed():
 	edit.value = len(LayoutInfo.cells)
 
 func _on_active_layer_changed(l):
+	if l==null:
+		get_node(layer_container).unselect_all()
+		return
 	var index = LayoutInfo.cells.keys().find(l)
 	get_node(layer_container).select(index)
 
