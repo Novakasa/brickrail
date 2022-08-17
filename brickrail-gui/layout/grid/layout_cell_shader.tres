@@ -68,6 +68,7 @@ const int TRACK_BLOCK_PLUS = 5;
 const int TRACK_BLOCK_MINUS = 6;
 const int TRACK_STOPPER = 7;
 const int TRACK_PORTAL = 8;
+const int TRACK_PORTAL_TRACK = 9;
 
 const int TURN_BASE = 0;
 const int TURN_SWITCH_ALL = 1;
@@ -262,9 +263,13 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		}
 		if (track_type == TRACK_PORTAL) {
 			vec2 stopper_pos = from_pos+tangent*stopper_delta;
-			float stopper = line(position, stopper_pos-track_width*tangent*0.5, stopper_pos-track_width*tangent*0.5, track_width*1.5);
+			float stopper = line(position, stopper_pos-track_width*tangent*0.5, stopper_pos-track_width*tangent*0.5, track_width*2.0);
 			scene = merge(scene, stopper);
 			return scene;
+		}
+		if (track_type == TRACK_PORTAL_TRACK) {
+			float straight = line(position, from_pos, to_pos+tangent, width);
+			scene = merge(scene, straight);
 		}
 		if (track_type == TRACK_BLOCK) {
 			float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, vec2(block_width-0.2))-0.2;
@@ -450,12 +455,14 @@ void fragment() {
 	
 	int track_state;
 	int track_state_stopper;
+	float portal = tracks(position, STATE_PORTAL, TRACK_PORTAL, track_state_stopper);
+	mix_sdf(portal, color_mix, vec4(0.0, 0.0, 0.0, 1.0));
+	float portal_track = tracks(position, STATE_PORTAL, TRACK_PORTAL_TRACK, track_state_stopper);
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
 	float stopper = tracks(position, STATE_STOPPER, TRACK_STOPPER, track_state_stopper);
-	float portal = tracks(position, STATE_PORTAL, TRACK_PORTAL, track_state_stopper);
 	int state = track_state;
 	base = merge(base, stopper);
-	float t = mix_sdf(merge(base, portal), color_mix, get_border_color(state));
+	float t = mix_sdf(base, color_mix, get_border_color(state));
 	
 	int state_dummy;
 	if (t > 0.0) {
@@ -485,6 +492,13 @@ void fragment() {
 			mix_sdf(switch_arrows, color_mix, switch_color);
 		}
 	}
+	float portal_track_intersected = intersect(portal_track, portal);
+	mix_sdf(portal_track_intersected, color_mix, get_border_color(state));
+	float portal_track_inner = portal_track + track_width - inner_track_width;
+	portal_track_inner = intersect(portal_track_inner, portal);
+	mix_sdf(portal_track_inner, color_mix, get_inner_color(state));
+	
+	
 	COLOR = color_mix;
 	
 	if (contours) {

@@ -518,9 +518,6 @@ func set_portal_target(track):
 
 func attempt_portal():
 	portal_dirtrack.create_portal_to(portal_target)
-	# FIXME
-	# TODO
-	
 	set_input_mode("select")
 	portal_dirtrack = null
 	portal_target = null
