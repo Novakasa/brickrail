@@ -248,13 +248,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	}
 	if (turn_index == 2) {
 		if (track_type == TRACK_FULL) {
-			vec2 end_pos = from_pos+tangent*stopper_delta;
-			vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
-			straight_end = end_pos+ normalize(tangent)*stopper_width*0.5;
-			float straight = line_rect(position, from_pos+tangent*0.5, straight_end, width);
-			// straight = line(position, from_pos+tangent*0.5, straight_end, width);
-			scene = merge(scene, straight);
-			float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, width);
+			vec2 end_pos = from_pos+tangent*(stopper_delta+stopper_width);
+			float round_straight = line(position, from_pos+tangent*0.5, end_pos - normalize(tangent)*track_width, width);
 			scene = merge(scene, round_straight);
 			// float endcap = circle(position-from_pos-tangent*0.5, width);
 			// scene = merge(scene, endcap);
@@ -267,7 +262,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		}
 		if (track_type == TRACK_PORTAL) {
 			vec2 stopper_pos = from_pos+tangent*stopper_delta;
-			float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
+			float stopper = line(position, stopper_pos-track_width*tangent*0.5, stopper_pos-track_width*tangent*0.5, track_width*1.5);
 			scene = merge(scene, stopper);
 			return scene;
 		}
