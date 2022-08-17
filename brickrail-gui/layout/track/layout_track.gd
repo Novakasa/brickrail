@@ -39,6 +39,8 @@ const STATE_SWITCH = 256
 const STATE_SWITCH_PRIORITY = 512
 const STATE_ARROW = 1024
 const STATE_MARK = 8192
+const STATE_PORTAL = 16384
+const STATE_STOPPER = 32768
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
@@ -543,6 +545,10 @@ func get_shader_state(to_slot, turn):
 		state |= STATE_CONNECTED
 	if turn == "none" and len(connections[to_slot])==0:
 		state |= STATE_CONNECTED
+		if directed_tracks[to_slot].portal == null:
+			state |= STATE_STOPPER
+		else:
+			state |= STATE_PORTAL
 	if turn != "none" and turn in connections[to_slot]:
 		var opposite_switch = get_opposite_switch(to_slot, turn)
 		var opposite_turn = get_turn_from(to_slot)

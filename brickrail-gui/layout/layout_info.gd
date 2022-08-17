@@ -516,7 +516,7 @@ func set_portal_target(track):
 		attempt_portal()
 
 func attempt_portal():
-	portal_dirtrack.track.connect_track(portal_dirtrack.next_slot, portal_target.track)
+	portal_dirtrack.create_portal_to(portal_target)
 	# FIXME
 	# TODO
 	

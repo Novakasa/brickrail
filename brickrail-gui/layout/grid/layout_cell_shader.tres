@@ -54,6 +54,8 @@ const int STATE_SWITCH = 256;
 const int STATE_SWITCH_PRIORITY = 512;
 const int STATE_ARROW = 1024;
 const int STATE_MARK = 8192;
+const int STATE_PORTAL = 16384;
+const int STATE_STOPPER = 32768;
 
 const float PI = 3.14159265358979323846;
 
@@ -64,6 +66,8 @@ const int TRACK_ARROW = 3;
 const int TRACK_BLOCK = 4;
 const int TRACK_BLOCK_PLUS = 5;
 const int TRACK_BLOCK_MINUS = 6;
+const int TRACK_STOPPER = 7;
+const int TRACK_PORTAL = 8;
 
 const int TURN_BASE = 0;
 const int TURN_SWITCH_ALL = 1;
@@ -248,12 +252,21 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			vec2 straight_end = end_pos+ normalize(tangent)*stopper_width;
 			straight_end = end_pos+ normalize(tangent)*stopper_width*0.5;
 			float straight = line_rect(position, from_pos+tangent*0.5, straight_end, width);
+			// straight = line(position, from_pos+tangent*0.5, straight_end, width);
 			scene = merge(scene, straight);
 			float round_straight = line(position, from_pos+tangent*0.5, straight_end - normalize(tangent)*track_width, width);
 			scene = merge(scene, round_straight);
 			// float endcap = circle(position-from_pos-tangent*0.5, width);
 			// scene = merge(scene, endcap);
-			vec2 stopper_pos = end_pos;
+		}
+		if (track_type == TRACK_STOPPER) {
+			vec2 stopper_pos = from_pos+tangent*stopper_delta;
+			float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
+			scene = merge(scene, stopper);
+			return scene;
+		}
+		if (track_type == TRACK_PORTAL) {
+			vec2 stopper_pos = from_pos+tangent*stopper_delta;
 			float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
 			scene = merge(scene, stopper);
 			return scene;
@@ -278,8 +291,6 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			center += tangent*0.25*(2.0-sqrt(2.0));
 			float straight = line(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0)),width);
 			scene = merge(scene, straight);
-			// float endcap = circle(position-from_pos-tangent*0.5, width);
-			// scene = merge(scene, endcap);
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
 		scene = merge(scene, connection);
@@ -341,9 +352,6 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 			float width = track_width;
 			for (int flag=0; flag<4; flag++) {
 				int turn = flag-1;
-				if (turn == 2 && turn_type!=STATE_CONNECTED && turn_type!=STATE_BLOCK && turn_type!=STATE_ARROW) {
-					break;
-				}
 				if ((turn_state[flag] & turn_type) != turn_type) {
 					if (flag < 3) {
 						continue;
@@ -422,7 +430,7 @@ void fragment() {
 		color_mix = background_hover;
 	}
 	if (cell_drawing_highlight) {
-		color_mix = background_drawing_highlight
+		color_mix = background_drawing_highlight;
 	}
 	vec2 position = UV;
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
@@ -446,9 +454,13 @@ void fragment() {
 	}
 	
 	int track_state;
+	int track_state_stopper;
 	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state);
+	float stopper = tracks(position, STATE_STOPPER, TRACK_STOPPER, track_state_stopper);
+	float portal = tracks(position, STATE_PORTAL, TRACK_PORTAL, track_state_stopper);
 	int state = track_state;
-	float t = mix_sdf(base, color_mix, get_border_color(state));
+	base = merge(base, stopper);
+	float t = mix_sdf(merge(base, portal), color_mix, get_border_color(state));
 	
 	int state_dummy;
 	if (t > 0.0) {
@@ -524,5 +536,5 @@ shader_param/has_switch = true
 shader_param/has_block = true
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 4296, 0, 0, 0, 0, 0, 1152.68, 0 )
-shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 72, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 4296, 0, 0, 0, 0, 0, 0, 0 )
+shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 16512, 0 )
