@@ -409,6 +409,7 @@ func stop_drag_select():
 	drag_select = false
 	for cell in drag_select_highlighted:
 		cell.set_drawing_highlight(false)
+	drag_select_highlighted = []
 
 func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
