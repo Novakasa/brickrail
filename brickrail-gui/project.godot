@@ -161,6 +161,7 @@ config/icon="res://icon1.png"
 LayoutInfo="*res://layout/layout_info.gd"
 Devices="*res://devices/devices.tscn"
 Settings="*res://gui/settings.gd"
+Tools="*res://tools/tools.gd"
 
 [display]
 

@@ -220,7 +220,6 @@ func add_track(track):
 	tracks[track.get_orientation()] = track
 	track.connect("connections_changed", self, "_on_track_connections_changed")
 	track.connect("states_changed", self, "_on_track_states_changed")
-	track.connect("switch_position_changed", self, "_on_track_connections_changed")
 	track.connect("removing", self, "_on_track_removing")
 	track.connect("selected", self, "_on_track_selected")
 	# update()
@@ -231,8 +230,8 @@ func _on_track_removing(orientation):
 	var track = tracks[orientation]
 	track.disconnect("connections_changed", self, "_on_track_connections_changed")
 	track.disconnect("states_changed", self, "_on_track_states_changed")
-	track.disconnect("switch_position_changed", self, "_on_track_connections_changed")
 	track.disconnect("removing", self, "_on_track_removing")
+	track.disconnect("selected", self, "_on_track_selected")
 	tracks.erase(orientation)
 	if track == hover_obj:
 		set_hover_obj(null)

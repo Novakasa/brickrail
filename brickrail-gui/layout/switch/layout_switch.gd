@@ -17,8 +17,8 @@ var directed_track
 
 var SwitchInspector = preload("res://layout/switch/switch_inspector.tscn")
 
-signal position_changed(slot, pos)
-signal state_changed(slot)
+signal position_changed(pos)
+signal state_changed()
 signal selected
 signal unselected
 signal removing(id)
@@ -74,7 +74,7 @@ func set_motor1(motor):
 	if motor1.position != "unknown":
 		var pos = dev1_to_pos(motor1.position)
 		position_index = switch_positions.find(pos)
-		emit_signal("position_changed", slot, pos)
+		emit_signal("position_changed", pos)
 	
 	motor1.connect("position_changed", self, "_on_motor1_position_changed")
 	motor1.connect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
@@ -91,20 +91,20 @@ func _on_motor1_removing(_controllername, _port):
 func _on_motor1_responsiveness_changed(responsiveness):
 	disabled = not responsiveness
 	prints("switch responsiveness:", responsiveness)
-	emit_signal("position_changed", slot, switch_positions[position_index])
+	emit_signal("position_changed", switch_positions[position_index])
 
 func _on_motor1_position_changed(ble_pos):
 	var pos = dev1_to_pos(ble_pos)
 	position_index = switch_positions.find(pos)
-	emit_signal("position_changed", slot, pos)
+	emit_signal("position_changed", pos)
 
 func hover():
 	hover=true
-	emit_signal("state_changed", slot)
+	emit_signal("state_changed")
 
 func stop_hover():
 	hover=false
-	emit_signal("state_changed", slot)
+	emit_signal("state_changed")
 
 func toggle_switch():
 	var new_index = (position_index+1) % len(switch_positions)
@@ -136,7 +136,7 @@ func switch(pos):
 		position_index = switch_positions.find(pos)
 	else:
 		position_index = switch_positions.find(pos)
-		emit_signal("position_changed", slot, pos)
+		emit_signal("position_changed", pos)
 
 func get_position():
 	return switch_positions[position_index]
@@ -152,12 +152,12 @@ func select():
 	LayoutInfo.select(self)
 	selected=true
 	emit_signal("selected")
-	emit_signal("state_changed", slot)
+	emit_signal("state_changed")
 
 func unselect():
 	selected=false
 	emit_signal("unselected")
-	emit_signal("state_changed", slot)
+	emit_signal("state_changed")
 
 func get_inspector():
 	var inspector = SwitchInspector.instance()
