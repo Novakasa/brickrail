@@ -40,9 +40,9 @@ func get_train():
 
 func set_section(p_section):
 	
-	if len(p_section.get_sensor_tracks()) == 0:
-		p_section.tracks[0].track.add_sensor(LayoutSensor.new())
-		p_section.tracks[-1].track.add_sensor(LayoutSensor.new())
+	if len(p_section.get_sensors()) == 0:
+		p_section.tracks[0].add_sensor(LayoutSensor.new())
+		p_section.tracks[-1].add_sensor(LayoutSensor.new())
 	
 	logical_blocks[0].set_section(p_section)
 	logical_blocks[1].set_section(p_section.flip())
@@ -50,7 +50,7 @@ func set_section(p_section):
 	section = p_section
 	
 	var index = len(p_section.tracks)/2
-	var track = p_section.tracks[index].track
+	var track = p_section.tracks[index]
 	var tangent = track.get_tangent()
 	while tangent.angle()>PI/2:
 		tangent = tangent.rotated(-PI)
@@ -60,7 +60,7 @@ func set_section(p_section):
 	$scaler/Label.set_text(blockname)
 	size = $scaler.scale*$scaler/Label.rect_size
 	
-	position = track.get_cell().position + LayoutInfo.spacing*track.get_center()
+	position = track.get_position() + LayoutInfo.spacing*track.get_center()
 	position -= 0.5*size.y*tangent.rotated(PI*0.5)
 	rotation = tangent.angle()
 	

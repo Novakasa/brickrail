@@ -197,11 +197,10 @@ func set_hover(p_hover):
 	update()
 
 func set_dirtrack(p_dirtrack):
-	var track = p_dirtrack.track
 	dirtrack = p_dirtrack
 	turn = dirtrack.get_next_turn()
 	length = dirtrack.get_connection_length(turn)
-	position = LayoutInfo.spacing*(Vector2(track.x_idx, track.y_idx) + track.get_center())
+	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
 	rotation = dirtrack.get_rotation()
 
 func _init():

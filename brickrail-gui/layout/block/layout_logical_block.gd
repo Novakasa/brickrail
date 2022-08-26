@@ -34,11 +34,7 @@ func set_section(p_section):
 	section.connect("sensor_changed", self, "_on_section_sensor_changed")
 	find_sensors()
 
-func _on_section_sensor_changed(track):
-	if "enter" in sensors and sensors["enter"].track == track:
-		sensors.erase("enter")
-	if "in" in sensors and sensors["in"].track == track:
-		sensors.erase("in")
+func _on_section_sensor_changed():
 	find_sensors()
 
 func _on_sensor_in_triggered(p_train):
@@ -48,21 +44,23 @@ func _on_sensor_enter_triggered(p_train):
 	emit_signal("train_entered", p_train)
 
 func find_sensors():
-	if "enter" in sensors:
-		sensors["enter"].track.sensor.disconnect("triggered", self, "_on_sensor_enter_triggered")
-	if "in" in sensors:
-		sensors["in"].track.sensor.disconnect("triggered", self, "_on_sensor_in_triggered")
+	var sensorlist = section.get_sensors()
 	
-	var sensorlist = section.get_sensor_tracks()
-	
-	sensors = {}
 	if len(sensorlist)<2:
+		set_sensor("enter", null)
+		set_sensor("in", null)
 		return
-	sensors["enter"] = sensorlist[0]
-	sensors["in"] = sensorlist[-1]
 	
-	sensors["enter"].track.sensor.connect("triggered", self, "_on_sensor_enter_triggered")
-	sensors["in"].track.sensor.connect("triggered", self, "_on_sensor_in_triggered")
+	set_sensor("enter", sensorlist[0])
+	set_sensor("in", sensorlist[-1])
+
+func set_sensor(key, sensor):
+	if key in sensors:
+		sensors[key].disconnect("triggered", self, "_on_sensor_enter_triggered")
+	sensors.erase(key)
+	if sensor != null:
+		sensors[key] = sensor
+		sensor.connect("triggered", self, "_on_sensor_enter_triggered")
 
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
@@ -135,7 +133,7 @@ func hover(pos):
 	section.set_track_attributes("block", blockname)
 	
 	if LayoutInfo.drag_train:
-		LayoutInfo.drag_virtual_train.set_dirtrack(sensors["in"])
+		LayoutInfo.drag_virtual_train.set_dirtrack(section.tracks[-1])
 		LayoutInfo.drag_virtual_train.visible=true
 
 func stop_hover():

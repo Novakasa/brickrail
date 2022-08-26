@@ -377,7 +377,7 @@ func set_current_block(p_block, teleport=true):
 		block.set_occupied(true, self)
 		virtual_train.visible=true
 		if teleport:
-			virtual_train.set_dirtrack(block.sensors["in"])
+			virtual_train.set_dirtrack(block.section.tracks[-1])
 	else:
 		virtual_train.visible=false
 

@@ -44,8 +44,10 @@ func _init(p_slot0, p_slot1, l, i, j):
 
 	directed_tracks[slot0] = DirectedLayoutTrack.new(slot1, slot0, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot0].connect("states_changed", self, "_on_dirtrack_states_changed")
+	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
+	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
 	
 	directed_tracks[slot0].set_opposite(directed_tracks[slot1])
 	directed_tracks[slot1].set_opposite(directed_tracks[slot0])
@@ -61,6 +63,9 @@ func get_directed_to(slot):
 
 func get_directed_from(slot):
 	return directed_tracks[get_opposite_slot(slot)]
+
+func get_dirtracks():
+	return directed_tracks.values()
 
 func serialize(reference=false):
 	var result = {}
@@ -354,8 +359,19 @@ func get_locked():
 	return locked
 
 func add_sensor(p_sensor):
+	set_sensor(p_sensor)
+
+func set_sensor(p_sensor):
+	if sensor != null:
+		sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		
 	sensor = p_sensor
-	sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+	for dirtrack in directed_tracks.values():
+		dirtrack.set_sensor(sensor)
+	
+	if sensor != null:
+		sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+	
 	emit_signal("states_changed", get_orientation())
 	emit_signal("sensor_changed", self)
 	update()
@@ -369,11 +385,7 @@ func _on_sensor_marker_color_changed():
 	emit_signal("states_changed", get_orientation())
 
 func remove_sensor():
-	sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
-	sensor = null
-	emit_signal("states_changed", get_orientation())
-	emit_signal("sensor_changed", self)
-	update()
+	set_sensor(null)
 
 func set_drawing_highlight(highlight):
 	drawing_highlight = highlight

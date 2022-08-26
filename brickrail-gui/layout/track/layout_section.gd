@@ -8,7 +8,7 @@ var hover = false
 signal selected
 signal unselected
 signal track_added(track)
-signal sensor_changed(track)
+signal sensor_changed()
 
 var LayoutSectionInspector = preload("res://layout/track/layout_section_inspector.tscn")
 
@@ -27,13 +27,15 @@ func load(struct):
 
 func can_add_track(track):
 	if len(tracks)>0:
-		var last_track = tracks[-1].track
-		var connected_slot = last_track.get_connected_slot(track)
-		if connected_slot == null:
-			return false
-		if len(tracks) > 1:
-			if connected_slot != get_stop_slot():
-				return false
+		var last_track = tracks[-1]
+		
+		if track is DirectedLayoutTrack:
+			return track in tracks[-1].get_next_tracks()
+		
+		for dirtrack in track.get_dirtracks():
+			if dirtrack in tracks[-1].get_next_tracks():
+				return true
+		return false
 	return true
 
 func copy():
@@ -62,7 +64,7 @@ func append(section):
 		# assert(section.tracks[0] in tracks[-1].get_next_tracks())
 		pass
 	for track in section.tracks:
-		add_track(track)
+		add_dirtrack(track)
 
 func collect_segment(directed_track=null):
 	if directed_track == null:
@@ -87,30 +89,28 @@ func add_track(track):
 	var next_slot
 
 	if track is DirectedLayoutTrack:
-		tracks.append(track)
-	else:
-		next_slot = track.slot0
+		add_dirtrack(track)
+		return
 
-		if len(tracks)>0:
-			var last_track = tracks[-1].track
-			var prev_slot = track.get_connected_slot(last_track)
-			if prev_slot == null:
-				push_error("[LayoutSegment] track to add is not connected to last track!")
-				assert(false)
-			if len(tracks) > 1:
-				if prev_slot != track.get_neighbour_slot(get_stop_slot()):
-					push_error("[LayoutSegment] track to add is not connected in correct slot!")
-					assert(false)
-			
-			if len(tracks) == 1:
-				var track0 = tracks[0]
-				tracks[0] = track0.track.get_directed_to(track0.track.get_neighbour_slot(prev_slot))
-			tracks.append(track.get_directed_from(prev_slot))
-		else:
-			tracks.append(track.get_directed_to(next_slot))
+	if len(tracks)==0:
+		add_dirtrack(track.get_dirtracks()[0])
+		return
+
+	for dirtrack in track.get_dirtracks():
+		if dirtrack in tracks[-1].get_next_tracks():
+			add_dirtrack(dirtrack)
+			return
 	
-	if not tracks[-1].track.is_connected("sensor_changed", self, "_on_track_sensor_changed"):
-		tracks[-1].track.connect("sensor_changed", self, "_on_track_sensor_changed")
+	assert(false)
+
+func add_dirtrack(dirtrack):
+	if len(tracks)>0:
+		assert(dirtrack in tracks[-1].get_next_tracks() or dirtrack == tracks[-1].get_opposite())
+	
+	tracks.append(dirtrack)
+	
+	if not dirtrack.is_connected("sensor_changed", self, "_on_track_sensor_changed"):
+		dirtrack.connect("sensor_changed", self, "_on_track_sensor_changed")
 	
 	if selected:
 		set_track_attributes("selected", true)
@@ -118,14 +118,15 @@ func add_track(track):
 	
 	emit_signal("track_added", tracks[-1])
 
-func _on_track_sensor_changed(track):
-	emit_signal("sensor_changed", track)
+func _on_track_sensor_changed(_slot):
+	emit_signal("sensor_changed")
 
-func get_sensor_tracks():
+func get_sensors():
 	var sensorlist = []
 	for dirtrack in tracks:
-		if dirtrack.track.sensor != null:
-			sensorlist.append(dirtrack)
+		var sensor = dirtrack.get_sensor()
+		if sensor != null:
+			sensorlist.append(sensor)
 	return sensorlist
 
 func get_track_index(track):
@@ -159,9 +160,9 @@ func set_track_attributes(key, value, direction="<>", operation="set"):
 		return
 	if len(tracks)==1:
 		if "<" in direction:
-			tracks[0].set_connection_attribute(tracks[0].prev_slot, "none", key, value, operation)
+			tracks[0].get_opposite().set_connection_attribute("none", key, value, operation)
 		if ">" in direction:
-			tracks[0].set_connection_attribute(tracks[0].next_slot, "none", key, value, operation)
+			tracks[0].set_connection_attribute("none", key, value, operation)
 		return
 	var track0 = null
 	for track1 in tracks:
@@ -171,13 +172,13 @@ func set_track_attributes(key, value, direction="<>", operation="set"):
 		if ">" in direction:
 			track0.set_track_connection_attribute(track1, key, value, operation)
 		if "<" in direction:
-			track1.set_track_connection_attribute(track0, key, value, operation)
+			track1.get_opposite().set_track_connection_attribute(track0, key, value, operation)
 		track0 = track1
 	
 	if "<" in direction:
-		tracks[0].set_connection_attribute(get_start_slot(), "none", key, value, operation)
+		tracks[0].get_opposite().set_connection_attribute("none", key, value, operation)
 	if ">" in direction:
-		tracks[-1].set_connection_attribute(get_stop_slot(), "none", key, value, operation)
+		tracks[-1].set_connection_attribute("none", key, value, operation)
 	
 func unselect():
 	selected = false
@@ -201,8 +202,8 @@ func get_next_segments():
 func get_locked():
 	var locked = []
 	for track in tracks:
-		var cell = LayoutInfo.get_cell(track.track.l_idx, track.track.x_idx, track.track.y_idx)
-		for coll_track in cell.get_colliding_tracks(track.track.get_orientation()):
+		var cell = LayoutInfo.get_cell(track.l_idx, track.x_idx, track.y_idx)
+		for coll_track in cell.get_colliding_tracks(track.get_orientation()):
 			for locked_train in coll_track.get_locked():
 				if not locked_train in locked:
 					locked.append(locked_train)
@@ -210,7 +211,9 @@ func get_locked():
 
 func has_switch():
 	for track in tracks:
-		if len(track.get_switches())>0:
+		if track.get_switch()!=null:
+			return true
+		if track.get_opposite().get_switch()!=null:
 			return true
 	return false
 

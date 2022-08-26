@@ -25,6 +25,7 @@ var prev_pos
 var id
 var prohibited
 var portal
+var sensor
 
 var l_idx
 var x_idx
@@ -41,6 +42,8 @@ var hover = false
 
 signal states_changed(next_slot)
 signal switch_changed(next_slot)
+signal sensor_changed(next_slot)
+signal add_sensor_requested(p_sensor)
 
 func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	x_idx = p_x
@@ -53,6 +56,7 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	prev_pos = LayoutInfo.slot_positions[prev_slot]
 	prohibited=false
 	portal=null
+	sensor=null
 	
 	metadata = {"none": default_meta.duplicate()}
 
@@ -67,6 +71,9 @@ func get_tangent():
 
 func get_position():
 	return LayoutInfo.spacing*Vector2(x_idx, y_idx)
+
+func get_center():
+	return (next_pos+prev_pos)*0.5
 
 func get_turns():
 	return connections.keys()
@@ -120,6 +127,16 @@ func update_switch():
 		if switch != null:
 			switch.remove()
 			switch = null
+
+func set_sensor(p_sensor):
+	sensor = p_sensor
+	emit_signal("sensor_changed", next_slot)
+
+func get_sensor():
+	return sensor
+
+func add_sensor(p_sensor):
+	emit_signal("add_sensor_requested", p_sensor)
 
 func set_switch(p_switch):
 	if switch != null:
@@ -233,7 +250,13 @@ func get_next_block():
 	if len(next_directed) == 0:
 		return null
 	assert(len(next_directed)==1)
-	return next_directed[0].get_block()
+	return next_directed[0].get_logical_block()
+
+func get_orientation():
+	var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
+	if next_slot+prev_slot in orientations:
+		return next_slot+prev_slot
+	return prev_slot+next_slot
 
 func get_node_obj():
 	var switch = get_switch()
@@ -388,11 +411,11 @@ func get_shader_state(turn):
 		for logical_block in block.logical_blocks:
 			if logical_block.hover:
 				state |= STATE_BLOCK_HOVER
-				if logical_block.section.tracks[-1].track == self:
+				if logical_block.section.tracks[-1] == self:
 					state |= [STATE_BLOCK_PLUS, STATE_BLOCK_MINUS][logical_block.index]
 			if logical_block.selected:
 				state |= STATE_BLOCK_SELECTED
-				if logical_block.section.tracks[-1].track == self:
+				if logical_block.section.tracks[-1] == self:
 					state |= [STATE_BLOCK_PLUS, STATE_BLOCK_MINUS][logical_block.index]
 		if block.get_occupied():
 			state |= STATE_BLOCK_OCCUPIED
