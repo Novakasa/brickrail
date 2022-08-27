@@ -83,20 +83,20 @@ func _on_ble_train_removing(_name):
 	set_ble_train(null)
 
 func _on_ble_train_handled_marker(colorname):
-	assert(colorname==next_sensor_track.track.sensor.get_colorname())
-	next_sensor_track.track.sensor.trigger()
+	assert(colorname==next_sensor_track.get_sensor().get_colorname())
+	next_sensor_track.get_sensor().trigger()
 
 func _on_ble_train_unexpected_marker(colorname):
 	if ble_train.state == "stopped":
 		return
-	if colorname==next_sensor_track.track.sensor.get_colorname():
+	if colorname==next_sensor_track.get_sensor().get_colorname():
 		if virtual_train.expect_behaviour == "stop":
 			ble_train.stop()
 		if virtual_train.expect_behaviour == "slow":
 			ble_train.slow()
 		if virtual_train.expect_behaviour == "flip_heading":
 			ble_train.flip_heading()
-		next_sensor_track.track.sensor.trigger()
+		next_sensor_track.get_sensor().trigger()
 	else:
 		push_error("unexpected marker not aligned with next sensor")
 		ble_train.stop()
@@ -287,14 +287,14 @@ func set_target(p_block):
 
 func set_next_sensor():
 	if next_sensor_track != null:
-		next_sensor_track.track.sensor.disconnect("triggered", self, "_on_next_sensor_triggered")
+		next_sensor_track.get_sensor().disconnect("triggered", self, "_on_next_sensor_triggered")
 
 	virtual_train.update_next_sensor_info()
 	next_sensor_track = virtual_train.next_sensor_track
 
 	if next_sensor_track != null:
-		next_sensor_track.track.sensor.connect("triggered", self, "_on_next_sensor_triggered")
-		var next_colorname = next_sensor_track.track.sensor.get_colorname()
+		next_sensor_track.get_sensor().connect("triggered", self, "_on_next_sensor_triggered")
+		var next_colorname = next_sensor_track.get_sensor().get_colorname()
 		
 		if next_sensor_track == target.sensors["enter"]:
 			if route.can_train_pass(trainname):
@@ -320,17 +320,17 @@ func _on_next_sensor_triggered(p_train):
 	if not virtual_train.allow_sensor_advance:
 		virtual_train.advance_to_next_sensor_track()
 	
-	if next_sensor_track == target.sensors["enter"]:
+	if next_sensor_track.get_sensor() == target.sensors["enter"]:
 		_on_target_entered()
 	
-	if next_sensor_track == target.sensors["in"]:
+	if next_sensor_track.get_sensor() == target.sensors["in"]:
 		_on_target_in()
 	
 	elif target != null:
 		set_next_sensor()
 	else:
 		next_sensor_track = null
-		next_sensor_track.track.sensor.disconnect("triggered", self, "_on_next_sensor_triggered")
+		next_sensor_track.get_sensor().disconnect("triggered", self, "_on_next_sensor_triggered")
 	
 func _on_target_in():
 	route.get_current_leg().unlock_tracks()

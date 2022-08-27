@@ -344,7 +344,9 @@ func get_interpolation_parameters(turn):
 			"straight_length": straight_length,
 			"connection_length": connection_length}
 
-func get_connection_length(turn):
+func get_connection_length(turn=null):
+	if turn == null:
+		turn = get_next_turn()
 	return interpolation_params[turn].connection_length
 
 func interpolate_connection(turn, t, normalized=false):
