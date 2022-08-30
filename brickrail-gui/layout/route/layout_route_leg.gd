@@ -44,10 +44,10 @@ func set_switches():
 			var forward_switch = last_track.get_switch()
 			if forward_switch != null:
 				forward_switches.append(forward_switch)
-				last_track.track.set_switch_to_track(dirtrack.track)
+				forward_switch.switch(dirtrack.get_turn())
 			var backward_switch = dirtrack.get_opposite().get_switch()
 			if backward_switch != null and not backward_switch in forward_switches:
-				dirtrack.track.set_switch_to_track(last_track.track)
+				backward_switch.switch(last_track.get_opposite().get_turn())
 			last_track = dirtrack
 
 func lock_tracks(trainname):
