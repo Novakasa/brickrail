@@ -296,12 +296,12 @@ func set_next_sensor():
 		next_sensor_track.get_sensor().connect("triggered", self, "_on_next_sensor_triggered")
 		var next_colorname = next_sensor_track.get_sensor().get_colorname()
 		
-		if next_sensor_track == target.sensors["enter"]:
+		if next_sensor_track.get_sensor() == target.sensors["enter"]:
 			if route.can_train_pass(trainname):
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "slow")
-		elif next_sensor_track == target.sensors["in"]:
+		elif next_sensor_track.get_sensor() == target.sensors["in"]:
 			if route.can_train_pass(trainname) and not route.is_train_blocked(trainname):
 				set_expect_marker(next_colorname, "ignore")
 			else:

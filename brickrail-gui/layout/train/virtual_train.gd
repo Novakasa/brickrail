@@ -199,7 +199,7 @@ func set_hover(p_hover):
 func set_dirtrack(p_dirtrack):
 	dirtrack = p_dirtrack
 	turn = dirtrack.get_next_turn()
-	length = dirtrack.get_connection_length(turn)
+	length = dirtrack.get_length_to(turn)
 	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
 	rotation = dirtrack.get_rotation()
 

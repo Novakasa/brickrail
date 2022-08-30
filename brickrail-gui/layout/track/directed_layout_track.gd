@@ -187,7 +187,7 @@ func get_length_to(turn=null):
 			return LayoutInfo.track_stopper_length
 	var next = get_next(turn)
 	var this_length = get_connection_length(turn)
-	var opposite_turn = get_opposite().get_turn_from(next.get_opposite())
+	var opposite_turn = get_opposite().get_turn()
 	var next_length = next.get_opposite().get_connection_length(opposite_turn)
 	return this_length + next_length
 
