@@ -23,6 +23,12 @@ func serialize():
 func load(struct):
 	for track_data in struct["tracks"]:
 		var track = LayoutInfo.get_track_from_struct(track_data)
+		if len(tracks)==0:
+			var next_track = LayoutInfo.get_track_from_struct(struct["tracks"][1])
+			var next_slot = track.get_connection_to(next_track).slot
+			add_dirtrack(track.get_directed_to(next_slot))
+			continue
+		
 		add_track(track)
 
 func can_add_track(track):

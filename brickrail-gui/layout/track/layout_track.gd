@@ -163,16 +163,7 @@ func is_switch(slot=null):
 	return len(directed_tracks[slot].connections) > 1 or len(directed_tracks[slot].connections) > 1
 
 func get_turn_from(slot):
-	var center_tangent = LayoutInfo.slot_positions[get_neighbour_slot(slot)] - LayoutInfo.slot_positions[slot]
-	var tangent = get_slot_tangent(get_opposite_slot(slot))
-	var turn_angle = center_tangent.angle_to(tangent)
-	if turn_angle > PI:
-		turn_angle -= 2*PI
-	if is_equal_approx(turn_angle, 0.0):
-		return "center"
-	if turn_angle > 0.0:
-		return "right"
-	return "left"
+	return directed_tracks[slot].get_opposite().get_turn()
 
 func assert_slot_degeneracy():
 	var orientations = ["NS", "NE", "NW", "SE", "SW", "EW"]
@@ -319,7 +310,7 @@ func get_connected_slot(track):
 func get_connection_to(track):
 	for slot in directed_tracks:
 		var dirtrack = directed_tracks[slot]
-		for turn in dirtrack.connections():
+		for turn in dirtrack.connections:
 			if dirtrack.connections[turn] in track.directed_tracks.values():
 				return {"slot": slot, "turn": turn}
 	return null
