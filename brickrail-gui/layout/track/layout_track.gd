@@ -1,6 +1,23 @@
 class_name LayoutTrack
 extends Node2D
 
+const STATE_SELECTED = 1
+const STATE_HOVER = 2
+const STATE_LOCKED = 4
+const STATE_BLOCK = 8
+const STATE_BLOCK_OCCUPIED = 16
+const STATE_BLOCK_HOVER = 32
+const STATE_BLOCK_SELECTED = 64
+const STATE_BLOCK_PLUS = 2048
+const STATE_BLOCK_MINUS = 4096
+const STATE_CONNECTED = 128
+const STATE_SWITCH = 256
+const STATE_SWITCH_PRIORITY = 512
+const STATE_ARROW = 1024
+const STATE_MARK = 8192
+const STATE_PORTAL = 16384
+const STATE_STOPPER = 32768
+
 var l_idx
 var x_idx
 var y_idx
@@ -449,7 +466,16 @@ func get_tangent_to(slot):
 	return -get_tangent()
 
 func get_shader_states(slot):
-	return directed_tracks[slot].get_shader_states()
+	var states = directed_tracks[slot].get_shader_states()
+	if drawing_highlight:
+		for turn in states:
+			states[turn] |= STATE_SELECTED
+	if hover:
+		for turn in states:
+			states[turn] |= STATE_HOVER
+			if hover_slot == slot:
+				states[turn] |= STATE_ARROW
+	return states
 
 func _draw():
 	if sensor != null:
