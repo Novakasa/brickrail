@@ -98,7 +98,7 @@ func _on_motor1_position_changed(ble_pos):
 	position_index = switch_positions.find(pos)
 	emit_signal("position_changed", pos)
 
-func hover():
+func hover(_pos):
 	hover=true
 	emit_signal("state_changed")
 

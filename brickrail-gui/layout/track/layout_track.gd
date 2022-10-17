@@ -28,9 +28,7 @@ var pos0
 var pos1
 var slots = ["N", "S", "E", "W"]
 var route_lock=false
-var hover=false
-var hover_slot = null
-var hover_switch=null 
+var hover_obj = null
 var drawing_highlight=false
 
 var directed_tracks = {}
@@ -342,13 +340,6 @@ func get_slot_pos(slot):
 
 func has_point(pos):
 	pass
-	
-func get_switch_at(pos):
-	for slot in directed_tracks:
-		if directed_tracks[slot].get_switch() != null:
-			if (LayoutInfo.slot_positions[slot]-pos).length() < 0.3:
-				return directed_tracks[slot].get_switch()
-	return null
 
 func get_switches():
 	var switches = []
@@ -399,37 +390,38 @@ func set_drawing_highlight(highlight):
 	drawing_highlight = highlight
 	emit_signal("states_changed", get_orientation())
 
+func get_switch_at(pos):
+	for slot in directed_tracks:
+		if directed_tracks[slot].get_switch() != null:
+			if (LayoutInfo.slot_positions[slot]-pos).length() < 0.3:
+				return directed_tracks[slot].get_switch()
+	return null
+
+func get_hover_obj_at(pos):
+	var hover_switch = get_switch_at(pos)
+	if hover_switch != null:
+		return hover_switch
+	if (pos-pos0).length()<(pos-pos1).length():
+		return directed_tracks[slot0]
+	return directed_tracks[slot1]
+
 func hover(pos):
 
-	var hover_candidate = get_switch_at(pos)
+	var hover_candidate = get_hover_obj_at(pos)
 	if LayoutInfo.input_mode == "draw":
 		hover_candidate = null
 	
-	if hover_candidate != hover_switch:
-		if hover_switch != null:
-			hover_switch.stop_hover()
-		hover_switch = hover_candidate
-		if hover_switch != null:
-			hover=false
-			hover_slot=null
-			emit_signal("states_changed", get_orientation())
-			hover_switch.hover()
-	if hover_candidate != null:
-		return
-
-	hover=true
-	if (pos-pos0).length()<(pos-pos1).length():
-		hover_slot = slot0
-	else:
-		hover_slot = slot1
-	emit_signal("states_changed", get_orientation())
+	if hover_candidate != hover_obj:
+		if hover_obj != null:
+			hover_obj.stop_hover()
+		hover_obj = hover_candidate
+		if hover_obj != null:
+			hover_obj.hover(pos)
 
 func stop_hover():
-	hover=false
-	hover_slot=null
-	if hover_switch != null:
-		hover_switch.stop_hover()
-		hover_switch = null
+	if hover_obj != null:
+		hover_obj.stop_hover()
+		hover_obj = null
 	emit_signal("states_changed", get_orientation())
 
 func process_mouse_button(event, pos):
@@ -470,11 +462,6 @@ func get_shader_states(slot):
 	if drawing_highlight:
 		for turn in states:
 			states[turn] |= STATE_SELECTED
-	if hover:
-		for turn in states:
-			states[turn] |= STATE_HOVER
-			if hover_slot == slot:
-				states[turn] |= STATE_ARROW
 	return states
 
 func _draw():

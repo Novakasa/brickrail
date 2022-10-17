@@ -61,7 +61,7 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	metadata = {"none": default_meta.duplicate()}
 
 func _on_connected_track_switch_changed(_switch):
-	emit_signal("states_changed")
+	emit_signal("states_changed", next_slot)
 
 func get_rotation():
 	return (next_pos-prev_pos).angle()
@@ -398,6 +398,14 @@ func interpolate_position_linear(t):
 	if t<=0.0:
 		return prev_pos
 	return prev_pos + (next_pos-prev_pos)*t
+
+func hover(pos):
+	hover=true
+	emit_signal("states_changed", next_slot)
+
+func stop_hover():
+	hover=false
+	emit_signal("states_changed", next_slot)
 
 func get_shader_states():
 	var states = {"left": 0, "right": 0, "center": 0, "none": 0}
