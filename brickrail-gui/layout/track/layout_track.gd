@@ -401,6 +401,8 @@ func get_hover_obj_at(pos):
 	var hover_switch = get_switch_at(pos)
 	if hover_switch != null:
 		return hover_switch
+	if LayoutInfo.input_mode=="control":
+		return null
 	if (pos-pos0).length()<(pos-pos1).length():
 		return directed_tracks[slot0]
 	return directed_tracks[slot1]
@@ -408,7 +410,7 @@ func get_hover_obj_at(pos):
 func hover(pos):
 
 	var hover_candidate = get_hover_obj_at(pos)
-	if LayoutInfo.input_mode == "draw":
+	if LayoutInfo.drawing_track:
 		hover_candidate = null
 	
 	if hover_candidate != hover_obj:
