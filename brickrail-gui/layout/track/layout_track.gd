@@ -462,8 +462,7 @@ func get_tangent_to(slot):
 func get_shader_states(slot):
 	var states = directed_tracks[slot].get_shader_states()
 	if drawing_highlight:
-		for turn in states:
-			states[turn] |= STATE_SELECTED
+		states["none"] |= STATE_SELECTED
 	return states
 
 func _draw():
