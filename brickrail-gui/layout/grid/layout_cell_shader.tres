@@ -384,7 +384,7 @@ vec4 get_inner_color(int state) {
 		color = selected_color;
 	}
 	if ((state & STATE_HOVER)== STATE_HOVER) {
-		color *= 1.5;
+		color *= 2.0;
 	}
 	return color;
 }
