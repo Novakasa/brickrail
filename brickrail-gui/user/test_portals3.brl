@@ -406,7 +406,13 @@
 			}
 		],
 		"trains": [
-
+			{
+				"name": "train0",
+				"facing": 1,
+				"fixed_facing": true,
+				"blockname": "block0",
+				"blockindex": 0
+			}
 		]
 	}
 }
