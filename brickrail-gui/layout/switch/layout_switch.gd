@@ -168,7 +168,7 @@ func collect_edges(facing):
 	var edges = []
 	for track in directed_track.get_next_tracks():
 		
-		var node_obj = track.get_block()
+		var node_obj = track.get_node_obj()
 		if node_obj != null:
 			edges.append(LayoutEdge.new(nodes[facing], node_obj.nodes[facing], "travel", null))
 			continue
