@@ -171,6 +171,8 @@ func load(struct):
 		var orientation = slot0 + slot1
 		var track_obj = get_cell(l, i, j).tracks[orientation]
 		track_obj.load_connections(track.connections)
+		if "portals" in track:
+			track_obj.load_portals(track.portals)
 		if "switches" in track:
 			track_obj.load_switches(track.switches)
 		if "sensor" in track:
@@ -215,6 +217,10 @@ func get_track_from_struct(struct):
 	else:
 		orientation = struct["slot0"] + struct["slot1"]
 	return get_cell(l, i, j).tracks[orientation]
+
+func get_dirtrack_from_struct(struct):
+	var track = get_track_from_struct(struct)
+	return track.get_directed_to(struct.next_slot)
 
 func create_block(p_name, section):
 	assert(not p_name in blocks)
@@ -517,9 +523,8 @@ func set_portal_target(track):
 		attempt_portal()
 
 func attempt_portal():
-	if not "center" in portal_target.get_opposite().connections:
-		portal_dirtrack.connect_portal(portal_target)
-		portal_target.get_opposite().connect_portal(portal_dirtrack.get_opposite())
+	portal_dirtrack.connect_portal(portal_target)
+	portal_target.get_opposite().connect_portal(portal_dirtrack.get_opposite())
 	
 	set_input_mode("select")
 	portal_dirtrack = null

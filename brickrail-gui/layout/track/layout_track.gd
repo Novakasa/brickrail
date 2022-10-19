@@ -94,15 +94,22 @@ func serialize(reference=false):
 	result["x_idx"] = x_idx
 	result["y_idx"] = y_idx
 	var connections_result = {}
+	var portals = {}
 	var switches_struct = {}
 	if not reference:
 		for slot in directed_tracks:
 			var dirtrack = directed_tracks[slot]
 			connections_result[slot] = []
 			for turn in dirtrack.connections:
-				connections_result[slot].append(turn)
+				if dirtrack.is_continuous_to(dirtrack.connections[turn]):
+					connections_result[slot].append(turn)
+				else:
+					portals[slot] = dirtrack.connections[turn].serialize(true)
 			if dirtrack.switch != null:
 				switches_struct[slot] = dirtrack.switch.serialize()
+
+		if len(portals)>0:
+			result["portals"] = portals
 				
 		result["connections"] = connections_result
 		if len(switches_struct) > 0:
@@ -156,6 +163,11 @@ func load_connections(struct):
 		for turn in struct[slot]:
 			var track = get_slot_cell(slot).get_turn_track_from(get_neighbour_slot(slot), turn)
 			connect_track(slot, track)
+
+func load_portals(struct):
+	for slot in struct:
+		var target = LayoutInfo.get_dirtrack_from_struct(struct[slot])
+		directed_tracks[slot].connect_portal(target)
 
 func load_switches(struct):
 	for slot in struct:
@@ -297,7 +309,7 @@ func has_connection_at(slot):
 func clear_connections():
 	for dirtrack in directed_tracks.values():
 		for turn in dirtrack.connections:
-			var opposite_turn = dirtrack.get_opposite().get_turn()
+			var opposite_turn = dirtrack.connections[turn].get_opposite().get_turn_to(dirtrack.get_opposite())
 			dirtrack.connections[turn].get_opposite().disconnect_turn(opposite_turn)
 			dirtrack.disconnect_turn(turn)
 

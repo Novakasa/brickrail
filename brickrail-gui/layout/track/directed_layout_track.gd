@@ -61,6 +61,15 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	
 	metadata = {"none": default_meta.duplicate()}
 
+func serialize(reference=false):
+	var result = {}
+	result["l_idx"] = l_idx
+	result["x_idx"] = x_idx
+	result["y_idx"] = y_idx
+	result["next_slot"] = next_slot
+	result["orientation"] = get_orientation()
+	return result
+
 func _on_connected_track_switch_changed(_switch):
 	emit_signal("states_changed", next_slot)
 

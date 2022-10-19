@@ -16,20 +16,14 @@ func serialize():
 	var result = {}
 	var track_data = []
 	for track in tracks:
-		track_data.append(track.track.serialize(true))
+		track_data.append(track.serialize(true))
 	result["tracks"] = track_data
 	return result
 
 func load(struct):
 	for track_data in struct["tracks"]:
-		var track = LayoutInfo.get_track_from_struct(track_data)
-		if len(tracks)==0:
-			var next_track = LayoutInfo.get_track_from_struct(struct["tracks"][1])
-			var next_slot = track.get_connection_to(next_track).slot
-			add_dirtrack(track.get_directed_to(next_slot))
-			continue
-		
-		add_track(track)
+		var dirtrack = LayoutInfo.get_dirtrack_from_struct(track_data)
+		add_dirtrack(dirtrack)
 
 func can_add_track(track):
 	if len(tracks)>0:
