@@ -518,8 +518,8 @@ func set_portal_target(track):
 
 func attempt_portal():
 	if not "center" in portal_target.get_opposite().connections:
-		portal_dirtrack.connect_dirtrack("center", portal_target)
-		portal_target.get_opposite().connect_dirtrack("center", portal_dirtrack.get_opposite())
+		portal_dirtrack.connect_portal(portal_target)
+		portal_target.get_opposite().connect_portal(portal_dirtrack.get_opposite())
 	
 	set_input_mode("select")
 	portal_dirtrack = null

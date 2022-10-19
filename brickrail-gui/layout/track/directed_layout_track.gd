@@ -425,6 +425,16 @@ func get_shader_states():
 		states[turn] = get_shader_state(turn)
 	return states
 
+func connect_portal(dirtrack):
+	var portal_turn = "center"
+	var turn = get_turn()
+	if turn == "left":
+		portal_turn = "right"
+	if turn == "right":
+		portal_turn = "left"
+	
+	connect_dirtrack(portal_turn, dirtrack)
+
 func is_continuous_to(dirtrack):
 	if l_idx != dirtrack.l_idx:
 		return false
@@ -435,10 +445,11 @@ func is_continuous_to(dirtrack):
 	return true
 
 func has_portal():
-	if not "center" in connections:
-		return false
-	return not is_continuous_to(connections["center"])
-
+	for turn in connections:
+		if not is_continuous_to(connections[turn]):
+			return true
+	return false
+	
 func get_shader_state(turn):
 	var state = 0
 	if metadata[turn]["block"] != null:
@@ -456,7 +467,7 @@ func get_shader_state(turn):
 		if block.get_occupied():
 			state |= STATE_BLOCK_OCCUPIED
 	if turn in connections:
-		if turn != "center" or not has_portal():
+		if is_continuous_to(connections[turn]):
 			state |= STATE_CONNECTED
 	if turn == "none":
 		if len(connections) == 0:
