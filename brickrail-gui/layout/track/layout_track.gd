@@ -36,7 +36,6 @@ var sensor = null
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
-signal connections_cleared
 signal route_lock_changed(lock)
 signal selected(obj)
 signal unselected(obj)
@@ -59,10 +58,12 @@ func _init(p_slot0, p_slot1, l, i, j):
 
 	directed_tracks[slot0] = DirectedLayoutTrack.new(slot1, slot0, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot0].connect("states_changed", self, "_on_dirtrack_states_changed")
+	directed_tracks[slot0].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
 	directed_tracks[slot0].connect("remove_requested", self, "remove")
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
+	directed_tracks[slot1].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
 	directed_tracks[slot1].connect("remove_requested", self, "remove")
 	
@@ -74,6 +75,9 @@ func _init(p_slot0, p_slot1, l, i, j):
 
 func _on_dirtrack_states_changed(slot):
 	emit_signal("states_changed", get_orientation())
+
+func _on_dirtrack_connections_changed(slot):
+	emit_signal("connections_changed", get_orientation())
 
 func get_directed_to(slot):
 	return directed_tracks[slot]
@@ -244,11 +248,8 @@ func connect_track(slot, track, initial=true):
 	
 	directed_tracks[slot].connect_dirtrack(turn, dirtrack)
 	
-	track.connect("connections_cleared", self, "_on_track_connections_cleared")
 	if initial:
 		track.connect_track(neighbour_slot, self, false)
-	emit_signal("connections_changed", get_orientation())
-	emit_signal("states_changed", get_orientation())
 
 func has_switch():
 	return directed_tracks[slot0].switch != null or directed_tracks[slot1].switch != null
@@ -299,7 +300,6 @@ func clear_connections():
 			var opposite_turn = dirtrack.get_opposite().get_turn()
 			dirtrack.connections[turn].get_opposite().disconnect_turn(opposite_turn)
 			dirtrack.disconnect_turn(turn)
-	emit_signal("connections_cleared", self)
 
 func get_neighbour_slot(slot):
 	if slot == "N":

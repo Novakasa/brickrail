@@ -43,6 +43,7 @@ var hover = false
 signal states_changed(next_slot)
 signal switch_changed(next_slot)
 signal sensor_changed(next_slot)
+signal connections_changed(next_slot)
 signal add_sensor_requested(p_sensor)
 signal remove_requested()
 
@@ -56,7 +57,6 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	next_pos = LayoutInfo.slot_positions[next_slot]
 	prev_pos = LayoutInfo.slot_positions[prev_slot]
 	prohibited=false
-	portal=null
 	sensor=null
 	
 	metadata = {"none": default_meta.duplicate()}
@@ -104,6 +104,8 @@ func connect_dirtrack(turn, dirtrack):
 	# prints("added connection, turning:", turn)
 	if len(connections)>1:
 		update_switch()
+	
+	emit_signal("connections_changed", next_slot)
 
 func disconnect_turn(turn):
 	
@@ -184,6 +186,12 @@ func get_next_turn():
 		return get_switch().get_position()
 	return connections.keys()[0]
 
+func get_turn_to(dirtrack):
+	for turn in connections:
+		if connections[turn] == dirtrack:
+			return turn
+	assert(false)
+
 func get_length_to(turn=null):
 	if turn == null:
 		turn = get_next_turn()
@@ -191,7 +199,7 @@ func get_length_to(turn=null):
 			return LayoutInfo.track_stopper_length
 	var next = get_next(turn)
 	var this_length = get_connection_length(turn)
-	var opposite_turn = get_opposite().get_turn()
+	var opposite_turn = next.get_opposite().get_turn_to(get_opposite())
 	var next_length = next.get_opposite().get_connection_length(opposite_turn)
 	return this_length + next_length
 
@@ -281,25 +289,25 @@ func set_one_way(one_way):
 	get_opposite().prohibited = one_way
 	emit_signal("states_changed", next_slot)
 
-func set_portal(p_portal):
-	portal = p_portal
-	emit_signal("states_changed", next_slot)
-
-func create_portal_to(target):
-	assert(portal==null)
-	
-	var new_portal = LayoutPortal.new(self, target)
-	set_portal(new_portal)
-	target.set_portal(new_portal)
-
 func get_turn_angle(turn):
-	var next_track = connections[turn]
-	var angle = get_tangent().angle_to(next_track.get_tangent())
-	while angle>PI:
-		angle-=2*PI
-	while angle<-PI:
-		angle += 2*PI
-	return angle
+	var this_turn = get_turn()
+	if this_turn == "center":
+		if turn == "left":
+			return -0.25*PI
+		if turn == "center":
+			return 0.0
+		return 0.25*PI
+	if this_turn == "left":
+		if turn == "left":
+			return 0.5*PI
+		if turn == "center":
+			return -0.25*PI
+		return 0.0
+	if turn == "left":
+		return 0.0
+	if turn == "center":
+		return 0.25*PI
+	return -0.5*PI
 	
 func get_turn_radius(angle):
 	if is_equal_approx(angle, 0.0):
@@ -381,7 +389,7 @@ func interpolate_connection(turn, t, normalized=false):
 
 func interpolate_turn_connection(turn, t, normalized=false):
 	var reverse_dirtrack = connections[turn].get_opposite()
-	var reverse_turn = get_opposite().get_turn()
+	var reverse_turn = reverse_dirtrack.get_turn_to(get_opposite())
 	var this_length = get_connection_length(turn)
 	var reverse_length = reverse_dirtrack.get_connection_length(reverse_turn)
 	var total_length = this_length + reverse_length
@@ -417,6 +425,20 @@ func get_shader_states():
 		states[turn] = get_shader_state(turn)
 	return states
 
+func is_continuous_to(dirtrack):
+	if l_idx != dirtrack.l_idx:
+		return false
+	if abs(x_idx - dirtrack.x_idx) > 1:
+		return false
+	if abs(y_idx - dirtrack.y_idx) > 1:
+		return false
+	return true
+
+func has_portal():
+	if not "center" in connections:
+		return false
+	return not is_continuous_to(connections["center"])
+
 func get_shader_state(turn):
 	var state = 0
 	if metadata[turn]["block"] != null:
@@ -434,12 +456,13 @@ func get_shader_state(turn):
 		if block.get_occupied():
 			state |= STATE_BLOCK_OCCUPIED
 	if turn in connections:
-		state |= STATE_CONNECTED
-	if turn == "none" and len(connections)==0:
-		state |= STATE_CONNECTED
-		if portal == null:
+		if turn != "center" or not has_portal():
+			state |= STATE_CONNECTED
+	if turn == "none":
+		if len(connections) == 0:
+			state |= STATE_CONNECTED
 			state |= STATE_STOPPER
-		else:
+		if has_portal():
 			state |= STATE_PORTAL
 	if turn != "none" and turn in connections:
 		var opposite_switch = get_opposite_switch(turn)
