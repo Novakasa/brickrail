@@ -60,9 +60,11 @@ func _init(p_slot0, p_slot1, l, i, j):
 	directed_tracks[slot0] = DirectedLayoutTrack.new(slot1, slot0, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot0].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
+	directed_tracks[slot0].connect("remove_requested", self, "remove")
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
+	directed_tracks[slot1].connect("remove_requested", self, "remove")
 	
 	directed_tracks[slot0].set_opposite(directed_tracks[slot1])
 	directed_tracks[slot1].set_opposite(directed_tracks[slot0])
@@ -294,6 +296,8 @@ func has_connection_at(slot):
 func clear_connections():
 	for dirtrack in directed_tracks.values():
 		for turn in dirtrack.connections:
+			var opposite_turn = dirtrack.get_opposite().get_turn()
+			dirtrack.connections[turn].get_opposite().disconnect_turn(opposite_turn)
 			dirtrack.disconnect_turn(turn)
 	emit_signal("connections_cleared", self)
 

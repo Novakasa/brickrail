@@ -44,6 +44,7 @@ signal states_changed(next_slot)
 signal switch_changed(next_slot)
 signal sensor_changed(next_slot)
 signal add_sensor_requested(p_sensor)
+signal remove_requested()
 
 func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	x_idx = p_x
@@ -77,6 +78,9 @@ func get_center():
 
 func get_turns():
 	return connections.keys()
+
+func remove():
+	emit_signal("remove_requested")
 
 func get_turn():
 	var center_tangent = LayoutInfo.slot_positions[Tools.get_opposite_slot(prev_slot)] - prev_pos

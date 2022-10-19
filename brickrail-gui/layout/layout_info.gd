@@ -288,11 +288,11 @@ func _unhandled_input(event):
 			
 			if event.scancode == KEY_DELETE:
 				if selection is LayoutSection:
-					var tracks = Array(selection.tracks)
+					var dirtracks = Array(selection.tracks)
 					selection.unselect()
-					for track in tracks:
-						if track.track.get_block() == null:
-							track.track.remove()
+					for dirtrack in dirtracks:
+						if dirtrack.get_block() == null:
+							dirtrack.remove()
 				
 				if selection is LayoutLogicalBlock:
 					blocks[selection.blockname].remove()
