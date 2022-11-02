@@ -218,6 +218,9 @@ func get_track_from_struct(struct):
 		orientation = struct["slot0"] + struct["slot1"]
 	return get_cell(l, i, j).tracks[orientation]
 
+func is_struct_dirtrack(struct):
+	return "next_slot" in  struct
+
 func get_dirtrack_from_struct(struct):
 	var track = get_track_from_struct(struct)
 	return track.get_directed_to(struct.next_slot)
