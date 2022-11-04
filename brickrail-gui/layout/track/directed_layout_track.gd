@@ -308,7 +308,7 @@ func get_turn_angle(turn):
 		return 0.25*PI
 	if this_turn == "left":
 		if turn == "left":
-			return 0.5*PI
+			return -0.5*PI
 		if turn == "center":
 			return -0.25*PI
 		return 0.0
@@ -316,7 +316,7 @@ func get_turn_angle(turn):
 		return 0.0
 	if turn == "center":
 		return 0.25*PI
-	return -0.5*PI
+	return 0.5*PI
 	
 func get_turn_radius(angle):
 	if is_equal_approx(angle, 0.0):
