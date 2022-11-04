@@ -162,7 +162,8 @@ func load_connections(struct):
 	for slot in struct:
 		for turn in struct[slot]:
 			var track = get_slot_cell(slot).get_turn_track_from(get_neighbour_slot(slot), turn)
-			connect_track(slot, track)
+			if not is_connected_to_track(track):
+				connect_track(slot, track)
 
 func load_portals(struct):
 	for slot in struct:
