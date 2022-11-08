@@ -45,17 +45,16 @@ func _ready():
 func _draw():
 	
 	var spacing = LayoutInfo.spacing
-	return
 	
 	for i in range(nx+1):
 		var start = Vector2(i*spacing, 0.0)
 		var end = Vector2(i*spacing, ny*spacing)
-		draw_line(start, end, grid_line_color, grid_line_width, true)
+		draw_line(start, end, Settings.colors["surface"]*0.8, 0.1*spacing, true)
 	
 	for j in range(ny+1):
 		var start = Vector2(0.0, j*spacing)
 		var end = Vector2(nx*spacing, j*spacing)
-		draw_line(start, end, grid_line_color, grid_line_width, true)
+		draw_line(start, end, Settings.colors["surface"]*0.8, 0.1*spacing, true)
 
 func _unhandled_input(event):
 	process_input(event)
@@ -94,15 +93,14 @@ func process_mouse_motion(event, i, j, mpos_cell):
 		train.stop_hover()
 	var cell = LayoutInfo.get_cell(l, i, j)
 	if hover_cell != null && hover_cell != cell:
-		hover_cell.stop_hover()
 		hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
+		hover_cell.stop_hover()
 	if hover_cell != cell:
 		hover_cell = cell
 		hover_cell.connect("removing", self, "_on_hover_cell_removing")
 	hover_cell.hover_at(mpos_cell)
 
-func _on_hover_cell_removing():
-	hover_cell.stop_hover()
+func _on_hover_cell_removing(_cell):
 	hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
 	hover_cell = null
 

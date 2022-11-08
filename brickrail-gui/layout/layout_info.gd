@@ -63,8 +63,13 @@ func get_cell(l, i, j):
 	var cell = LayoutCell.instance()
 	cells[l][i][j] = cell
 	cell.setup(l, i, j)
+	cell.connect("removing", self, "_on_cell_removing")
 	emit_signal("cell_added", cell)
 	return cell
+
+func _on_cell_removing(cell):
+	cell.disconnect("removing", self, "_on_cell_removing")
+	cells[cell.l_idx][cell.x_idx][cell.y_idx] = null
 
 func add_layer(l):
 	assert(not l in cells)

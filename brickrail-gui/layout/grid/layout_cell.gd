@@ -30,7 +30,7 @@ func setup(p_l_idx, p_x_idx, p_y_idx):
 	position = Vector2(x_idx, y_idx)*LayoutInfo.spacing
 
 func remove():
-	emit_signal("removing")
+	emit_signal("removing", self)
 	queue_free()
 	
 func _enter_tree():
@@ -126,6 +126,9 @@ func stop_hover():
 		return
 	
 	set_hover(false)
+	
+	# if len(tracks) == 0:
+	# 	remove()
 
 
 func process_mouse_button(event, pos):
