@@ -137,6 +137,10 @@ func update_switch():
 		var new_switch = LayoutInfo.create_switch(self)
 		set_switch(new_switch)
 		_on_switch_position_changed(switch.get_position())
+		
+		# notify opposite connecting tracks again, to update the has_switch flag in cell shader
+		for dirtrack in connections.values():
+			dirtrack.get_opposite().emit_signal("connections_changed", dirtrack.prev_slot)
 	else:
 		if switch != null:
 			switch.remove()

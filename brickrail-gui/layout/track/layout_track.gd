@@ -269,8 +269,8 @@ func has_switch():
 
 func borders_switch():
 	for dirtrack in directed_tracks.values():
-		for connected in dirtrack.connections.values():
-			if connected.get_opposite().switch != null:
+		for turn in dirtrack.connections:
+			if dirtrack.get_opposite_switch(turn) != null:
 				return true
 	return false
 
