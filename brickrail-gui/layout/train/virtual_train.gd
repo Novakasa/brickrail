@@ -133,11 +133,11 @@ func flip_heading():
 		track_pos = length-prev_pos
 	set_facing(facing*-1)
 	opposite_turn_history = []
-	update_position()
 	velocity = 0.0
 	prev_sensor_track = null
 	next_sensor_track = null
 	next_sensor_distance = 0.0
+	update_position()
 
 func set_state(p_state):
 	state = p_state

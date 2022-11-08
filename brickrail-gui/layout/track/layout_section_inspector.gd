@@ -55,7 +55,7 @@ func _on_AddSensor_pressed():
 	$AddSensor.visible=false
 	$SensorPanel.visible=true
 	var sensor = LayoutSensor.new(null)
-	dirtrack.track.add_sensor(sensor)
+	dirtrack.add_sensor(sensor)
 	update_marker_select()
 
 func _on_BlockOKButton_pressed():
