@@ -441,7 +441,6 @@ func stop_hover():
 	if hover_obj != null:
 		hover_obj.stop_hover()
 		hover_obj = null
-	emit_signal("states_changed", get_orientation())
 
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_RIGHT and event.pressed:

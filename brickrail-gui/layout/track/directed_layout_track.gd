@@ -140,7 +140,7 @@ func update_switch():
 	else:
 		if switch != null:
 			switch.remove()
-			switch = null
+			set_switch(null)
 
 func set_sensor(p_sensor):
 	sensor = p_sensor
@@ -487,14 +487,14 @@ func get_shader_state(turn):
 		var opposite_switch = get_opposite_switch(turn)
 		var opposite_turn = get_opposite().get_turn()
 		if opposite_switch != null:
-			prints(opposite_turn, opposite_switch.get_position())
+			# prints(opposite_turn, opposite_switch.get_position())
 			if opposite_switch.selected:
 				state |= STATE_SELECTED
 			if opposite_switch.hover:
 				state |= STATE_HOVER
 			if opposite_turn == opposite_switch.get_position() and not opposite_switch.disabled:
 				state |= STATE_SWITCH
-			print(state & STATE_SWITCH)
+			# print(state & STATE_SWITCH)
 		
 		if switch != null:
 			if switch.selected:
