@@ -4,7 +4,7 @@
 
 [node name="VirtualTrain" type="Node2D"]
 script = ExtResource( 1 )
-color = Color( 0, 1, 0.858824, 1 )
+color = Color( 1.31765, 0.982353, 0.270588, 1.5 )
 accent_color = Color( 0.223529, 0, 0.188235, 1 )
 hover_color = Color( 0, 0.368627, 1, 1 )
-selected_color = Color( 0, 0.729412, 0.129412, 1 )
+selected_color = Color( 0.568627, 0.0784314, 0.0588235, 1 )

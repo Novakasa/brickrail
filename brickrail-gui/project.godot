@@ -123,6 +123,11 @@ _global_script_classes=[ {
 "class": "VirtualTrain",
 "language": "GDScript",
 "path": "res://layout/train/virtual_train.gd"
+}, {
+"base": "Node2D",
+"class": "VirtualTrainWagon",
+"language": "GDScript",
+"path": "res://layout/train/virtual_train_wagon.gd"
 } ]
 _global_script_class_icons={
 "BLECommand": "",
@@ -147,7 +152,8 @@ _global_script_class_icons={
 "LayoutTrain": "",
 "Selector": "",
 "SwitchMotor": "",
-"VirtualTrain": ""
+"VirtualTrain": "",
+"VirtualTrainWagon": ""
 }
 
 [application]

@@ -215,6 +215,15 @@ func get_length_to(turn=null):
 	var next_length = next.get_opposite().get_connection_length(opposite_turn)
 	return this_length + next_length
 
+func interpolate_world(pos):
+	var turn = get_next_turn()
+	var length = get_length_to(turn)
+	if pos > length:
+		return connections[turn].interpolate_world(pos-length)
+	var interpolation = interpolate(pos, turn)
+	interpolation["position"] = to_world(interpolation.position)
+	return interpolation
+
 func interpolate(pos, turn=null):
 	if turn == null:
 		var position = 0.5*(prev_pos+next_pos) + pos*get_tangent().normalized()

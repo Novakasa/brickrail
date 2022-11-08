@@ -1,4 +1,3 @@
-tool
 
 class_name VirtualTrain
 extends Node2D
@@ -27,6 +26,8 @@ var next_sensor_distance = 0.0
 
 var state = "stopped"
 
+var wagons = []
+
 export(Color) var color
 export(Color) var accent_color
 export(Color) var hover_color
@@ -40,6 +41,11 @@ signal marker(marker)
 func _ready():
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	
+	for i in range(3):
+		wagons.append(VirtualTrainWagon.new())
+		get_parent().call_deferred("add_child", wagons[-1])
+		wagons[-1].color = color
 
 func _on_settings_colors_changed():
 	color = Settings.colors["primary"]*1.5
@@ -187,6 +193,17 @@ func update_position():
 	var interpolation = dirtrack.interpolate(track_pos, turn)
 	position = dirtrack.to_world(interpolation.position)
 	rotation = interpolation.rotation
+	
+	update_wagon_position()
+
+func update_wagon_position():
+	for i in range(len(wagons)):
+		var wagon = wagons[i]
+		var wagon_pos = 0.52*(1+i) + (length - track_pos)
+		var wagon_dirtrack = dirtrack.get_next(turn).get_opposite()
+		var interpolation = wagon_dirtrack.interpolate_world(wagon_pos)
+		wagon.position = interpolation.position
+		wagon.rotation = interpolation.rotation
 
 func set_selected(p_selected):
 	selected = p_selected
