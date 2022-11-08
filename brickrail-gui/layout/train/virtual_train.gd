@@ -207,9 +207,17 @@ func update_position():
 func update_wagon_position():
 	for i in range(len(wagons)):
 		var wagon = wagons[i]
-		var wagon_pos = 0.52*(1+i) + (length - track_pos)
-		var wagon_dirtrack = dirtrack.get_next(turn).get_opposite()
-		var interpolation = wagon_dirtrack.interpolate_world(wagon_pos, opposite_turn_history)
+		var wagon_pos = 0.52*(1+i)
+		var interpolation
+		var wagon_dirtrack
+		if facing>0:
+			wagon_pos += (length - track_pos)
+			wagon_dirtrack = dirtrack.get_next(turn).get_opposite()
+			interpolation = wagon_dirtrack.interpolate_world(wagon_pos, opposite_turn_history)
+		else:
+			wagon_pos += track_pos
+			interpolation = dirtrack.interpolate_world(wagon_pos)
+			
 		wagon.position = interpolation.position
 		wagon.rotation = interpolation.rotation
 
