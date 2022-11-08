@@ -215,11 +215,13 @@ func get_length_to(turn=null):
 	var next_length = next.get_opposite().get_connection_length(opposite_turn)
 	return this_length + next_length
 
-func interpolate_world(pos):
+func interpolate_world(pos, turns = []):
 	var turn = get_next_turn()
+	if len(turns)>0:
+		turn = turns[0]
 	var length = get_length_to(turn)
 	if pos > length:
-		return connections[turn].interpolate_world(pos-length)
+		return connections[turn].interpolate_world(pos-length, turns.slice(1, 10))
 	var interpolation = interpolate(pos, turn)
 	interpolation["position"] = to_world(interpolation.position)
 	return interpolation

@@ -27,6 +27,7 @@ var next_sensor_distance = 0.0
 var state = "stopped"
 
 var wagons = []
+var opposite_turn_history = []
 
 export(Color) var color
 export(Color) var accent_color
@@ -42,7 +43,7 @@ func _ready():
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
-	for i in range(3):
+	for i in range(5):
 		wagons.append(VirtualTrainWagon.new())
 		get_parent().call_deferred("add_child", wagons[-1])
 		wagons[-1].color = color
@@ -131,6 +132,7 @@ func flip_heading():
 		set_dirtrack(dirtrack.get_next(turn).get_opposite())
 		track_pos = length-prev_pos
 	set_facing(facing*-1)
+	opposite_turn_history = []
 	update_position()
 	velocity = 0.0
 	prev_sensor_track = null
@@ -173,6 +175,12 @@ func wrap_dirtrack():
 	while track_pos > length:
 		track_pos -= length
 		set_dirtrack(dirtrack.get_next(turn))
+		var next_dirtrack = dirtrack.get_next(turn)
+		var opposite_turn = next_dirtrack.get_opposite().get_turn_to(dirtrack.get_opposite())
+		opposite_turn_history.push_front(opposite_turn)
+		if len(opposite_turn_history)>10:
+			opposite_turn_history.pop_back()
+		print(opposite_turn_history)
 		if dirtrack == next_sensor_track and allow_sensor_advance:
 			var sensor = dirtrack.get_sensor()
 			pass_sensor(sensor)
@@ -201,7 +209,7 @@ func update_wagon_position():
 		var wagon = wagons[i]
 		var wagon_pos = 0.52*(1+i) + (length - track_pos)
 		var wagon_dirtrack = dirtrack.get_next(turn).get_opposite()
-		var interpolation = wagon_dirtrack.interpolate_world(wagon_pos)
+		var interpolation = wagon_dirtrack.interpolate_world(wagon_pos, opposite_turn_history)
 		wagon.position = interpolation.position
 		wagon.rotation = interpolation.rotation
 
