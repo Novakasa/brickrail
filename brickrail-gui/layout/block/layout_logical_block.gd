@@ -50,6 +50,11 @@ func find_sensors():
 	nodes[-1].target.set_sensor("in", sensorlist[0])
 	nodes[-1].target.set_sensor("leave", sensorlist[-1])
 
+func get_train_spawn_dirtrack(facing):
+	if facing == 1:
+		return section.tracks[-1]
+	return section.tracks[0]
+
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
 	train = p_train

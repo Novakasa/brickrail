@@ -393,7 +393,7 @@ func set_current_block(p_block, teleport=true):
 		block.set_occupied(true, self)
 		virtual_train.visible=true
 		if teleport:
-			virtual_train.set_dirtrack(block.section.tracks[-1])
+			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing))
 	else:
 		virtual_train.visible=false
 
