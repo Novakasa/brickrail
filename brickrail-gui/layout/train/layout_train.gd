@@ -15,6 +15,7 @@ var fixed_facing=false
 var next_sensor_track
 var wait_timer: Timer
 var committed = true
+var left_block = false
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
@@ -177,7 +178,6 @@ func get_all_valid_routes(no_locked=true):
 	return valid_routes
 
 func find_random_route():
-	var target = block.nodes[facing].id
 	var valid_routes = get_all_valid_routes(true)
 	var valid_targets = valid_routes.keys()
 	
@@ -258,10 +258,15 @@ func start_leg():
 		set_route(null)
 		return
 	leg.lock_tracks(trainname)
+	left_block = facing==1
+	print(leg.get_type())
 	if leg.get_type() == "flip":
 		flip_heading()
+		print(facing)
+		left_block=true
 	else:
 		leg.set_switches()
+	prints("left_block:", left_block)
 	set_target(leg.get_target().obj)
 	
 	set_next_sensor()
@@ -274,18 +279,16 @@ func set_expect_marker(marker, behaviour):
 		ble_train.set_expect_marker(marker, behaviour)
 
 func set_target(p_block):
-	if target!=null:
-		# prints("disconnecting target:", target.id)
-		target.disconnect("train_entered", self, "_on_target_train_entered")
-		target.disconnect("train_in", self, "_on_target_train_in")
 	target = p_block
-	if target != null:
-		# prints("connecting target:", target.id)
-		# connect signals deferred, so they don't get retriggered within this frame if it happens to be the same sensor as the one that triggered this method call
-		target.call_deferred("connect", "train_entered", self, "_on_target_train_entered")
-		target.call_deferred("connect", "train_in", self, "_on_target_train_in")
+
+func get_target_sensor(key):
+	return target.nodes[facing].target.sensors[key]
+
+func get_block_sensor(key):
+	return block.nodes[facing].target.sensors[key]
 
 func set_next_sensor():
+	print("setting next_sensor")
 	if next_sensor_track != null:
 		next_sensor_track.get_sensor().disconnect("triggered", self, "_on_next_sensor_triggered")
 
@@ -296,18 +299,24 @@ func set_next_sensor():
 		next_sensor_track.get_sensor().connect("triggered", self, "_on_next_sensor_triggered")
 		var next_colorname = next_sensor_track.get_sensor().get_colorname()
 		
-		if next_sensor_track.get_sensor() == target.sensors["enter"]:
+		if next_sensor_track.get_sensor() == get_block_sensor("leave"):
+			if not left_block:
+				set_expect_marker(next_colorname, "ignore")
+				return
+			# now it should be the in sensor for target
+		if next_sensor_track.get_sensor() == get_target_sensor("enter"):
 			if route.can_train_pass(trainname):
 				set_expect_marker(next_colorname, "ignore")
-			else:
-				set_expect_marker(next_colorname, "slow")
-		elif next_sensor_track.get_sensor() == target.sensors["in"]:
+				return
+			set_expect_marker(next_colorname, "slow")
+			return
+		if next_sensor_track.get_sensor() == get_target_sensor("in"):
 			if route.can_train_pass(trainname) and not route.is_train_blocked(trainname):
 				set_expect_marker(next_colorname, "ignore")
-			else:
-				set_expect_marker(next_colorname, "stop")
-		else:
-			set_expect_marker(next_colorname, "ignore")
+				return
+			set_expect_marker(next_colorname, "stop")
+			return
+		set_expect_marker(next_colorname, "ignore")
 
 func is_leg_allowed(leg):
 	var leg_locked = leg.get_locked()
@@ -322,10 +331,15 @@ func _on_next_sensor_triggered(p_train):
 	if not virtual_train.allow_sensor_advance:
 		virtual_train.advance_to_next_sensor_track()
 	
-	if next_sensor_track.get_sensor() == target.sensors["enter"]:
+	if next_sensor_track.get_sensor() == get_block_sensor("leave") and not left_block:
+		left_block=true
+		prints("left_block:", left_block)
+		set_next_sensor()
+		return
+	if next_sensor_track.get_sensor() == get_target_sensor("enter"):
 		_on_target_entered()
 	
-	if next_sensor_track.get_sensor() == target.sensors["in"]:
+	if next_sensor_track.get_sensor() == get_target_sensor("in"):
 		_on_target_in()
 	
 	elif target != null:

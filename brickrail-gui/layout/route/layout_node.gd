@@ -6,12 +6,19 @@ var id
 var edges = {}
 var type
 var facing
+var target: LayoutTarget
 
 func _init(p_obj, p_id, p_facing, p_type):
 	obj = p_obj
 	id = p_id + "_" + ["<", ">"][(p_facing+1)/2]
 	facing = p_facing
 	type = p_type
+
+func set_target(p_target):
+	target = p_target
+
+func get_target():
+	return target
 
 func collect_edges():
 	# prints("collecting edges on", id)

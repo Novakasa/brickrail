@@ -8,7 +8,6 @@ var occupied: bool
 var train: LayoutTrain
 var index: int
 var nodes = {}
-var sensors = {}
 var selected = false
 var hover = false
 
@@ -17,8 +16,6 @@ var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.ts
 signal removing(blockname)
 signal selected()
 signal unselected()
-signal train_in(p_train)
-signal train_entered(p_train)
 
 func _init(p_name, p_index):
 	blockname = p_name
@@ -26,6 +23,7 @@ func _init(p_name, p_index):
 	id = blockname + "_" + ["+", "-"][index]
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
+		nodes[facing].set_target(LayoutTarget.new())
 
 func set_section(p_section):
 	if section != null:
@@ -37,30 +35,20 @@ func set_section(p_section):
 func _on_section_sensor_changed():
 	find_sensors()
 
-func _on_sensor_in_triggered(p_train):
-	emit_signal("train_in", p_train)
-
-func _on_sensor_enter_triggered(p_train):
-	emit_signal("train_entered", p_train)
-
 func find_sensors():
 	var sensorlist = section.get_sensors()
 	
 	if len(sensorlist)<2:
-		set_sensor("enter", null)
-		set_sensor("in", null)
+		for facing in [-1, 1]:
+			nodes[facing].target.set_sensor("enter", null)
+			nodes[facing].target.set_sensor("in", null)
 		return
 	
-	set_sensor("enter", sensorlist[0])
-	set_sensor("in", sensorlist[-1])
-
-func set_sensor(key, sensor):
-	if key in sensors:
-		sensors[key].disconnect("triggered", self, "_on_sensor_enter_triggered")
-	sensors.erase(key)
-	if sensor != null:
-		sensors[key] = sensor
-		sensor.connect("triggered", self, "_on_sensor_enter_triggered")
+	nodes[1].target.set_sensor("enter", sensorlist[0])
+	nodes[1].target.set_sensor("in", sensorlist[-1])
+	
+	nodes[-1].target.set_sensor("in", sensorlist[0])
+	nodes[-1].target.set_sensor("leave", sensorlist[-1])
 
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied

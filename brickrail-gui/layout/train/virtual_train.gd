@@ -180,7 +180,7 @@ func wrap_dirtrack():
 		opposite_turn_history.push_front(opposite_turn)
 		if len(opposite_turn_history)>10:
 			opposite_turn_history.pop_back()
-		print(opposite_turn_history)
+		# print(opposite_turn_history)
 		if dirtrack == next_sensor_track and allow_sensor_advance:
 			var sensor = dirtrack.get_sensor()
 			pass_sensor(sensor)

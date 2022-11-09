@@ -99,6 +99,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://layout/switch/layout_switch.gd"
 }, {
+"base": "Reference",
+"class": "LayoutTarget",
+"language": "GDScript",
+"path": "res://layout/route/layout_target.gd"
+}, {
 "base": "Node2D",
 "class": "LayoutTrack",
 "language": "GDScript",
@@ -148,6 +153,7 @@ _global_script_class_icons={
 "LayoutSection": "",
 "LayoutSensor": "",
 "LayoutSwitch": "",
+"LayoutTarget": "",
 "LayoutTrack": "",
 "LayoutTrain": "",
 "Selector": "",
