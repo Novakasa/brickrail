@@ -306,6 +306,8 @@ func set_next_sensor():
 				set_expect_marker(next_colorname, "ignore")
 			else:
 				set_expect_marker(next_colorname, "stop")
+		else:
+			set_expect_marker(next_colorname, "ignore")
 
 func is_leg_allowed(leg):
 	var leg_locked = leg.get_locked()

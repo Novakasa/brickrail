@@ -63,7 +63,6 @@ func set_section(p_section):
 	position = track.get_position() + LayoutInfo.spacing*track.get_center()
 	position -= 0.5*size.y*tangent.rotated(PI*0.5)
 	rotation = tangent.angle()
-	
 
 	update()
 

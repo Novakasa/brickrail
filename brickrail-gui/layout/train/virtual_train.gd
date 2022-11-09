@@ -43,7 +43,7 @@ func _ready():
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
-	for i in range(5):
+	for i in range(3):
 		wagons.append(VirtualTrainWagon.new())
 		get_parent().call_deferred("add_child", wagons[-1])
 		wagons[-1].color = color
