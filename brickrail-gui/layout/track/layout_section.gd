@@ -105,7 +105,10 @@ func add_track(track):
 			add_dirtrack(dirtrack)
 			return
 	
-	assert(false)
+	assert(len(tracks)==1)
+	
+	tracks[0] = tracks[0].get_opposite()
+	add_track(track)
 
 func add_dirtrack(dirtrack):
 	if len(tracks)>0 and false:
