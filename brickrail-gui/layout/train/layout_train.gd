@@ -274,6 +274,7 @@ func start_leg():
 	leg.lock_tracks(trainname)
 	if leg.get_type() == "flip":
 		flip_heading()
+		try_passing()
 	else:
 		Logger.verbose("setting switches", logging_module)
 		leg.set_switches()
@@ -368,6 +369,10 @@ func _on_target_in():
 
 func _on_target_entered():
 	Logger.verbose("_on_target_entered()", logging_module)
+	try_passing()
+
+func try_passing():
+	Logger.verbose("try_passing()", logging_module)
 	var passing = route.can_train_pass(trainname)
 	if route.is_train_blocked(trainname):
 		Logger.verbose("route.is_train_blocked() true, recalculating route", logging_module)
@@ -379,14 +384,6 @@ func _on_target_entered():
 	if passing:
 		Logger.verbose("passing, switch and lock tracks", logging_module)
 		route.switch_and_lock_next(trainname)
-
-func _on_target_train_entered(p_train):
-	if p_train != null:
-		assert(p_train==self)
-
-func _on_target_train_in(p_train):
-	if p_train != null:
-		assert(p_train==self)
 
 func stop_hover():
 	virtual_train.set_hover(false)
