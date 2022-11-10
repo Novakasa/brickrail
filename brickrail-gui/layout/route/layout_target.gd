@@ -2,7 +2,8 @@
 class_name LayoutTarget
 extends Reference
 
-var sensors = {"enter": null, "in": null, "leave": null}
+var sensor_dirtracks = {"enter": null, "in": null, "leave": null}
 
-func set_sensor(key, sensor):
-	sensors[key] = sensor
+func set_sensor_dirtrack(key, dirtrack):
+	assert(dirtrack.get_sensor() != null)
+	sensor_dirtracks[key] = dirtrack

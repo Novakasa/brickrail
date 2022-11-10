@@ -40,7 +40,7 @@ func get_train():
 
 func set_section(p_section):
 	
-	if len(p_section.get_sensors()) == 0:
+	if len(p_section.get_sensor_dirtracks()) == 0:
 		p_section.tracks[0].add_sensor(LayoutSensor.new())
 		p_section.tracks[-1].add_sensor(LayoutSensor.new())
 	

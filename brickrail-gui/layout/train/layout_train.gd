@@ -15,7 +15,6 @@ var fixed_facing=false
 var next_sensor_track
 var wait_timer: Timer
 var committed = true
-var left_block = false
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
@@ -223,7 +222,6 @@ func is_there_hope():
 			return true
 	blocked_by = null
 	return false
-	
 
 func try_advancing():
 	if route.is_train_blocked(trainname):
@@ -258,15 +256,12 @@ func start_leg():
 		set_route(null)
 		return
 	leg.lock_tracks(trainname)
-	left_block = facing==1
 	print(leg.get_type())
 	if leg.get_type() == "flip":
 		flip_heading()
 		print(facing)
-		left_block=true
 	else:
 		leg.set_switches()
-	prints("left_block:", left_block)
 	set_target(leg.get_target().obj)
 	
 	set_next_sensor()
@@ -281,11 +276,11 @@ func set_expect_marker(marker, behaviour):
 func set_target(p_block):
 	target = p_block
 
-func get_target_sensor(key):
-	return target.nodes[facing].target.sensors[key]
+func get_target_sensor_dirtrack(key):
+	return target.nodes[facing].target.sensor_dirtracks[key]
 
-func get_block_sensor(key):
-	return block.nodes[facing].target.sensors[key]
+func get_block_sensor_dirtrack(key):
+	return block.nodes[facing].target.sensor_dirtracks[key]
 
 func set_next_sensor():
 	print("setting next_sensor")
@@ -299,18 +294,13 @@ func set_next_sensor():
 		next_sensor_track.get_sensor().connect("triggered", self, "_on_next_sensor_triggered")
 		var next_colorname = next_sensor_track.get_sensor().get_colorname()
 		
-		if next_sensor_track.get_sensor() == get_block_sensor("leave"):
-			if not left_block:
-				set_expect_marker(next_colorname, "ignore")
-				return
-			# now it should be the in sensor for target
-		if next_sensor_track.get_sensor() == get_target_sensor("enter"):
+		if next_sensor_track == get_target_sensor_dirtrack("enter"):
 			if route.can_train_pass(trainname):
 				set_expect_marker(next_colorname, "ignore")
 				return
 			set_expect_marker(next_colorname, "slow")
 			return
-		if next_sensor_track.get_sensor() == get_target_sensor("in"):
+		if next_sensor_track == get_target_sensor_dirtrack("in"):
 			if route.can_train_pass(trainname) and not route.is_train_blocked(trainname):
 				set_expect_marker(next_colorname, "ignore")
 				return
@@ -331,15 +321,10 @@ func _on_next_sensor_triggered(p_train):
 	if not virtual_train.allow_sensor_advance:
 		virtual_train.advance_to_next_sensor_track()
 	
-	if next_sensor_track.get_sensor() == get_block_sensor("leave") and not left_block:
-		left_block=true
-		prints("left_block:", left_block)
-		set_next_sensor()
-		return
-	if next_sensor_track.get_sensor() == get_target_sensor("enter"):
+	if next_sensor_track == get_target_sensor_dirtrack("enter"):
 		_on_target_entered()
 	
-	if next_sensor_track.get_sensor() == get_target_sensor("in"):
+	if next_sensor_track == get_target_sensor_dirtrack("in"):
 		_on_target_in()
 	
 	elif target != null:

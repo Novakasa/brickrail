@@ -128,12 +128,12 @@ func add_dirtrack(dirtrack):
 func _on_track_sensor_changed(_slot):
 	emit_signal("sensor_changed")
 
-func get_sensors():
+func get_sensor_dirtracks():
 	var sensorlist = []
 	for dirtrack in tracks:
 		var sensor = dirtrack.get_sensor()
 		if sensor != null:
-			sensorlist.append(sensor)
+			sensorlist.append(dirtrack)
 	return sensorlist
 
 func get_track_index(track):

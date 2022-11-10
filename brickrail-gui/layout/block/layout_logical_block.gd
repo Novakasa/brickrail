@@ -36,19 +36,19 @@ func _on_section_sensor_changed():
 	find_sensors()
 
 func find_sensors():
-	var sensorlist = section.get_sensors()
+	var sensorlist = section.get_sensor_dirtracks()
 	
 	if len(sensorlist)<2:
 		for facing in [-1, 1]:
-			nodes[facing].target.set_sensor("enter", null)
-			nodes[facing].target.set_sensor("in", null)
+			nodes[facing].target.set_sensor_dirtrack("enter", null)
+			nodes[facing].target.set_sensor_dirtrack("in", null)
 		return
 	
-	nodes[1].target.set_sensor("enter", sensorlist[0])
-	nodes[1].target.set_sensor("in", sensorlist[-1])
+	nodes[1].target.set_sensor_dirtrack("enter", sensorlist[0])
+	nodes[1].target.set_sensor_dirtrack("in", sensorlist[-1])
 	
-	nodes[-1].target.set_sensor("in", sensorlist[0])
-	nodes[-1].target.set_sensor("leave", sensorlist[-1])
+	nodes[-1].target.set_sensor_dirtrack("in", sensorlist[0])
+	nodes[-1].target.set_sensor_dirtrack("leave", sensorlist[-1])
 
 func get_train_spawn_dirtrack(facing):
 	if facing == 1:
