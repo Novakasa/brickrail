@@ -44,7 +44,7 @@ func _init(p_name):
 
 func _enter_tree():
 	if LayoutInfo.random_targets:
-		wait_timer.wait_time = 1.0/LayoutInfo.time_scae
+		wait_timer.wait_time = 1.0/LayoutInfo.time_scale
 		wait_timer.start()
 		yield(get_tree().create_timer(wait_timer.wait_time/LayoutInfo.time_scale), "timeout")
 		if LayoutInfo.random_targets:
@@ -401,7 +401,8 @@ func _on_virtual_train_clicked(event):
 			LayoutInfo.init_drag_train(self)
 	
 func set_current_block(p_block, teleport=true):
-	Logger.verbose("set_current_block("+p_block.id+")", logging_module)
+	if p_block != null:
+		Logger.verbose("set_current_block("+p_block.id+")", logging_module)
 	if block != null:
 		block.set_occupied(false, self)
 	block = p_block

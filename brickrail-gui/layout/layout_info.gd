@@ -189,7 +189,11 @@ func load(struct):
 		for block_data in struct.blocks:
 			var section = LayoutSection.new()
 			section.load(block_data.section)
-			create_block(block_data.name, section)
+			var block = create_block(block_data.name, section)
+			if "prior_sensors" in block_data:
+				for index in block_data.prior_sensors:
+					var prior_sensor_dirtrack = get_dirtrack_from_struct(block_data.prior_sensors[index])
+					block.logical_blocks[int(index)].add_prior_sensor_dirtrack(prior_sensor_dirtrack)
 	
 	if "trains" in struct:
 		for train_data in struct.trains:

@@ -469,6 +469,14 @@ func process_mouse_button(event, pos):
 				LayoutInfo.set_portal_target(directed_tracks[slot0])
 			else:
 				LayoutInfo.set_portal_target(directed_tracks[slot1])
+		
+		if LayoutInfo.input_mode == "prior_sensor":
+			if (pos0-pos).length()<(pos1-pos).length():
+				LayoutInfo.set_input_mode("select")
+				LayoutInfo.selection.add_prior_sensor_dirtrack(directed_tracks[slot0])
+			else:
+				LayoutInfo.set_input_mode("select")
+				LayoutInfo.selection.add_prior_sensor_dirtrack(directed_tracks[slot1])
 
 func get_tangent_to(slot):
 	if slot == slot1:

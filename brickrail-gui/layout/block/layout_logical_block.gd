@@ -35,6 +35,14 @@ func set_section(p_section):
 func _on_section_sensor_changed():
 	find_sensors()
 
+func add_prior_sensor_dirtrack(dirtrack):
+	if dirtrack.get_sensor() == null:
+		dirtrack.add_sensor(LayoutSensor.new())
+	nodes[-1].target.set_sensor_dirtrack("enter", dirtrack)
+
+func get_prior_sensor_dirtrack():
+	return nodes[-1].target.sensor_dirtracks["enter"]
+
 func find_sensors():
 	var sensorlist = section.get_sensor_dirtracks()
 	
