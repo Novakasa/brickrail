@@ -15,9 +15,11 @@ var length = 0.0
 var size = Vector2(0.3,0.2)
 var facing: int = 1
 var max_velocity = 3.0
-var slow_velocity = 0.5
+var slow_velocity = 1.0
 var expect_marker = null
 var expect_behaviour = null
+var trainname
+var logging_module
 
 var allow_sensor_advance = true
 var prev_sensor_track = null
@@ -60,7 +62,6 @@ func has_point(pos):
 	return hitbox.has_point(pos)
 
 func set_facing(p_facing):
-	prints("setting facing:", p_facing)
 	facing = p_facing
 	update()
 
@@ -112,15 +113,19 @@ func set_expect_marker(colorname, behaviour):
 	expect_behaviour = behaviour
 
 func start():
+	Logger.verbose("start()", logging_module)
 	set_state("started")
 
 func slow():
+	Logger.verbose("slow()", logging_module)
 	set_state("slow")
 
 func stop():
+	Logger.verbose("stop()", logging_module)
 	set_state("stopped")
 
 func flip_heading():
+	Logger.verbose("flip_heading()", logging_module)
 	if state!="stopped":
 		push_error("can't flip heading while state is " + state)
 		return
