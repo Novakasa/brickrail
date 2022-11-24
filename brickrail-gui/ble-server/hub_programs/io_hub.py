@@ -11,38 +11,38 @@ micropython.kbd_intr(-1)
 _IN_ID_SIGNAL = const(0)
 _IN_ID_RPC = const(1)
 _IN_ID_SYS = const(2)
-_IN_ID_EOL = const(b"\r"[0])
-_IN_ID_CHUNK_DELIMITER = const(b"\n"[0])
+_IN_ID_EOM = const(b"\r"[0])
 
 _OUT_ID_SIGNAL = const(0)
 _OUT_ID_DATA = const(1)
 _OUT_ID_SYS = const(2)
-_OUT_ID_EOL = const(b"\r"[0])
+_OUT_ID_EOM = const(b"\r"[0])
 
 _SYS_CODE_STOP = const(0)
 _SYS_CODE_READY = const(1)
 _SYS_CODE_MSG_ACK = const(2)
 _SYS_CODE_MSG_ERR = const(3)
 
+_CHUNK_LENGTH = const(80)
+
 class IOHub:
 
-    def __init__(self):
+    def __init__(self, device=None):
         self.running = False
         self.input_buffer = bytearray()
-        self.input_checksum = 0xFF
-        self.input_checksum_received = None
+        self.input_checksum = None
         self.poll = uselect.poll()
         self.poll.register(usys.stdin)
-        self.device = None
+        self.device = device
     
     def emit_data(self, key, data):
-        usys.stdout.buffer.write(bytes([_OUT_ID_DATA]) + bytes(repr((key, data))) + bytes([_OUT_ID_EOL]))
+        usys.stdout.buffer.write(bytes([_OUT_ID_DATA]) + bytes(repr((key, data))) + bytes([_OUT_ID_EOM]))
 
     def emit_signal_code(self, code):
-        usys.stdout.buffer.write(bytes([_OUT_ID_SIGNAL, code, _OUT_ID_EOL]))
+        usys.stdout.buffer.write(bytes([_OUT_ID_SIGNAL, code, _OUT_ID_EOM]))
     
     def emit_sys_code(self, code):
-        usys.stdout.buffer.write(bytes([_OUT_ID_SYS, code, _OUT_ID_EOL]))
+        usys.stdout.buffer.write(bytes([_OUT_ID_SYS, code, _OUT_ID_EOM]))
 
     def handle_input(self):
         msg_id = self.input_buffer[0]
@@ -69,24 +69,23 @@ class IOHub:
         
         print(self.input_buffer.decode())
 
-    def update_input(self, bytes):
-        if self.input_checksum_received is None:
-            self.input_checksum_received = bytes[0]
-            return
-        if bytes[0] == _IN_ID_EOL:
+    def update_input(self, byte):
+
+        if byte == _IN_ID_EOM:
             self.handle_input()
             self.input_buffer = bytearray()
             return
-        if bytes[0] == _IN_ID_CHUNK:
-            if self.input_checksum == self.input_checksum_received:
+        if len(self.input_buffer)%_CHUNK_LENGTH == 0 and self.input_checksum is not None:
+            if self.input_checksum == byte:
                 self.emit_sys_code(_SYS_CODE_MSG_ACK)
             else:
                 self.emit_sys_code(_SYS_CODE_MSG_ERR)
             self.input_checksum = 0xFF
-            self.input_checksum_received = None
             return
-        self.input_checksum ^= bytes[0]
-        self.input_buffer += bytes
+        if self.input_checksum is None:
+            self.input_checksum = 0xFF
+        self.input_checksum ^= byte
+        self.input_buffer.append(byte)
 
     def update(self, delta):
         self.device.update(delta)
