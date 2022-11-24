@@ -247,7 +247,6 @@ func try_advancing():
 			start_leg()
 		return
 	var hope = is_there_hope()
-	prints("hope:", hope)
 	if not hope:
 		if LayoutInfo.random_targets and not committed:
 			Logger.verbose("no hope for route, finding new one", logging_module)
