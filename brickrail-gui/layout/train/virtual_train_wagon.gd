@@ -16,6 +16,14 @@ func set_heading(heading):
 func set_facing(facing):
 	material.set_shader_param("facing", facing)
 
+func has_point(pos):
+	pos = to_local(pos)
+	var spacing = LayoutInfo.spacing
+	var wsize = Vector2(0.35, 0.2)*spacing
+	wsize.x = wsize.x + wsize.y
+	var hitbox = Rect2(-wsize*0.5, wsize)
+	return hitbox.has_point(pos)
+
 func _draw():
 	
 	var size = Vector2(0.7,0.7)

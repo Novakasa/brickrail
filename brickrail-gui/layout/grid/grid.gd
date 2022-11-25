@@ -5,7 +5,7 @@ export var ny = 60
 export(Color) var grid_line_color
 export(float) var grid_line_width
 
-var hover_cell = null
+var hover_obj = null
 
 var dragging_view = false
 var dragging_view_reference = null
@@ -80,35 +80,46 @@ func process_mouse_input(event):
 	var l = LayoutInfo.active_layer
 	var mpos_cell = mpos-LayoutInfo.spacing*Vector2(i,j)
 	if event is InputEventMouseMotion:
-		process_mouse_motion(event, i, j, mpos_cell)
+		process_mouse_motion(event, i, j, mpos_cell, mpos)
 	if event is InputEventMouseButton:
-		process_mouse_button(event, i, j, mpos_cell)
+		process_mouse_button(event, i, j, mpos_cell, mpos)
 
-func process_mouse_motion(event, i, j, mpos_cell):
+func process_mouse_motion(event, i, j, mpos_cell, mpos):
 	var l = LayoutInfo.active_layer
 	if dragging_view:
 		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
-
+	
 	for train in LayoutInfo.trains.values():
-		train.stop_hover()
+		if train.has_point(mpos):
+			if train != hover_obj and hover_obj != null:
+				hover_obj.stop_hover()
+			set_hover_obj(train)
+			train.hover_at(mpos)
+			return
+	
 	var cell = LayoutInfo.get_cell(l, i, j)
-	if hover_cell != null && hover_cell != cell:
-		hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
-		hover_cell.stop_hover()
-	if hover_cell != cell:
-		hover_cell = cell
-		hover_cell.connect("removing", self, "_on_hover_cell_removing")
-	hover_cell.hover_at(mpos_cell)
+	if cell != hover_obj and hover_obj != null:
+		hover_obj.stop_hover()
+	set_hover_obj(cell)
+	cell.hover_at(mpos_cell)
 
-func _on_hover_cell_removing(_cell):
-	hover_cell.disconnect("removing", self, "_on_hover_cell_removing")
-	hover_cell = null
+func set_hover_obj(obj):
+	if hover_obj != null:
+		hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
+		hover_obj.stop_hover()
+	hover_obj = obj
+	if hover_obj != null:
+		hover_obj.connect("removing", self, "_on_hover_obj_removing")
+
+func _on_hover_obj_removing(_cell):
+	hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
+	hover_obj = null
 
 func stop_hover():
-	if hover_cell != null:
-		hover_cell.stop_hover()
+	if hover_obj != null:
+		hover_obj.stop_hover()
 
-func process_mouse_button(event, i, j, mpos_cell):
+func process_mouse_button(event, i, j, mpos_cell, mpos):
 	if event.button_index == BUTTON_WHEEL_UP:
 		$Camera2D.position += event.position*0.05*$Camera2D.zoom
 		$Camera2D.zoom*=0.95
@@ -135,9 +146,15 @@ func process_mouse_button(event, i, j, mpos_cell):
 				LayoutInfo.flip_drag_train_facing()
 				return
 	
+	for train in LayoutInfo.trains.values():
+		if train.has_point(mpos):
+			train.process_mouse_button(event, mpos)
+			return
+	
 	var l = LayoutInfo.active_layer
 	LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell)
 	
+	# If we release the button outside of the grid, disable the hold modes.
 	if event.button_index == BUTTON_LEFT:
 		if not event.pressed:
 			if LayoutInfo.drawing_track:

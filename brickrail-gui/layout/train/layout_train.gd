@@ -32,8 +32,6 @@ func _init(p_name):
 	virtual_train.trainname = trainname
 	virtual_train.logging_module = "virtual-"+trainname
 	add_child(virtual_train)
-	virtual_train.connect("hover", self, "_on_virtual_train_hover")
-	virtual_train.connect("clicked", self, "_on_virtual_train_clicked")
 	virtual_train.visible=false
 	LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
 	LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
@@ -157,8 +155,23 @@ func unselect():
 	virtual_train.set_selected(false)
 	emit_signal("unselected")
 
-func _on_virtual_train_hover():
+func has_point(point):
+	return virtual_train.has_point(point)
+
+func hover_at(mpos):
 	virtual_train.set_hover(true)
+
+func stop_hover():
+	virtual_train.set_hover(false)
+
+func process_mouse_button(event, mpos):
+	# prints("train:", trainname)
+	if event.button_index == BUTTON_LEFT:
+		if LayoutInfo.input_mode == "select":
+			if not selected:
+				select()
+		if LayoutInfo.input_mode == "control":
+			LayoutInfo.init_drag_train(self)
 
 func get_route_to(p_target, no_locked=true):
 	var locked_trainname = trainname
@@ -383,18 +396,6 @@ func try_passing():
 	if passing:
 		Logger.verbose("passing, switch and lock tracks", logging_module)
 		route.switch_and_lock_next(trainname)
-
-func stop_hover():
-	virtual_train.set_hover(false)
-
-func _on_virtual_train_clicked(event):
-	# prints("train:", trainname)
-	if event.button_index == BUTTON_LEFT:
-		if LayoutInfo.input_mode == "select":
-			if not selected:
-				select()
-		if LayoutInfo.input_mode == "control":
-			LayoutInfo.init_drag_train(self)
 	
 func set_current_block(p_block, teleport=true):
 	if p_block != null:

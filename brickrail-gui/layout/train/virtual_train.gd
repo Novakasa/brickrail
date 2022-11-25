@@ -36,9 +36,6 @@ export(Color) var accent_color
 export(Color) var hover_color
 export(Color) var selected_color = Color.black
 
-signal hover()
-signal stop_hover()
-signal clicked(event)
 signal marker(marker)
 
 func _ready():
@@ -70,29 +67,14 @@ func _on_settings_colors_changed():
 	selected_color = Settings.colors["tertiary"]
 
 func has_point(pos):
-	var spacing = LayoutInfo.spacing
-	var wsize = size*spacing
-	wsize.x = wsize.x + wsize.y
-	var hitbox = Rect2(-wsize*0.5, wsize)
-	return hitbox.has_point(pos)
+	for wagon in wagons:
+		if wagon.has_point(pos):
+			return true
+	return false
 
 func set_facing(p_facing):
 	facing = p_facing
 	update_wagon_visuals()
-
-func _unhandled_input(event):
-	if event is InputEventMouseButton:
-		if not event.button_index in [BUTTON_LEFT, BUTTON_RIGHT]:
-			return
-		if has_point(get_local_mouse_position()):
-			get_tree().set_input_as_handled()
-			emit_signal("clicked", event)
-	if event is InputEventMouseMotion:
-		if has_point(get_local_mouse_position()):
-			if not LayoutInfo.get_hover_lock():
-				LayoutInfo.grid.stop_hover()
-				get_tree().set_input_as_handled()
-			emit_signal("hover")
 
 func update_next_sensor_info():
 	var distance
