@@ -39,6 +39,7 @@ var drag_select_highlighted = []
 var drag_train = false
 var dragged_train = null
 var drag_virtual_train = null
+var drag_layout_block = null
 
 var portal_dirtrack = null
 var portal_target = null
@@ -415,13 +416,20 @@ func init_drag_train(train):
 	drag_virtual_train.set_process(false)
 	drag_virtual_train.set_facing(dragged_train.facing)
 	drag_virtual_train.visible=false
+	drag_layout_block = null
 
 func stop_drag_train():
 	if drag_train:
 		print("stopping drag train")
 		drag_train = false
-		drag_virtual_train.queue_free()
+		drag_virtual_train.remove()
 		dragged_train = null
+		drag_layout_block = null
+
+func flip_drag_train_facing():
+	drag_virtual_train.set_facing(drag_virtual_train.facing*-1)
+	if drag_layout_block != null:
+		drag_layout_block.set_drag_virtual_train()
 
 func stop_drag_select():
 	drag_select = false

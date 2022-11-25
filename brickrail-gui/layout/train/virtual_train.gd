@@ -49,6 +49,17 @@ func _ready():
 		wagons.append(VirtualTrainWagon.new())
 		get_parent().call_deferred("add_child", wagons[-1])
 		wagons[-1].color = color
+	
+	connect("visibility_changed", self, "_on_visibility_changed")
+
+func remove():
+	for wagon in wagons:
+		wagon.queue_free()
+	queue_free()
+
+func _on_visibility_changed():
+	for wagon in wagons:
+		wagon.visible = visible
 
 func _on_settings_colors_changed():
 	color = Settings.colors["primary"]*1.5

@@ -127,15 +127,20 @@ func process_mouse_button(event, pos):
 				var end_facing = LayoutInfo.drag_virtual_train.facing
 				var target = nodes[end_facing].id
 				train.find_route(target)
-				
 
 func hover(pos):
 	hover = true
 	section.set_track_attributes("block", blockname)
 	
 	if LayoutInfo.drag_train:
-		LayoutInfo.drag_virtual_train.set_dirtrack(section.tracks[-1])
-		LayoutInfo.drag_virtual_train.visible=true
+		set_drag_virtual_train()
+
+func set_drag_virtual_train():
+	var spawn_track = get_train_spawn_dirtrack(LayoutInfo.drag_virtual_train.facing)
+	LayoutInfo.drag_virtual_train.set_dirtrack(spawn_track)
+	LayoutInfo.drag_virtual_train.update_wagon_position()
+	LayoutInfo.drag_virtual_train.visible=true
+	LayoutInfo.drag_layout_block = self
 
 func stop_hover():
 	hover = false
@@ -143,6 +148,7 @@ func stop_hover():
 
 	if LayoutInfo.drag_train:
 		LayoutInfo.drag_virtual_train.visible=false
+		LayoutInfo.drag_layout_block = null
 
 func select():
 	selected=true

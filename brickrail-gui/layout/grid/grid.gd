@@ -110,19 +110,11 @@ func stop_hover():
 
 func process_mouse_button(event, i, j, mpos_cell):
 	if event.button_index == BUTTON_WHEEL_UP:
-		if LayoutInfo.drag_train:
-			var vtrain = LayoutInfo.drag_virtual_train
-			vtrain.call_deferred("set_facing", vtrain.facing*-1)
-			return
-		$Camera2D.position += event.position*0.05*$Camera2D.zoom	
+		$Camera2D.position += event.position*0.05*$Camera2D.zoom
 		$Camera2D.zoom*=0.95
 		return
 		
 	if event.button_index == BUTTON_WHEEL_DOWN:
-		if LayoutInfo.drag_train:
-			var vtrain = LayoutInfo.drag_virtual_train
-			vtrain.call_deferred("set_facing", vtrain.facing*-1)
-			return
 		$Camera2D.zoom*=1.05
 		$Camera2D.position -= event.position*0.05*$Camera2D.zoom
 		return
@@ -136,6 +128,11 @@ func process_mouse_button(event, i, j, mpos_cell):
 		else:
 			if dragging_view:
 				dragging_view = false
+				return
+	if event.button_index == BUTTON_RIGHT:
+		if event.pressed:
+			if LayoutInfo.drag_train:
+				LayoutInfo.flip_drag_train_facing()
 				return
 	
 	var l = LayoutInfo.active_layer
