@@ -1,7 +1,9 @@
-[gd_scene load_steps=3 format=2]
+[gd_scene load_steps=5 format=2]
 
 [ext_resource path="res://layout/grid/layout_cell_shader.tres" type="Material" id=1]
 [ext_resource path="res://tools/shader_test.gd" type="Script" id=2]
+[ext_resource path="res://icon.png" type="Texture" id=3]
+[ext_resource path="res://layout/train/wagon_shader.tres" type="Material" id=4]
 
 [node name="Node2D" type="Node2D"]
 
@@ -10,3 +12,8 @@ material = ExtResource( 1 )
 position = Vector2( 60.7352, 27.8183 )
 script = ExtResource( 2 )
 size = Vector2( 200, 200 )
+
+[node name="Sprite" type="Sprite" parent="."]
+material = ExtResource( 4 )
+position = Vector2( 412, 191 )
+texture = ExtResource( 3 )

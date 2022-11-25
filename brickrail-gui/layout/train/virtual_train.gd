@@ -34,7 +34,7 @@ var opposite_turn_history = []
 export(Color) var color
 export(Color) var accent_color
 export(Color) var hover_color
-export(Color) var selected_color
+export(Color) var selected_color = Color.black
 
 signal hover()
 signal stop_hover()
@@ -45,10 +45,14 @@ func _ready():
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
-	for i in range(3):
+	for i in range(4):
 		wagons.append(VirtualTrainWagon.new())
 		get_parent().call_deferred("add_child", wagons[-1])
-		wagons[-1].color = color
+		wagons[-1].set_color(color)
+		wagons[-1].set_heading(0)
+		wagons[-1].set_facing(0)
+	
+	update_wagon_visuals()
 	
 	connect("visibility_changed", self, "_on_visibility_changed")
 
@@ -74,7 +78,7 @@ func has_point(pos):
 
 func set_facing(p_facing):
 	facing = p_facing
-	update()
+	update_wagon_visuals()
 
 func _unhandled_input(event):
 	if event is InputEventMouseButton:
@@ -223,7 +227,7 @@ func update_position():
 func update_wagon_position():
 	for i in range(len(wagons)):
 		var wagon = wagons[i]
-		var wagon_pos = 0.52*(1+i)
+		var wagon_pos = 0.52*i
 		var interpolation
 		var wagon_dirtrack
 		if facing>0:
@@ -235,15 +239,37 @@ func update_wagon_position():
 			interpolation = dirtrack.interpolate_world(wagon_pos)
 			
 		wagon.position = interpolation.position
-		wagon.rotation = interpolation.rotation
+		wagon.rotation = interpolation.rotation + PI
 
 func set_selected(p_selected):
 	selected = p_selected
-	update()
+	prints("selected", selected, selected_color, color)
+	update_wagon_visuals()
 
 func set_hover(p_hover):
 	hover = p_hover
-	update()
+	update_wagon_visuals()
+
+func update_wagon_visuals():
+	var wagon_color
+	if selected:
+		wagon_color = selected_color
+	else:
+		wagon_color = color
+	if hover:
+		wagon_color = wagon_color*1.7
+	for wagon in wagons:
+		wagon.set_color(wagon_color)
+		wagon.set_facing(0)
+		wagon.set_heading(0)
+	
+	wagons[0].set_facing(1)
+	if facing == 1:
+		wagons[0].set_heading(1)
+		wagons[-1].set_heading(0)
+	else:
+		wagons[0].set_heading(0)
+		wagons[-1].set_heading(-1)
 
 func set_dirtrack(p_dirtrack):
 	dirtrack = p_dirtrack
@@ -251,22 +277,3 @@ func set_dirtrack(p_dirtrack):
 	length = dirtrack.get_length_to(turn)
 	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
 	rotation = dirtrack.get_rotation()
-
-func _init():
-	pass
-
-func _draw():
-	var wsize = size*LayoutInfo.spacing
-	var col = color
-	if selected:
-		col = selected_color
-	if hover:
-		col = col*1.5
-	draw_rect(Rect2(-wsize*0.5, wsize), col)
-	draw_circle(0.5*Vector2(wsize.x,0.0), wsize.y*0.5, col)
-	draw_circle(-0.5*Vector2(wsize.x,0.0), wsize.y*0.5, col)
-	draw_circle(0.5*Vector2(facing*wsize.x,0.0), wsize.y*0.5*0.8, accent_color)
-	var tri_start_x = 0.5*(wsize.x+wsize.y*1.3)
-	var tri_delta_y = 0.3*wsize.y
-	var tri_end_x = tri_start_x+tri_delta_y
-	draw_colored_polygon([Vector2(tri_start_x,-tri_delta_y), Vector2(tri_end_x,0.0), Vector2(tri_start_x, tri_delta_y)], col)

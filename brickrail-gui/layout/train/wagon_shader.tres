@@ -1,0 +1,82 @@
+[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform int facing = 1;
+uniform int heading = 1;
+uniform vec4 body_color: hint_color = vec4(1.0);
+
+float sd_circle(vec2 pos, vec2 center, float radius) {
+	return length(pos-center)-radius;
+}
+
+float sd_rect(vec2 pos, vec2 corner, vec2 size) {
+	size *= 0.5;
+	vec2 position = pos - corner;
+    vec2 component_distance = abs(position) - size;
+    float outside_distance = length(max(component_distance, 0.0));
+    float inside_distance = min(max(component_distance.x, component_distance.y), 0.0);
+    return outside_distance + inside_distance;
+}
+
+float sd_triangle( in vec2 p, in vec2 p0, in vec2 p1, in vec2 p2 ) {
+	vec2 e0 = p1 - p0;
+	vec2 e1 = p2 - p1;
+	vec2 e2 = p0 - p2;
+
+	vec2 v0 = p - p0;
+	vec2 v1 = p - p1;
+	vec2 v2 = p - p2;
+
+	vec2 pq0 = v0 - e0*clamp( dot(v0,e0)/dot(e0,e0), 0.0, 1.0 );
+	vec2 pq1 = v1 - e1*clamp( dot(v1,e1)/dot(e1,e1), 0.0, 1.0 );
+	vec2 pq2 = v2 - e2*clamp( dot(v2,e2)/dot(e2,e2), 0.0, 1.0 );
+    
+    float s = e0.x*e2.y - e0.y*e2.x;
+    vec2 d = min( min( vec2( dot( pq0, pq0 ), s*(v0.x*e0.y-v0.y*e0.x) ),
+                       vec2( dot( pq1, pq1 ), s*(v1.x*e1.y-v1.y*e1.x) )),
+                       vec2( dot( pq2, pq2 ), s*(v2.x*e2.y-v2.y*e2.x) ));
+
+	return -sqrt(d.x)*sign(d.y);
+}
+
+float sd_merge(float sd_1, float sd_2) {
+	return min(sd_1, sd_2);
+}
+
+float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
+	float sdf_change = fwidth(sdf)*0.5;
+	float t = smoothstep(sdf_change, -sdf_change, sdf);
+	base_color = mix(base_color, color_sdf, t);
+	return t;
+}
+
+void fragment() {
+	float main_body;
+	vec2 position = UV;
+	vec2 rect_size = vec2(0.4, 0.3);
+	main_body = sd_rect(position, vec2(0.5, 0.5), rect_size);
+	main_body = sd_merge(main_body, sd_circle(position, vec2(0.5, 0.5)-vec2(rect_size.x*0.5, 0.0), rect_size.y*0.5));
+	main_body = sd_merge(main_body, sd_circle(position, vec2(0.5, 0.5)+vec2(rect_size.x*0.5, 0.0), rect_size.y*0.5));
+	
+	float s = sign(float(heading));
+	float heading_arrow = sd_triangle( position, 
+									vec2(0.5 + s*rect_size.x*1.0, 0.5 - rect_size.y*0.3),
+									vec2(0.5 + s*rect_size.x*1.2, 0.5),
+									vec2(0.5 + s*rect_size.x*1.0, 0.5 + rect_size.y*0.3));
+	
+	float facing_window = sd_circle(position, vec2(0.5, 0.5)+vec2(rect_size.x*0.5*sign(float(facing)), 0.0), rect_size.y*0.35);
+	
+	COLOR = body_color;
+	COLOR.a = 0.0;
+	mix_sdf(main_body, COLOR, body_color);
+	if (heading != 0) mix_sdf(heading_arrow, COLOR, body_color);
+	if (facing != 0) mix_sdf(facing_window, COLOR, vec4(0,0,0,1));
+}"
+
+[resource]
+shader = SubResource( 1 )
+shader_param/facing = 1
+shader_param/heading = 1
+shader_param/body_color = Color( 0.811765, 0.8, 0.0431373, 1 )
