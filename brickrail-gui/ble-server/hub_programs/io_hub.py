@@ -45,6 +45,12 @@ class IOHub:
         self.poll = uselect.poll()
         self.poll.register(usys.stdin)
         self.device = device
+        self.device_attrs = {}
+
+        for attr in dir(device):
+            if attr[0] == "_":
+                continue
+            self.device_attrs[xor_checksum(bytes(attr, "ascii"))] = attr
     
     def emit_msg(self, data):
         data += bytes([xor_checksum(data), _OUT_ID_END])
@@ -64,15 +70,16 @@ class IOHub:
             usys.stdout.buffer.write(bytes([_OUT_ID_MSG_ACK, _OUT_ID_END]))
         else:
             usys.stdout.buffer.write(bytes([_OUT_ID_MSG_ERR, _OUT_ID_END]))
-        
 
     def handle_input(self):
         in_id = self.input_buffer[0]
 
         if in_id == _IN_ID_MSG_ACK:
+            # release memory of last send, allow next data to be sent
             return
         
         if in_id == _IN_ID_MSG_ERR:
+            # retry last send
             return
         
         checksum = self.input_buffer[-1]
@@ -92,14 +99,15 @@ class IOHub:
             return
         
         if in_id == _IN_ID_RPC:
-            msg_str = str(msg, "ascii")
+            func_hash = msg[0]
+            args_str = str(msg[1:], "ascii")
             try:
-                struct = eval(msg_str)
+                args = eval(args_str)
             except Exception:
                 print("eval exception")
-                print("rpc msg:", msg_str)
-            func = getattr(self.device, struct["func"])
-            args = struct["args"]
+                print("rpc args:", args_str)
+                return
+            func = getattr(self.device, self.device_attrs[func_hash])
             _result = func(*args)
             return
         if in_id == _IN_ID_SIGNAL:

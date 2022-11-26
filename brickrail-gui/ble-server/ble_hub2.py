@@ -94,10 +94,10 @@ class BLEHub:
             print("got data:", struct)
     
     async def rpc(self, funcname, args):
-        data = {"func": funcname, "args": args}
-        msg = repr(data)
-        print(msg)
-        await self.send_bytes(bytes([_IN_ID_RPC]) + msg.encode())
+        args = repr(args).replace(" ", "")
+        funcname_hash = xor_checksum(bytes(funcname, "ascii"))
+        print("sending rpc args:", args)
+        await self.send_bytes(bytes([_IN_ID_RPC, funcname_hash]) + args.encode())
         
     async def send_bytes(self, data):
         assert len(data) <= _CHUNK_LENGTH
