@@ -36,20 +36,32 @@ class BLEHub:
         self.msg_ack = asyncio.Queue()
         self.output_buffer = bytearray()
         self.output_queue = asyncio.Queue()
+        self.line_buffer = bytearray()
     
     def _on_hub_nus(self, data):
         if self.hub._downloading_via_nus:
             return
         
         self.output_buffer += data
-        print(repr(data))
+        self.line_buffer += data
 
         while _OUT_ID_END in self.output_buffer:
             index = self.output_buffer.find(_OUT_ID_END)
             line = self.output_buffer[0:index]
-            print(line)
             self.output_queue.put_nowait(line)
+            print(f"got msg: {repr(line)}")
             del self.output_buffer[0 : index + 1]
+        
+        while b"\r\n" in self.line_buffer:
+            index = self.line_buffer.find(b"\r\n")
+            line = self.line_buffer[0:index]
+            try:
+                decoded_line = line.decode()
+            except UnicodeDecodeError:
+                print(repr(line))
+            else:
+                print(decoded_line)
+            del self.line_buffer[0 : index + 2]
     
     async def hub_message_handler(self, bytes):
         out_id = bytes[0]
@@ -69,35 +81,63 @@ class BLEHub:
         data = bytes[1:-1] #strip out_id and checksum
 
         if out_id == _OUT_ID_SYS:
-            assert len(bytes) == 2
-            sys_code = bytes[1]
+            assert len(data) == 1
+            sys_code = data[0]
         
         if out_id == _OUT_ID_DATA:
             struct  = eval(data.decode())
     
     async def rpc(self, funcname, args):
         data = {"func": funcname, "args": args}
-        await self.send_bytes(bytes([_IN_ID_RPC, repr(data)]))
+        msg = repr(data)
+        print(msg)
+        await self.send_bytes(bytes([_IN_ID_RPC]) + msg.encode())
         
-    async def send_bytes(self, bytes):
-        assert len(bytes) <= _CHUNK_LENGTH
-        checksum = xor_checksum(bytes)
-        ack_ok = None
-        while not ack_ok == checksum:
-            await self.hub.write(bytes + bytes([checksum, _IN_ID_END]))
+    async def send_bytes(self, data):
+        assert len(data) <= _CHUNK_LENGTH
+        checksum = xor_checksum(data)
+        ack_result = False
+        print(f"sending msg: {repr(data)}")
+        while not ack_result:
+            await self.hub.write(data + bytes([checksum, _IN_ID_END]))
             try:
-                ack_ok = await asyncio.wait_for(self.msg_ack.get(), 1)
+                ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=1.0)
             except asyncio.TimeoutError:
-                print(f"Wait for acknowledgement timed out, resending")
+                print(f"Wait for acknowledgement timed out, resending {data}")
             else:
-                if not ack_ok:
-                    print(f"Error received from hub, retrying")
+                if not ack_result:
+                    print(f"Error received from hub, resending {data}")
     
     async def send_ack(self, success):
         if success:
-            self.hub.write(bytes([_IN_ID_MSG_ACK, _IN_ID_END]))
+            await self.hub.write(bytes([_IN_ID_MSG_ACK, _IN_ID_END]))
         else:
-            self.hub.write(bytes([_IN_ID_MSG_ERR, _IN_ID_END]))
+            await self.hub.write(bytes([_IN_ID_MSG_ERR, _IN_ID_END]))
+    
+    async def connect(self, device):
+        await self.hub.connect(device)
+    
+    async def disconnect(self):
+        await self.hub.disconnect()
+    
+    async def run(self, program, wait=False):
+
+        async def run_coroutine():
+            await self.hub.run(program, print_output=False, wait=True)
+        
+        async def output_loop():
+            while True:
+                msg = await self.output_queue.get()
+                await self.hub_message_handler(msg)
+        
+        run_task = asyncio.create_task(run_coroutine())
+        output_task = asyncio.create_task(output_loop())
+
+        if not wait:
+            return
+
+        await run_task
+        output_task.cancel()
 
 async def io_test():
     device = await find_device()
@@ -105,7 +145,10 @@ async def io_test():
     test_hub = BLEHub()
     await test_hub.hub.connect(device)
     try:
-        await test_hub.hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", print_output=False)
+        await test_hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", wait=False)
+        await asyncio.sleep(1.0)
+        await test_hub.rpc("respond", [])
+        await asyncio.sleep(4.0)
     finally:
         await test_hub.hub.disconnect()
 

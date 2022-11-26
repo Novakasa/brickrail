@@ -36,7 +36,7 @@ class IOHub:
     def __init__(self, device=None):
         self.running = False
         self.input_buffer = bytearray()
-        self.input_checksum = None
+        self.input_checksum = 0xFF
         self.poll = uselect.poll()
         self.poll.register(usys.stdin)
         self.device = device
@@ -49,7 +49,7 @@ class IOHub:
         usys.stdout.buffer.write(data)
     
     def emit_data(self, key, data):
-        self.emit_msg(bytes([_OUT_ID_DATA]) + bytes(repr((key, data))))
+        self.emit_msg(bytes([_OUT_ID_DATA]) + bytes(repr((key, data)), "ascii"))
 
     def emit_signal_code(self, code):
         self.emit_msg(bytes([_OUT_ID_SIGNAL, code]))
@@ -76,11 +76,10 @@ class IOHub:
         checksum = self.input_buffer[-1]
         if checksum != self.input_checksum:
             self.emit_ack(False)
+            return
         self.emit_ack(True)
 
-        msg = self.input_buffer
-        del msg[0]
-        del msg[-1]
+        msg = self.input_buffer[1:-1]
 
         if in_id == _IN_ID_SYS:
             code = msg[0]
@@ -89,11 +88,12 @@ class IOHub:
                 return
         
         if in_id == _IN_ID_RPC:
+            msg_str = str(msg, "ascii")
             try:
-                struct = eval(msg)
-            except SyntaxError:
-                print("eval syntaxerror")
-                print(msg)
+                struct = eval(msg_str)
+            except Exception:
+                print("eval exception")
+                print("rpc msg:", msg_str)
             func = getattr(self.device, struct["func"])
             args = struct["args"]
             _result = func(*args)
