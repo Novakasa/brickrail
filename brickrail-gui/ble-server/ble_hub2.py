@@ -32,10 +32,10 @@ class BLEHub:
     def __init__(self):
 
         self.hub = PybricksHub()
-        # self.hub.nus_observable.subscribe(self._on_hub_nus)
-        self.msg_ack = asyncio.Queue
+        self.hub.nus_observable.subscribe(self._on_hub_nus)
+        self.msg_ack = asyncio.Queue()
         self.output_buffer = bytearray()
-        self.output_queue = asyncio.Queue
+        self.output_queue = asyncio.Queue()
     
     def _on_hub_nus(self, data):
         if self.hub._downloading_via_nus:
@@ -46,7 +46,9 @@ class BLEHub:
 
         while _OUT_ID_END in self.output_buffer:
             index = self.output_buffer.find(_OUT_ID_END)
-            self.output_queue.put_nowait(self.output_buffer[0:index])
+            line = self.output_buffer[0:index]
+            print(line)
+            self.output_queue.put_nowait(line)
             del self.output_buffer[0 : index + 1]
     
     async def hub_message_handler(self, bytes):
