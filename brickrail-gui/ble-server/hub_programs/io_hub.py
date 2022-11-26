@@ -47,10 +47,7 @@ class IOHub:
         self.device = device
     
     def emit_msg(self, data):
-        checksum = 0xFF
-        for byte in data:
-            checksum ^= byte
-        data += bytes([checksum, _OUT_ID_END])
+        data += bytes([xor_checksum(data), _OUT_ID_END])
         usys.stdout.buffer.write(data)
     
     def emit_data(self, key, data):
@@ -109,7 +106,7 @@ class IOHub:
             self.device.on_signal_received(msg)
             return
         
-        print(self.input_buffer.decode())
+        print("[hub] received:", self.input_buffer)
 
     def update_input(self, byte):
 

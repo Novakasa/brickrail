@@ -77,8 +77,10 @@ class BLEHub:
             return
 
         checksum = bytes[-1]
-        if not checksum == xor_checksum(bytes[:-1]):
+        output_checksum = xor_checksum(bytes[:-1])
+        if not checksum == output_checksum:
             await self.send_ack(False)
+            print(f"received {bytes[:-1]}, checksum mismatch! {checksum} != {output_checksum}")
             return
         await self.send_ack(True)
         data = bytes[1:-1] #strip out_id and checksum
@@ -111,6 +113,7 @@ class BLEHub:
             else:
                 if not ack_result:
                     print(f"Error received from hub, resending {data}")
+        print("...successful!")
     
     async def send_ack(self, success):
         if success:
