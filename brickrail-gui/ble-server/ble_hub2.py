@@ -32,7 +32,7 @@ class BLEHub:
     def __init__(self):
 
         self.hub = PybricksHub()
-        self.hub.nus_observable.subscribe(self._on_nus)
+        # self.hub.nus_observable.subscribe(self._on_hub_nus)
         self.msg_ack = asyncio.Queue
         self.output_buffer = bytearray()
         self.output_queue = asyncio.Queue
@@ -42,6 +42,7 @@ class BLEHub:
             return
         
         self.output_buffer += data
+        print(repr(data))
 
         while _OUT_ID_END in self.output_buffer:
             index = self.output_buffer.find(_OUT_ID_END)
@@ -71,6 +72,10 @@ class BLEHub:
         
         if out_id == _OUT_ID_DATA:
             struct  = eval(data.decode())
+    
+    async def rpc(self, funcname, args):
+        data = {"func": funcname, "args": args}
+        await self.send_bytes(bytes([_IN_ID_RPC, repr(data)]))
         
     async def send_bytes(self, bytes):
         assert len(bytes) <= _CHUNK_LENGTH
@@ -92,3 +97,16 @@ class BLEHub:
         else:
             self.hub.write(bytes([_IN_ID_MSG_ERR, _IN_ID_END]))
 
+async def io_test():
+    device = await find_device()
+    print(device)
+    test_hub = BLEHub()
+    await test_hub.hub.connect(device)
+    try:
+        await test_hub.hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", print_output=False)
+    finally:
+        await test_hub.hub.disconnect()
+
+
+if __name__ == "__main__":
+    asyncio.run(io_test())

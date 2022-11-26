@@ -43,7 +43,7 @@ class IOHub:
     
     def emit_msg(self, data):
         checksum = 0xFF
-        for byte in bytes:
+        for byte in data:
             checksum ^= byte
         data += bytes([checksum, _OUT_ID_END])
         usys.stdout.buffer.write(data)
@@ -114,7 +114,7 @@ class IOHub:
         self.input_checksum ^= byte
         self.input_buffer.append(byte)
 
-    def run_loop(self, max_delta):
+    def run_loop(self, max_delta = 0.01):
         loop_watch = StopWatch()
         loop_watch.resume()
         last_time = loop_watch.time()
