@@ -9,7 +9,7 @@ from pybricks.tools import wait, StopWatch
 micropython.kbd_intr(-1)
 
 _IN_ID_START   = const(2)  #ASCII start of text
-_IN_ID_END     = const(3)  #ASCII end of text
+_IN_ID_END     = const(10) #ASCII line feed
 _IN_ID_MSG_ACK = const(6)  #ASCII ack
 _IN_ID_RPC     = const(17) #ASCII device control 1
 _IN_ID_SYS     = const(18) #ASCII device control 2
@@ -19,7 +19,7 @@ _IN_ID_MSG_ERR = const(21) #ASCII nak
 # _IN_IDS = [_IN_ID_START, _IN_ID_END, _IN_ID_MSG_ACK, _IN_ID_RPC, _IN_ID_SYS, _IN_ID_SIGNAL, _IN_ID_MSG_ERR]
 
 _OUT_ID_START   = const(2)  #ASCII start of text
-_OUT_ID_END     = const(3)  #ASCII end of text
+_OUT_ID_END     = const(10) #ASCII line feed
 _OUT_ID_MSG_ACK = const(6)  #ASCII ack
 _OUT_ID_DATA    = const(17) #ASCII device control 1
 _OUT_ID_SYS     = const(18) #ASCII device control 2
@@ -31,12 +31,17 @@ _SYS_CODE_READY = const(1)
 
 # _CHUNK_LENGTH = const(80)
 
+def xor_checksum(data):
+    checksum = 0xFF
+    for byte in data:
+        checksum ^= byte
+    return checksum
+
 class IOHub:
 
     def __init__(self, device=None):
         self.running = False
         self.input_buffer = bytearray()
-        self.input_checksum = 0xFF
         self.poll = uselect.poll()
         self.poll.register(usys.stdin)
         self.device = device
@@ -74,7 +79,9 @@ class IOHub:
             return
         
         checksum = self.input_buffer[-1]
-        if checksum != self.input_checksum:
+        input_checksum = xor_checksum(self.input_buffer[:-1])
+        if checksum != input_checksum:
+            print(checksum, "!=", input_checksum)
             self.emit_ack(False)
             return
         self.emit_ack(True)
@@ -85,7 +92,7 @@ class IOHub:
             code = msg[0]
             if code == _SYS_CODE_STOP:
                 self.running = False
-                return
+            return
         
         if in_id == _IN_ID_RPC:
             msg_str = str(msg, "ascii")
@@ -109,9 +116,7 @@ class IOHub:
         if byte == _IN_ID_END:
             self.handle_input()
             self.input_buffer = bytearray()
-            self.input_checksum = 0xFF
             return
-        self.input_checksum ^= byte
         self.input_buffer.append(byte)
 
     def run_loop(self, max_delta = 0.01):

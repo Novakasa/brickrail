@@ -4,7 +4,7 @@ from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
 
 _IN_ID_START   = 2  #ASCII start of text
-_IN_ID_END     = 3  #ASCII end of text
+_IN_ID_END     = 10 #ASCII line feed
 _IN_ID_MSG_ACK = 6  #ASCII ack
 _IN_ID_RPC     = 17 #ASCII device control 1
 _IN_ID_SYS     = 18 #ASCII device control 2
@@ -12,7 +12,7 @@ _IN_ID_SIGNAL  = 19 #ASCII device control 3
 _IN_ID_MSG_ERR = 21 #ASCII nak
 
 _OUT_ID_START   = 2  #ASCII start of text
-_OUT_ID_END     = 3  #ASCII end of text
+_OUT_ID_END     = 10 #ASCII line feed
 _OUT_ID_MSG_ACK = 6  #ASCII ack
 _OUT_ID_DATA    = 17 #ASCII device control 1
 _OUT_ID_SYS     = 18 #ASCII device control 2
@@ -60,7 +60,7 @@ class BLEHub:
             except UnicodeDecodeError:
                 print(repr(line))
             else:
-                print(decoded_line)
+                print("decoded:", decoded_line)
             del self.line_buffer[0 : index + 2]
     
     async def hub_message_handler(self, bytes):
@@ -97,7 +97,7 @@ class BLEHub:
         assert len(data) <= _CHUNK_LENGTH
         checksum = xor_checksum(data)
         ack_result = False
-        print(f"sending msg: {repr(data)}")
+        print(f"sending msg: {repr(data)}, checksum={checksum}")
         while not ack_result:
             await self.hub.write(data + bytes([checksum, _IN_ID_END]))
             try:
