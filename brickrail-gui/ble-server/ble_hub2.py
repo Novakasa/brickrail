@@ -19,6 +19,9 @@ _OUT_ID_SYS     = 18 #ASCII device control 2
 _OUT_ID_SIGNAL  = 19 #ASCII device control 3
 _OUT_ID_MSG_ERR = 21 #ASCII nak
 
+_SYS_CODE_STOP  = 0
+_SYS_CODE_READY = 1
+
 _CHUNK_LENGTH = 80
 
 def xor_checksum(bytes):
@@ -86,6 +89,7 @@ class BLEHub:
         
         if out_id == _OUT_ID_DATA:
             struct  = eval(data.decode())
+            print("got data:", struct)
     
     async def rpc(self, funcname, args):
         data = {"func": funcname, "args": args}
@@ -114,6 +118,9 @@ class BLEHub:
         else:
             await self.hub.write(bytes([_IN_ID_MSG_ERR, _IN_ID_END]))
     
+    async def send_sys_code(self, code):
+        await self.send_bytes(bytes([_IN_ID_SYS, code]))
+    
     async def connect(self, device):
         await self.hub.connect(device)
     
@@ -138,19 +145,23 @@ class BLEHub:
 
         await run_task
         output_task.cancel()
+    
+    async def stop_program(self):
+        await self.send_sys_code(_SYS_CODE_STOP)
 
 async def io_test():
     device = await find_device()
     print(device)
     test_hub = BLEHub()
-    await test_hub.hub.connect(device)
+    await test_hub.connect(device)
     try:
         await test_hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", wait=False)
         await asyncio.sleep(1.0)
         await test_hub.rpc("respond", [])
         await asyncio.sleep(4.0)
+        await test_hub.stop_program()
     finally:
-        await test_hub.hub.disconnect()
+        await test_hub.disconnect()
 
 
 if __name__ == "__main__":
