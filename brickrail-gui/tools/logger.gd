@@ -312,7 +312,7 @@ const ERROR_MESSAGES = {
 ##=============##
 
 # Configuration
-var default_output_level = VERBOSE
+var default_output_level = DEBUG
 # TODO: Find (or implement in Godot) a more clever way to achieve that
 
 var default_output_strategies = [STRATEGY_PRINT, STRATEGY_PRINT, STRATEGY_PRINT, STRATEGY_PRINT, STRATEGY_PRINT]
