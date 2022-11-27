@@ -40,6 +40,7 @@ class BLEHub:
         self.output_buffer = bytearray()
         self.output_queue = asyncio.Queue()
         self.line_buffer = bytearray()
+        self.hub_ready = asyncio.Event()
     
     def _on_hub_nus(self, data):
         if self.hub._downloading_via_nus:
@@ -88,6 +89,10 @@ class BLEHub:
         if out_id == _OUT_ID_SYS:
             assert len(data) == 1
             sys_code = data[0]
+            if sys_code == _SYS_CODE_READY:
+                self.hub_ready.set()
+            if sys_code == _SYS_CODE_STOP:
+                self.hub_ready.clear()
         
         if out_id == _OUT_ID_DATA:
             struct  = eval(data.decode())
@@ -134,6 +139,7 @@ class BLEHub:
 
         async def run_coroutine():
             await self.hub.run(program, print_output=False, wait=True)
+            self.hub_ready.clear()
         
         async def output_loop():
             while True:
@@ -142,6 +148,8 @@ class BLEHub:
         
         run_task = asyncio.create_task(run_coroutine())
         output_task = asyncio.create_task(output_loop())
+
+        await self.hub_ready.wait()
 
         if not wait:
             return
