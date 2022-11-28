@@ -43,30 +43,32 @@ class BLEHub:
         self.hub_ready = asyncio.Event()
         self.persistent = False
     
+    def handle_output(self, byte):
+        if byte == _OUT_ID_END:
+            if self.output_buffer[0] == len(self.output_buffer)-1:
+                self.output_queue.put_nowait(self.output_buffer[1:])
+                self.output_buffer = bytearray()
+                return
+            try:
+                decoded_line = self.output_buffer.decode()
+            except UnicodeDecodeError:
+                # hub messages contain non-decodable characters,
+                # so this is a hub message which happens to
+                # have a '\n' in the middle
+                pass
+            else:
+                print("[IOHub]", decoded_line)
+                self.output_buffer = bytearray()
+                return
+
+        self.output_buffer += bytes([byte])
+    
     def _on_hub_nus(self, data):
         if self.hub._downloading_via_nus:
             return
         
-        self.output_buffer += data
-        self.line_buffer += data
-
-        while _OUT_ID_END in self.output_buffer:
-            index = self.output_buffer.find(_OUT_ID_END)
-            line = self.output_buffer[0:index]
-            self.output_queue.put_nowait(line)
-            print(f"got msg: {repr(line)}")
-            del self.output_buffer[0 : index + 1]
-        
-        while b"\r\n" in self.line_buffer:
-            index = self.line_buffer.find(b"\r\n")
-            line = self.line_buffer[0:index]
-            try:
-                decoded_line = line.decode()
-            except UnicodeDecodeError:
-                print(repr(line))
-            else:
-                print("decoded:", decoded_line)
-            del self.line_buffer[0 : index + 2]
+        for byte in data:
+            self.handle_output(byte)
     
     async def hub_message_handler(self, bytes):
         out_id = bytes[0]
@@ -105,9 +107,14 @@ class BLEHub:
         
     async def send_bytes(self, data):
         assert len(data) <= _CHUNK_LENGTH
+        assert self.hub_ready.is_set()
         checksum = xor_checksum(data)
         ack_result = False
+        try_counter = 0
         while not ack_result:
+            try_counter += 1
+            if try_counter > 10:
+                raise Exception("Maximum send tries exceeded!")
             full_data = bytes([len(data)+1]) + data + bytes([checksum, _IN_ID_END])
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             await self.hub.write(full_data)
@@ -117,15 +124,13 @@ class BLEHub:
                 if self.persistent:
                     print(f"Wait for acknowledgement timed out, resending {data}")
                 else:
-                    print(f"Wait for acknowledgement timed out!")
-                    return
+                    raise Exception(f"Wait for acknowledgement timed out!")
             else:
                 if not ack_result:
                     if self.persistent:
                         print(f"Error received from hub, resending {data}")
                     else:
-                        print(f"Error received from hub!")
-                        return
+                        raise Exception(f"Error received from hub!")
         print("...successful!")
     
     async def send_ack(self, success):
@@ -157,7 +162,7 @@ class BLEHub:
         run_task = asyncio.create_task(run_coroutine())
         output_task = asyncio.create_task(output_loop())
 
-        await self.hub_ready.wait()
+        await asyncio.wait_for(self.hub_ready.wait(), timeout=5.0)
 
         if not wait:
             return
@@ -175,11 +180,12 @@ async def io_test():
     await test_hub.connect(device)
     try:
         await test_hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", wait=False)
-        await asyncio.sleep(1.0)
+        await asyncio.sleep(4.0)
         await test_hub.rpc("respond", bytearray([1,4,5,253]))
         await asyncio.sleep(1.0)
         await test_hub.rpc("respond", bytearray([1,2,3,4]))
         await asyncio.sleep(1.0)
+        await test_hub.rpc("print_data", bytearray([0, 1, 2, 10]))
         for i in range(256):
             await test_hub.rpc("respond", bytearray([i]))
             # await asyncio.sleep(0.2)
@@ -190,4 +196,6 @@ async def io_test():
 
 
 if __name__ == "__main__":
+    print(xor_checksum(b"print_data"), xor_checksum(b"respond"))
+    
     asyncio.run(io_test())

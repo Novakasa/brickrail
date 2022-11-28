@@ -51,10 +51,12 @@ class IOHub:
         for attr in dir(device):
             if attr[0] == "_":
                 continue
-            self.device_attrs[xor_checksum(bytes(attr, "ascii"))] = attr
+            attr_hash = xor_checksum(bytes(attr, "ascii"))
+            assert not attr_hash in self.device_attrs
+            self.device_attrs[attr_hash] = attr
     
     def emit_msg(self, data):
-        data += bytes([xor_checksum(data), _OUT_ID_END])
+        data = bytes([len(data)+1]) + data + bytes([xor_checksum(data), _OUT_ID_END])
         usys.stdout.buffer.write(data)
     
     def emit_data(self, key, data):
@@ -68,9 +70,9 @@ class IOHub:
     
     def emit_ack(self, success):
         if success:
-            usys.stdout.buffer.write(bytes([_OUT_ID_MSG_ACK, _OUT_ID_END]))
+            usys.stdout.buffer.write(bytes([1, _OUT_ID_MSG_ACK, _OUT_ID_END]))
         else:
-            usys.stdout.buffer.write(bytes([_OUT_ID_MSG_ERR, _OUT_ID_END]))
+            usys.stdout.buffer.write(bytes([1, _OUT_ID_MSG_ERR, _OUT_ID_END]))
 
     def handle_input(self):
         in_id = self.input_buffer[0]
@@ -115,8 +117,11 @@ class IOHub:
         if self.message_length is None:
             self.message_length = byte
             return
-        if byte == _IN_ID_END and len(self.input_buffer) == self.message_length:
-            self.handle_input()
+        if len(self.input_buffer) == self.message_length:
+            if byte == _IN_ID_END:
+                self.handle_input()
+            else:
+                print("input buffer expected length exceeded!")
             self.input_buffer = bytearray()
             self.message_length = None
             return
@@ -128,6 +133,7 @@ class IOHub:
         last_time = loop_watch.time()
         self.running = True
         self.emit_sys_code(_SYS_CODE_READY)
+        print("hello world!")
         while self.running:
             if self.poll.poll(int(1000*max_delta)):
                 byte = usys.stdin.buffer.read(1)[0]
