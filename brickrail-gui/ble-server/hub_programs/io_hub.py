@@ -100,15 +100,9 @@ class IOHub:
         
         if in_id == _IN_ID_RPC:
             func_hash = msg[0]
-            args_str = str(msg[1:], "ascii")
-            try:
-                args = eval(args_str)
-            except Exception:
-                print("eval exception")
-                print("rpc args:", args_str)
-                return
+            arg_bytes = msg[1:]
             func = getattr(self.device, self.device_attrs[func_hash])
-            _result = func(*args)
+            _result = func(arg_bytes)
             return
         if in_id == _IN_ID_SIGNAL:
             self.device.on_signal_received(msg)

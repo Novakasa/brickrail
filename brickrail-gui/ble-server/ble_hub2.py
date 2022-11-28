@@ -99,10 +99,8 @@ class BLEHub:
             print("got data:", struct)
     
     async def rpc(self, funcname, args):
-        args = repr(args).replace(" ", "")
         funcname_hash = xor_checksum(bytes(funcname, "ascii"))
-        print("sending rpc args:", args)
-        await self.send_bytes(bytes([_IN_ID_RPC, funcname_hash]) + args.encode())
+        await self.send_bytes(bytes([_IN_ID_RPC, funcname_hash]) + args)
         
     async def send_bytes(self, data):
         assert len(data) <= _CHUNK_LENGTH
@@ -168,7 +166,7 @@ async def io_test():
     try:
         await test_hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", wait=False)
         await asyncio.sleep(1.0)
-        await test_hub.rpc("respond", [])
+        await test_hub.rpc("respond", bytearray([1,4,5,253]))
         await asyncio.sleep(4.0)
         await test_hub.stop_program()
     finally:

@@ -5,8 +5,8 @@ class TestDevice:
     def update(self, delta):
         pass
 
-    def respond(self):
-        io_hub.emit_data("test", [42, 44])
+    def respond(self, data):
+        io_hub.emit_data("test", [byte for byte in data])
 
 device = TestDevice()
 io_hub = IOHub(device)
