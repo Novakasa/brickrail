@@ -42,6 +42,7 @@ class IOHub:
     def __init__(self, device=None):
         self.running = False
         self.input_buffer = bytearray()
+        self.message_length = None
         self.poll = uselect.poll()
         self.poll.register(usys.stdin)
         self.device = device
@@ -85,7 +86,7 @@ class IOHub:
         checksum = self.input_buffer[-1]
         input_checksum = xor_checksum(self.input_buffer[:-1])
         if checksum != input_checksum:
-            print(checksum, "!=", input_checksum)
+            # print(checksum, "!=", input_checksum)
             self.emit_ack(False)
             return
         self.emit_ack(True)
@@ -108,13 +109,16 @@ class IOHub:
             self.device.on_signal_received(msg)
             return
         
-        print("[hub] received:", self.input_buffer)
+        # print("[hub] received:", self.input_buffer)
 
     def update_input(self, byte):
-
-        if byte == _IN_ID_END:
+        if self.message_length is None:
+            self.message_length = byte
+            return
+        if byte == _IN_ID_END and len(self.input_buffer) == self.message_length:
             self.handle_input()
             self.input_buffer = bytearray()
+            self.message_length = None
             return
         self.input_buffer.append(byte)
 

@@ -41,6 +41,7 @@ class BLEHub:
         self.output_queue = asyncio.Queue()
         self.line_buffer = bytearray()
         self.hub_ready = asyncio.Event()
+        self.persistent = False
     
     def _on_hub_nus(self, data):
         if self.hub._downloading_via_nus:
@@ -106,23 +107,32 @@ class BLEHub:
         assert len(data) <= _CHUNK_LENGTH
         checksum = xor_checksum(data)
         ack_result = False
-        print(f"sending msg: {repr(data)}, checksum={checksum}")
         while not ack_result:
-            await self.hub.write(data + bytes([checksum, _IN_ID_END]))
+            full_data = bytes([len(data)+1]) + data + bytes([checksum, _IN_ID_END])
+            print(f"sending msg: {repr(full_data)}, checksum={checksum}")
+            await self.hub.write(full_data)
             try:
                 ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=1.0)
             except asyncio.TimeoutError:
-                print(f"Wait for acknowledgement timed out, resending {data}")
+                if self.persistent:
+                    print(f"Wait for acknowledgement timed out, resending {data}")
+                else:
+                    print(f"Wait for acknowledgement timed out!")
+                    return
             else:
                 if not ack_result:
-                    print(f"Error received from hub, resending {data}")
+                    if self.persistent:
+                        print(f"Error received from hub, resending {data}")
+                    else:
+                        print(f"Error received from hub!")
+                        return
         print("...successful!")
     
     async def send_ack(self, success):
         if success:
-            await self.hub.write(bytes([_IN_ID_MSG_ACK, _IN_ID_END]))
+            await self.hub.write(bytes([1, _IN_ID_MSG_ACK, _IN_ID_END]))
         else:
-            await self.hub.write(bytes([_IN_ID_MSG_ERR, _IN_ID_END]))
+            await self.hub.write(bytes([1, _IN_ID_MSG_ERR, _IN_ID_END]))
     
     async def send_sys_code(self, code):
         await self.send_bytes(bytes([_IN_ID_SYS, code]))
@@ -167,7 +177,13 @@ async def io_test():
         await test_hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", wait=False)
         await asyncio.sleep(1.0)
         await test_hub.rpc("respond", bytearray([1,4,5,253]))
-        await asyncio.sleep(4.0)
+        await asyncio.sleep(1.0)
+        await test_hub.rpc("respond", bytearray([1,2,3,4]))
+        await asyncio.sleep(1.0)
+        for i in range(256):
+            await test_hub.rpc("respond", bytearray([i]))
+            # await asyncio.sleep(0.2)
+        await asyncio.sleep(1)
         await test_hub.stop_program()
     finally:
         await test_hub.disconnect()
