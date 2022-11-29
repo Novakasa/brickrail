@@ -92,8 +92,9 @@ class IOHub:
         
         if in_id == _IN_ID_MSG_ERR:
             # retry last send
+            data = self.last_output
             self.last_output = None
-            self.emit_msg(self.last_output)
+            self.emit_msg(data)
             return
         
         checksum = self.input_buffer[-1]
