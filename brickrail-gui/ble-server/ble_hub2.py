@@ -1,5 +1,7 @@
 import asyncio
 
+from random import randint
+
 from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
 
@@ -41,7 +43,6 @@ class BLEHub:
         self.output_queue = asyncio.Queue()
         self.line_buffer = bytearray()
         self.hub_ready = asyncio.Event()
-        self.persistent = False
     
     def handle_output(self, byte):
         if byte == _OUT_ID_END:
@@ -105,7 +106,7 @@ class BLEHub:
         funcname_hash = xor_checksum(bytes(funcname, "ascii"))
         await self.send_bytes(bytes([_IN_ID_RPC, funcname_hash]) + args)
         
-    async def send_bytes(self, data):
+    async def send_bytes(self, data, unreliable=True, persistent=True):
         assert len(data) <= _CHUNK_LENGTH
         assert self.hub_ready.is_set()
         checksum = xor_checksum(data)
@@ -113,21 +114,31 @@ class BLEHub:
         try_counter = 0
         while not ack_result:
             try_counter += 1
-            if try_counter > 10:
+            if try_counter > 20:
                 raise Exception("Maximum send tries exceeded!")
+            
             full_data = bytes([len(data)+1]) + data + bytes([checksum, _IN_ID_END])
+
+            if unreliable:
+                if randint(0, 10) > 4:
+                    print("data modified!")
+                    full_data = bytearray(full_data)
+                    mod_index = randint(0, len(full_data)-1)
+                    # full_data.insert(mod_index, 88)
+                    full_data.pop(mod_index)
+
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             await self.hub.write(full_data)
             try:
-                ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=1.0)
+                ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=5.0)
             except asyncio.TimeoutError:
-                if self.persistent:
+                if persistent:
                     print(f"Wait for acknowledgement timed out, resending {data}")
                 else:
                     raise Exception(f"Wait for acknowledgement timed out!")
             else:
                 if not ack_result:
-                    if self.persistent:
+                    if persistent:
                         print(f"Error received from hub, resending {data}")
                     else:
                         raise Exception(f"Error received from hub!")
@@ -180,14 +191,14 @@ async def io_test():
     await test_hub.connect(device)
     try:
         await test_hub.run("E:/repos/brickrail/brickrail-gui/ble-server/hub_programs/test_io.py", wait=False)
-        await asyncio.sleep(4.0)
+        await asyncio.sleep(1.0)
         await test_hub.rpc("respond", bytearray([1,4,5,253]))
         await asyncio.sleep(1.0)
         await test_hub.rpc("respond", bytearray([1,2,3,4]))
         await asyncio.sleep(1.0)
         await test_hub.rpc("print_data", bytearray([0, 1, 2, 10]))
-        for i in range(256):
-            await test_hub.rpc("respond", bytearray([i]))
+        for i in range(0,256,16):
+            await test_hub.rpc("respond", bytearray([j for j in range(i, i+16)]))
             # await asyncio.sleep(0.2)
         await asyncio.sleep(1)
         await test_hub.stop_program()

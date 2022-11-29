@@ -117,19 +117,20 @@ class IOHub:
         if self.message_length is None:
             self.message_length = byte
             return
-        if len(self.input_buffer) == self.message_length:
-            if byte == _IN_ID_END:
+        if byte == _IN_ID_END:
+            if len(self.input_buffer) >= self.message_length:
+                # if buffer was too long, the checksum probably won't match and nak will be sent.
                 self.handle_input()
-            else:
-                print("input buffer expected length exceeded!")
-            self.input_buffer = bytearray()
-            self.message_length = None
-            return
+                self.input_buffer = bytearray()
+                self.message_length = None
+                return
         self.input_buffer.append(byte)
 
     def run_loop(self, max_delta = 0.01):
         loop_watch = StopWatch()
         loop_watch.resume()
+        self.input_watch = StopWatch()
+        self.input_watch.resume()
         last_time = loop_watch.time()
         self.running = True
         self.emit_sys_code(_SYS_CODE_READY)
@@ -138,6 +139,11 @@ class IOHub:
             if self.poll.poll(int(1000*max_delta)):
                 byte = usys.stdin.buffer.read(1)[0]
                 self.update_input(byte)
+                self.input_watch.reset()
+            if self.message_length is not None and self.input_watch.time() > 500:
+                self.emit_ack(False)
+                self.input_buffer = bytearray()
+                self.message_length = None
             t = loop_watch.time()
             delta = (t-last_time)/1000
             last_time = t
