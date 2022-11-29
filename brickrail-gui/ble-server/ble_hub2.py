@@ -106,13 +106,13 @@ class BLEHub:
         funcname_hash = xor_checksum(bytes(funcname, "ascii"))
         await self.send_bytes(bytes([_IN_ID_RPC, funcname_hash]) + args)
         
-    async def send_bytes(self, data, unreliable=True, persistent=True):
+    async def send_bytes(self, data, unreliable=False, persistent=True):
         assert len(data) <= _CHUNK_LENGTH
-        assert self.hub_ready.is_set()
         checksum = xor_checksum(data)
         ack_result = False
         try_counter = 0
         while not ack_result:
+            assert self.hub_ready.is_set()
             try_counter += 1
             if try_counter > 20:
                 raise Exception("Maximum send tries exceeded!")
@@ -125,10 +125,10 @@ class BLEHub:
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
                     # full_data.insert(mod_index, 88)
-                    # full_data.pop(mod_index)
-                    full_data[mod_index] = 88
+                    full_data.pop(mod_index)
+                    # full_data[mod_index] = 88
 
-            # print(f"sending msg: {repr(full_data)}, checksum={checksum}")
+            print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             await self.hub.write(full_data)
             try:
                 ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=5.0)

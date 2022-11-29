@@ -47,6 +47,8 @@ class IOHub:
         self.poll.register(usys.stdin)
         self.device = device
         self.device_attrs = {}
+        self.last_output = None
+        self.queued_output = []
 
         for attr in dir(device):
             if attr[0] == "_":
@@ -56,6 +58,10 @@ class IOHub:
             self.device_attrs[attr_hash] = attr
     
     def emit_msg(self, data):
+        if self.last_output is not None:
+            self.queued_output.append(data)
+            return
+        self.last_output = data
         data = bytes([len(data)+1]) + data + bytes([xor_checksum(data), _OUT_ID_END])
         usys.stdout.buffer.write(data)
     
@@ -79,10 +85,15 @@ class IOHub:
 
         if in_id == _IN_ID_MSG_ACK:
             # release memory of last send, allow next data to be sent
+            self.last_output = None
+            if self.queued_output:
+                self.emit_msg(self.queued_output.pop(0))
             return
         
         if in_id == _IN_ID_MSG_ERR:
             # retry last send
+            self.last_output = None
+            self.emit_msg(self.last_output)
             return
         
         checksum = self.input_buffer[-1]
