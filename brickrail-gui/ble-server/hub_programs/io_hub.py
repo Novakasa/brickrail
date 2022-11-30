@@ -2,6 +2,7 @@ import micropython
 from micropython import const
 import usys
 import uselect
+import urandom
 
 from pybricks.tools import wait, StopWatch
 
@@ -63,6 +64,14 @@ class IOHub:
             return
         self.last_output = data
         data = bytes([len(data)+1]) + data + bytes([xor_checksum(data), _OUT_ID_END])
+
+        if urandom.randint(0, 10)>17:
+            data = bytearray(data)
+            mod_idx = urandom.randint(2, len(data)-1)
+            # data[mod_idx] = b"X"[0]
+            # data = data[:mod_idx-1] + data[mod_idx:]
+            data = data[:mod_idx] + b"X" + data[mod_idx:]
+
         usys.stdout.buffer.write(data)
     
     def emit_data(self, key, data):
@@ -129,11 +138,8 @@ class IOHub:
         if self.message_length is None:
             self.message_length = byte
             return
-        if len(self.input_buffer) == self.message_length:
-            if byte != _IN_ID_END:
-                self.emit_ack(False)
-            else:
-                self.handle_input()
+        if len(self.input_buffer) == self.message_length and byte == _IN_ID_END:
+            self.handle_input()
             self.input_buffer = bytearray()
             self.message_length = None
             return
@@ -147,7 +153,7 @@ class IOHub:
         last_time = loop_watch.time()
         self.running = True
         self.emit_sys_code(_SYS_CODE_READY)
-        print("hello world!")
+        # print("hello world!")
         while self.running:
             if self.poll.poll(int(1000*max_delta)):
                 byte = usys.stdin.buffer.read(1)[0]
