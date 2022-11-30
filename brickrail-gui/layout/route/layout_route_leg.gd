@@ -7,13 +7,13 @@ var full_section
 func _init(p_edges):
 	edges = p_edges
 
-func get_start():
+func get_start_node():
 	return edges[0].from_node
 
-func get_target():
+func get_target_node():
 	return edges[-1].to_node
 
-func get_from():
+func get_from_node():
 	return edges[0].from_node
 
 func get_type():
@@ -32,10 +32,20 @@ func get_full_section():
 			if edge.to_node.type=="block":
 				full_section.append(edge.to_node.obj.section)
 	return full_section
-		
+
+func get_sensor_list_from(start_dirtrack):
+	var collecting = false
+	var sensors = []
+	for dirtrack in get_full_section().tracks:
+		if collecting:
+			if dirtrack.get_sensor() != null:
+				var sensor_key = get_target_node().target.get_sensor_dirtrack_key(dirtrack)
+				sensors.append([sensor_key, dirtrack.get_sensor()])
+		if dirtrack == start_dirtrack:
+			collecting = true
 
 func set_switches():
-	var last_track = get_start().obj.section.tracks[-1]
+	var last_track = get_start_node().obj.section.tracks[-1]
 	var forward_switches = []
 	for edge in edges:
 		if edge.section == null:
@@ -66,10 +76,10 @@ func decrement_marks():
 
 func get_locked():
 	var locked = []
-	var trainname = get_start().obj.get_locked()
+	var trainname = get_start_node().obj.get_locked()
 	if trainname != null:
 		locked.append(trainname)
-	trainname = get_target().obj.get_locked()
+	trainname = get_target_node().obj.get_locked()
 	if trainname != null and not trainname in locked:
 		locked.append(trainname)
 	for trainname2 in get_full_section().get_locked():

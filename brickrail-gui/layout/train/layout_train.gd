@@ -5,7 +5,7 @@ var ble_train
 var virtual_train
 var route
 var block
-var target
+var target_block
 var blocked_by
 var trainname
 var facing: int = 1
@@ -91,26 +91,14 @@ func _on_ble_train_handled_marker(colorname):
 
 func _on_ble_train_unexpected_marker(colorname):
 	Logger.verbose("ble_train unexpected marker triggered", logging_module)
-	if ble_train.state == "stopped":
-		return
-	if colorname==next_sensor_track.get_sensor().get_colorname():
-		if virtual_train.expect_behaviour == "stop":
-			ble_train.stop()
-		if virtual_train.expect_behaviour == "slow":
-			ble_train.slow()
-		if virtual_train.expect_behaviour == "flip_heading":
-			ble_train.flip_heading()
-		next_sensor_track.get_sensor().trigger()
-	else:
-		push_error("unexpected marker not aligned with next sensor")
-		ble_train.stop()
-		ble_train.hub.rpc("queue_dump_buffers", [])
+	push_error("unexpected marker not aligned with next sensor")
+	ble_train.stop()
 
 func _on_LayoutInfo_control_devices_changed(control_devices):
 	update_control_ble_train()
 
 func is_end_of_leg():
-	return block == route.get_current_leg().get_target().obj
+	return block == route.get_current_leg().get_target_node().obj
 
 func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 	if p_trainname == trainname:
@@ -275,8 +263,8 @@ func set_route(p_route):
 func start_leg():
 	Logger.verbose("start_leg()", logging_module)
 	var leg = route.get_current_leg()
-	Logger.verbose("from: "+leg.get_from().id, logging_module)
-	Logger.verbose("to: "+leg.get_target().id, logging_module)
+	Logger.verbose("from: "+leg.get_from_node().id, logging_module)
+	Logger.verbose("to: "+leg.get_target_node().id, logging_module)
 	Logger.verbose("leg type: "+leg.get_type(), logging_module)
 	if not is_leg_allowed(leg):
 		Logger.verbose("current leg not allowed, cancelling route", logging_module)
@@ -290,13 +278,18 @@ func start_leg():
 	else:
 		Logger.verbose("setting switches", logging_module)
 		leg.set_switches()
-	set_target(leg.get_target().obj)
+	set_target(leg.get_target_node().obj)
 	
-	set_next_sensor()
+	set_sensor_list(leg.get_sensor_list_from(virtual_train.dirtrack))
 	
 	start()
 	Logger.verbose("start_leg() done", logging_module)
-	
+
+func set_sensor_list(p_sensor_list):
+	virtual_train.set_sensor_list(p_sensor_list)
+	if can_control_ble_train():
+		ble_train.set_sensor_list(p_sensor_list)
+
 func set_expect_marker(marker, behaviour):
 	Logger.verbose("set_expect_marker('"+marker+"', '"+behaviour+"')", logging_module)
 	virtual_train.set_expect_marker(marker, behaviour)
@@ -304,10 +297,10 @@ func set_expect_marker(marker, behaviour):
 		ble_train.set_expect_marker(marker, behaviour)
 
 func set_target(p_block):
-	target = p_block
+	target_block = p_block
 
 func get_target_sensor_dirtrack(key):
-	return target.nodes[facing].target.sensor_dirtracks[key]
+	return target_block.nodes[facing].target.sensor_dirtracks[key]
 
 func get_block_sensor_dirtrack(key):
 	return block.nodes[facing].target.sensor_dirtracks[key]
@@ -364,7 +357,7 @@ func _on_next_sensor_triggered(p_train):
 		Logger.verbose("triggered sensor is target in", trainname)
 		_on_target_in()
 	
-	elif target != null:
+	elif target_block != null:
 		set_next_sensor()
 	else:
 		next_sensor_track = null
@@ -374,7 +367,7 @@ func _on_target_in():
 	Logger.verbose("_on_target_in()", logging_module)
 	Logger.verbose("unlocking tracks", logging_module)
 	route.get_current_leg().unlock_tracks()
-	set_current_block(target, false)
+	set_current_block(target_block, false)
 	set_target(null)
 	try_advancing()
 	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
