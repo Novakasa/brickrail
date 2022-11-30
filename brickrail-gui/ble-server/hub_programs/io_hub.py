@@ -43,13 +43,13 @@ class IOHub:
     def __init__(self, device=None):
         self.running = False
         self.input_buffer = bytearray()
-        self.message_length = None
+        self.msg_len = None
         self.poll = uselect.poll()
         self.poll.register(usys.stdin)
         self.device = device
         self.device_attrs = {}
         self.last_output = None
-        self.queued_output = []
+        self.output_queue = []
 
         for attr in dir(device):
             if attr[0] == "_":
@@ -59,10 +59,6 @@ class IOHub:
             self.device_attrs[attr_hash] = attr
     
     def emit_msg(self, data):
-        if self.last_output is not None:
-            self.queued_output.append(data)
-            return
-        self.last_output = data
         data = bytes([len(data)+1]) + data + bytes([xor_checksum(data), _OUT_ID_END])
 
         if urandom.randint(0, 10)>17:
@@ -71,7 +67,13 @@ class IOHub:
             # data[mod_idx] = b"X"[0]
             # data = data[:mod_idx-1] + data[mod_idx:]
             data = data[:mod_idx] + b"X" + data[mod_idx:]
+        self.emit_bytes(data)
+        self.last_output = data
 
+    def emit_bytes(self, data):
+        if self.last_output is not None:
+            self.output_queue.append(data)
+            return
         usys.stdout.buffer.write(data)
     
     def emit_data(self, key, data):
@@ -85,9 +87,9 @@ class IOHub:
     
     def emit_ack(self, success):
         if success:
-            usys.stdout.buffer.write(bytes([1, _OUT_ID_MSG_ACK, _OUT_ID_END]))
+            self.emit_bytes(bytes([1, _OUT_ID_MSG_ACK, _OUT_ID_END]))
         else:
-            usys.stdout.buffer.write(bytes([1, _OUT_ID_MSG_ERR, _OUT_ID_END]))
+            self.emit_bytes(bytes([1, _OUT_ID_MSG_ERR, _OUT_ID_END]))
 
     def handle_input(self):
         in_id = self.input_buffer[0]
@@ -95,15 +97,15 @@ class IOHub:
         if in_id == _IN_ID_MSG_ACK:
             # release memory of last send, allow next data to be sent
             self.last_output = None
-            if self.queued_output:
-                self.emit_msg(self.queued_output.pop(0))
+            if self.output_queue:
+                self.emit_bytes(self.output_queue.pop(0))
             return
         
         if in_id == _IN_ID_MSG_ERR:
             # retry last send
             data = self.last_output
             self.last_output = None
-            self.emit_msg(data)
+            self.emit_bytes(data)
             return
         
         checksum = self.input_buffer[-1]
@@ -135,13 +137,13 @@ class IOHub:
         # print("[hub] received:", self.input_buffer)
 
     def update_input(self, byte):
-        if self.message_length is None:
-            self.message_length = byte
+        if self.msg_len is None:
+            self.msg_len = byte
             return
-        if len(self.input_buffer) == self.message_length and byte == _IN_ID_END:
+        if len(self.input_buffer) == self.msg_len and byte == _IN_ID_END:
             self.handle_input()
             self.input_buffer = bytearray()
-            self.message_length = None
+            self.msg_len = None
             return
         self.input_buffer.append(byte)
 
@@ -159,10 +161,10 @@ class IOHub:
                 byte = usys.stdin.buffer.read(1)[0]
                 self.update_input(byte)
                 self.input_watch.reset()
-            if self.message_length is not None and self.input_watch.time() > 200:
+            if self.msg_len is not None and self.input_watch.time() > 200:
                 self.emit_ack(False)
                 self.input_buffer = bytearray()
-                self.message_length = None
+                self.msg_len = None
             t = loop_watch.time()
             delta = (t-last_time)/1000
             last_time = t
