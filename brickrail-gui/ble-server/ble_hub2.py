@@ -57,6 +57,19 @@ class BLEHub:
         if self.msg_len is None:
             self.msg_len = byte
             return
+        
+        if byte == _OUT_ID_END:
+            if len(self.output_buffer) >=2 and self.output_buffer[-1] == b"\r"[0]:
+                if self.output_buffer[0] >= 32:
+                    try:
+                        line = (bytes([self.msg_len]) + self.output_buffer[:-1]).decode()
+                    except UnicodeDecodeError:
+                        pass
+                    else:
+                        print("[IOHub]", line)
+                        self.output_buffer = bytearray()
+                        self.msg_len = None
+                        return
 
         if len(self.output_buffer) == self.msg_len and byte == _OUT_ID_END:
             if len(self.output_buffer) == self.msg_len:
@@ -148,8 +161,8 @@ class BLEHub:
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
                     # full_data.insert(mod_index, 88)
-                    full_data.pop(mod_index)
-                    # full_data[mod_index] = 88
+                    # full_data.pop(mod_index)
+                    full_data[mod_index] = 88
 
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             async with self.input_lock:
