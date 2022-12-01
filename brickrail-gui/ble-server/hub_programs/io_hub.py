@@ -70,8 +70,8 @@ class IOHub:
         if urandom.randint(0, 10)>7:
             data = bytearray(data)
             mod_idx = urandom.randint(2, len(data)-2)
-            data[mod_idx] = b"X"[0]
-            # data = data[:mod_idx-1] + data[mod_idx:]
+            # data[mod_idx] = b"X"[0]
+            data = data[:mod_idx-1] + data[mod_idx:]
             # data = data[:mod_idx] + b"X" + data[mod_idx:]
         stdout.buffer.write(data)
     
@@ -86,6 +86,11 @@ class IOHub:
             stdout.buffer.write(bytes([1, _OUT_ID_MSG_ACK, _OUT_ID_END]))
         else:
             stdout.buffer.write(bytes([1, _OUT_ID_MSG_ERR, _OUT_ID_END]))
+    
+    def retry_last_output(self):
+        data = self.last_output
+        stdout.buffer.write(data)
+        self.output_watch.reset()
 
     def handle_input(self):
         in_id = self.input_buffer[0]
@@ -94,14 +99,14 @@ class IOHub:
             # release memory of last send, allow next data to be sent
             self.last_output = None
             if self.output_queue:
-                stdout.buffer.write(self.output_queue.pop(0))
+                data = self.output_queue.pop(0)
+                stdout.buffer.write(data)
+                self.last_output = data
             return
         
         if in_id == _IN_ID_MSG_ERR and self.last_output is not None:
             # retry last send
-            data = self.last_output
-            self.last_output = None
-            self.emit_msg(data)
+            self.retry_last_output()
             return
         
         checksum = self.input_buffer[-1]
@@ -164,9 +169,7 @@ class IOHub:
                 self.input_buffer = bytearray()
                 self.msg_len = None
             if self.last_output is not None and self.output_watch.time() > 500:
-                data = self.last_output
-                self.last_output = None
-                self.emit_msg(data)
+                self.retry_last_output()
             t = loop_watch.time()
             delta = (t-last_time)/1000
             last_time = t

@@ -160,9 +160,9 @@ class BLEHub:
                     print("data modified!")
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
-                    # full_data.insert(mod_index, 88)
+                    full_data.insert(mod_index, 88)
                     # full_data.pop(mod_index)
-                    full_data[mod_index] = 88
+                    # full_data[mod_index] = 88
 
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             async with self.input_lock:
