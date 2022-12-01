@@ -6,10 +6,10 @@ class TestDevice:
         pass
 
     def respond(self, data):
-        io_hub.emit_data("test", [byte for byte in data])
+        io_hub.emit_data(data)
     
     def print_data(self, data):
-        print("printing the data:" + repr(data))
+        print("printing the data:", repr(data))
 
 device = TestDevice()
 io_hub = IOHub(device)

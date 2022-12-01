@@ -75,8 +75,8 @@ class IOHub:
             data = data[:mod_idx] + b"X" + data[mod_idx:]
         stdout.buffer.write(data)
     
-    def emit_data(self, key, data):
-        self.emit_msg(bytes([_OUT_ID_DATA]) + bytes(repr((key, data)), "ascii"))
+    def emit_data(self, data):
+        self.emit_msg(bytes([_OUT_ID_DATA]) + data)
     
     def emit_sys_code(self, code):
         self.emit_msg(bytes([_OUT_ID_SYS, code]))

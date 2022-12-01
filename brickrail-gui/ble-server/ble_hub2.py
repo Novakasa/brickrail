@@ -81,14 +81,6 @@ class BLEHub:
             return
         
         self.output_buffer += bytes([byte])
-        # asyncio.create_task(self.expect_output_byte())
-
-    async def expect_output_byte(self):
-        self.output_byte_arrived.clear()
-        try:
-            await asyncio.wait_for(self.output_byte_arrived.wait(), 2)
-        except asyncio.TimeoutError:
-            await self.send_ack(False)
     
     def _on_hub_nus(self, data):
         # print("nus:", data)
@@ -128,8 +120,7 @@ class BLEHub:
                 self.hub_ready.clear()
         
         if out_id == _OUT_ID_DATA:
-            struct  = eval(data.decode())
-            print("got data:", struct)
+            print("got data:", [byte for byte in data])
     
     async def rpc(self, funcname, args):
         funcname_hash = xor_checksum(bytes(funcname, "ascii"))
