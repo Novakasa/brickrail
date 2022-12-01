@@ -65,13 +65,14 @@ class IOHub:
             self.output_queue.append(data)
             return
         self.last_output = data
+        self.output_watch.reset()
 
-        if urandom.randint(0, 10)>17:
+        if urandom.randint(0, 10)>7:
             data = bytearray(data)
             mod_idx = urandom.randint(2, len(data)-1)
             # data[mod_idx] = b"X"[0]
-            # data = data[:mod_idx-1] + data[mod_idx:]
-            data = data[:mod_idx] + b"X" + data[mod_idx:]
+            data = data[:mod_idx-1] + data[mod_idx:]
+            # data = data[:mod_idx] + b"X" + data[mod_idx:]
         self.emit_bytes(data)
 
     def emit_bytes(self, data):
@@ -156,6 +157,8 @@ class IOHub:
         loop_watch.resume()
         self.input_watch = StopWatch()
         self.input_watch.resume()
+        self.output_watch = StopWatch()
+        self.output_watch.resume()
         last_time = loop_watch.time()
         self.running = True
         self.emit_sys_code(_SYS_CODE_READY)
@@ -169,6 +172,10 @@ class IOHub:
                 self.emit_ack(False)
                 self.input_buffer = bytearray()
                 self.msg_len = None
+            if self.last_output is not None and self.output_watch.time() > 500:
+                data = self.last_output
+                self.last_output = None
+                self.emit_msg(data)
             t = loop_watch.time()
             delta = (t-last_time)/1000
             last_time = t

@@ -59,7 +59,10 @@ class BLEHub:
             return
 
         if len(self.output_buffer) == self.msg_len and byte == _OUT_ID_END:
-            self.output_queue.put_nowait(self.output_buffer)
+            if len(self.output_buffer) == self.msg_len:
+                self.output_queue.put_nowait(self.output_buffer)
+            else:
+                asyncio.create_task(self.send_ack(False))
             self.output_buffer = bytearray()
             self.msg_len = None
             return
@@ -140,11 +143,11 @@ class BLEHub:
             full_data = bytes([len(data)+1]) + data + bytes([checksum, _IN_ID_END])
 
             if unreliable:
-                if randint(0, 10) > 8:
+                if randint(0, 10) > 6:
                     print("data modified!")
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
-                    full_data.insert(mod_index, 88)
+                    # full_data.insert(mod_index, 88)
                     # full_data.pop(mod_index)
                     # full_data[mod_index] = 88
 
