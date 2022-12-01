@@ -127,7 +127,7 @@ class RouteLeg:
         self.sensor_keys = []
         for byte in data[:-1]:
             self.sensor_keys.append(byte >> 4)
-            self.sensor_colors.append(byte & 0x00FF)
+            self.sensor_colors.append(byte & 0x0F)
         self.passing = data[-1] & 0b10000000 == 0b10000000
         self.current_index = data[-1] & 0x01111111
     
@@ -169,8 +169,13 @@ class Train:
         self.set_state(_STATE_STOPPED)
     
     def on_marker_exit(self, color):
-        assert color == self.leg.get_next_color()
+        next_color = self.leg.get_next_color()
+        if color != next_color:
+            print (str(color)+" != " + str(next_color))
+            return
+        print("advancing")
         behavior = self.leg.get_next_behavior()
+        self.leg.advance()
         if behavior == _BEHAVIOR_IGNORE:
             return
         if behavior == _BEHAVIOR_CRUISE:
@@ -190,6 +195,7 @@ class Train:
     
     def set_state(self, state):
         self.state = state
+        print("new state:", state)
     
     def slow(self):
         self.motor.set_target(_MOTOR_SLOW_SPEED)
