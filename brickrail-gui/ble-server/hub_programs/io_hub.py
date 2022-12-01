@@ -55,7 +55,7 @@ class IOHub:
             if attr[0] == "_":
                 continue
             attr_hash = xor_checksum(bytes(attr, "ascii"))
-            assert not attr_hash in self.device_attrs
+            assert not attr_hash in self.device_attrs, "hash for function not unique"
             self.device_attrs[attr_hash] = attr
     
     def emit_msg(self, data):
@@ -67,7 +67,7 @@ class IOHub:
         self.last_output = data
         self.output_watch.reset()
 
-        if urandom.randint(0, 10)>7:
+        if urandom.randint(0, 10)>17:
             data = bytearray(data)
             mod_idx = urandom.randint(2, len(data)-2)
             # data[mod_idx] = b"X"[0]

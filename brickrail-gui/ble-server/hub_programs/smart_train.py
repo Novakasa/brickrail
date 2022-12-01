@@ -23,6 +23,7 @@ _BEHAVIOR_IGNORE = const(0)
 _BEHAVIOR_SLOW   = const(1)
 _BEHAVIOR_CRUISE = const(2)
 _BEHAVIOR_STOP   = const(3)
+_BEHAVIOR_FLIP   = const(4)
 
 _MOTOR_ACC          = const(40)
 _MOTOR_DEC          = const(90)
@@ -122,15 +123,13 @@ def get_key_behavior(key, passing):
 
 class RouteLeg:
     def __init__(self, data):
-
         self.sensor_colors = []
         self.sensor_keys = []
-        for byte in data:
+        for byte in data[:-1]:
             self.sensor_keys.append(byte >> 4)
             self.sensor_colors.append(byte & 0x00FF)
-        
-        self.current_index = 0
-        self.passing = False
+        self.passing = data[-1] & 0b10000000 == 0b10000000
+        self.current_index = data[-1] & 0x01111111
     
     def advance(self):
         self.current_index += 1
@@ -163,14 +162,34 @@ class Train:
         self.vbuf = bytearray(1000)
         self.buf_index = 0
 
-        self.route = None
+        self.leg = None
+        self.next_leg = None
         
         self.state = None
         self.set_state(_STATE_STOPPED)
     
+    def on_marker_exit(self, color):
+        assert color == self.leg.get_next_color()
+        behavior = self.leg.get_next_behavior()
+        if behavior == _BEHAVIOR_IGNORE:
+            return
+        if behavior == _BEHAVIOR_CRUISE:
+            self.start()
+        if behavior == _BEHAVIOR_SLOW:
+            self.slow()
+        if behavior == _BEHAVIOR_STOP:
+            self.stop()
+        if behavior == _BEHAVIOR_FLIP:
+            self.flip_heading()
+    
+    def set_leg(self, data):
+        self.leg = RouteLeg(data)
+    
+    def set_next_leg(self, data):
+        self.next_leg = RouteLeg(data)
+    
     def set_state(self, state):
         self.state = state
-        self.queue_data(_DATA_STATE_CHANGED, state)
     
     def slow(self):
         self.motor.set_target(_MOTOR_SLOW_SPEED)

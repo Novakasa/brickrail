@@ -133,7 +133,7 @@ class BLEHub:
         else:
             await self.send_unsafe(bytes([_IN_ID_MSG_ERR]))
         
-    async def send_safe(self, data, unreliable=True, persistent=True):
+    async def send_safe(self, data, unreliable=False, persistent=True):
         assert len(data) <= _CHUNK_LENGTH
         checksum = xor_checksum(data)
         ack_result = False
