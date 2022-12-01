@@ -38,6 +38,12 @@ def xor_checksum(data):
         checksum ^= byte
     return checksum
 
+def mod_checksum(data):
+    checksum = 0x00
+    for byte in data:
+        checksum += byte
+    return checksum%256
+
 class IOHub:
 
     def __init__(self, device=None):
@@ -54,7 +60,10 @@ class IOHub:
         for attr in dir(device):
             if attr[0] == "_":
                 continue
-            attr_hash = xor_checksum(bytes(attr, "ascii"))
+            encoded = bytes(attr, "ascii")
+            attr_hash1 = xor_checksum(encoded)
+            attr_hash2 = mod_checksum(encoded)
+            attr_hash = bytes([attr_hash1,attr_hash2])
             assert not attr_hash in self.device_attrs, "hash for function not unique"
             self.device_attrs[attr_hash] = attr
     
@@ -126,7 +135,7 @@ class IOHub:
             return
         
         if in_id == _IN_ID_RPC:
-            func_hash = msg[0]
+            func_hash = bytes(msg[0:2])
             arg_bytes = msg[1:]
             func = getattr(self.device, self.device_attrs[func_hash])
             _result = func(arg_bytes)

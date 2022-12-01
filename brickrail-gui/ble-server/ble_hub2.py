@@ -33,6 +33,12 @@ def xor_checksum(bytes):
         checksum ^= byte
     return checksum
 
+def mod_checksum(data):
+    checksum = 0x00
+    for byte in data:
+        checksum += byte
+    return checksum%256
+
 class BLEHub:
 
     def __init__(self):
@@ -123,8 +129,11 @@ class BLEHub:
             print("got data:", [byte for byte in data])
     
     async def rpc(self, funcname, args):
-        funcname_hash = xor_checksum(bytes(funcname, "ascii"))
-        msg = bytes([_IN_ID_RPC, funcname_hash]) + args
+        encoded = bytes(funcname, "ascii")
+        attr_hash1 = xor_checksum(encoded)
+        attr_hash2 = mod_checksum(encoded)
+        funcname_hash = bytes([attr_hash1,attr_hash2])
+        msg = bytes([_IN_ID_RPC]) + funcname_hash + args
         await self.send_safe(msg)
     
     async def send_ack(self, success):

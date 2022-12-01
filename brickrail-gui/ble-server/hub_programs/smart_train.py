@@ -214,7 +214,7 @@ class Train:
         self.buf_index+=1
         if self.buf_index>=len(self.hbuf):
             self.buf_index=0
-        color = self.sensor.get_hsv()
+        color = self.sensor.sensor.hsv()
         self.hbuf[self.buf_index] = int(0.5*color.h)
         self.sbuf[self.buf_index] = color.s
         self.vbuf[self.buf_index] = color.v
