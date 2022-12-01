@@ -148,14 +148,14 @@ class BLEHub:
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
                     # full_data.insert(mod_index, 88)
-                    # full_data.pop(mod_index)
+                    full_data.pop(mod_index)
                     # full_data[mod_index] = 88
 
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             async with self.input_lock:
                 await self.hub.write(full_data)
             try:
-                ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=5.0)
+                ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=.5)
             except asyncio.TimeoutError:
                 if persistent:
                     print(f"Wait for acknowledgement timed out, resending {data}")
@@ -201,7 +201,7 @@ class BLEHub:
                     self.output_buffer = bytearray()
                     self.msg_len = None
                     await self.send_ack(False)
-                await asyncio.sleep(0.1)
+                await asyncio.sleep(0.05)
         
 
         run_task = asyncio.create_task(run_coroutine())

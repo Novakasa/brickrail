@@ -103,7 +103,7 @@ class IOHub:
                 self.emit_bytes(self.output_queue.pop(0))
             return
         
-        if in_id == _IN_ID_MSG_ERR:
+        if in_id == _IN_ID_MSG_ERR and self.last_output is not None:
             # retry last send
             data = self.last_output
             self.last_output = None
