@@ -167,7 +167,6 @@ class BLEHub:
         print("...successful!")
     
     async def send_unsafe(self, data):
-        assert self.hub_ready.is_set()
         async with self.input_lock:
             print(f"sending unsafe: {repr(data)}")
             await self.hub.write(bytes([len(data)]) + data + bytes([_IN_ID_END]))
