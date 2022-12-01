@@ -176,6 +176,10 @@ class Train:
         print("advancing")
         behavior = self.leg.get_next_behavior()
         self.leg.advance()
+        if self.leg.get_next_color() is None:
+            self.leg = self.next_leg
+            self.next_leg = None
+            print("next leg set")
         if behavior == _BEHAVIOR_IGNORE:
             return
         if behavior == _BEHAVIOR_CRUISE:

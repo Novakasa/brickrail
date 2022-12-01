@@ -37,9 +37,13 @@ async def test_motor(train):
 async def test_route_leg(train):
     await asyncio.sleep(1)
     await train.rpc("set_leg", create_leg_data(
-        (_COLOR_RED,       _COLOR_BLUE,      _COLOR_RED,       _COLOR_BLUE),
+        (_COLOR_RED,       _COLOR_RED,       _COLOR_RED,        _COLOR_RED),
         (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
-        False, 0))
+        True, 0))
+    await train.rpc("set_next_leg", create_leg_data(
+        (_COLOR_BLUE,      _COLOR_BLUE,      _COLOR_BLUE,       _COLOR_BLUE),
+        (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+        False, 1))
     await train.rpc("start")
     await asyncio.sleep(20)
 
