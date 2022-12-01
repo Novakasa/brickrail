@@ -160,8 +160,8 @@ class BLEHub:
                     print("data modified!")
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
-                    full_data.insert(mod_index, 88)
-                    # full_data.pop(mod_index)
+                    # full_data.insert(mod_index, 88)
+                    full_data.pop(mod_index)
                     # full_data[mod_index] = 88
 
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
@@ -210,6 +210,14 @@ class BLEHub:
         async def timeout_loop():
             while True:
                 if self.msg_len is not None and (time.time()-self.output_byte_time)>0.2:
+                    for sub_data in self.output_buffer.split(b"\n"):
+                        if len(sub_data)<1:
+                            continue
+                        if sub_data[0]>31 and sub_data[-1] == b"\r"[0]:
+                            try:
+                                print("[IOHub]", sub_data[:-1].decode())
+                            except UnicodeDecodeError:
+                                    pass
                     print("output buffer timeout! Sending NAK", self.output_buffer)
                     self.output_buffer = bytearray()
                     self.msg_len = None
@@ -245,7 +253,8 @@ async def io_test():
         await asyncio.sleep(1.0)
         await test_hub.rpc("respond", bytearray([1,2,3,4]))
         await asyncio.sleep(1.0)
-        # await test_hub.rpc("print_data", bytearray([0, 1, 2, 10]))
+        await test_hub.rpc("print_data", bytearray([0, 1, 2, 10]))
+        await asyncio.sleep(1.0)
         for i in range(0,256,16):
             await test_hub.rpc("respond", bytearray([j for j in range(i, i+16)]))
             # await asyncio.sleep(0.2)
