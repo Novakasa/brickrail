@@ -43,6 +43,7 @@ class BLEHub:
         self.output_buffer = bytearray()
         self.output_queue = asyncio.Queue()
         self.input_queue = asyncio.Queue()
+        self.input_lock = asyncio.Lock()
         self.line_buffer = bytearray()
         self.hub_ready = asyncio.Event()
         self.msg_len = None
@@ -74,7 +75,7 @@ class BLEHub:
             await self.send_ack(False)
     
     def _on_hub_nus(self, data):
-        print("nus:", data)
+        # print("nus:", data)
         if self.hub._downloading_via_nus:
             return
         
@@ -83,6 +84,8 @@ class BLEHub:
     
     async def hub_message_handler(self, bytes):
         out_id = bytes[0]
+
+        print("handling msg:", bytes)
 
         if out_id == _OUT_ID_MSG_ACK:
             await self.msg_ack.put(True)
@@ -115,18 +118,15 @@ class BLEHub:
     async def rpc(self, funcname, args):
         funcname_hash = xor_checksum(bytes(funcname, "ascii"))
         msg = bytes([_IN_ID_RPC, funcname_hash]) + args
-        await self.queue_input(msg)
+        await self.send_safe(msg)
     
     async def send_ack(self, success):
         if success:
-            await self.queue_input(bytes([_IN_ID_MSG_ACK]), safe=False)
+            await self.send_unsafe(bytes([_IN_ID_MSG_ACK]))
         else:
-            await self.queue_input(bytes([_IN_ID_MSG_ERR]), safe=False)
-    
-    async def queue_input(self, data, safe=True):
-        await self.input_queue.put((safe, data))
+            await self.send_unsafe(bytes([_IN_ID_MSG_ERR]))
         
-    async def send_safe(self, data, unreliable=False, persistent=True):
+    async def send_safe(self, data, unreliable=True, persistent=True):
         assert len(data) <= _CHUNK_LENGTH
         checksum = xor_checksum(data)
         ack_result = False
@@ -144,12 +144,13 @@ class BLEHub:
                     print("data modified!")
                     full_data = bytearray(full_data)
                     mod_index = randint(0, len(full_data)-1)
-                    # full_data.insert(mod_index, 88)
-                    full_data.pop(mod_index)
+                    full_data.insert(mod_index, 88)
+                    # full_data.pop(mod_index)
                     # full_data[mod_index] = 88
 
             print(f"sending msg: {repr(full_data)}, checksum={checksum}")
-            await self.hub.write(full_data)
+            async with self.input_lock:
+                await self.hub.write(full_data)
             try:
                 ack_result = await asyncio.wait_for(self.msg_ack.get(), timeout=5.0)
             except asyncio.TimeoutError:
@@ -166,10 +167,13 @@ class BLEHub:
         print("...successful!")
     
     async def send_unsafe(self, data):
-        await self.hub.write(bytes([len(data)]) + data + bytes([_IN_ID_END]))
+        assert self.hub_ready.is_set()
+        async with self.input_lock:
+            print(f"sending unsafe: {repr(data)}")
+            await self.hub.write(bytes([len(data)]) + data + bytes([_IN_ID_END]))
     
     async def send_sys_code(self, code):
-        await self.queue_input(bytes([_IN_ID_SYS, code]))
+        await self.send_safe(bytes([_IN_ID_SYS, code]))
     
     async def connect(self, device):
         await self.hub.connect(device)
@@ -188,15 +192,6 @@ class BLEHub:
                 msg = await self.output_queue.get()
                 await self.hub_message_handler(msg)
         
-        async def input_loop():
-            while True:
-                safe, data = await self.input_queue.get()
-                print("input data:", safe, data)
-                if safe:
-                    await self.send_safe(data)
-                else:
-                    await self.send_unsafe(data)
-        
         async def timeout_loop():
             while True:
                 if self.msg_len is not None and (time.time()-self.output_byte_time)>0.2:
@@ -209,18 +204,15 @@ class BLEHub:
 
         run_task = asyncio.create_task(run_coroutine())
         output_task = asyncio.create_task(output_loop())
-        input_task = asyncio.create_task(input_loop())
         timeout_task = asyncio.create_task(timeout_loop())
 
         await asyncio.wait_for(self.hub_ready.wait(), timeout=5.0)
-    
 
         if not wait:
             return
 
         await run_task
         output_task.cancel()
-        input_task.cancel()
         timeout_task.cancel()
     
     async def stop_program(self):

@@ -61,6 +61,11 @@ class IOHub:
     def emit_msg(self, data):
         data = bytes([len(data)+1]) + data + bytes([xor_checksum(data), _OUT_ID_END])
 
+        if self.last_output is not None:
+            self.output_queue.append(data)
+            return
+        self.last_output = data
+
         if urandom.randint(0, 10)>17:
             data = bytearray(data)
             mod_idx = urandom.randint(2, len(data)-1)
@@ -68,12 +73,8 @@ class IOHub:
             # data = data[:mod_idx-1] + data[mod_idx:]
             data = data[:mod_idx] + b"X" + data[mod_idx:]
         self.emit_bytes(data)
-        self.last_output = data
 
     def emit_bytes(self, data):
-        if self.last_output is not None:
-            self.output_queue.append(data)
-            return
         usys.stdout.buffer.write(data)
     
     def emit_data(self, key, data):
@@ -105,7 +106,7 @@ class IOHub:
             # retry last send
             data = self.last_output
             self.last_output = None
-            self.emit_bytes(data)
+            self.emit_msg(data)
             return
         
         checksum = self.input_buffer[-1]
@@ -140,8 +141,11 @@ class IOHub:
         if self.msg_len is None:
             self.msg_len = byte
             return
-        if len(self.input_buffer) == self.msg_len and byte == _IN_ID_END:
-            self.handle_input()
+        if len(self.input_buffer) >= self.msg_len and byte == _IN_ID_END:
+            if len(self.input_buffer) > self.msg_len:
+                self.emit_ack(False)
+            else:
+                self.handle_input()
             self.input_buffer = bytearray()
             self.msg_len = None
             return
