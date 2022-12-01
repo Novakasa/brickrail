@@ -128,11 +128,13 @@ class BLEHub:
         if out_id == _OUT_ID_DATA:
             print("got data:", [byte for byte in data])
     
-    async def rpc(self, funcname, args):
+    async def rpc(self, funcname, args=None):
         encoded = bytes(funcname, "ascii")
         attr_hash1 = xor_checksum(encoded)
         attr_hash2 = mod_checksum(encoded)
         funcname_hash = bytes([attr_hash1,attr_hash2])
+        if args is None:
+            args = b""
         msg = bytes([_IN_ID_RPC]) + funcname_hash + args
         await self.send_safe(msg)
     

@@ -136,9 +136,13 @@ class IOHub:
         
         if in_id == _IN_ID_RPC:
             func_hash = bytes(msg[0:2])
-            arg_bytes = msg[1:]
+            arg_bytes = msg[2:]
             func = getattr(self.device, self.device_attrs[func_hash])
-            _result = func(arg_bytes)
+            print(arg_bytes)
+            if len(arg_bytes)>0:
+                _result = func(arg_bytes)
+            else:
+                _result = func()
             return
         
         print("unkown in_id!", self.input_buffer)
