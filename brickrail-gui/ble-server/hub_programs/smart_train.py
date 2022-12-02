@@ -31,6 +31,8 @@ _MOTOR_CRUISE_SPEED = const(75)
 _MOTOR_SLOW_SPEED   = const(40)
 
 _DATA_STATE_CHANGED = const(0)
+_DATA_ROUTE_COMPLETE = const(1)
+_DATA_ROUTE_ADVANCE = const(2)
 
 _STATE_STOPPED = const(0)
 _STATE_SLOW    = const(1)
@@ -177,9 +179,7 @@ class Train:
         behavior = self.leg.get_next_behavior()
         self.leg.advance()
         if self.leg.get_next_color() is None:
-            self.leg = self.next_leg
-            self.next_leg = None
-            print("next leg set")
+            self.advance_route()
         if behavior == _BEHAVIOR_IGNORE:
             return
         if behavior == _BEHAVIOR_CRUISE:
@@ -197,9 +197,16 @@ class Train:
     def set_next_leg(self, data):
         self.next_leg = RouteLeg(data)
     
+    def advance_route(self):
+        self.leg = self.next_leg
+        self.next_leg = None
+        if self.leg is None:
+            io_hub.emit_data(bytes([_DATA_ROUTE_COMPLETE]))
+            return
+        io_hub.emit_data(bytes([_DATA_ROUTE_ADVANCE]))
+    
     def set_state(self, state):
         self.state = state
-        print("new state:", state)
     
     def slow(self):
         self.motor.set_target(_MOTOR_SLOW_SPEED)

@@ -48,6 +48,7 @@ class BLEHub:
         self.msg_ack = asyncio.Queue()
         self.output_buffer = bytearray()
         self.output_queue = asyncio.Queue()
+        self.data_queue = asyncio.Queue()
         self.input_queue = asyncio.Queue()
         self.input_lock = asyncio.Lock()
         self.line_buffer = bytearray()
@@ -127,6 +128,7 @@ class BLEHub:
         
         if out_id == _OUT_ID_DATA:
             print("got data:", [byte for byte in data])
+            await self.data_queue.put(data)
     
     async def rpc(self, funcname, args=None):
         encoded = bytes(funcname, "ascii")
@@ -242,6 +244,12 @@ class BLEHub:
     
     async def stop_program(self):
         await self.send_sys_code(_SYS_CODE_STOP)
+    
+    async def wait_for_data_id(self, id):
+        while True:
+            data = await self.data_queue.get()
+            if data[0] == id:
+                return data
 
 async def io_test():
     device = await find_device()

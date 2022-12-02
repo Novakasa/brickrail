@@ -17,6 +17,10 @@ _SENSOR_KEY_NONE  = const(0)
 _SENSOR_KEY_ENTER = const(1)
 _SENSOR_KEY_IN    = const(2)
 
+_DATA_STATE_CHANGED = const(0)
+_DATA_ROUTE_COMPLETE = const(1)
+_DATA_ROUTE_ADVANCE = const(2)
+
 def create_leg_data(colors, keys, passing, start_index):
     data = bytearray()
     for color, key in zip(colors, keys):
@@ -45,11 +49,12 @@ async def test_route_leg(train):
         (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
         False, 1))
     await train.rpc("start")
-    await asyncio.sleep(20)
+    await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
 
 async def main():
     train = BLEHub()
     dev = await find_device()
+    print(dev)
     await train.connect(dev)
     try:
         await train.run("brickrail-gui/ble-server/hub_programs/smart_train.py")
