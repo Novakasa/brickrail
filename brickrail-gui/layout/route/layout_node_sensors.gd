@@ -1,5 +1,5 @@
 
-class_name LayoutTarget
+class_name LayoutNodeSensors
 extends Reference
 
 var sensor_dirtracks = {"enter": null, "in": null, "leave": null}

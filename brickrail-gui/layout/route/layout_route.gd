@@ -58,16 +58,16 @@ func redirect_with_route(route):
 		legs[-1].increment_marks()
 
 func recalculate_route(fixed_facing, trainname):
-	var target_id = get_target().id
-	var new_route = get_current_leg().get_target().calculate_routes(fixed_facing, trainname)[target_id]
+	var target_id = get_target_node().id
+	var new_route = get_current_leg().get_target_node().calculate_routes(fixed_facing, trainname)[target_id]
 	if new_route != null:
 		redirect_with_route(new_route)
 
-func get_start():
-	return legs[0].get_start()
+func get_start_node():
+	return legs[0].get_start_node()
 
-func get_target():
-	return legs[-1].get_target()
+func get_target_node():
+	return legs[-1].get_target_node()
 
 func can_train_pass(trainname):
 	var next_leg = get_next_leg()

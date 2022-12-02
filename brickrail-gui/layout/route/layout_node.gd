@@ -6,7 +6,7 @@ var id
 var edges = {}
 var type
 var facing
-var target: LayoutTarget
+var sensors: LayoutNodeSensors
 
 func _init(p_obj, p_id, p_facing, p_type):
 	obj = p_obj
@@ -14,11 +14,11 @@ func _init(p_obj, p_id, p_facing, p_type):
 	facing = p_facing
 	type = p_type
 
-func set_target(p_target):
-	target = p_target
+func set_sensors(p_sensors):
+	sensors = p_sensors
 
-func get_target():
-	return target
+func get_sensors():
+	return sensors
 
 func collect_edges():
 	# prints("collecting edges on", id)

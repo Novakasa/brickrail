@@ -1,8 +1,15 @@
 class_name LayoutRouteLeg
 extends Reference
 
-var edges
-var full_section
+const PLAN_STOP = 0
+const PLAN_PASSING = 1
+
+var edges = []
+var full_section = null
+var sensor_dirtracks = []
+var sensor_keys = []
+var current_index = 0
+var plan = PLAN_STOP
 
 func _init(p_edges):
 	edges = p_edges
@@ -19,30 +26,55 @@ func get_from_node():
 func get_type():
 	return edges[0].type
 
+func advance_sensor():
+	current_index += 1
+
+func get_sensor_list(start_dirtrack):
+	current_index = -1
+	var target_node_sensors = get_target_node().sensors
+	for dirtrack in get_section(false).tracks:
+		if dirtrack.get_sensor() != null:
+			sensor_keys.append(target_node_sensors.get_sensor_dirtrack_key(dirtrack))
+			sensor_dirtracks.append(dirtrack)
+
+func get_next_behavior():
+	if current_index == len(sensor_dirtracks):
+		return null
+	if plan == PLAN_PASSING:
+		return "ignore"
+	var key = sensor_keys[current_index]
+	if key == "enter":
+		return "slow"
+	if key == "in":
+		return "stop"
+	return "ignore"
+
+func get_start_behavior():
+	if current_index == len(sensor_dirtracks):
+		return null
+	if get_type() == "travel":
+		return "cruise"
+	if get_type() == "flip":
+		return "flip_heading"
+
+func get_section(with_start_block):
+	
+	var section = LayoutSection.new()
+	if get_type() == "start":
+		return section
+	
+	if with_start_block and edges[0].from_node.type=="block":
+		section.append(edges[0].from_node.obj.section)
+	for edge in edges:
+		if edge.section != null:
+			section.append(edge.section)
+		if edge.to_node.type=="block":
+			section.append(edge.to_node.obj.section)
+
 func get_full_section():
 	if full_section == null:
-		full_section = LayoutSection.new()
-		if edges[0].type=="start":
-			return full_section
-		if edges[0].from_node.type=="block":
-			full_section.append(edges[0].from_node.obj.section)
-		for edge in edges:
-			if edge.section != null:
-				full_section.append(edge.section)
-			if edge.to_node.type=="block":
-				full_section.append(edge.to_node.obj.section)
+		full_section = get_section(true)
 	return full_section
-
-func get_sensor_list_from(start_dirtrack):
-	var collecting = false
-	var sensors = []
-	for dirtrack in get_full_section().tracks:
-		if collecting:
-			if dirtrack.get_sensor() != null:
-				var sensor_key = get_target_node().target.get_sensor_dirtrack_key(dirtrack)
-				sensors.append([sensor_key, dirtrack.get_sensor()])
-		if dirtrack == start_dirtrack:
-			collecting = true
 
 func set_switches():
 	var last_track = get_start_node().obj.section.tracks[-1]

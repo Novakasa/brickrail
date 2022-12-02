@@ -23,7 +23,6 @@ _DATA_ROUTE_ADVANCE = const(2)
 
 _PLAN_STOP         = const(0)
 _PLAN_PASSING      = const(1)
-_PLAN_FLIP_HEADING = const(2)
 
 def create_leg_data(colors, keys, plan, start_index):
     data = bytearray()
@@ -51,7 +50,7 @@ async def test_route_leg(train):
     await train.rpc("set_next_leg", create_leg_data(
         (_COLOR_BLUE,      _COLOR_BLUE,      _COLOR_BLUE,       _COLOR_BLUE),
         (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
-        _PLAN_FLIP_HEADING, 1))
+        _PLAN_PASSING, 1))
     await train.rpc("start")
     await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
     await train.rpc("set_leg", create_leg_data(

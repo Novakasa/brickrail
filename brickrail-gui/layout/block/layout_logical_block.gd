@@ -23,7 +23,7 @@ func _init(p_name, p_index):
 	id = blockname + "_" + ["+", "-"][index]
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
-		nodes[facing].set_target(LayoutTarget.new())
+		nodes[facing].set_sensors(LayoutNodeSensors.new())
 
 func set_section(p_section):
 	if section != null:
@@ -38,25 +38,25 @@ func _on_section_sensor_changed():
 func add_prior_sensor_dirtrack(dirtrack):
 	if dirtrack.get_sensor() == null:
 		dirtrack.add_sensor(LayoutSensor.new())
-	nodes[-1].target.set_sensor_dirtrack("enter", dirtrack)
+	nodes[-1].sensors.set_sensor_dirtrack("enter", dirtrack)
 
 func get_prior_sensor_dirtrack():
-	return nodes[-1].target.sensor_dirtracks["enter"]
+	return nodes[-1].sensors.sensor_dirtracks["enter"]
 
 func find_sensors():
 	var sensorlist = section.get_sensor_dirtracks()
 	
 	if len(sensorlist)<2:
 		for facing in [-1, 1]:
-			nodes[facing].target.set_sensor_dirtrack("enter", null)
-			nodes[facing].target.set_sensor_dirtrack("in", null)
+			nodes[facing].sensors.set_sensor_dirtrack("enter", null)
+			nodes[facing].sensors.set_sensor_dirtrack("in", null)
 		return
 	
-	nodes[1].target.set_sensor_dirtrack("enter", sensorlist[0])
-	nodes[1].target.set_sensor_dirtrack("in", sensorlist[-1])
+	nodes[1].sensors.set_sensor_dirtrack("enter", sensorlist[0])
+	nodes[1].sensors.set_sensor_dirtrack("in", sensorlist[-1])
 	
-	nodes[-1].target.set_sensor_dirtrack("in", sensorlist[0])
-	nodes[-1].target.set_sensor_dirtrack("leave", sensorlist[-1])
+	nodes[-1].sensors.set_sensor_dirtrack("in", sensorlist[0])
+	nodes[-1].sensors.set_sensor_dirtrack("leave", sensorlist[-1])
 
 func get_train_spawn_dirtrack(facing):
 	if facing == 1:

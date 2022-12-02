@@ -19,6 +19,9 @@ _SENSOR_KEY_NONE  = const(0)
 _SENSOR_KEY_ENTER = const(1)
 _SENSOR_KEY_IN    = const(2)
 
+_LEG_TYPE_TRAVEL = const(0)
+_LEG_TYPE_FLIP   = const(1)
+
 _BEHAVIOR_IGNORE = const(0)
 _BEHAVIOR_SLOW   = const(1)
 _BEHAVIOR_CRUISE = const(2)
@@ -27,7 +30,6 @@ _BEHAVIOR_FLIP   = const(4)
 
 _PLAN_STOP         = const(0)
 _PLAN_PASSING      = const(1)
-_PLAN_FLIP_HEADING = const(2)
 
 _MOTOR_ACC          = const(40)
 _MOTOR_DEC          = const(90)
@@ -126,8 +128,6 @@ def get_key_behavior(key, plan):
     if key == _SENSOR_KEY_ENTER:
         return _BEHAVIOR_SLOW
     if key == _SENSOR_KEY_IN:
-        if plan == _PLAN_FLIP_HEADING:
-            return _BEHAVIOR_FLIP
         return _BEHAVIOR_STOP
 
     raise Exception("Invalid sensor key: "+str(key))
@@ -140,11 +140,12 @@ class RouteLeg:
             self.sensor_keys.append(byte >> 4)
             self.sensor_colors.append(byte & 0x0F)
         self.plan = data[-1] >> 4
-        self.current_index = data[-1] & 0x0F
-        print("plan:", self.plan)
-        print("current_index:", self.current_index)
+        self.type = data[-1] & 0x0F
+        self.current_index = 0
+        print("leg type:", self.type)
+        print("leg plan:", self.plan)
     
-    def advance(self):
+    def advance_sensor(self):
         self.current_index += 1
     
     def get_next_color(self):
@@ -160,8 +161,10 @@ class RouteLeg:
             return None
         return get_key_behavior(key, self.plan)
     
-    def get_current_behavior(self):
-        return get_key_behavior(self.sensor_keys[self.current_index], self.plan)
+    def get_start_behavior(self):
+        if self.type == _LEG_TYPE_FLIP:
+            return _BEHAVIOR_FLIP
+        return _BEHAVIOR_CRUISE
 
 class Train:
 
@@ -188,10 +191,16 @@ class Train:
             return
         print("advancing")
         behavior = self.leg.get_next_behavior()
-        self.leg.advance()
+        self.leg.advance_sensor()
         if self.leg.get_next_color() is None:
             self.advance_route()
+        self.execute_behavior(behavior)
         io_hub.emit_data(bytes([_DATA_LEG_ADVANCE]))
+    
+    def start_leg(self):
+        self.execute_behavior(self.leg.get_start_behavior())
+
+    def execute_behavior(self, behavior):
         if behavior == _BEHAVIOR_IGNORE:
             return
         if behavior == _BEHAVIOR_CRUISE:
