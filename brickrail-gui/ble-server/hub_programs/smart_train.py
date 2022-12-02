@@ -34,9 +34,10 @@ _MOTOR_DEC          = const(90)
 _MOTOR_CRUISE_SPEED = const(75)
 _MOTOR_SLOW_SPEED   = const(40)
 
-_DATA_STATE_CHANGED = const(0)
+_DATA_STATE_CHANGED  = const(0)
 _DATA_ROUTE_COMPLETE = const(1)
-_DATA_ROUTE_ADVANCE = const(2)
+_DATA_ROUTE_ADVANCE  = const(2)
+_DATA_LEG_ADVANCE    = const(3)
 
 _STATE_STOPPED = const(0)
 _STATE_SLOW    = const(1)
@@ -50,10 +51,12 @@ class TrainSensor:
 
         self.marker_samples = 0
         self.marker_hue = 0
+        
+        self.last_color = None
     
     def update(self, delta):
-        color = self.sensor.hsv()
-        h, s, v = color.h, color.s, color.v
+        self.last_color = self.sensor.hsv()
+        h, s, v = self.last_color.h, self.last_color.s, self.last_color.v
         h = (h-20)%360
         if s*v>3500:
             self.marker_samples += 1
@@ -64,10 +67,10 @@ class TrainSensor:
                 self.marker_hue//=self.marker_samples
                 found_color = None
                 colorerr = 361
-                for color, chue in enumerate(COLOR_HUES):
+                for self.last_color, chue in enumerate(COLOR_HUES):
                     err = abs(chue-self.marker_hue)
                     if found_color is None or err<colorerr:
-                        found_color = color
+                        found_color = self.last_color
                         colorerr = err
                 self.marker_exit_callback(found_color)
             self.marker_hue = 0
@@ -188,6 +191,7 @@ class Train:
         self.leg.advance()
         if self.leg.get_next_color() is None:
             self.advance_route()
+        io_hub.emit_data(bytes([_DATA_LEG_ADVANCE]))
         if behavior == _BEHAVIOR_IGNORE:
             return
         if behavior == _BEHAVIOR_CRUISE:
@@ -240,7 +244,7 @@ class Train:
         self.buf_index+=1
         if self.buf_index>=len(self.hbuf):
             self.buf_index=0
-        color = self.sensor.sensor.hsv()
+        color = self.sensor.last_color
         self.hbuf[self.buf_index] = int(0.5*color.h)
         self.sbuf[self.buf_index] = color.s
         self.vbuf[self.buf_index] = color.v

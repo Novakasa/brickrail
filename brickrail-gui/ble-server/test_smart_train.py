@@ -54,7 +54,6 @@ async def test_route_leg(train):
         _PLAN_FLIP_HEADING, 1))
     await train.rpc("start")
     await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
-    await asyncio.sleep(5)
     await train.rpc("set_leg", create_leg_data(
         (_COLOR_RED,       _COLOR_RED,       _COLOR_RED,        _COLOR_RED),
         (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
