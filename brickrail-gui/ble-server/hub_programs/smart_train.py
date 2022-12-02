@@ -25,6 +25,10 @@ _BEHAVIOR_CRUISE = const(2)
 _BEHAVIOR_STOP   = const(3)
 _BEHAVIOR_FLIP   = const(4)
 
+_PLAN_STOP         = const(0)
+_PLAN_PASSING      = const(1)
+_PLAN_FLIP_HEADING = const(2)
+
 _MOTOR_ACC          = const(40)
 _MOTOR_DEC          = const(90)
 _MOTOR_CRUISE_SPEED = const(75)
@@ -111,14 +115,16 @@ class TrainMotor:
             self.motor.brake()
             return
 
-def get_key_behavior(key, passing):
-    if passing:
+def get_key_behavior(key, plan):
+    if plan == _PLAN_PASSING:
         return _BEHAVIOR_IGNORE
     if key == _SENSOR_KEY_NONE:
         return _BEHAVIOR_IGNORE
     if key == _SENSOR_KEY_ENTER:
         return _BEHAVIOR_SLOW
     if key == _SENSOR_KEY_IN:
+        if plan == _PLAN_FLIP_HEADING:
+            return _BEHAVIOR_FLIP
         return _BEHAVIOR_STOP
 
     raise Exception("Invalid sensor key: "+str(key))
@@ -130,8 +136,10 @@ class RouteLeg:
         for byte in data[:-1]:
             self.sensor_keys.append(byte >> 4)
             self.sensor_colors.append(byte & 0x0F)
-        self.passing = data[-1] & 0b10000000 == 0b10000000
-        self.current_index = data[-1] & 0x01111111
+        self.plan = data[-1] >> 4
+        self.current_index = data[-1] & 0x0F
+        print("plan:", self.plan)
+        print("current_index:", self.current_index)
     
     def advance(self):
         self.current_index += 1
@@ -147,10 +155,10 @@ class RouteLeg:
             key = self.sensor_keys[self.current_index+1]
         except IndexError:
             return None
-        return get_key_behavior(key, self.passing)
+        return get_key_behavior(key, self.plan)
     
     def get_current_behavior(self):
-        return get_key_behavior(self.sensor_keys[self.current_index], self.passing)
+        return get_key_behavior(self.sensor_keys[self.current_index], self.plan)
 
 class Train:
 
@@ -190,6 +198,7 @@ class Train:
             self.stop()
         if behavior == _BEHAVIOR_FLIP:
             self.flip_heading()
+            self.start()
     
     def set_leg(self, data):
         self.leg = RouteLeg(data)

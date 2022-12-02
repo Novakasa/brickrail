@@ -21,12 +21,16 @@ _DATA_STATE_CHANGED = const(0)
 _DATA_ROUTE_COMPLETE = const(1)
 _DATA_ROUTE_ADVANCE = const(2)
 
-def create_leg_data(colors, keys, passing, start_index):
+_PLAN_STOP         = const(0)
+_PLAN_PASSING      = const(1)
+_PLAN_FLIP_HEADING = const(2)
+
+def create_leg_data(colors, keys, plan, start_index):
     data = bytearray()
     for color, key in zip(colors, keys):
         composite = (key << 4) + color
         data.append(composite)
-    composite = start_index + 0b10000000*passing
+    composite = start_index + (plan << 4)
     data.append(composite)
     return data
 
@@ -43,12 +47,18 @@ async def test_route_leg(train):
     await train.rpc("set_leg", create_leg_data(
         (_COLOR_RED,       _COLOR_RED,       _COLOR_RED,        _COLOR_RED),
         (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
-        True, 0))
+        _PLAN_PASSING, 0))
     await train.rpc("set_next_leg", create_leg_data(
         (_COLOR_BLUE,      _COLOR_BLUE,      _COLOR_BLUE,       _COLOR_BLUE),
         (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
-        False, 1))
+        _PLAN_FLIP_HEADING, 1))
     await train.rpc("start")
+    await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
+    await asyncio.sleep(5)
+    await train.rpc("set_leg", create_leg_data(
+        (_COLOR_RED,       _COLOR_RED,       _COLOR_RED,        _COLOR_RED),
+        (_SENSOR_KEY_NONE, _SENSOR_KEY_NONE, _SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+        _PLAN_STOP, 0))
     await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
 
 async def main():
