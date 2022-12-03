@@ -3,6 +3,8 @@ import asyncio
 from random import randint
 import time
 
+from rx.subject import Subject
+
 from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
 
@@ -49,10 +51,12 @@ class BLEHub:
         self.output_buffer = bytearray()
         self.output_queue = asyncio.Queue()
         self.data_queue = asyncio.Queue()
+        self.data_subject = Subject()
         self.input_queue = asyncio.Queue()
         self.input_lock = asyncio.Lock()
         self.line_buffer = bytearray()
         self.hub_ready = asyncio.Event()
+        self.program_stopped = asyncio.Event()
         self.msg_len = None
         self.output_byte_arrived = asyncio.Event()
         self.output_byte_time = time.time()
@@ -129,6 +133,7 @@ class BLEHub:
         if out_id == _OUT_ID_DATA:
             print("got data:", [byte for byte in data])
             await self.data_queue.put(data)
+            self.data_subject.on_next(data)
     
     async def rpc(self, funcname, args=None):
         encoded = bytes(funcname, "ascii")
@@ -204,6 +209,7 @@ class BLEHub:
 
         async def run_coroutine():
             await self.hub.run(program, print_output=False, wait=True)
+            self.program_stopped.set()
             self.hub_ready.clear()
         
         async def output_loop():
@@ -239,6 +245,7 @@ class BLEHub:
             return
 
         await run_task
+        await asyncio.sleep(1)
         output_task.cancel()
         timeout_task.cancel()
     
@@ -247,7 +254,12 @@ class BLEHub:
     
     async def wait_for_data_id(self, id):
         while True:
-            data = await self.data_queue.get()
+            get_task = asyncio.ensure_future(self.data_queue.get())
+            program_stop_task = asyncio.ensure_future(self.program_stopped.wait())
+            done, pending = await asyncio.wait({get_task, program_stop_task}, return_when=asyncio.FIRST_COMPLETED)
+            assert not program_stop_task in done , "Program stopped before data arrived!"
+            
+            data = get_task.result()
             if data[0] == id:
                 return data
 
