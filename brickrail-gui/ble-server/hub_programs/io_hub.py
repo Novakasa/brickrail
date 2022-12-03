@@ -64,7 +64,7 @@ class IOHub:
             attr_hash1 = xor_checksum(encoded)
             attr_hash2 = mod_checksum(encoded)
             attr_hash = bytes([attr_hash1,attr_hash2])
-            assert not attr_hash in self.device_attrs, "hash for function not unique"
+            assert not attr_hash in self.device_attrs, "hash not unique"
             self.device_attrs[attr_hash] = attr
     
     def emit_msg(self, data):
@@ -76,12 +76,12 @@ class IOHub:
         self.last_output = data
         self.output_watch.reset()
 
-        # if urandom.randint(0, 10)>17:
-        #     data = bytearray(data)
-        #     mod_idx = urandom.randint(2, len(data)-2)
+        # if urandom.randint(0, 10)>17: # randomly corrupt data
+            # data = bytearray(data)
+            # mod_idx = urandom.randint(2, len(data)-2)
             # data[mod_idx] = b"X"[0]
             # data = data[:mod_idx-1] + data[mod_idx:]
-        #     data = data[:mod_idx] + b"X" + data[mod_idx:]
+            # data = data[:mod_idx] + b"X" + data[mod_idx:]
 
         stdout.buffer.write(data)
     

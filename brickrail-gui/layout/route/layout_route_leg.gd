@@ -1,18 +1,17 @@
 class_name LayoutRouteLeg
 extends Reference
 
-const PLAN_STOP = 0
-const PLAN_PASSING = 1
-
 var edges = []
 var full_section = null
 var sensor_dirtracks = []
 var sensor_keys = []
 var current_index = 0
-var plan = PLAN_STOP
+var intention = "pass"
+var locked = false
 
 func _init(p_edges):
 	edges = p_edges
+	collect_sensor_list()
 
 func get_start_node():
 	return edges[0].from_node
@@ -26,36 +25,29 @@ func get_from_node():
 func get_type():
 	return edges[0].type
 
+func set_intention(intent):
+	intention = intent
+
 func advance_sensor():
 	current_index += 1
 
-func get_sensor_list(start_dirtrack):
-	current_index = -1
+func is_complete():
+	return current_index >= len(self.sensor_dirtracks)
+
+func get_next_sensor_dirtrack():
+	return sensor_dirtracks[current_index]
+
+func get_next_key():
+	return sensor_keys[current_index]
+
+func collect_sensor_list():
 	var target_node_sensors = get_target_node().sensors
 	for dirtrack in get_section(false).tracks:
+		if dirtrack in sensor_dirtracks:
+			continue
 		if dirtrack.get_sensor() != null:
 			sensor_keys.append(target_node_sensors.get_sensor_dirtrack_key(dirtrack))
 			sensor_dirtracks.append(dirtrack)
-
-func get_next_behavior():
-	if current_index == len(sensor_dirtracks):
-		return null
-	if plan == PLAN_PASSING:
-		return "ignore"
-	var key = sensor_keys[current_index]
-	if key == "enter":
-		return "slow"
-	if key == "in":
-		return "stop"
-	return "ignore"
-
-func get_start_behavior():
-	if current_index == len(sensor_dirtracks):
-		return null
-	if get_type() == "travel":
-		return "cruise"
-	if get_type() == "flip":
-		return "flip_heading"
 
 func get_section(with_start_block):
 	
@@ -70,6 +62,8 @@ func get_section(with_start_block):
 			section.append(edge.section)
 		if edge.to_node.type=="block":
 			section.append(edge.to_node.obj.section)
+	
+	return section
 
 func get_full_section():
 	if full_section == null:
@@ -94,6 +88,7 @@ func set_switches():
 
 func lock_tracks(trainname):
 	get_full_section().set_track_attributes("locked", trainname, "<>")
+	locked = true
 
 func increment_marks():
 	get_full_section().set_track_attributes("mark", 1, "<>", "increment")
@@ -101,6 +96,7 @@ func increment_marks():
 
 func unlock_tracks():
 	get_full_section().set_track_attributes("locked", null, "<>")
+	locked = false
 
 func decrement_marks():
 	get_full_section().set_track_attributes("mark", -1, "<>", "increment")

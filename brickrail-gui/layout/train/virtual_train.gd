@@ -2,24 +2,27 @@
 class_name VirtualTrain
 extends Node2D
 
-var route_pos = 0.0
-var track_pos = 0.0
 var velocity = 0.0
 var acceleration = 1.5
 var deceleration = 3.0
+
 var hover=false
 var selected=false
+
 var dirtrack
 var turn=null
 var length = 0.0
+var track_pos = 0.0
+
 var size = Vector2(0.3,0.2)
 var facing: int = 1
 var max_velocity = 3.0
 var slow_velocity = 1.0
-var expect_marker = null
-var expect_behaviour = null
+
 var trainname
 var logging_module
+
+var route: LayoutRoute = null
 
 var allow_sensor_advance = true
 var prev_sensor_track = null
@@ -76,6 +79,12 @@ func set_facing(p_facing):
 	facing = p_facing
 	update_wagon_visuals()
 
+func set_route(p_route):
+	route = p_route
+
+func advance_route():
+	execute_behavior(route.advance())
+
 func update_next_sensor_info():
 	var distance
 	var itertrack
@@ -103,14 +112,9 @@ func update_next_sensor_info():
 
 func advance_to_next_sensor_track():
 	advance_position(next_sensor_distance)
-	pass_sensor(next_sensor_track.get_sensor())
 
-func set_expect_marker(colorname, behaviour):
-	expect_marker = colorname
-	expect_behaviour = behaviour
-
-func start():
-	Logger.verbose("start()", logging_module)
+func cruise():
+	Logger.verbose("cruise()", logging_module)
 	set_state("started")
 
 func slow():
@@ -146,6 +150,9 @@ func set_state(p_state):
 
 func _process(delta):
 	delta *= LayoutInfo.time_scale
+	update_velocity(delta)
+
+func update_velocity(delta):
 	if state=="started":
 		velocity = min(velocity+acceleration*delta, max_velocity)
 	if state=="slow":
@@ -168,9 +175,8 @@ func advance_position(delta_pos):
 	next_sensor_distance -= delta_pos
 	wrap_dirtrack()
 	if prev_pos<0.0 and track_pos>0.0:
-		if dirtrack == next_sensor_track and allow_sensor_advance:
-			var sensor = dirtrack.get_sensor()
-			pass_sensor(sensor)
+		if dirtrack.get_sensor() != null and allow_sensor_advance:
+			pass_sensor(dirtrack)
 	update_position()
 
 func wrap_dirtrack():
@@ -183,21 +189,27 @@ func wrap_dirtrack():
 		if len(opposite_turn_history)>10:
 			opposite_turn_history.pop_back()
 		# print(opposite_turn_history)
-		if dirtrack == next_sensor_track and allow_sensor_advance:
-			var sensor = dirtrack.get_sensor()
-			pass_sensor(sensor)
+		if dirtrack.get_sensor() != null and allow_sensor_advance:
+			pass_sensor(dirtrack)
 
-func pass_sensor(sensor):
-	if expect_marker != null:
-		assert(sensor.get_colorname() == expect_marker)
-		if expect_behaviour == "stop":
-			stop()
-		if expect_behaviour == "slow":
-			slow()
-		if expect_behaviour == "flip_heading":
-			flip_heading()
-	if allow_sensor_advance:
-		sensor.trigger(null)
+func pass_sensor(sensor_dirtrack):
+	execute_behavior(route.advance_sensor(sensor_dirtrack))
+
+func execute_behavior(behavior):
+	if behavior == "ignore":
+		return
+	if behavior == "cruise":
+		cruise()
+	if behavior == "slow":
+		slow()
+	if behavior == "stop":
+		stop()
+	if behavior == "fip_cruise":
+		flip_heading()
+		cruise()
+	if behavior == "flip_slow":
+		flip_heading()
+		slow()
 
 func update_position():
 	var interpolation = dirtrack.interpolate(track_pos, turn)

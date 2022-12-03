@@ -129,14 +129,10 @@ class Route:
         if leg_index == len(self.legs):
             self.legs.append(None)    
         self.legs[leg_index] = RouteLeg(data[1:])
-    
-    def is_complete(self):
-        return self.index >= len(self.legs)
 
     def advance_leg(self):
         self.index += 1
-        if self.is_complete():
-            io_hub.emit_data(bytes((_DATA_ROUTE_COMPLETE, self.index)))
+        assert self.index < len(self.legs)
         io_hub.emit_data(bytes((_DATA_LEG_ADVANCE, self.index)))
     
     def advance(self):
@@ -160,7 +156,7 @@ class Route:
         if current_leg.is_complete():
             if current_leg.intention == _INTENTION_PASS:
                 behavior = self.advance()
-            elif self.index == len(self.legs)-1:
+            elif self.get_next_leg() is None:
                 io_hub.emit_data(bytes((_DATA_ROUTE_COMPLETE, self.index)))
         
         return behavior
@@ -224,14 +220,12 @@ class Train:
     def on_marker_passed(self, color):
         behavior = self.route.advance_sensor(color)
         self.execute_behavior(behavior)
-        if self.route.is_complete():
+        if self.route.get_next_leg() == None and self.route.get_current_leg().is_complete():
             self.route = None
     
     def advance_route(self):
         behavior = self.route.advance()
         self.execute_behavior(behavior)
-        if self.route.is_complete():
-            self.route = None
 
     def execute_behavior(self, behavior):
         if behavior == _BEHAVIOR_IGNORE:

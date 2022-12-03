@@ -3,11 +3,16 @@ class_name LayoutRoute
 extends Reference
 
 var edges = []
-
 var legs = []
 
 var length = 0.0
-var current_leg = 0
+var leg_index = 0
+
+var trainname
+
+signal completed()
+signal target_entered(target_node)
+signal target_in(target_node)
 
 func add_prev_edge(edge):
 	edges.push_front(edge)
@@ -49,7 +54,7 @@ func redirect_with_route(route):
 			start=i
 			break
 	assert(start!=null)
-	for i in range(len(legs)-current_leg-1):
+	for i in range(len(legs)-leg_index-1):
 		prints(legs[-1].get_from().id, legs[-1].get_target().id)
 		legs[-1].decrement_marks()
 		legs.remove(len(legs)-1)
@@ -69,13 +74,32 @@ func get_start_node():
 func get_target_node():
 	return legs[-1].get_target_node()
 
-func can_train_pass(trainname):
-	var next_leg = get_next_leg()
-	if next_leg == null:
-		return false
+func set_trainname(p_trainname):
+	trainname = p_trainname
+	
+	update_intentions()
+	LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+
+func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
+	if p_trainname == trainname:
+		return
+
+func update_intentions():
+	for i in range(len(legs)):
+		update_intention(i)
+
+func update_intention(i):
+	if i >= len(legs)-1:
+		legs[i].set_intention("stop")
+		return
+	var next_leg = legs[i+1]
 	if next_leg.get_type() != "travel":
-		return false
-	return true
+		legs[i].set_intention("stop")
+		return
+	legs[i].set_intention("pass")
+
+func can_advance():
+	return get_next_leg().is_train_allowed(trainname)
 
 func get_blocking_trains():
 	var next_leg = get_next_leg()
@@ -85,7 +109,7 @@ func get_blocking_trains():
 		return []
 	return next_leg.get_locked()
 
-func is_train_blocked(trainname):
+func is_train_blocked():
 	var next_leg = get_next_leg()
 	if next_leg == null:
 		return false
@@ -95,35 +119,107 @@ func is_train_blocked(trainname):
 		return true
 	return false
 
-func switch_and_lock_next(trainname):
-	var next_leg = get_next_leg()
-	next_leg.set_switches()
-	next_leg.lock_tracks(trainname)
-
 func advance_leg():
-	current_leg += 1
-	if current_leg<len(legs):
-		legs[current_leg-1].decrement_marks()
-		return legs[current_leg]
-	current_leg -= 1
+	leg_index += 1
+	if leg_index<len(legs):
+		legs[leg_index-1].decrement_marks()
+		return legs[leg_index]
+	leg_index -= 1
 	return null
 
+func advance():
+	var next_leg = get_next_leg()
+	if not next_leg == null:
+		if not next_leg.locked:
+			next_leg.set_switches()
+			next_leg.lock_tracks(trainname)
+	
+	advance_leg()
+	if get_current_leg().get_type() == "flip":
+		if get_current_leg().intention == "pass":
+			return "flip_cruise"
+		return "flip_slow"
+	return "cruise"
+
+func advance_sensor(sensor_dirtrack):
+	var current_leg = get_current_leg()
+	assert(sensor_dirtrack == current_leg.get_next_sensor_dirtrack())
+	
+	var behavior = get_next_sensor_behavior()
+	update_locks()
+	update_target_signals()
+	
+	current_leg.advance_sensor()
+	
+	if current_leg.is_complete():
+		if current_leg.intention == "pass":
+			behavior = advance()
+		elif get_next_leg() == null:
+			emit_signal("completed")
+	
+	return behavior
+
+func update_locks():
+	var current_leg = get_current_leg()
+	var next_leg = get_next_leg()
+	var key = current_leg.get_next_key()
+	
+	if key == "enter" and next_leg != null:
+		next_leg.set_switches()
+		next_leg.lock_tracks(trainname)
+	
+	if key == "in":
+		current_leg.unlock_tracks()
+	
+	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
+
+func update_target_signals():
+	var key = get_current_leg().get_next_key()
+	if key == "enter":
+		emit_signal("target_entered", get_current_leg().get_target_node())
+	if key == "in":
+		emit_signal("target_in", get_current_leg().get_target_node())
+
+func get_next_sensor_behavior():
+	var current_leg = get_current_leg()
+	var next_leg = get_next_leg()
+	
+	var key = current_leg.get_next_key()
+	if key == null:
+		return "ignore"
+	
+	var please_stop = false
+	if next_leg == null:
+		please_stop = true
+	elif current_leg.intention == "stop" or next_leg.get_type() == "flip":
+		please_stop = true
+	
+	if not please_stop:
+		return "ignore"
+	
+	if key == "enter":
+		return "slow"
+	if key == "in":
+		return "stop"
+
+	assert(false)
+
 func get_next_leg():
-	if not current_leg<len(legs)-1:
+	if not leg_index<len(legs)-1:
 		return null
-	return legs[current_leg+1]
+	return legs[leg_index+1]
 
 func get_current_leg():
-	return legs[current_leg]
+	return legs[leg_index]
 
 func increment_marks():
 	for i in range(len(legs)):
-		if i<current_leg:
+		if i<leg_index:
 			continue
 		legs[i].increment_marks()
 
 func decrement_marks():
 	for i in range(len(legs)):
-		if i<current_leg:
+		if i<leg_index:
 			continue
 		legs[i].decrement_marks()

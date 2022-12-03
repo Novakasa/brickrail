@@ -34,7 +34,6 @@ func _init(p_name):
 	add_child(virtual_train)
 	virtual_train.visible=false
 	LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
-	LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 	LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
 	wait_timer = Timer.new()
 	add_child(wait_timer)
@@ -99,14 +98,6 @@ func _on_LayoutInfo_control_devices_changed(control_devices):
 
 func is_end_of_leg():
 	return block == route.get_current_leg().get_target_node().obj
-
-func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
-	if p_trainname == trainname:
-		return
-	if route == null:
-		return
-	if is_end_of_leg():
-		try_advancing()
 
 func _on_LayoutInfo_random_targets_set(random_targets):
 	if random_targets and route==null:
@@ -212,6 +203,12 @@ func find_route(p_target, no_locked=true):
 	set_route(_route)
 	try_advancing()
 
+func try_advancing():
+	if route.can_advance():
+		if can_control_ble_train():
+			ble_train.advance_route()
+		virtual_train.advance_route()
+
 func is_there_hope():
 	if route == null:
 		return true
@@ -230,166 +227,32 @@ func is_there_hope():
 	blocked_by = null
 	return false
 
-func try_advancing():
-	Logger.verbose("try_advancing()", logging_module)
-	if route.is_train_blocked(trainname):
-		Logger.verbose("recalculating route", logging_module)
-		route.recalculate_route(fixed_facing, trainname)
-	if not route.is_train_blocked(trainname):
-		if route.advance_leg()==null: # final target arrived
-			Logger.verbose("final target arrived", logging_module)
-			set_route(null)
-			if LayoutInfo.random_targets:
-				wait_timer.start()
-				yield(wait_timer, "timeout")
-				if LayoutInfo.random_targets:
-					find_random_route()
-		else:
-			start_leg()
-		return
-	var hope = is_there_hope()
-	if not hope:
-		if LayoutInfo.random_targets and not committed:
-			Logger.verbose("no hope for route, finding new one", logging_module)
-			find_random_route() #FIXME: chance of infinite recursion 
-
 func set_route(p_route):
 	if route != null:
 		route.decrement_marks()
+		route.disconnect("target_entered", self, "_on_target_entered")
+		route.disconnect("target_in", self, "_on_target_in")
+		route.disconnect("completed", self, "_on_route_completed")
 	route = p_route
 	if route != null:
+		route.connect("target_entered", self, "_on_target_entered")
+		route.connect("target_in", self, "_on_target_in")
+		route.connect("completed", self, "_on_route_completed")
 		route.increment_marks()
+		route.set_trainname(trainname)
+		if can_control_ble_train():
+			ble_train.set_route(route)
+		virtual_train.set_route(route)
 
-func start_leg():
-	Logger.verbose("start_leg()", logging_module)
-	var leg = route.get_current_leg()
-	Logger.verbose("from: "+leg.get_from_node().id, logging_module)
-	Logger.verbose("to: "+leg.get_target_node().id, logging_module)
-	Logger.verbose("leg type: "+leg.get_type(), logging_module)
-	if not is_leg_allowed(leg):
-		Logger.verbose("current leg not allowed, cancelling route", logging_module)
-		set_route(null)
-		return
-	Logger.verbose("locking tracks", logging_module)
-	leg.lock_tracks(trainname)
-	if leg.get_type() == "flip":
-		flip_heading()
-		try_passing()
-	else:
-		Logger.verbose("setting switches", logging_module)
-		leg.set_switches()
-	set_target(leg.get_target_node().obj)
-	
-	set_sensor_list(leg.get_sensor_list_from(virtual_train.dirtrack))
-	
-	start()
-	Logger.verbose("start_leg() done", logging_module)
+func _on_route_completed():
+	set_route(null)
 
-func set_sensor_list(p_sensor_list):
-	virtual_train.set_sensor_list(p_sensor_list)
-	if can_control_ble_train():
-		ble_train.set_sensor_list(p_sensor_list)
+func _on_target_entered(target_node):
+	pass
 
-func set_expect_marker(marker, behaviour):
-	Logger.verbose("set_expect_marker('"+marker+"', '"+behaviour+"')", logging_module)
-	virtual_train.set_expect_marker(marker, behaviour)
-	if can_control_ble_train():
-		ble_train.set_expect_marker(marker, behaviour)
+func _on_target_in(target_node):
+	set_current_block(target_node.obj)
 
-func set_target(p_block):
-	target_block = p_block
-
-func get_target_sensor_dirtrack(key):
-	return target_block.nodes[facing].target.sensor_dirtracks[key]
-
-func get_block_sensor_dirtrack(key):
-	return block.nodes[facing].target.sensor_dirtracks[key]
-
-func set_next_sensor():
-	Logger.verbose("set_next_sensor()", trainname)
-	if next_sensor_track != null:
-		next_sensor_track.get_sensor().disconnect("triggered", self, "_on_next_sensor_triggered")
-	
-	virtual_train.update_next_sensor_info()
-	next_sensor_track = virtual_train.next_sensor_track
-	Logger.verbose("next_sensor_track: "+next_sensor_track.id, trainname)
-
-	if next_sensor_track != null:
-		next_sensor_track.get_sensor().connect("triggered", self, "_on_next_sensor_triggered")
-		var next_colorname = next_sensor_track.get_sensor().get_colorname()
-		
-		if next_sensor_track == get_target_sensor_dirtrack("enter"):
-			Logger.verbose("next sensor is target enter", trainname)
-			if route.can_train_pass(trainname):
-				set_expect_marker(next_colorname, "ignore")
-				return
-			set_expect_marker(next_colorname, "slow")
-			return
-		if next_sensor_track == get_target_sensor_dirtrack("in"):
-			Logger.verbose("next sensor is target in", trainname)
-			if route.can_train_pass(trainname) and not route.is_train_blocked(trainname):
-				set_expect_marker(next_colorname, "ignore")
-				return
-			set_expect_marker(next_colorname, "stop")
-			return
-		Logger.verbose("next sensor will be ignored", trainname)
-		set_expect_marker(next_colorname, "ignore")
-
-func is_leg_allowed(leg):
-	var leg_locked = leg.get_locked()
-	if len(leg_locked)>0 and leg_locked != [trainname]:
-		return false
-	return true
-
-func _on_next_sensor_triggered(p_train):
-	Logger.verbose("next sensor triggered", trainname)
-	if p_train != null:
-		assert(p_train==self)
-	
-	if not virtual_train.allow_sensor_advance:
-		virtual_train.advance_to_next_sensor_track()
-	
-	if next_sensor_track == get_target_sensor_dirtrack("enter"):
-		Logger.verbose("triggered sensor is target enter", trainname)
-		_on_target_entered()
-	
-	if next_sensor_track == get_target_sensor_dirtrack("in"):
-		Logger.verbose("triggered sensor is target in", trainname)
-		_on_target_in()
-	
-	elif target_block != null:
-		set_next_sensor()
-	else:
-		next_sensor_track = null
-		next_sensor_track.get_sensor().disconnect("triggered", self, "_on_next_sensor_triggered")
-	
-func _on_target_in():
-	Logger.verbose("_on_target_in()", logging_module)
-	Logger.verbose("unlocking tracks", logging_module)
-	route.get_current_leg().unlock_tracks()
-	set_current_block(target_block, false)
-	set_target(null)
-	try_advancing()
-	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
-
-func _on_target_entered():
-	Logger.verbose("_on_target_entered()", logging_module)
-	try_passing()
-
-func try_passing():
-	Logger.verbose("try_passing()", logging_module)
-	var passing = route.can_train_pass(trainname)
-	if route.is_train_blocked(trainname):
-		Logger.verbose("route.is_train_blocked() true, recalculating route", logging_module)
-		route.recalculate_route(fixed_facing, trainname)
-		if passing and (not route.can_train_pass(trainname) or route.is_train_blocked(trainname)):
-			Logger.verbose("still cannot pass, slowing!", logging_module)
-			slow()
-			passing=false
-	if passing:
-		Logger.verbose("passing, switch and lock tracks", logging_module)
-		route.switch_and_lock_next(trainname)
-	
 func set_current_block(p_block, teleport=true):
 	if p_block != null:
 		Logger.verbose("set_current_block("+p_block.id+")", logging_module)
