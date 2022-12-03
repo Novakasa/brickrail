@@ -104,7 +104,7 @@ class BLEHub:
     async def hub_message_handler(self, bytes):
         out_id = bytes[0]
 
-        print("handling msg:", bytes)
+        # print("handling msg:", bytes)
 
         if out_id == _OUT_ID_MSG_ACK:
             await self.msg_ack.put(True)
@@ -131,7 +131,7 @@ class BLEHub:
                 self.hub_ready.clear()
         
         if out_id == _OUT_ID_DATA:
-            print("got data:", [byte for byte in data])
+            # print("got data:", [byte for byte in data])
             await self.data_queue.put(data)
             self.data_subject.on_next(data)
     
@@ -173,7 +173,7 @@ class BLEHub:
                     full_data.pop(mod_index)
                     # full_data[mod_index] = 88
 
-            print(f"sending msg: {repr(full_data)}, checksum={checksum}")
+            # print(f"sending msg: {repr(full_data)}, checksum={checksum}")
             async with self.input_lock:
                 await self.hub.write(full_data)
             try:
@@ -189,11 +189,11 @@ class BLEHub:
                         print(f"Error received from hub, resending {data}")
                     else:
                         raise Exception(f"Error received from hub!")
-        print("...successful!")
+        # print("...successful!")
     
     async def send_unsafe(self, data):
         async with self.input_lock:
-            print(f"sending unsafe: {repr(data)}")
+            # print(f"sending unsafe: {repr(data)}")
             await self.hub.write(bytes([len(data)]) + data + bytes([_IN_ID_END]))
     
     async def send_sys_code(self, code):

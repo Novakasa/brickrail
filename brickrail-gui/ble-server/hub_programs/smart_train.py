@@ -27,7 +27,7 @@ _BEHAVIOR_SLOW        = const(1)
 _BEHAVIOR_CRUISE      = const(2)
 _BEHAVIOR_STOP        = const(3)
 _BEHAVIOR_FLIP_CRUISE = const(4)
-_BEHAVIOR_FLIP_SLOW   = const(4)
+_BEHAVIOR_FLIP_SLOW   = const(5)
 
 _INTENTION_STOP = const(0)
 _INTENTION_PASS = const(1)
@@ -141,20 +141,17 @@ class Route:
     
     def advance(self):
         self.advance_leg()
-        print("advancing leg")
         if self.get_current_leg().type == _LEG_TYPE_FLIP:
             if self.get_current_leg().intention == _INTENTION_PASS:
                 return _BEHAVIOR_FLIP_CRUISE
             return _BEHAVIOR_FLIP_SLOW
         return _BEHAVIOR_CRUISE
     
-    def advance_with_sensor(self, color):
+    def advance_sensor(self, color):
         next_color = self.get_current_leg().get_next_color()
         if next_color != color:
             print("Marker", color, "!=", next_color)
             return
-        
-        print("advancing sensor")
         
         behavior = self.get_next_sensor_behavior()
 
@@ -162,7 +159,9 @@ class Route:
         current_leg.advance_sensor()
         if current_leg.is_complete():
             if current_leg.intention == _INTENTION_PASS:
-                self.advance_leg()
+                behavior = self.advance()
+            elif self.index == len(self.legs)-1:
+                io_hub.emit_data(bytes((_DATA_ROUTE_COMPLETE, self.index)))
         
         return behavior
         
@@ -198,7 +197,7 @@ class RouteLeg:
         self.index = 0
     
     def is_complete(self):
-        return self.index >= len(self.data)-1
+        return self.index >= len(self.data)
     
     def advance_sensor(self):
         self.index += 1
@@ -223,7 +222,7 @@ class Train:
         self.set_state(_STATE_STOPPED)
     
     def on_marker_passed(self, color):
-        behavior = self.route.advance_with_sensor(color)
+        behavior = self.route.advance_sensor(color)
         self.execute_behavior(behavior)
         if self.route.is_complete():
             self.route = None
