@@ -76,12 +76,13 @@ class IOHub:
         self.last_output = data
         self.output_watch.reset()
 
-        if urandom.randint(0, 10)>17:
-            data = bytearray(data)
-            mod_idx = urandom.randint(2, len(data)-2)
+        # if urandom.randint(0, 10)>17:
+        #     data = bytearray(data)
+        #     mod_idx = urandom.randint(2, len(data)-2)
             # data[mod_idx] = b"X"[0]
             # data = data[:mod_idx-1] + data[mod_idx:]
-            data = data[:mod_idx] + b"X" + data[mod_idx:]
+        #     data = data[:mod_idx] + b"X" + data[mod_idx:]
+
         stdout.buffer.write(data)
     
     def emit_data(self, data):
@@ -143,8 +144,8 @@ class IOHub:
             else:
                 _result = func()
             return
-        
-        print("unkown in_id!", self.input_buffer)
+
+        assert(False)
 
     def update_input(self, byte):
         if self.msg_len is None:
@@ -170,7 +171,7 @@ class IOHub:
         last_time = loop_watch.time()
         self.running = True
         self.emit_sys_code(_SYS_CODE_READY)
-        print("Hello world!")
+
         while self.running:
             if self.poll.poll(int(1000*max_delta)):
                 byte = stdin.buffer.read(1)[0]
