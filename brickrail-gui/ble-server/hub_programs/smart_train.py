@@ -2,7 +2,6 @@ from uselect import poll
 from usys import stdin
 from micropython import const
 
-from pybricks.hubs import CityHub
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port, Color
 from pybricks.tools import wait, StopWatch
@@ -21,15 +20,17 @@ _SENSOR_KEY_IN    = const(2)
 
 _LEG_TYPE_TRAVEL = const(0)
 _LEG_TYPE_FLIP   = const(1)
+_LEG_TYPE_START  = const(2)
 
-_BEHAVIOR_IGNORE = const(0)
-_BEHAVIOR_SLOW   = const(1)
-_BEHAVIOR_CRUISE = const(2)
-_BEHAVIOR_STOP   = const(3)
-_BEHAVIOR_FLIP   = const(4)
+_BEHAVIOR_IGNORE      = const(0)
+_BEHAVIOR_SLOW        = const(1)
+_BEHAVIOR_CRUISE      = const(2)
+_BEHAVIOR_STOP        = const(3)
+_BEHAVIOR_FLIP_CRUISE = const(4)
+_BEHAVIOR_FLIP_SLOW   = const(4)
 
-_PLAN_STOP         = const(0)
-_PLAN_PASSING      = const(1)
+_INTENTION_STOP = const(0)
+_INTENTION_PASS = const(1)
 
 _MOTOR_ACC          = const(40)
 _MOTOR_DEC          = const(90)
@@ -38,8 +39,8 @@ _MOTOR_SLOW_SPEED   = const(40)
 
 _DATA_STATE_CHANGED  = const(0)
 _DATA_ROUTE_COMPLETE = const(1)
-_DATA_ROUTE_ADVANCE  = const(2)
-_DATA_LEG_ADVANCE    = const(3)
+_DATA_LEG_ADVANCE  = const(2)
+_DATA_SENSOR_ADVANCE    = const(3)
 
 _STATE_STOPPED = const(0)
 _STATE_SLOW    = const(1)
@@ -69,10 +70,10 @@ class TrainSensor:
                 self.marker_hue//=self.marker_samples
                 found_color = None
                 colorerr = 361
-                for self.last_color, chue in enumerate(COLOR_HUES):
+                for last_color, chue in enumerate(COLOR_HUES):
                     err = abs(chue-self.marker_hue)
                     if found_color is None or err<colorerr:
-                        found_color = self.last_color
+                        found_color = last_color
                         colorerr = err
                 self.marker_exit_callback(found_color)
             self.marker_hue = 0
@@ -84,7 +85,6 @@ class TrainMotor:
         self.speed = 0
         self.target_speed = 0
         self.motor = DCMotor(Port.A)
-        self.braking = False
         self.direction = 1
     
     def flip_direction(self):
@@ -92,17 +92,10 @@ class TrainMotor:
     
     def set_target(self, speed):
         self.target_speed = speed
-        self.braking = False
     
     def set_speed(self, speed):
         self.target_speed = speed
         self.speed = speed
-        self.braking = False
-    
-    def brake(self):
-        self.target_speed = 0
-        self.speed = 0
-        self.braking = True
     
     def update(self, delta):
 
@@ -116,116 +109,152 @@ class TrainMotor:
         
         self.motor.dc(self.speed)
 
-        if self.braking:
-            self.motor.brake()
+class Route:
+    def __init__(self):
+        self.legs = [RouteLeg(b"\x02")]
+        assert self.legs[0].type == _LEG_TYPE_START, self.legs[0].type
+        self.index = 0
+
+    def get_current_leg(self):
+        return self.legs[self.index]
+    
+    def get_next_leg(self):
+        try:
+            return self.legs[self.index+1]
+        except IndexError:
+            return None
+    
+    def set_leg(self, data):
+        leg_index = data[0]
+        if leg_index == len(self.legs):
+            self.legs.append(None)    
+        self.legs[leg_index] = RouteLeg(data[1:])
+    
+    def is_complete(self):
+        return self.index >= len(self.legs)
+
+    def advance_leg(self):
+        self.index += 1
+        if self.is_complete():
+            io_hub.emit_data(bytes((_DATA_ROUTE_COMPLETE, self.index)))
+        io_hub.emit_data(bytes((_DATA_LEG_ADVANCE, self.index)))
+    
+    def advance(self):
+        self.advance_leg()
+        print("advancing leg")
+        if self.get_current_leg().type == _LEG_TYPE_FLIP:
+            if self.get_current_leg().intention == _INTENTION_PASS:
+                return _BEHAVIOR_FLIP_CRUISE
+            return _BEHAVIOR_FLIP_SLOW
+        return _BEHAVIOR_CRUISE
+    
+    def advance_with_sensor(self, color):
+        next_color = self.get_current_leg().get_next_color()
+        if next_color != color:
+            print("Marker", color, "!=", next_color)
             return
+        
+        print("advancing sensor")
+        
+        behavior = self.get_next_sensor_behavior()
 
-def get_key_behavior(key, plan):
-    if plan == _PLAN_PASSING:
-        return _BEHAVIOR_IGNORE
-    if key == _SENSOR_KEY_NONE:
-        return _BEHAVIOR_IGNORE
-    if key == _SENSOR_KEY_ENTER:
-        return _BEHAVIOR_SLOW
-    if key == _SENSOR_KEY_IN:
-        return _BEHAVIOR_STOP
+        current_leg = self.get_current_leg()
+        current_leg.advance_sensor()
+        if current_leg.is_complete():
+            if current_leg.intention == _INTENTION_PASS:
+                self.advance_leg()
+        
+        return behavior
+        
+    def get_next_sensor_behavior(self):
 
-    raise Exception("Invalid sensor key: "+str(key))
+        current_leg = self.get_current_leg()
+        next_leg = self.get_next_leg()
+
+        key = current_leg.get_next_key()
+        if key == _SENSOR_KEY_NONE:
+            return _BEHAVIOR_IGNORE
+
+        please_stop = False
+        if next_leg is None:
+            please_stop = True
+        elif current_leg.intention == _INTENTION_STOP or next_leg.type == _LEG_TYPE_FLIP:
+            please_stop = True
+
+        if not please_stop:
+            return _BEHAVIOR_IGNORE
+
+        # stop the train
+        if key == _SENSOR_KEY_ENTER:
+            return _BEHAVIOR_SLOW
+        if key == _SENSOR_KEY_IN:
+            return _BEHAVIOR_STOP
 
 class RouteLeg:
     def __init__(self, data):
-        self.sensor_colors = []
-        self.sensor_keys = []
-        for byte in data[:-1]:
-            self.sensor_keys.append(byte >> 4)
-            self.sensor_colors.append(byte & 0x0F)
-        self.plan = data[-1] >> 4
+        self.data = data[:-1]
+        self.intention = data[-1] >> 4
         self.type = data[-1] & 0x0F
-        self.current_index = 0
-        print("leg type:", self.type)
-        print("leg plan:", self.plan)
+        self.index = 0
+    
+    def is_complete(self):
+        return self.index >= len(self.data)-1
     
     def advance_sensor(self):
-        self.current_index += 1
-    
+        self.index += 1
+        io_hub.emit_data(bytes((_DATA_SENSOR_ADVANCE, self.index)))
+
     def get_next_color(self):
-        try:
-            return self.sensor_colors[self.current_index+1]
-        except IndexError:
-            return None
+        return self.data[self.index] & 0x0F
     
-    def get_next_behavior(self):
-        try:
-            key = self.sensor_keys[self.current_index+1]
-        except IndexError:
-            return None
-        return get_key_behavior(key, self.plan)
-    
-    def get_start_behavior(self):
-        if self.type == _LEG_TYPE_FLIP:
-            return _BEHAVIOR_FLIP
-        return _BEHAVIOR_CRUISE
+    def get_next_key(self):
+        return self.data[self.index] >> 4
 
 class Train:
 
     def __init__(self):
-        self.hub = CityHub()
         self.motor = TrainMotor()
-        self.sensor = TrainSensor(self.on_marker_exit)
+        self.sensor = TrainSensor(self.on_marker_passed)
 
-        self.hbuf = bytearray(1000)
-        self.sbuf = bytearray(1000)
-        self.vbuf = bytearray(1000)
-        self.buf_index = 0
-
-        self.leg = None
-        self.next_leg = None
+        self.route : Route = None
+        self.current_leg : RouteLeg = None
         
         self.state = None
         self.set_state(_STATE_STOPPED)
     
-    def on_marker_exit(self, color):
-        next_color = self.leg.get_next_color()
-        if color != next_color:
-            print (str(color)+" != " + str(next_color))
-            return
-        print("advancing")
-        behavior = self.leg.get_next_behavior()
-        self.leg.advance_sensor()
-        if self.leg.get_next_color() is None:
-            self.advance_route()
+    def on_marker_passed(self, color):
+        behavior = self.route.advance_with_sensor(color)
         self.execute_behavior(behavior)
-        io_hub.emit_data(bytes([_DATA_LEG_ADVANCE]))
+        if self.route.is_complete():
+            self.route = None
     
-    def start_leg(self):
-        self.execute_behavior(self.leg.get_start_behavior())
+    def advance_route(self):
+        behavior = self.route.advance()
+        self.execute_behavior(behavior)
+        if self.route.is_complete():
+            self.route = None
 
     def execute_behavior(self, behavior):
         if behavior == _BEHAVIOR_IGNORE:
             return
         if behavior == _BEHAVIOR_CRUISE:
-            self.start()
+            self.cruise()
         if behavior == _BEHAVIOR_SLOW:
             self.slow()
         if behavior == _BEHAVIOR_STOP:
             self.stop()
-        if behavior == _BEHAVIOR_FLIP:
+        if behavior == _BEHAVIOR_FLIP_CRUISE:
             self.flip_heading()
-            self.start()
+            self.cruise()
+        if behavior == _BEHAVIOR_FLIP_SLOW:
+            self.flip_heading()
+            self.slow()
     
-    def set_leg(self, data):
-        self.leg = RouteLeg(data)
-    
-    def set_next_leg(self, data):
-        self.next_leg = RouteLeg(data)
-    
-    def advance_route(self):
-        self.leg = self.next_leg
-        self.next_leg = None
-        if self.leg is None:
-            io_hub.emit_data(bytes([_DATA_ROUTE_COMPLETE]))
-            return
-        io_hub.emit_data(bytes([_DATA_ROUTE_ADVANCE]))
+    def new_route(self):
+        self.route = Route()
+
+    def set_route_leg(self, data):
+        self.route.set_leg(data)
     
     def set_state(self, state):
         self.state = state
@@ -235,11 +264,10 @@ class Train:
         self.set_state(_STATE_SLOW)
     
     def stop(self):
-        # print("stopping...")
-        self.motor.brake()
+        self.motor.set_speed(0)
         self.set_state(_STATE_STOPPED)
     
-    def start(self):
+    def cruise(self):
         self.motor.set_target(_MOTOR_CRUISE_SPEED)
         self.set_state(_STATE_CRUISE)
 
@@ -250,13 +278,6 @@ class Train:
         if self.state in [_STATE_CRUISE, _STATE_SLOW]:
             self.sensor.update(delta)
 
-        self.buf_index+=1
-        if self.buf_index>=len(self.hbuf):
-            self.buf_index=0
-        color = self.sensor.last_color
-        self.hbuf[self.buf_index] = int(0.5*color.h)
-        self.sbuf[self.buf_index] = color.s
-        self.vbuf[self.buf_index] = color.v
         self.motor.update(delta)
 
 train = Train()
