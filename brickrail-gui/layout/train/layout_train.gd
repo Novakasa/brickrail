@@ -249,6 +249,11 @@ func set_route(p_route):
 
 func _on_route_completed():
 	set_route(null)
+	if LayoutInfo.random_targets:
+		wait_timer.start()
+		yield(wait_timer, "timeout")
+		if LayoutInfo.random_targets:
+			find_random_route()
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)
