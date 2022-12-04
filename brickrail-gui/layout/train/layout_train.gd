@@ -233,13 +233,16 @@ func set_route(p_route):
 		route.disconnect("target_entered", self, "_on_target_entered")
 		route.disconnect("target_in", self, "_on_target_in")
 		route.disconnect("completed", self, "_on_route_completed")
+		route.disconnect("facing_flipped", self, "_on_route_facing_flipped")
 	route = p_route
 	if route != null:
 		route.connect("target_entered", self, "_on_target_entered")
 		route.connect("target_in", self, "_on_target_in")
 		route.connect("completed", self, "_on_route_completed")
+		route.connect("facing_flipped", self, "_on_route_facing_flipped")
 		route.increment_marks()
 		route.set_trainname(trainname)
+		route.collect_sensors()
 		if can_control_ble_train():
 			ble_train.set_route(route)
 		virtual_train.set_route(route)
@@ -247,11 +250,17 @@ func set_route(p_route):
 func _on_route_completed():
 	set_route(null)
 
+func _on_route_facing_flipped(p_facing):
+	assert(p_facing != facing)
+	
+	facing = p_facing
+	
+
 func _on_target_entered(target_node):
 	pass
 
 func _on_target_in(target_node):
-	set_current_block(target_node.obj)
+	set_current_block(target_node.obj, false)
 
 func set_current_block(p_block, teleport=true):
 	if p_block != null:

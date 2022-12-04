@@ -127,9 +127,6 @@ func stop():
 
 func flip_heading():
 	Logger.verbose("flip_heading()", logging_module)
-	if state!="stopped":
-		push_error("can't flip heading while state is " + state)
-		return
 	var prev_pos = track_pos
 	if turn == null:
 		set_dirtrack(dirtrack.get_opposite())
@@ -193,9 +190,11 @@ func wrap_dirtrack():
 			pass_sensor(dirtrack)
 
 func pass_sensor(sensor_dirtrack):
+	prints("virtual train pass sensor", sensor_dirtrack.id)
 	execute_behavior(route.advance_sensor(sensor_dirtrack))
 
 func execute_behavior(behavior):
+	prints("virtual train executing:", behavior)
 	if behavior == "ignore":
 		return
 	if behavior == "cruise":
@@ -204,7 +203,7 @@ func execute_behavior(behavior):
 		slow()
 	if behavior == "stop":
 		stop()
-	if behavior == "fip_cruise":
+	if behavior == "flip_cruise":
 		flip_heading()
 		cruise()
 	if behavior == "flip_slow":

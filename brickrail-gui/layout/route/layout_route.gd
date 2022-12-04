@@ -13,6 +13,7 @@ var trainname
 signal completed()
 signal target_entered(target_node)
 signal target_in(target_node)
+signal facing_flipped(facing)
 
 func add_prev_edge(edge):
 	edges.push_front(edge)
@@ -84,16 +85,18 @@ func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 	if p_trainname == trainname:
 		return
 
+func collect_sensors():
+	for leg in legs:
+		if leg.get_type() == "start":
+			continue
+		leg.collect_sensor_list()
+
 func update_intentions():
 	for i in range(len(legs)):
 		update_intention(i)
 
 func update_intention(i):
 	if i >= len(legs)-1:
-		legs[i].set_intention("stop")
-		return
-	var next_leg = legs[i+1]
-	if next_leg.get_type() != "travel":
 		legs[i].set_intention("stop")
 		return
 	legs[i].set_intention("pass")
@@ -135,8 +138,18 @@ func advance():
 			next_leg.lock_tracks(trainname)
 	
 	advance_leg()
-	if get_current_leg().get_type() == "flip":
-		if get_current_leg().intention == "pass":
+	
+	var current_leg = get_current_leg()
+	print("next leg")
+	prints("type:", current_leg.get_type())
+	prints("intention:", current_leg.intention)
+	print("sensors:")
+	for i in range(len(current_leg.sensor_dirtracks)):
+		prints(i, current_leg.sensor_keys[i], current_leg.sensor_dirtracks[i].id)
+	
+	if current_leg.get_type() == "flip":
+		emit_signal("facing_flipped", current_leg.get_target_node().facing)
+		if current_leg.intention == "pass":
 			return "flip_cruise"
 		return "flip_slow"
 	return "cruise"

@@ -11,7 +11,6 @@ var locked = false
 
 func _init(p_edges):
 	edges = p_edges
-	collect_sensor_list()
 
 func get_start_node():
 	return edges[0].from_node
@@ -41,13 +40,26 @@ func get_next_key():
 	return sensor_keys[current_index]
 
 func collect_sensor_list():
-	var target_node_sensors = get_target_node().sensors
-	for dirtrack in get_section(false).tracks:
-		if dirtrack in sensor_dirtracks:
-			continue
+	var target_node = get_target_node()
+	var start_node = get_start_node()
+	if get_type() == "flip":
+		sensor_keys.append("in")
+		sensor_dirtracks.append(target_node.sensors.sensor_dirtracks["in"])
+		return
+	var skip = true
+	for dirtrack in get_full_section().tracks:
 		if dirtrack.get_sensor() != null:
-			sensor_keys.append(target_node_sensors.get_sensor_dirtrack_key(dirtrack))
+			var start_key = start_node.sensors.get_sensor_dirtrack_key(dirtrack)
+			if start_key == "in":
+				skip=false
+				continue
+			if dirtrack in sensor_dirtracks or skip:
+				continue
+			var target_key = target_node.sensors.get_sensor_dirtrack_key(dirtrack)
+			sensor_keys.append(target_key)
 			sensor_dirtracks.append(dirtrack)
+			if target_key == "in":
+				return
 
 func get_section(with_start_block):
 	
