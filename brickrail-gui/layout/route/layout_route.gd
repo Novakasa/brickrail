@@ -134,7 +134,7 @@ func advance():
 	var next_leg = get_next_leg()
 	if not next_leg == null:
 		if not next_leg.locked:
-			next_leg.switch_and_lock(trainname)
+			next_leg.lock_and_switch(trainname)
 	
 	advance_leg()
 	
