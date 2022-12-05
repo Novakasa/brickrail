@@ -110,7 +110,7 @@ func get_blocking_trains():
 		return []
 	if not next_leg.get_type()=="travel":
 		return []
-	return next_leg.get_locked()
+	return next_leg.get_lock_trains()
 
 func is_train_blocked():
 	var next_leg = get_next_leg()
@@ -134,8 +134,7 @@ func advance():
 	var next_leg = get_next_leg()
 	if not next_leg == null:
 		if not next_leg.locked:
-			next_leg.set_switches()
-			next_leg.lock_tracks(trainname)
+			next_leg.switch_and_lock(trainname)
 	
 	advance_leg()
 	

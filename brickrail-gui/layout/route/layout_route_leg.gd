@@ -82,6 +82,10 @@ func get_full_section():
 		full_section = get_section(true)
 	return full_section
 
+func lock_and_switch(trainname):
+	lock_tracks(trainname)
+	set_switches()
+
 func set_switches():
 	var last_track = get_start_node().obj.section.tracks[-1]
 	var forward_switches = []
@@ -114,7 +118,7 @@ func decrement_marks():
 	get_full_section().set_track_attributes("mark", -1, "<>", "increment")
 	get_full_section().set_track_attributes("arrow", -1, ">", "increment")
 
-func get_locked():
+func get_lock_trains():
 	var locked = []
 	var trainname = get_start_node().obj.get_locked()
 	if trainname != null:
@@ -128,7 +132,7 @@ func get_locked():
 	return locked
 
 func is_train_allowed(trainname):
-	var leg_locked = get_locked()
+	var leg_locked = get_lock_trains()
 	if len(leg_locked)>0 and leg_locked != [trainname]:
 		return false
 	return true

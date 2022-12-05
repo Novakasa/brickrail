@@ -257,9 +257,7 @@ func _on_route_completed():
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)
-	
 	facing = p_facing
-	
 
 func _on_target_entered(target_node):
 	pass
