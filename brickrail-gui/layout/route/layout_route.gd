@@ -11,6 +11,7 @@ var leg_index = 0
 var trainname
 
 signal completed()
+signal can_advance()
 signal target_entered(target_node)
 signal target_in(target_node)
 signal facing_flipped(facing)
@@ -84,6 +85,9 @@ func set_trainname(p_trainname):
 func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 	if p_trainname == trainname:
 		return
+	update_intentions()
+	if can_advance():
+		emit_signal("can_advance")
 
 func collect_sensors():
 	for leg in legs:
@@ -99,9 +103,14 @@ func update_intention(i):
 	if i >= len(legs)-1:
 		legs[i].set_intention("stop")
 		return
-	legs[i].set_intention("pass")
+	if legs[i+1].is_train_allowed(trainname):
+		legs[i].set_intention("pass")
+	else:
+		legs[i].set_intention("stop")
 
 func can_advance():
+	if get_next_leg() == null:
+		return true
 	return get_next_leg().is_train_allowed(trainname)
 
 func get_blocking_trains():
