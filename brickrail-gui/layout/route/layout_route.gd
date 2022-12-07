@@ -146,6 +146,7 @@ func advance():
 	if not next_leg == null:
 		if not next_leg.locked:
 			next_leg.lock_and_switch(trainname)
+			LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 	
 	advance_leg()
 	
@@ -175,6 +176,7 @@ func advance_sensor(sensor_dirtrack):
 	
 	if current_leg.is_complete():
 		if current_leg.intention == "pass":
+			assert(can_advance())
 			behavior = advance()
 		elif get_next_leg() == null:
 			emit_signal("completed")
@@ -187,8 +189,7 @@ func update_locks():
 	var key = current_leg.get_next_key()
 	
 	if key == "enter" and next_leg != null and current_leg.intention=="pass":
-		next_leg.set_switches()
-		next_leg.lock_tracks(trainname)
+		next_leg.lock_and_switch(trainname)
 		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":

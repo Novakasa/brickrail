@@ -303,6 +303,7 @@ func set_facing(p_facing):
 func remove():
 	unselect()
 	virtual_train.set_process(false)
+	virtual_train.remove()
 	set_route(null)
 	set_current_block(null)
 	emit_signal("removing", trainname)
