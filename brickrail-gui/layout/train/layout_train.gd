@@ -283,7 +283,6 @@ func set_current_block(p_block, teleport=true):
 			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing))
 	else:
 		virtual_train.visible=false
-	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 
 func flip_heading():
 	Logger.verbose("flip_heading()", logging_module)
