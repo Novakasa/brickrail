@@ -109,6 +109,8 @@ func update_intention(i):
 		legs[i].set_intention("stop")
 
 func can_advance():
+	if not get_current_leg().is_complete():
+		return false
 	if get_next_leg() == null:
 		return true
 	return get_next_leg().is_train_allowed(trainname)
@@ -168,7 +170,6 @@ func advance_sensor(sensor_dirtrack):
 	
 	var behavior = get_next_sensor_behavior()
 	update_locks()
-	update_target_signals()
 	
 	current_leg.advance_sensor()
 	
@@ -185,21 +186,16 @@ func update_locks():
 	var next_leg = get_next_leg()
 	var key = current_leg.get_next_key()
 	
-	if key == "enter" and next_leg != null:
+	if key == "enter" and next_leg != null and current_leg.intention=="pass":
 		next_leg.set_switches()
 		next_leg.lock_tracks(trainname)
+		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":
 		current_leg.unlock_tracks()
+		emit_signal("target_in", get_current_leg().get_target_node()) # this should lock the target block
 	
 	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
-
-func update_target_signals():
-	var key = get_current_leg().get_next_key()
-	if key == "enter":
-		emit_signal("target_entered", get_current_leg().get_target_node())
-	if key == "in":
-		emit_signal("target_in", get_current_leg().get_target_node())
 
 func get_next_sensor_behavior():
 	var current_leg = get_current_leg()

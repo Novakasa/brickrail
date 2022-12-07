@@ -283,6 +283,7 @@ func set_current_block(p_block, teleport=true):
 			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing))
 	else:
 		virtual_train.visible=false
+	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 
 func flip_heading():
 	Logger.verbose("flip_heading()", logging_module)
@@ -302,6 +303,7 @@ func set_facing(p_facing):
 func remove():
 	unselect()
 	virtual_train.set_process(false)
+	set_route(null)
 	set_current_block(null)
 	emit_signal("removing", trainname)
 	queue_free()
