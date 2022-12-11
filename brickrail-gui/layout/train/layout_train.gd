@@ -127,11 +127,17 @@ func select():
 	selected=true
 	LayoutInfo.select(self)
 	virtual_train.set_selected(true)
+	if route != null:
+		if not route.highlighted:
+			route.set_highlight()
 	emit_signal("selected")
 
 func unselect():
 	selected=false
 	virtual_train.set_selected(false)
+	if route != null:
+		if route.highlighted:
+			route.clear_highlight()
 	emit_signal("unselected")
 
 func has_point(point):
@@ -139,9 +145,15 @@ func has_point(point):
 
 func hover_at(mpos):
 	virtual_train.set_hover(true)
+	if route != null:
+		if not route.highlighted:
+			route.set_highlight()
 
 func stop_hover():
 	virtual_train.set_hover(false)
+	if route != null and not selected:
+		if route.highlighted:
+			route.clear_highlight()
 
 func process_mouse_button(event, mpos):
 	# prints("train:", trainname)
@@ -208,6 +220,7 @@ func try_advancing():
 		if can_control_ble_train():
 			ble_train.advance_route()
 		virtual_train.advance_route()
+		return
 
 func is_there_hope():
 	if route == null:
@@ -229,25 +242,29 @@ func is_there_hope():
 
 func set_route(p_route):
 	if route != null:
-		route.decrement_marks()
 		route.disconnect("target_entered", self, "_on_target_entered")
 		route.disconnect("target_in", self, "_on_target_in")
 		route.disconnect("completed", self, "_on_route_completed")
+		route.disconnect("blocked", self, "_on_route_blocked")
+		route.disconnect("stopped", self, "_on_route_stopped")
 		route.disconnect("can_advance", self, "_on_route_can_advance")
 		route.disconnect("facing_flipped", self, "_on_route_facing_flipped")
+		route.set_trainname(null)
 	route = p_route
 	if route != null:
 		route.connect("target_entered", self, "_on_target_entered")
 		route.connect("target_in", self, "_on_target_in")
 		route.connect("completed", self, "_on_route_completed")
+		route.connect("blocked", self, "_on_route_blocked")
+		route.connect("stopped", self, "_on_route_stopped")
 		route.connect("can_advance", self, "_on_route_can_advance")
 		route.connect("facing_flipped", self, "_on_route_facing_flipped")
-		route.increment_marks()
 		route.set_trainname(trainname)
-		route.collect_sensors()
 		if can_control_ble_train():
 			ble_train.set_route(route)
 		virtual_train.set_route(route)
+		if selected:
+			route.set_highlight()
 
 func _on_route_completed():
 	set_route(null)
@@ -256,6 +273,12 @@ func _on_route_completed():
 		yield(wait_timer, "timeout")
 		if LayoutInfo.random_targets:
 			find_random_route()
+
+func _on_route_stopped():
+	prints("blocked, committed=", committed)
+	if not committed and not is_there_hope() and LayoutInfo.random_targets:
+		print("no hope, new route!")
+		find_random_route()
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)

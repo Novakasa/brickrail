@@ -17,6 +17,7 @@ const STATE_ARROW = 1024
 const STATE_MARK = 8192
 const STATE_PORTAL = 16384
 const STATE_STOPPER = 32768
+const STATE_HIGHLIGHT = 65536
 
 var next_slot
 var prev_slot
@@ -36,7 +37,13 @@ var connections = {}
 var interpolation_params = {}
 var switch = null
 var metadata = {}
-var default_meta = {"selected": false, "hover": false, "arrow": 0, "locked": null, "block": null, "mark": 0}
+var default_meta = {"selected": false,
+					"hover": false,
+					"arrow": 0,
+					"locked": null,
+					"block": null,
+					"mark": 0,
+					"highlight": 0}
 var hover = false
 
 signal states_changed(next_slot)
@@ -525,6 +532,8 @@ func get_shader_state(turn):
 		state |= STATE_SELECTED
 	if metadata[turn]["hover"]:
 		state |= STATE_HOVER
+	if metadata[turn]["highlight"]>0:
+		state |= STATE_HIGHLIGHT
 	if metadata[turn]["arrow"]>0:
 		state |= STATE_ARROW
 	if metadata[turn]["locked"]!=null:

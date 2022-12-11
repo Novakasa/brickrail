@@ -56,6 +56,7 @@ const int STATE_ARROW = 1024;
 const int STATE_MARK = 8192;
 const int STATE_PORTAL = 16384;
 const int STATE_STOPPER = 32768;
+const int STATE_HIGHLIGHT = 65536;
 
 const float PI = 3.14159265358979323846;
 
@@ -401,12 +402,17 @@ vec4 get_block_color(int state) {
 }
 
 vec4 get_border_color(int state) {
-	/*if ((state & STATE_BLOCK) == STATE_BLOCK) {
-		return track_border_block;
-	}*/
 	vec4 color = track_base;
-	if ((state & STATE_SELECTED) == STATE_SELECTED) {
-		// color = selected_color;
+	if ((state & STATE_HIGHLIGHT)==STATE_HIGHLIGHT) {
+		color = selected_color;
+	}
+	return color;
+}
+
+vec4 get_arrow_color(int state) {
+	vec4 color = arrow_color;
+	if ((state & STATE_HIGHLIGHT)==STATE_HIGHLIGHT) {
+		color = selected_color;
 	}
 	return color;
 }
@@ -466,7 +472,7 @@ void fragment() {
 		if ((state & STATE_ARROW) == STATE_ARROW) {
 			int dummy_state;
 			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, dummy_state);
-			mix_sdf(arrow, color_mix, arrow_color);
+			mix_sdf(arrow, color_mix, get_arrow_color(state));
 		}
 		
 		if (has_switch && t > 0.0) {

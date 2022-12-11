@@ -8,9 +8,12 @@ var legs = []
 var length = 0.0
 var leg_index = 0
 
-var trainname
+var trainname = null
+var highlighted=false
 
 signal completed()
+signal blocked()
+signal stopped()
 signal can_advance()
 signal target_entered(target_node)
 signal target_in(target_node)
@@ -49,20 +52,22 @@ func setup_legs():
 				travel_edges = []
 
 func redirect_with_route(route):
-	var from = get_current_leg().get_target()
+	var from = get_current_leg().get_target_node()
 	var start=null
 	for i in range(len(route.legs)):
-		if route.legs[i].get_from() == from:
+		if route.legs[i].get_from_node() == from:
 			start=i
 			break
 	assert(start!=null)
 	for i in range(len(legs)-leg_index-1):
 		prints(legs[-1].get_from().id, legs[-1].get_target().id)
-		legs[-1].decrement_marks()
+		unset_leg_attributes(-1)
 		legs.remove(len(legs)-1)
 	for i in range(len(route.legs)-start):
 		legs.append(route.legs[i+start])
-		legs[-1].increment_marks()
+		set_leg_attributes(-1)
+
+	update_intentions()
 
 func recalculate_route(fixed_facing, trainname):
 	var target_id = get_target_node().id
@@ -77,10 +82,21 @@ func get_target_node():
 	return legs[-1].get_target_node()
 
 func set_trainname(p_trainname):
+	if trainname != null:
+		if highlighted:
+			set_attributes("highlight", -1, ">", "increment")
+		set_attributes("mark", -1, "<>", "increment")
+		set_attributes("arrow", -1, ">", "increment")
+		LayoutInfo.disconnect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+
 	trainname = p_trainname
-	
-	update_intentions()
-	LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+
+	if trainname != null:
+		set_attributes("mark", 1, "<>", "increment")
+		set_attributes("arrow", 1, ">", "increment")
+		collect_sensors()
+		update_intentions()
+		LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 
 func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 	if p_trainname == trainname:
@@ -133,10 +149,22 @@ func is_train_blocked():
 		return true
 	return false
 
+func unset_leg_attributes(index):
+	legs[index].set_attributes("mark", -1, "<>", "increment")
+	legs[index].set_attributes("arrow", -1, ">", "increment")
+	if highlighted:
+		legs[index].set_attributes("highlight", -1, ">", "increment")
+
+func set_leg_attributes(index):
+	legs[index].set_attributes("mark", 1, "<>", "increment")
+	legs[index].set_attributes("arrow", 1, ">", "increment")
+	if highlighted:
+		legs[index].set_attributes("highlight", 1, ">", "increment")
+
 func advance_leg():
 	leg_index += 1
 	if leg_index<len(legs):
-		legs[leg_index-1].decrement_marks()
+		unset_leg_attributes(leg_index-1)
 		return legs[leg_index]
 	leg_index -= 1
 	return null
@@ -180,6 +208,8 @@ func advance_sensor(sensor_dirtrack):
 			behavior = advance()
 		elif get_next_leg() == null:
 			emit_signal("completed")
+		else:
+			emit_signal("stopped")
 	
 	return behavior
 
@@ -188,8 +218,11 @@ func update_locks():
 	var next_leg = get_next_leg()
 	var key = current_leg.get_next_key()
 	
-	if key == "enter" and next_leg != null and current_leg.intention=="pass":
-		next_leg.lock_and_switch(trainname)
+	if key == "enter" and next_leg != null:
+		if current_leg.intention == "pass":
+			next_leg.lock_and_switch(trainname)
+		if current_leg.intention == "stop":
+			emit_signal("blocked")
 		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":
@@ -230,14 +263,18 @@ func get_next_leg():
 func get_current_leg():
 	return legs[leg_index]
 
-func increment_marks():
+func set_attributes(key, value, direction="<>", operation="set"):
 	for i in range(len(legs)):
 		if i<leg_index:
 			continue
-		legs[i].increment_marks()
+		legs[i].set_attributes(key, value, direction, operation)
 
-func decrement_marks():
-	for i in range(len(legs)):
-		if i<leg_index:
-			continue
-		legs[i].decrement_marks()
+func set_highlight():
+	assert(not highlighted)
+	highlighted=true
+	set_attributes("highlight", 1, ">", "increment")
+
+func clear_highlight():
+	assert(highlighted)
+	highlighted=false
+	set_attributes("highlight", -1, ">", "increment")
