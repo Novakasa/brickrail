@@ -34,6 +34,8 @@ var drawing_highlight=false
 var directed_tracks = {}
 var sensor = null
 
+var states_changed_emitted = false
+
 signal connections_changed(orientation)
 signal states_changed(orientation)
 signal route_lock_changed(lock)
@@ -74,7 +76,14 @@ func _init(p_slot0, p_slot1, l, i, j):
 	assert(slot0 in slots and slot1 in slots)
 
 func _on_dirtrack_states_changed(slot):
+	states_changed_emitted = false
+	call_deferred("emit_states_changed_once")
+
+func emit_states_changed_once():
+	if states_changed_emitted:
+		return
 	emit_signal("states_changed", get_orientation())
+	states_changed_emitted = true
 
 func _on_dirtrack_connections_changed(slot):
 	emit_signal("connections_changed", get_orientation())
