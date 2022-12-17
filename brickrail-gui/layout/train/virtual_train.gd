@@ -29,6 +29,9 @@ var prev_sensor_track = null
 var next_sensor_track = null
 var next_sensor_distance = 0.0
 
+var seek_forward_timer = -1.0
+var seek_forward_amount = 0.0
+
 var state = "stopped"
 
 var wagons = []
@@ -40,6 +43,18 @@ export(Color) var hover_color
 export(Color) var selected_color = Color.black
 
 signal marker(marker)
+
+func seek_curve(t):
+	# return t
+	return 1.0-(1.0-t)*(1.0-t)
+
+func get_seek_offset(delta):
+	if seek_forward_timer < 0.0:
+		return 0.0
+	seek_forward_timer -= delta
+	var t = 1.0 - seek_forward_timer
+	var curve_delta = seek_curve(t) - seek_curve(t - delta)
+	return curve_delta*seek_forward_amount
 
 func _ready():
 	_on_settings_colors_changed()
@@ -116,7 +131,8 @@ func update_next_sensor_info():
 func ble_train_advanced_sensor():
 	if allow_sensor_advance:
 		return
-	advance_position(next_sensor_distance)
+	seek_forward_timer = 1.0
+	seek_forward_amount = next_sensor_distance
 	pass_sensor(next_sensor_track)
 
 func cruise():
@@ -169,9 +185,11 @@ func update_velocity(delta):
 		velocity = max(velocity-2*deceleration*delta, 0.0)
 	
 	var distance_modulation = 1.0
+	var distance_offset = 0.0
 	if not allow_sensor_advance:
 		distance_modulation = min(next_sensor_distance/1.0, 1.0)
-	var delta_pos = velocity*delta*distance_modulation
+		distance_offset = get_seek_offset(delta*3)
+	var delta_pos = velocity*delta*distance_modulation + distance_offset
 	advance_position(delta_pos)
 
 func advance_position(delta_pos):
