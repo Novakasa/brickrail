@@ -6,6 +6,8 @@ This project contains microphython programs running on the LEGO hardware, a pyth
 Communication between GUI and python server is done through websockets.
 As of now, trains detect their location via a Boost Color and Distance Sensor pointed dowwards onto the track. Colored markers signal the bounds of block sections.
 
+[Here](https://www.youtube.com/watch?v=G22M5xvRr54)'s a video of an old version in action.
+
 ![GUI screenshot](screenshot2.PNG)
 
 # How to run
