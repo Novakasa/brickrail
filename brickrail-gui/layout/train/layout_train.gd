@@ -301,7 +301,7 @@ func set_current_block(p_block, teleport=true):
 		block.set_occupied(true, self)
 		virtual_train.visible=true
 		if teleport:
-			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing))
+			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing), true)
 	else:
 		virtual_train.visible=false
 
@@ -336,3 +336,9 @@ func get_inspector():
 
 func _process(_delta):
 	wait_timer.wait_time = 1.0/LayoutInfo.time_scale
+
+func _unhandled_input(event):
+	if event is InputEventKey:
+		if event.pressed:
+			if event.scancode == KEY_F3:
+				virtual_train.ble_train_advanced_sensor()

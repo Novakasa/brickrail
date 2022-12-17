@@ -1006,7 +1006,7 @@
 		"trains": [
 			{
 				"name": "train0",
-				"facing": -1,
+				"facing": 1,
 				"fixed_facing": false,
 				"blockname": "block1",
 				"blockindex": 1,
@@ -1014,7 +1014,7 @@
 			},
 			{
 				"name": "train1",
-				"facing": -1,
+				"facing": 1,
 				"fixed_facing": false,
 				"blockname": "block0",
 				"blockindex": 1

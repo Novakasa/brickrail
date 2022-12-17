@@ -49,3 +49,6 @@ func _on_FixedFacingCheckbox_toggled(button_pressed):
 
 func _on_BLETrainSelector_meta_selected(meta):
 	train.set_ble_train(meta)
+
+func _on_SensorAdvanceCheckbox_toggled(button_pressed):
+	train.virtual_train.allow_sensor_advance = not button_pressed

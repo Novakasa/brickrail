@@ -97,7 +97,8 @@ func update_next_sensor_info():
 			itertrack = dirtrack.get_next()
 		distance = length - track_pos
 	else:
-		distance = next_sensor_distance + prev_sensor_track.get_connection_length()
+		prints("prev distance", next_sensor_distance)
+		distance = next_sensor_distance + prev_sensor_track.get_length_to()
 		itertrack = prev_sensor_track.get_next()
 	while itertrack.get_sensor()==null:
 		var next_turn = itertrack.get_next_turn()
@@ -105,14 +106,18 @@ func update_next_sensor_info():
 			next_sensor_track = null
 			next_sensor_distance = 0.0
 			return
-		distance += itertrack.get_connection_length(next_turn)
+		distance += itertrack.get_length_to(next_turn)
 		itertrack = itertrack.get_next(next_turn)
 
 	next_sensor_track = itertrack
 	next_sensor_distance = distance
+	prints("next sensor:", next_sensor_track.id, next_sensor_distance)
 
-func advance_to_next_sensor_track():
+func ble_train_advanced_sensor():
+	if allow_sensor_advance:
+		return
 	advance_position(next_sensor_distance)
+	pass_sensor(next_sensor_track)
 
 func cruise():
 	Logger.verbose("cruise()", logging_module)
@@ -142,6 +147,8 @@ func flip_heading():
 	next_sensor_track = null
 	next_sensor_distance = 0.0
 	update_position()
+	
+	update_next_sensor_info()
 
 func set_state(p_state):
 	state = p_state
@@ -179,6 +186,8 @@ func advance_position(delta_pos):
 
 func wrap_dirtrack():
 	while track_pos > length:
+		if not allow_sensor_advance:
+			prints(next_sensor_distance, velocity)
 		track_pos -= length
 		set_dirtrack(dirtrack.get_next(turn))
 		var next_dirtrack = dirtrack.get_next(turn)
@@ -193,6 +202,8 @@ func wrap_dirtrack():
 func pass_sensor(sensor_dirtrack):
 	prints("virtual train pass sensor", sensor_dirtrack.id, trainname)
 	execute_behavior(route.advance_sensor(sensor_dirtrack))
+	
+	update_next_sensor_info()
 
 func execute_behavior(behavior):
 	prints("virtual train executing:", behavior, trainname)
@@ -265,9 +276,12 @@ func update_wagon_visuals():
 		wagons[0].set_heading(0)
 		wagons[-1].set_heading(-1)
 
-func set_dirtrack(p_dirtrack):
+func set_dirtrack(p_dirtrack, teleport=false):
 	dirtrack = p_dirtrack
 	turn = dirtrack.get_next_turn()
 	length = dirtrack.get_length_to(turn)
 	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
 	rotation = dirtrack.get_rotation()
+	
+	if teleport:
+		update_next_sensor_info()

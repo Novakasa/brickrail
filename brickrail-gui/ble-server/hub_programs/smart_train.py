@@ -39,8 +39,8 @@ _MOTOR_SLOW_SPEED   = const(40)
 
 _DATA_STATE_CHANGED  = const(0)
 _DATA_ROUTE_COMPLETE = const(1)
-_DATA_LEG_ADVANCE  = const(2)
-_DATA_SENSOR_ADVANCE    = const(3)
+_DATA_LEG_ADVANCE    = const(2)
+_DATA_SENSOR_ADVANCE = const(3)
 
 _STATE_STOPPED = const(0)
 _STATE_SLOW    = const(1)
@@ -212,7 +212,6 @@ class Train:
         self.sensor = TrainSensor(self.on_marker_passed)
 
         self.route : Route = None
-        self.current_leg : RouteLeg = None
         
         self.state = None
         self.set_state(_STATE_STOPPED)
