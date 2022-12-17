@@ -83,6 +83,7 @@ func set_route(p_route):
 	route = p_route
 
 func advance_route():
+	prints("virtual train advancing!", trainname)
 	execute_behavior(route.advance())
 
 func update_next_sensor_info():
@@ -190,11 +191,11 @@ func wrap_dirtrack():
 			pass_sensor(dirtrack)
 
 func pass_sensor(sensor_dirtrack):
-	prints("virtual train pass sensor", sensor_dirtrack.id)
+	prints("virtual train pass sensor", sensor_dirtrack.id, trainname)
 	execute_behavior(route.advance_sensor(sensor_dirtrack))
 
 func execute_behavior(behavior):
-	prints("virtual train executing:", behavior)
+	prints("virtual train executing:", behavior, trainname)
 	if behavior == "ignore":
 		return
 	if behavior == "cruise":
