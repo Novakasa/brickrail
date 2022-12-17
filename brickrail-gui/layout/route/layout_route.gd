@@ -12,7 +12,6 @@ var trainname = null
 var highlighted=false
 
 signal completed()
-signal blocked()
 signal stopped()
 signal can_advance()
 signal target_entered(target_node)
@@ -215,9 +214,9 @@ func advance_sensor(sensor_dirtrack):
 			assert(can_advance())
 			behavior = advance()
 		elif get_next_leg() == null:
-			call_deferred("emit_signal", "completed")
+			emit_signal("completed")
 		else:
-			call_deferred("emit_signal", "stopped")
+			emit_signal("stopped")
 	
 	return behavior
 
@@ -229,8 +228,6 @@ func update_locks():
 	if key == "enter" and next_leg != null:
 		if current_leg.intention == "pass":
 			next_leg.lock_and_switch(trainname)
-		if current_leg.intention == "stop":
-			emit_signal("blocked")
 		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":

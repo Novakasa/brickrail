@@ -245,7 +245,6 @@ func set_route(p_route):
 		route.disconnect("target_entered", self, "_on_target_entered")
 		route.disconnect("target_in", self, "_on_target_in")
 		route.disconnect("completed", self, "_on_route_completed")
-		route.disconnect("blocked", self, "_on_route_blocked")
 		route.disconnect("stopped", self, "_on_route_stopped")
 		route.disconnect("can_advance", self, "_on_route_can_advance")
 		route.disconnect("facing_flipped", self, "_on_route_facing_flipped")
@@ -255,7 +254,6 @@ func set_route(p_route):
 		route.connect("target_entered", self, "_on_target_entered")
 		route.connect("target_in", self, "_on_target_in")
 		route.connect("completed", self, "_on_route_completed")
-		route.connect("blocked", self, "_on_route_blocked")
 		route.connect("stopped", self, "_on_route_stopped")
 		route.connect("can_advance", self, "_on_route_can_advance")
 		route.connect("facing_flipped", self, "_on_route_facing_flipped")
@@ -278,7 +276,7 @@ func _on_route_stopped():
 	prints("blocked, committed=", committed)
 	if not committed and not is_there_hope() and LayoutInfo.random_targets:
 		print("no hope, new route!")
-		find_random_route()
+		call_deferred("find_random_route")
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)
