@@ -46,6 +46,9 @@ signal marker(marker)
 
 func seek_curve(t):
 	# return t
+	
+	return t*t*(1.0-t) + (1.0-(1.0-t)*(1.0-t))*t
+	
 	return 1.0-(1.0-t)*(1.0-t)
 
 func get_seek_offset(delta):
@@ -100,6 +103,8 @@ func set_route(p_route):
 func advance_route():
 	prints("virtual train advancing!", trainname)
 	execute_behavior(route.advance())
+	if next_sensor_track == null:
+		update_next_sensor_info()
 
 func update_next_sensor_info():
 	var distance
@@ -128,11 +133,17 @@ func update_next_sensor_info():
 	next_sensor_distance = distance
 	prints("next sensor:", next_sensor_track.id, next_sensor_distance)
 
-func ble_train_advanced_sensor():
+func manual_sensor_advance():
+	assert(state != "stopped")
 	if allow_sensor_advance:
 		return
-	seek_forward_timer = 1.0
-	seek_forward_amount = next_sensor_distance
+	var flips = route.next_sensor_flips()
+	prints("next sensor flips:", flips)
+	if flips:
+		advance_position(next_sensor_distance + 1.0)
+	else:
+		seek_forward_timer = 1.0
+		seek_forward_amount = next_sensor_distance
 	pass_sensor(next_sensor_track)
 
 func cruise():
@@ -163,8 +174,6 @@ func flip_heading():
 	next_sensor_track = null
 	next_sensor_distance = 0.0
 	update_position()
-	
-	update_next_sensor_info()
 
 func set_state(p_state):
 	state = p_state

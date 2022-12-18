@@ -341,4 +341,5 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_F3:
-				virtual_train.ble_train_advanced_sensor()
+				if selected and route != null and virtual_train.state != "stopped":
+					virtual_train.manual_sensor_advance()

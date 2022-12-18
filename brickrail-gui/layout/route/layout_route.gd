@@ -200,6 +200,21 @@ func advance():
 		return "flip_slow"
 	return "cruise"
 
+func next_sensor_flips():
+	if get_next_leg() == null:
+		return false
+	if get_current_leg().get_next_key() != "in":
+		return false
+	if get_next_leg().get_type() != "flip":
+		return false
+	return true
+
+func get_next_sensor_track():
+	return get_current_leg().get_next_sensor_track()
+
+func get_next_key():
+	return get_current_leg().get_next_key()
+
 func advance_sensor(sensor_dirtrack):
 	var current_leg = get_current_leg()
 	assert(sensor_dirtrack == current_leg.get_next_sensor_dirtrack())
