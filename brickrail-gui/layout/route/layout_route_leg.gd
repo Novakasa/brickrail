@@ -34,6 +34,8 @@ func is_complete():
 	return current_index >= len(self.sensor_dirtracks)
 
 func get_next_sensor_dirtrack():
+	if current_index >= len(sensor_dirtracks):
+		return null
 	return sensor_dirtracks[current_index]
 
 func get_next_key():

@@ -103,24 +103,23 @@ func set_route(p_route):
 func advance_route():
 	prints("virtual train advancing!", trainname)
 	execute_behavior(route.advance())
-	if next_sensor_track == null:
-		update_next_sensor_info()
+	update_next_sensor_info()
 
 func update_next_sensor_info():
-	var distance
-	var itertrack
 	prev_sensor_track = next_sensor_track
-	if prev_sensor_track == null:
-		if track_pos<0.0:
-			itertrack = dirtrack
-		else:
-			itertrack = dirtrack.get_next()
-		distance = length - track_pos
-	else:
-		prints("prev distance", next_sensor_distance)
-		distance = next_sensor_distance + prev_sensor_track.get_length_to()
-		itertrack = prev_sensor_track.get_next()
-	while itertrack.get_sensor()==null:
+	next_sensor_track = route.get_next_sensor_track()
+	if next_sensor_track == null:
+		next_sensor_distance = 0.0
+		return
+	var itertrack = dirtrack.get_next()
+	if track_pos < 0.0:
+		itertrack = dirtrack
+	var distance = length - track_pos
+	prints("measuring distance to next sensor track:", next_sensor_track.id)
+	prints("starting at:", itertrack.id)
+	var i = 0
+	while itertrack != next_sensor_track:
+		assert(i<1000)
 		var next_turn = itertrack.get_next_turn()
 		if next_turn == null:
 			next_sensor_track = null
@@ -128,10 +127,8 @@ func update_next_sensor_info():
 			return
 		distance += itertrack.get_length_to(next_turn)
 		itertrack = itertrack.get_next(next_turn)
-
-	next_sensor_track = itertrack
+		i+=1
 	next_sensor_distance = distance
-	prints("next sensor:", next_sensor_track.id, next_sensor_distance)
 
 func manual_sensor_advance():
 	assert(state != "stopped")
@@ -309,6 +306,3 @@ func set_dirtrack(p_dirtrack, teleport=false):
 	length = dirtrack.get_length_to(turn)
 	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
 	rotation = dirtrack.get_rotation()
-	
-	if teleport:
-		update_next_sensor_info()

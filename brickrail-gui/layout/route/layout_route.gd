@@ -210,7 +210,7 @@ func next_sensor_flips():
 	return true
 
 func get_next_sensor_track():
-	return get_current_leg().get_next_sensor_track()
+	return get_current_leg().get_next_sensor_dirtrack()
 
 func get_next_key():
 	return get_current_leg().get_next_key()
