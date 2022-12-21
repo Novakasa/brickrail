@@ -31,6 +31,7 @@ var next_sensor_distance = 0.0
 
 var seek_forward_timer = -1.0
 var seek_forward_amount = 0.0
+var seek_forward_dirtrack = null
 
 var state = "stopped"
 
@@ -55,6 +56,10 @@ func get_seek_offset(delta):
 	if seek_forward_timer < 0.0:
 		return 0.0
 	seek_forward_timer -= delta
+	if seek_forward_timer < 0.0:
+		# make sure to be after seek_dirtrack
+		set_dirtrack(seek_forward_dirtrack)
+		track_pos = 0.0
 	var t = 1.0 - seek_forward_timer
 	var curve_delta = seek_curve(t) - seek_curve(t - delta)
 	return curve_delta*seek_forward_amount
@@ -137,10 +142,11 @@ func manual_sensor_advance():
 	var flips = route.next_sensor_flips()
 	prints("next sensor flips:", flips)
 	if flips:
-		advance_position(next_sensor_distance + 1.0)
+		advance_position(next_sensor_distance + 0.1)
 	else:
 		seek_forward_timer = 1.0
 		seek_forward_amount = next_sensor_distance
+		seek_forward_dirtrack = next_sensor_track
 	pass_sensor(next_sensor_track)
 
 func cruise():
@@ -204,8 +210,9 @@ func advance_position(delta_pos):
 	next_sensor_distance -= delta_pos
 	wrap_dirtrack()
 	if prev_pos<0.0 and track_pos>0.0:
-		if dirtrack.get_sensor() != null and allow_sensor_advance:
-			pass_sensor(dirtrack)
+		if dirtrack.get_sensor() != null:
+			if allow_sensor_advance:
+				pass_sensor(dirtrack)
 	update_position()
 
 func wrap_dirtrack():
@@ -220,8 +227,12 @@ func wrap_dirtrack():
 		if len(opposite_turn_history)>10:
 			opposite_turn_history.pop_back()
 		# print(opposite_turn_history)
-		if dirtrack.get_sensor() != null and allow_sensor_advance:
-			pass_sensor(dirtrack)
+		if dirtrack == seek_forward_dirtrack:
+			print("resetting seek!")
+			seek_forward_timer = -1.0 # don't make seeking set dirtrack
+		if dirtrack.get_sensor() != null:
+			if allow_sensor_advance:
+				pass_sensor(dirtrack)
 
 func pass_sensor(sensor_dirtrack):
 	prints("virtual train pass sensor", sensor_dirtrack.id, trainname)
