@@ -58,7 +58,7 @@ func get_seek_offset(delta):
 	seek_forward_timer -= delta
 	if seek_forward_timer < 0.0:
 		# make sure to be after seek_dirtrack
-		set_dirtrack(seek_forward_dirtrack)
+		set_dirtrack(seek_forward_dirtrack, true)
 		track_pos = 0.0
 	var t = 1.0 - seek_forward_timer
 	var curve_delta = seek_curve(t) - seek_curve(t - delta)
@@ -317,3 +317,5 @@ func set_dirtrack(p_dirtrack, teleport=false):
 	length = dirtrack.get_length_to(turn)
 	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
 	rotation = dirtrack.get_rotation()
+	if teleport:
+		opposite_turn_history = []
