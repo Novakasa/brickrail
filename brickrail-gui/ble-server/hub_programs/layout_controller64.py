@@ -4,117 +4,70 @@ from uselect import poll
 from usys import stdin
 
 from pybricks.hubs import TechnicHub
-from pybricks.pupdevices import ColorDistanceSensor, DCMotor, Motor
-from pybricks.parameters import Port, Color
+from pybricks.pupdevices import DCMotor, Motor
+from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 
 from io_hub import IOHub
 
-_SWITCH_POS_RIGHT = const(0)
-_SWITCH_POS_LEFT  = const(1)
+_SWITCH_POS_LEFT  = const(0)
+_SWITCH_POS_RIGHT = const(1)
+_SWITCH_POS_NONE  = const(2)
 
-class Timer:
+_SWITCH_COMMAND_SWITCH = const(0)
 
-    timers = []
-
-    def __init__(self):
-        self.watch = StopWatch()
-        self.watch.pause()
-        self.time = None
-        self.callback = None
-
-        Timer.timers.append(self)
-    
-    def arm(self, time, callback):
-        self.watch.reset()
-        self.watch.resume()
-        self.time = time
-        self.callback = callback 
-    
-    def update(self):
-        if self.time is None:
-            return
-        if self.watch.time()>self.time:
-            self.watch.pause()
-            self.watch.reset()
-            self.callback()
-            self.time = None
-            self.callback = None
+_DATA_SWITCH_CONFIRM  = const(0)
 
 class Switch:
     def __init__(self, port, pulse_duration = 600):
         pb_port = [Port.A, Port.B, Port.C, Port.D][port]
         self.motor = Motor(pb_port)
-        self.position = "unknown"
+        self.position = _SWITCH_POS_NONE
         self.port = port
         self.pulse_duration = pulse_duration
-        self.switch_timer = Timer() 
-        self.data_queue = []
-
-    def queue_data(self, key, data):
-        self.data_queue.append({"key": "device_data", "data": {"port": self.port, "key": key, "data": data}})
+        self.switch_stopwatch = StopWatch()
+        self.switching = False
     
     def switch(self, position):
-        assert position in ["left", "right"]
-        if position == self.position:
-            return
+        assert not self.switching
         sdir = -1
-        if position == "right":
+        if position == _SWITCH_POS_RIGHT:
             sdir = 1
         print("starting motor with speed", 100*sdir)
         self.motor.dc(100*sdir)
-        self.switch_timer.arm(self.pulse_duration, self.on_switch_timer)
-        self.position = "switching_"+position
-    
-    def on_switch_timer(self):
-        
-        if self.position == "switching_left":
-            self.position = "left"
-        elif self.position == "switching_right":
-            self.position = "right"
-        else:
-            print("Controller device", self.name, "got a problem!! self.position=",self.position)
-        self.motor.stop()
-        self.queue_data("position_changed", self.position)
+        self.switch_stopwatch.reset()
+        self.switch_stopwatch.resume()
+        self.switching = True
+        self.position = position
     
     def update(self, delta):
-        pass
+        if self.switching and self.switch_stopwatch.time() > self.pulse_duration:
+            self.motor.stop()
+            self.switch_stopwatch.pause()
+            self.switching = False
+            io_hub.emit_data(bytes((_DATA_SWITCH_CONFIRM, self.position)))
+    
+    def execute(self, data):
+        if data[0] == _SWITCH_COMMAND_SWITCH:
+            self.switch(data[1])
 
 class Controller:
 
     def __init__(self):
         self.hub = TechnicHub()
         self.devices = {}
-        self.data_queue = []
     
-    def add_switch(self, port):
+    def assign_switch(self, data):
+        port = data[0]
         switch = Switch(port)
-        self.attach_device(switch)
-
-    def attached_ports(self):
-        ports = []
-        for dev in self.devices.values():
-            ports.append(dev.port)
-        return ports
-    
-    def attach_device(self, device):
-        assert device.port not in self.attached_ports()
-
-        self.devices[device.port] = device
-        device.queue_data("attached_at_port", repr(device.port))
-    
+        self.devices[port] = switch
+        
     def update(self, delta):
         for device in self.devices.values():
             device.update(delta)
-            self.data_queue += device.data_queue
-            device.data_queue = []
     
-    def device_call(self, port, funcname, args):
-        func = getattr(self.devices[port], funcname)
-        func(*args)
-    
-    def queue_data(self, key, data):
-        self.data_queue.append({"key": key, "data": data})
+    def device_execute(self, data):
+        self.devices[data[0]].execute(data[1:])
 
 controller = Controller()
 io_hub = IOHub(controller)
