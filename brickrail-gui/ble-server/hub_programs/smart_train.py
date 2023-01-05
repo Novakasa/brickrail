@@ -1,10 +1,7 @@
-from uselect import poll
-from usys import stdin
 from micropython import const
 
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
-from pybricks.parameters import Port, Color
-from pybricks.tools import wait, StopWatch
+from pybricks.parameters import Port
 
 from io_hub import IOHub
 
@@ -152,7 +149,7 @@ class Route:
         next_color = self.get_current_leg().get_next_color()
         if next_color != color:
             print("Marker", color, "!=", next_color)
-            return
+            return 0
         
         behavior = self.get_next_sensor_behavior()
 

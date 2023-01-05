@@ -136,6 +136,35 @@ async def test_route_loop_gradient(train):
         _INTENTION_STOP, _LEG_TYPE_TRAVEL))
     await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
 
+async def test_route_loops_gradient(train):
+    await asyncio.sleep(1)
+    await train.rpc("new_route")
+    for i in range(3):
+        print(i)
+        await train.rpc("set_route_leg", bytes([2*i+1]) + create_leg_data(
+            (_COLOR_BLUE,       _COLOR_BLUE),
+            (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+            (_SENSOR_SPEED_FAST, _SENSOR_SPEED_CRUISE),
+            _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+        await train.rpc("set_route_leg", bytes([2*i+2]) + create_leg_data(
+            (_COLOR_RED, _COLOR_BLUE,),
+            (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN,),
+            (_SENSOR_SPEED_SLOW, _SENSOR_SPEED_CRUISE),
+            _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+    i+=1
+    await train.rpc("set_route_leg", bytes([2*i+1]) + create_leg_data(
+        (_COLOR_BLUE,       _COLOR_BLUE),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+        (_SENSOR_SPEED_FAST, _SENSOR_SPEED_CRUISE),
+        _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+    await train.rpc("set_route_leg", bytes([2*i+2]) + create_leg_data(
+        (_COLOR_RED, _COLOR_BLUE,),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN,),
+        (_SENSOR_SPEED_SLOW, _SENSOR_SPEED_CRUISE),
+        _INTENTION_STOP, _LEG_TYPE_TRAVEL))
+    await train.rpc("advance_route")
+    await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
+
 async def main():
     train = BLEHub()
     dev = await find_device()
@@ -145,9 +174,7 @@ async def main():
         await train.run("brickrail-gui/ble-server/hub_programs/smart_train.py")
 
         with train.data_subject.subscribe(on_data):
-            await test_route_loop_gradient(train)
-            await test_route_flip(train)
-            await test_route_loop_gradient(train)
+            await test_route_loops_gradient(train)
         
         await train.stop_program()
     finally:
