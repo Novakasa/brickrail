@@ -18,33 +18,38 @@ _SENSOR_KEY_NONE  = const(0)
 _SENSOR_KEY_ENTER = const(1)
 _SENSOR_KEY_IN    = const(2)
 
+_SENSOR_SPEED_FAST = const(1)
+_SENSOR_SPEED_SLOW = const(2)
+_SENSOR_SPEED_CRUISE = const(3)
+
 _LEG_TYPE_TRAVEL = const(0)
 _LEG_TYPE_FLIP   = const(1)
 _LEG_TYPE_START  = const(2)
 
-_BEHAVIOR_IGNORE      = const(0)
-_BEHAVIOR_SLOW        = const(1)
-_BEHAVIOR_CRUISE      = const(2)
-_BEHAVIOR_STOP        = const(3)
-_BEHAVIOR_FLIP_CRUISE = const(4)
-_BEHAVIOR_FLIP_SLOW   = const(5)
+_BEHAVIOR_FLAG_STOP  = const(32)
+_BEHAVIOR_FLAG_SPEED = const(64)
+_BEHAVIOR_FLAG_FLIP  = const(128)
 
 _INTENTION_STOP = const(0)
 _INTENTION_PASS = const(1)
 
 _MOTOR_ACC          = const(40)
 _MOTOR_DEC          = const(90)
+_MOTOR_FAST_SPEED   = const(100)
 _MOTOR_CRUISE_SPEED = const(75)
 _MOTOR_SLOW_SPEED   = const(40)
 
-_DATA_STATE_CHANGED  = const(0)
 _DATA_ROUTE_COMPLETE = const(1)
 _DATA_LEG_ADVANCE    = const(2)
 _DATA_SENSOR_ADVANCE = const(3)
 
-_STATE_STOPPED = const(0)
-_STATE_SLOW    = const(1)
-_STATE_CRUISE  = const(2)
+def sensor_speed_to_motor_speed(sensor_speed):
+    if sensor_speed == _SENSOR_SPEED_CRUISE:
+        return _MOTOR_CRUISE_SPEED
+    if sensor_speed == _SENSOR_SPEED_FAST:
+        return _MOTOR_FAST_SPEED
+    if sensor_speed == _SENSOR_SPEED_SLOW:
+        return _MOTOR_SLOW_SPEED
 
 class TrainSensor:
 
@@ -139,9 +144,9 @@ class Route:
         self.advance_leg()
         if self.get_current_leg().type == _LEG_TYPE_FLIP:
             if self.get_current_leg().intention == _INTENTION_PASS:
-                return _BEHAVIOR_FLIP_CRUISE
-            return _BEHAVIOR_FLIP_SLOW
-        return _BEHAVIOR_CRUISE
+                return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_CRUISE
+            return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_SLOW
+        return _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_CRUISE
     
     def advance_sensor(self, color):
         next_color = self.get_current_leg().get_next_color()
@@ -167,8 +172,9 @@ class Route:
         next_leg = self.get_next_leg()
 
         key = current_leg.get_next_key()
+        speed = current_leg.get_next_speed()
         if key == _SENSOR_KEY_NONE:
-            return _BEHAVIOR_IGNORE
+            return _BEHAVIOR_FLAG_SPEED ^ speed
 
         please_stop = False
         if next_leg is None:
@@ -177,13 +183,13 @@ class Route:
             please_stop = True
 
         if not please_stop:
-            return _BEHAVIOR_IGNORE
+            return _BEHAVIOR_FLAG_SPEED ^ speed
 
         # stop the train
         if key == _SENSOR_KEY_ENTER:
-            return _BEHAVIOR_SLOW
+            return _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_SLOW
         if key == _SENSOR_KEY_IN:
-            return _BEHAVIOR_STOP
+            return _BEHAVIOR_FLAG_STOP
 
 class RouteLeg:
     def __init__(self, data):
@@ -203,7 +209,10 @@ class RouteLeg:
         return self.data[self.index] & 0x0F
     
     def get_next_key(self):
-        return self.data[self.index] >> 4
+        return (self.data[self.index] >> 4) & 0b11
+    
+    def get_next_speed(self):
+        return (self.data[self.index] >> 6) & 0b11
 
 class Train:
 
@@ -212,9 +221,6 @@ class Train:
         self.sensor = TrainSensor(self.on_marker_passed)
 
         self.route : Route = None
-        
-        self.state = None
-        self.set_state(_STATE_STOPPED)
     
     def on_marker_passed(self, color):
         behavior = self.route.advance_sensor(color)
@@ -227,47 +233,22 @@ class Train:
         self.execute_behavior(behavior)
 
     def execute_behavior(self, behavior):
-        if behavior == _BEHAVIOR_IGNORE:
+        if behavior == _BEHAVIOR_FLAG_STOP:
+            self.motor.set_speed(0)
             return
-        if behavior == _BEHAVIOR_CRUISE:
-            self.cruise()
-        if behavior == _BEHAVIOR_SLOW:
-            self.slow()
-        if behavior == _BEHAVIOR_STOP:
-            self.stop()
-        if behavior == _BEHAVIOR_FLIP_CRUISE:
-            self.flip_heading()
-            self.cruise()
-        if behavior == _BEHAVIOR_FLIP_SLOW:
-            self.flip_heading()
-            self.slow()
+        if behavior & _BEHAVIOR_FLAG_FLIP == _BEHAVIOR_FLAG_FLIP:
+            self.motor.flip_direction()
+        if behavior & _BEHAVIOR_FLAG_SPEED == _BEHAVIOR_FLAG_SPEED:
+            self.motor.set_target(sensor_speed_to_motor_speed(behavior & 0x0F))
     
     def new_route(self):
         self.route = Route()
 
     def set_route_leg(self, data):
         self.route.set_leg(data)
-    
-    def set_state(self, state):
-        self.state = state
-    
-    def slow(self):
-        self.motor.set_target(_MOTOR_SLOW_SPEED)
-        self.set_state(_STATE_SLOW)
-    
-    def stop(self):
-        self.motor.set_speed(0)
-        self.set_state(_STATE_STOPPED)
-    
-    def cruise(self):
-        self.motor.set_target(_MOTOR_CRUISE_SPEED)
-        self.set_state(_STATE_CRUISE)
-
-    def flip_heading(self):
-        self.motor.flip_direction()
 
     def update(self, delta):
-        if self.state in [_STATE_CRUISE, _STATE_SLOW]:
+        if self.motor.target_speed != 0:
             self.sensor.update(delta)
 
         self.motor.update(delta)

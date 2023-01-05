@@ -18,6 +18,10 @@ _SENSOR_KEY_NONE  = const(0)
 _SENSOR_KEY_ENTER = const(1)
 _SENSOR_KEY_IN    = const(2)
 
+_SENSOR_SPEED_FAST = const(1)
+_SENSOR_SPEED_SLOW = const(2)
+_SENSOR_SPEED_CRUISE = const(3)
+
 _LEG_TYPE_TRAVEL = const(0)
 _LEG_TYPE_FLIP   = const(1)
 _LEG_TYPE_START  = const(2)
@@ -46,10 +50,10 @@ _STATE_STOPPED = const(0)
 _STATE_SLOW    = const(1)
 _STATE_CRUISE  = const(2)
 
-def create_leg_data(colors, keys, plan, start_index):
+def create_leg_data(colors, keys, speeds, plan, start_index):
     data = bytearray()
-    for color, key in zip(colors, keys):
-        composite = (key << 4) + color
+    for color, key, speed in zip(colors, keys, speeds):
+        composite = (speed << 6) + (key << 4) + color
         data.append(composite)
     composite = start_index + (plan << 4)
     data.append(composite)
@@ -75,42 +79,62 @@ def on_data(data):
         print(f"train completed route")
 
 async def test_route_flip(train):
-    with train.data_subject.subscribe(on_data):
-        await asyncio.sleep(1)
-        await train.rpc("new_route")
-        await train.rpc("set_route_leg", b"\x01" + create_leg_data(
-            (_COLOR_BLUE,       _COLOR_BLUE),
-            (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
-            _INTENTION_PASS, _LEG_TYPE_TRAVEL))
-        await train.rpc("set_route_leg", b"\x02" + create_leg_data(
-            (_COLOR_BLUE,),
-            (_SENSOR_KEY_IN,),
-            _INTENTION_PASS, _LEG_TYPE_FLIP))
-        await train.rpc("advance_route")
-        await train.rpc("set_route_leg", b"\x03" + create_leg_data(
-            (_COLOR_BLUE, _COLOR_BLUE,),
-            (_SENSOR_KEY_NONE, _SENSOR_KEY_IN,),
-            _INTENTION_PASS, _LEG_TYPE_TRAVEL))
-        await train.rpc("set_route_leg", b"\x04" + create_leg_data(
-            (_COLOR_BLUE,),
-            (_SENSOR_KEY_IN,),
-            _INTENTION_STOP, _LEG_TYPE_FLIP))
-        await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
+    await asyncio.sleep(1)
+    await train.rpc("new_route")
+    await train.rpc("set_route_leg", b"\x01" + create_leg_data(
+        (_COLOR_BLUE,       _COLOR_BLUE),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+        (_SENSOR_SPEED_CRUISE, _SENSOR_SPEED_CRUISE),
+        _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+    await train.rpc("set_route_leg", b"\x02" + create_leg_data(
+        (_COLOR_BLUE,),
+        (_SENSOR_KEY_IN,),
+        (_SENSOR_SPEED_CRUISE,),
+        _INTENTION_PASS, _LEG_TYPE_FLIP))
+    await train.rpc("advance_route")
+    await train.rpc("set_route_leg", b"\x03" + create_leg_data(
+        (_COLOR_BLUE, _COLOR_BLUE,),
+        (_SENSOR_KEY_NONE, _SENSOR_KEY_IN,),
+        (_SENSOR_SPEED_CRUISE, _SENSOR_SPEED_CRUISE),
+        _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+    await train.rpc("set_route_leg", b"\x04" + create_leg_data(
+        (_COLOR_BLUE,),
+        (_SENSOR_KEY_IN,),
+        (_SENSOR_SPEED_CRUISE,),
+        _INTENTION_STOP, _LEG_TYPE_FLIP))
+    await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
 
 async def test_route_loop(train):
-    with train.data_subject.subscribe(on_data):
-        await asyncio.sleep(1)
-        await train.rpc("new_route")
-        await train.rpc("set_route_leg", b"\x01" + create_leg_data(
-            (_COLOR_BLUE,       _COLOR_BLUE),
-            (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
-            _INTENTION_PASS, _LEG_TYPE_TRAVEL))
-        await train.rpc("advance_route")
-        await train.rpc("set_route_leg", b"\x02" + create_leg_data(
-            (_COLOR_RED, _COLOR_BLUE,),
-            (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN,),
-            _INTENTION_STOP, _LEG_TYPE_TRAVEL))
-        await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
+    await asyncio.sleep(1)
+    await train.rpc("new_route")
+    await train.rpc("set_route_leg", b"\x01" + create_leg_data(
+        (_COLOR_BLUE,       _COLOR_BLUE),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+        (_SENSOR_SPEED_CRUISE, _SENSOR_SPEED_CRUISE),
+        _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+    await train.rpc("advance_route")
+    await train.rpc("set_route_leg", b"\x02" + create_leg_data(
+        (_COLOR_RED, _COLOR_BLUE,),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN,),
+        (_SENSOR_SPEED_CRUISE, _SENSOR_SPEED_CRUISE),
+        _INTENTION_STOP, _LEG_TYPE_TRAVEL))
+    await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
+
+async def test_route_loop_gradient(train):
+    await asyncio.sleep(1)
+    await train.rpc("new_route")
+    await train.rpc("set_route_leg", b"\x01" + create_leg_data(
+        (_COLOR_BLUE,       _COLOR_BLUE),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN),
+        (_SENSOR_SPEED_FAST, _SENSOR_SPEED_CRUISE),
+        _INTENTION_PASS, _LEG_TYPE_TRAVEL))
+    await train.rpc("advance_route")
+    await train.rpc("set_route_leg", b"\x02" + create_leg_data(
+        (_COLOR_RED, _COLOR_BLUE,),
+        (_SENSOR_KEY_ENTER, _SENSOR_KEY_IN,),
+        (_SENSOR_SPEED_SLOW, _SENSOR_SPEED_CRUISE),
+        _INTENTION_STOP, _LEG_TYPE_TRAVEL))
+    await train.wait_for_data_id(_DATA_ROUTE_COMPLETE)
 
 async def main():
     train = BLEHub()
@@ -120,9 +144,10 @@ async def main():
     try:
         await train.run("brickrail-gui/ble-server/hub_programs/smart_train.py")
 
-        await test_route_loop(train)
-        await test_route_flip(train)
-        await test_route_loop(train)
+        with train.data_subject.subscribe(on_data):
+            await test_route_loop_gradient(train)
+            await test_route_flip(train)
+            await test_route_loop_gradient(train)
         
         await train.stop_program()
     finally:
