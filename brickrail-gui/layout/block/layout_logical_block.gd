@@ -10,6 +10,7 @@ var index: int
 var nodes = {}
 var selected = false
 var hover = false
+var can_stop = true
 
 var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.tscn")
 

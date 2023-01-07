@@ -1463,6 +1463,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1501,6 +1505,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1539,6 +1547,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1577,6 +1589,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1608,6 +1624,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1639,6 +1659,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1677,6 +1701,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1715,6 +1743,10 @@
 				},
 				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
 				}
 			}
 		],
@@ -1723,7 +1755,7 @@
 				"name": "train0",
 				"facing": 1,
 				"fixed_facing": true,
-				"blockname": "block7",
+				"blockname": "block1",
 				"blockindex": 0
 			},
 			{

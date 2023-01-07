@@ -65,6 +65,14 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="CanStopCheckBox" type="CheckBox" parent="."]
+margin_top = 66.0
+margin_right = 118.0
+margin_bottom = 90.0
+pressed = true
+text = "can stop"
+
 [connection signal="pressed" from="AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="AddPriorSensorButton" to="." method="_on_AddPriorSensorButton_pressed"]
 [connection signal="confirmed" from="AddTrainDialog" to="." method="_on_AddTrainDialog_confirmed"]
+[connection signal="toggled" from="CanStopCheckBox" to="." method="_on_CanStopCheckBox_toggled"]

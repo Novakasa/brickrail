@@ -6,6 +6,7 @@ var block
 func set_block(p_block):
 	block = p_block
 	block.connect("unselected", self, "_on_block_unselected")
+	$CanStopCheckBox.pressed = block.can_stop
 
 func _on_block_unselected():
 	queue_free()
@@ -25,3 +26,7 @@ func _on_AddTrainDialog_confirmed():
 
 func _on_AddPriorSensorButton_pressed():
 	LayoutInfo.set_input_mode("prior_sensor")
+
+
+func _on_CanStopCheckBox_toggled(button_pressed):
+	block.can_stop = button_pressed

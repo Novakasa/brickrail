@@ -96,14 +96,14 @@ func collect_sensors():
 		leg.collect_sensor_list()
 
 func update_intentions():
-	for i in range(len(legs)):
+	for i in range(leg_index+1, len(legs)):
 		update_intention(i)
 
 func update_intention(i):
 	if i >= len(legs)-1:
 		legs[i].set_intention("stop")
 		return
-	if legs[i+1].is_train_allowed(trainname):
+	if can_lock_leg(i+1):
 		legs[i].set_intention("pass")
 	else:
 		legs[i].set_intention("stop")
@@ -113,7 +113,7 @@ func can_advance():
 		return false
 	if get_next_leg() == null:
 		return true
-	return get_next_leg().is_train_allowed(trainname)
+	return can_lock_leg(leg_index+1)
 
 func get_blocking_trains():
 	var next_leg = get_next_leg()
@@ -129,9 +129,33 @@ func is_train_blocked():
 		return false
 	if not next_leg.get_type()=="travel":
 		return false
-	if not next_leg.is_train_allowed(trainname):
+	if not can_lock_leg(leg_index+1):
 		return true
 	return false
+
+func can_lock_leg(index):
+	while index<len(legs):
+		var leg = legs[index]
+		if not leg.can_lock(trainname):
+			return false
+		var greedy = not leg.get_target_node().obj.can_stop
+		if leg.get_type() == "flip" and index < len(legs)-1:
+			greedy = true
+		if not greedy:
+			return true
+		index += 1
+
+func lock_and_switch_next():
+	var index = leg_index+1
+	while index<len(legs):
+		var leg = legs[index]
+		leg.lock_and_switch(trainname)
+		var greedy = not leg.get_target_node().obj.can_stop
+		if leg.get_type() == "flip" and index < len(legs)-1:
+			greedy = true
+		if not greedy:
+			break
+		index += 1
 
 func advance_attributes():
 	legs[leg_index-1].set_attributes("arrow", -1, ">", "increment")
@@ -169,7 +193,7 @@ func advance():
 	var next_leg = get_next_leg()
 	if not next_leg == null:
 		if not next_leg.locked:
-			next_leg.lock_and_switch(trainname)
+			lock_and_switch_next()
 			LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 	
 	advance_leg()
@@ -231,7 +255,7 @@ func update_locks():
 	
 	if key == "enter" and next_leg != null:
 		if current_leg.intention == "pass":
-			next_leg.lock_and_switch(trainname)
+			lock_and_switch_next()
 		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":

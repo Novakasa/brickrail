@@ -130,7 +130,7 @@ func get_lock_trains():
 			locked.append(trainname2)
 	return locked
 
-func is_train_allowed(trainname):
+func can_lock(trainname):
 	var leg_locked = get_lock_trains()
 	if len(leg_locked)>0 and leg_locked != [trainname]:
 		return false

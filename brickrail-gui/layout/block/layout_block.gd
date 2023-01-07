@@ -72,11 +72,14 @@ func serialize():
 	if section != null:
 		result["section"] = section.serialize()
 	var sensors = {}
+	var can_stop = {}
 	for block_index in [0,1]:
 		var prior_dirtrack = logical_blocks[block_index].get_prior_sensor_dirtrack()
 		if prior_dirtrack != null:
 			sensors[block_index] = prior_dirtrack.serialize(true)
+		can_stop[block_index] = logical_blocks[block_index].can_stop
 	result["prior_sensors"] = sensors
+	result["can_stop"] = can_stop
 	return result
 
 func remove():

@@ -200,7 +200,9 @@ func get_all_valid_routes(no_locked=true):
 			continue
 		if LayoutInfo.nodes[node_id].type!="block":
 			continue
-		if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
+		# if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
+		# 	continue
+		if not LayoutInfo.nodes[node_id].obj.can_stop:
 			continue
 		valid_routes[node_id] = routes[node_id]
 	return valid_routes
