@@ -62,11 +62,13 @@ func _init(p_slot0, p_slot1, l, i, j):
 	directed_tracks[slot0].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot0].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
+	directed_tracks[slot0].connect("remove_sensor_requested", self, "remove_sensor")
 	directed_tracks[slot0].connect("remove_requested", self, "remove")
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot1].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
+	directed_tracks[slot1].connect("remove_sensor_requested", self, "remove_sensor")
 	directed_tracks[slot1].connect("remove_requested", self, "remove")
 	
 	directed_tracks[slot0].set_opposite(directed_tracks[slot1])

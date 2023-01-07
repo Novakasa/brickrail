@@ -51,6 +51,7 @@ signal switch_changed(next_slot)
 signal sensor_changed(next_slot)
 signal connections_changed(next_slot)
 signal add_sensor_requested(p_sensor)
+signal remove_sensor_requested()
 signal remove_requested()
 
 func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
@@ -162,6 +163,9 @@ func get_sensor():
 
 func add_sensor(p_sensor):
 	emit_signal("add_sensor_requested", p_sensor)
+
+func remove_sensor():
+	emit_signal("remove_sensor_requested")
 
 func set_switch(p_switch):
 	if switch != null:
