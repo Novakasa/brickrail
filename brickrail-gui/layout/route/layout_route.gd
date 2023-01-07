@@ -96,7 +96,7 @@ func collect_sensors():
 		leg.collect_sensor_list()
 
 func update_intentions():
-	for i in range(leg_index+1, len(legs)):
+	for i in range(leg_index, len(legs)):
 		update_intention(i)
 
 func update_intention(i):
