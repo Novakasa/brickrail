@@ -54,6 +54,8 @@ func _on_LayoutInfo_active_layer_changed(l_idx):
 	update_layer_visibility()
 
 func _on_virtual_train_switched_layer(l_idx):
+	if selected:
+		LayoutInfo.set_active_layer(l_idx)
 	update_layer_visibility()
 
 func update_layer_visibility():
@@ -147,6 +149,7 @@ func select():
 		if not route.highlighted:
 			route.set_highlight()
 	emit_signal("selected")
+	LayoutInfo.set_active_layer(virtual_train.l_idx)
 
 func unselect():
 	selected=false
