@@ -33,11 +33,14 @@ func _init(p_name):
 	virtual_train.logging_module = "virtual-"+trainname
 	add_child(virtual_train)
 	virtual_train.visible=false
+	virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
 	LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
 	LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
+	LayoutInfo.connect("active_layer_changed",self, "_on_LayoutInfo_active_layer_changed")
 	wait_timer = Timer.new()
 	add_child(wait_timer)
 	blocked_by = null
+	update_layer_visibility()
 
 func _enter_tree():
 	if LayoutInfo.random_targets:
@@ -46,6 +49,19 @@ func _enter_tree():
 		yield(get_tree().create_timer(wait_timer.wait_time/LayoutInfo.time_scale), "timeout")
 		if LayoutInfo.random_targets:
 			find_random_route()
+
+func _on_LayoutInfo_active_layer_changed(l_idx):
+	update_layer_visibility()
+
+func _on_virtual_train_switched_layer(l_idx):
+	update_layer_visibility()
+
+func update_layer_visibility():
+	var l_idx = virtual_train.l_idx
+	if l_idx != LayoutInfo.active_layer:
+		modulate = Color(1.0, 1.0, 1.0, 0.3)
+	else:
+		modulate = Color.white
 
 func can_control_ble_train():
 	return LayoutInfo.control_devices and ble_train != null and ble_train.hub.running

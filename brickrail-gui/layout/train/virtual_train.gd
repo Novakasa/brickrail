@@ -13,6 +13,7 @@ var dirtrack
 var turn=null
 var length = 0.0
 var track_pos = 0.0
+var l_idx = 0
 
 var size = Vector2(0.3,0.2)
 var facing: int = 1
@@ -44,6 +45,7 @@ export(Color) var hover_color
 export(Color) var selected_color = Color.black
 
 signal marker(marker)
+signal switched_layers(new_l_idx)
 
 func seek_curve(t):
 	# return t
@@ -312,7 +314,11 @@ func update_wagon_visuals():
 		wagons[-1].set_heading(-1)
 
 func set_dirtrack(p_dirtrack, teleport=false):
+	var prev_l_idx = l_idx
 	dirtrack = p_dirtrack
+	l_idx = dirtrack.l_idx
+	if l_idx != prev_l_idx:
+		emit_signal("switched_layers", l_idx)
 	turn = dirtrack.get_next_turn()
 	length = dirtrack.get_length_to(turn)
 	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()

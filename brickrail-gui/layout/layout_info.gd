@@ -241,7 +241,7 @@ func create_block(p_name, section):
 	block.setup(p_name)
 	blocks[p_name] = block
 	block.set_section(section)
-	grid.add_child(block)
+	grid.get_layer(section.tracks[0].l_idx).add_child(block)
 	block.connect("removing", self, "_on_block_removing")
 	
 	for logical_block in block.logical_blocks:
