@@ -988,11 +988,17 @@
 				"y_idx": 2,
 				"connections": {
 					"E": [
-						"center"
+						"center",
+						"right"
 					],
 					"W": [
 						"left"
 					]
+				},
+				"switches": {
+					"E": {
+
+					}
 				}
 			},
 			{
@@ -1001,11 +1007,17 @@
 				"y_idx": 6,
 				"connections": {
 					"E": [
-						"center"
+						"center",
+						"left"
 					],
 					"W": [
 						"right"
 					]
+				},
+				"switches": {
+					"E": {
+
+					}
 				}
 			},
 			{
@@ -1059,12 +1071,115 @@
 			{
 				"l_idx": 1,
 				"x_idx": 4,
+				"y_idx": 2,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 2,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 3,
+				"connections": {
+					"N": [
+						"left",
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+					"N": {
+
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"right",
+						"left"
+					]
+				},
+				"switches": {
+					"S": {
+
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
 				"y_idx": 6,
 				"connections": {
 					"E": [
 						"center"
 					],
 					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
 						"center"
 					]
 				}
@@ -1100,11 +1215,14 @@
 						"center"
 					],
 					"W": [
-						"center"
+						"center",
+						"left"
 					]
 				},
-				"sensor": {
-					"markername": null
+				"switches": {
+					"W": {
+
+					}
 				}
 			},
 			{
@@ -1116,11 +1234,14 @@
 						"center"
 					],
 					"W": [
-						"center"
+						"center",
+						"right"
 					]
 				},
-				"sensor": {
-					"markername": null
+				"switches": {
+					"W": {
+
+					}
 				}
 			},
 			{
@@ -1134,6 +1255,9 @@
 					"W": [
 						"center"
 					]
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
@@ -1147,6 +1271,9 @@
 					"W": [
 						"center"
 					]
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
@@ -1186,9 +1313,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"sensor": {
-					"markername": null
 				}
 			},
 			{
@@ -1202,9 +1326,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"sensor": {
-					"markername": null
 				}
 			},
 			{
@@ -1218,6 +1339,9 @@
 					"W": [
 						"center"
 					]
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
@@ -1231,6 +1355,9 @@
 					"W": [
 						"center"
 					]
+				},
+				"sensor": {
+					"markername": null
 				}
 			},
 			{
@@ -1453,82 +1580,6 @@
 				}
 			},
 			{
-				"name": "block4",
-				"section": {
-					"tracks": [
-						{
-							"l_idx": 1,
-							"x_idx": 8,
-							"y_idx": 2,
-							"next_slot": "W",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 1,
-							"x_idx": 7,
-							"y_idx": 2,
-							"next_slot": "W",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 1,
-							"x_idx": 6,
-							"y_idx": 2,
-							"next_slot": "W",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 1,
-							"x_idx": 5,
-							"y_idx": 2,
-							"next_slot": "W",
-							"orientation": "EW"
-						}
-					]
-				},
-				"prior_sensors": {
-
-				}
-			},
-			{
-				"name": "block5",
-				"section": {
-					"tracks": [
-						{
-							"l_idx": 1,
-							"x_idx": 5,
-							"y_idx": 6,
-							"next_slot": "E",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 1,
-							"x_idx": 6,
-							"y_idx": 6,
-							"next_slot": "E",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 1,
-							"x_idx": 7,
-							"y_idx": 6,
-							"next_slot": "E",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 1,
-							"x_idx": 8,
-							"y_idx": 6,
-							"next_slot": "E",
-							"orientation": "EW"
-						}
-					]
-				},
-				"prior_sensors": {
-
-				}
-			},
-			{
 				"name": "block6",
 				"section": {
 					"tracks": [
@@ -1589,6 +1640,82 @@
 				"prior_sensors": {
 
 				}
+			},
+			{
+				"name": "block6_",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 1,
+							"x_idx": 9,
+							"y_idx": 2,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 1,
+							"x_idx": 8,
+							"y_idx": 2,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 1,
+							"x_idx": 7,
+							"y_idx": 2,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 1,
+							"x_idx": 6,
+							"y_idx": 2,
+							"next_slot": "W",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				}
+			},
+			{
+				"name": "block7_",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 1,
+							"x_idx": 6,
+							"y_idx": 6,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 1,
+							"x_idx": 7,
+							"y_idx": 6,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 1,
+							"x_idx": 8,
+							"y_idx": 6,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 1,
+							"x_idx": 9,
+							"y_idx": 6,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				}
 			}
 		],
 		"trains": [
@@ -1596,14 +1723,14 @@
 				"name": "train0",
 				"facing": 1,
 				"fixed_facing": true,
-				"blockname": "block4",
+				"blockname": "block7",
 				"blockindex": 0
 			},
 			{
 				"name": "train1",
 				"facing": 1,
 				"fixed_facing": true,
-				"blockname": "block0",
+				"blockname": "block2",
 				"blockindex": 0
 			}
 		]
