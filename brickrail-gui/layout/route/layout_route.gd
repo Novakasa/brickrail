@@ -24,17 +24,6 @@ func add_prev_edge(edge):
 	if len(edges)>1:
 		assert(edges[0].to_node == edges[1].from_node)
 
-func get_full_section():
-	var section = LayoutSection.new()
-	if edges[0].from_node.type=="block":
-		section.append(edges[0].from_node.obj.section)
-	for edge in edges:
-		if edge.section != null:
-			section.append(edge.section)
-		if edge.to_node.type=="block":
-			section.append(edge.to_node.obj.section)
-	return section
-
 func setup_legs():
 	legs = []
 	var start_node = edges[0].from_node
