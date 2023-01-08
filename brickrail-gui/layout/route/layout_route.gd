@@ -119,15 +119,26 @@ func get_blocking_trains():
 	var next_leg = get_next_leg()
 	if next_leg == null:
 		return []
-	if not next_leg.get_type()=="travel":
-		return []
-	return next_leg.get_lock_trains()
+	var index = leg_index+1
+	var blocking_trains = []
+	while index<len(legs):
+		var leg = legs[index]
+		for blocking_train in leg.get_lock_trains():
+			if blocking_train == trainname:
+				continue
+			if blocking_train in blocking_trains:
+				continue
+			blocking_trains.append(blocking_train)
+		var greedy = not leg.get_target_node().obj.can_stop
+		if leg.get_type() == "flip" and index < len(legs)-1:
+			greedy = true
+		if not greedy:
+			break
+		index += 1
+	return blocking_trains
 
 func is_train_blocked():
-	var next_leg = get_next_leg()
-	if next_leg == null:
-		return false
-	if not next_leg.get_type()=="travel":
+	if get_next_leg() == null:
 		return false
 	if not can_lock_leg(leg_index+1):
 		return true

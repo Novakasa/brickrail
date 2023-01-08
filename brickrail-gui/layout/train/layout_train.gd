@@ -48,7 +48,7 @@ func _enter_tree():
 		wait_timer.start()
 		yield(get_tree().create_timer(wait_timer.wait_time/LayoutInfo.time_scale), "timeout")
 		if LayoutInfo.random_targets:
-			find_random_route()
+			find_random_route(false)
 
 func _on_LayoutInfo_active_layer_changed(l_idx):
 	update_layer_visibility()
@@ -119,7 +119,7 @@ func is_end_of_leg():
 
 func _on_LayoutInfo_random_targets_set(random_targets):
 	if random_targets and route==null:
-		find_random_route()
+		find_random_route(false)
 
 func update_control_ble_train():
 	if can_control_ble_train():
@@ -207,11 +207,11 @@ func get_all_valid_routes(no_locked=true):
 		valid_routes[node_id] = routes[node_id]
 	return valid_routes
 
-func find_random_route():
-	var valid_routes = get_all_valid_routes(true)
+func find_random_route(no_blocked):
+	var valid_routes = get_all_valid_routes(no_blocked)
 	var valid_targets = valid_routes.keys()
 	
-	if len(valid_targets) == 0:
+	if len(valid_targets) == 0 and no_blocked:
 		valid_routes = get_all_valid_routes(false)
 		valid_targets = valid_routes.keys()
 	if len(valid_targets) == 0:
@@ -225,6 +225,9 @@ func find_random_route():
 func find_route(p_target, no_locked=true):
 	if route != null and not is_end_of_leg():
 		push_error("Not at end of leg!")
+		return
+	if not LayoutInfo.nodes[p_target].obj.can_stop:
+		push_error("Target is not flagged 'can stop'!")
 		return
 	var _route = get_route_to(p_target, true)
 	if _route == null:
@@ -242,6 +245,7 @@ func try_advancing():
 			ble_train.advance_route()
 		virtual_train.advance_route()
 		return
+	_on_route_stopped()
 
 func is_there_hope():
 	if route == null:
@@ -291,13 +295,13 @@ func _on_route_completed():
 		wait_timer.start()
 		yield(wait_timer, "timeout")
 		if LayoutInfo.random_targets:
-			find_random_route()
+			find_random_route(false)
 
 func _on_route_stopped():
 	prints("blocked, committed=", committed)
 	if not committed and not is_there_hope() and LayoutInfo.random_targets:
 		print("no hope, new route!")
-		call_deferred("find_random_route")
+		call_deferred("find_random_route", true)
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)
