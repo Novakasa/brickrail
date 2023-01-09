@@ -60,11 +60,16 @@ func get_seek_offset(delta):
 	seek_forward_timer -= delta
 	if seek_forward_timer < 0.0:
 		# make sure to be after seek_dirtrack
-		set_dirtrack(seek_forward_dirtrack, true)
-		track_pos = 0.0
+		cleanup_seek()
 	var t = 1.0 - seek_forward_timer
 	var curve_delta = seek_curve(t) - seek_curve(t - delta)
 	return curve_delta*seek_forward_amount
+
+func cleanup_seek():
+	set_dirtrack(seek_forward_dirtrack, true)
+	track_pos = 0.0
+	update_next_sensor_distance()
+	seek_forward_timer = -1.0
 
 func _ready():
 	_on_settings_colors_changed()
@@ -108,6 +113,8 @@ func set_route(p_route):
 	route = p_route
 
 func advance_route():
+	if seek_forward_timer >= 0.0:
+		cleanup_seek()
 	prints("virtual train advancing!", trainname)
 	execute_behavior(route.advance())
 	update_next_sensor_info()
@@ -115,6 +122,9 @@ func advance_route():
 func update_next_sensor_info():
 	prev_sensor_track = next_sensor_track
 	next_sensor_track = route.get_next_sensor_track()
+	update_next_sensor_distance()
+
+func update_next_sensor_distance():
 	if next_sensor_track == null:
 		next_sensor_distance = 0.0
 		return
@@ -144,8 +154,12 @@ func manual_sensor_advance():
 	var flips = route.next_sensor_flips()
 	prints("next sensor flips:", flips)
 	if flips:
-		advance_position(next_sensor_distance + 0.1)
+		seek_forward_timer = -1.0
+		set_dirtrack(next_sensor_track, true)
+		track_pos = 0.0
 	else:
+		if seek_forward_timer >= 0.0:
+			cleanup_seek()
 		seek_forward_timer = 1.0
 		seek_forward_amount = next_sensor_distance
 		seek_forward_dirtrack = next_sensor_track
@@ -228,7 +242,6 @@ func wrap_dirtrack():
 		opposite_turn_history.push_front(opposite_turn)
 		if len(opposite_turn_history)>10:
 			opposite_turn_history.pop_back()
-		# print(opposite_turn_history)
 		if dirtrack == seek_forward_dirtrack:
 			print("resetting seek!")
 			seek_forward_timer = -1.0 # don't make seeking set dirtrack
@@ -321,7 +334,5 @@ func set_dirtrack(p_dirtrack, teleport=false):
 		emit_signal("switched_layers", l_idx)
 	turn = dirtrack.get_next_turn()
 	length = dirtrack.get_length_to(turn)
-	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
-	rotation = dirtrack.get_rotation()
 	if teleport:
 		opposite_turn_history = []

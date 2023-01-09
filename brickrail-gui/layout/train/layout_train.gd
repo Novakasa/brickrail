@@ -256,8 +256,6 @@ func is_there_hope():
 		return false
 	blocked_by = route.get_blocking_trains()
 	for blocked_trainname in blocked_by:
-		if blocked_trainname == trainname:
-			continue
 		var train = LayoutInfo.trains[blocked_trainname]
 		if train.is_there_hope():
 			blocked_by = null
