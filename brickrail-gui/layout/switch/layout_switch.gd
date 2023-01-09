@@ -167,7 +167,8 @@ func get_inspector():
 func collect_edges(facing):
 	var edges = []
 	for track in directed_track.get_next_tracks():
-		
+		if track.prohibited:
+			continue
 		var node_obj = track.get_node_obj()
 		if track.get_block() != null:
 			edges.append(LayoutEdge.new(nodes[facing], node_obj.nodes[facing], "travel", null))
