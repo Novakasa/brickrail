@@ -1217,7 +1217,8 @@
 					"E": [
 						"center"
 					]
-				}
+				},
+				"prohibited_slot": "S"
 			},
 			{
 				"l_idx": 1,
@@ -1230,7 +1231,8 @@
 					"W": [
 						"center"
 					]
-				}
+				},
+				"prohibited_slot": "W"
 			},
 			{
 				"l_idx": 1,
@@ -1307,7 +1309,8 @@
 					"E": [
 						"center"
 					]
-				}
+				},
+				"prohibited_slot": "N"
 			},
 			{
 				"l_idx": 1,
@@ -1320,7 +1323,8 @@
 					"W": [
 						"center"
 					]
-				}
+				},
+				"prohibited_slot": "W"
 			},
 			{
 				"l_idx": 1,
@@ -1755,14 +1759,14 @@
 				"name": "train0",
 				"facing": 1,
 				"fixed_facing": true,
-				"blockname": "block1",
+				"blockname": "block2",
 				"blockindex": 0
 			},
 			{
 				"name": "train1",
 				"facing": 1,
 				"fixed_facing": true,
-				"blockname": "block2",
+				"blockname": "block3",
 				"blockindex": 0
 			}
 		]
