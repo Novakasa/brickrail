@@ -195,6 +195,9 @@ func load(struct):
 				for index in block_data.prior_sensors:
 					var prior_sensor_dirtrack = get_dirtrack_from_struct(block_data.prior_sensors[index])
 					block.logical_blocks[int(index)].add_prior_sensor_dirtrack(prior_sensor_dirtrack)
+			if "can_stop" in block_data:
+				for index in block_data.can_stop:
+					block.logical_blocks[int(index)].can_stop = block_data.can_stop[index]
 	
 	if "trains" in struct:
 		for train_data in struct.trains:
@@ -241,7 +244,7 @@ func create_block(p_name, section):
 	block.setup(p_name)
 	blocks[p_name] = block
 	block.set_section(section)
-	grid.add_child(block)
+	grid.get_layer(section.tracks[0].l_idx).add_child(block)
 	block.connect("removing", self, "_on_block_removing")
 	
 	for logical_block in block.logical_blocks:

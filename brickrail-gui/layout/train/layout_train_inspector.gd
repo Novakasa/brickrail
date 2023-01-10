@@ -7,6 +7,7 @@ func set_train(obj):
 	train.connect("unselected", self, "_on_train_unselected")
 	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
 	$FixedFacingCheckbox.pressed = train.fixed_facing
+	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance
 	Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
@@ -49,3 +50,6 @@ func _on_FixedFacingCheckbox_toggled(button_pressed):
 
 func _on_BLETrainSelector_meta_selected(meta):
 	train.set_ble_train(meta)
+
+func _on_SensorAdvanceCheckbox_toggled(button_pressed):
+	train.virtual_train.allow_sensor_advance = not button_pressed

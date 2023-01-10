@@ -2,29 +2,37 @@
 class_name VirtualTrain
 extends Node2D
 
-var route_pos = 0.0
-var track_pos = 0.0
 var velocity = 0.0
 var acceleration = 1.5
 var deceleration = 3.0
+
 var hover=false
 var selected=false
+
 var dirtrack
 var turn=null
 var length = 0.0
+var track_pos = 0.0
+var l_idx = 0
+
 var size = Vector2(0.3,0.2)
 var facing: int = 1
 var max_velocity = 3.0
 var slow_velocity = 1.0
-var expect_marker = null
-var expect_behaviour = null
+
 var trainname
 var logging_module
+
+var route: LayoutRoute = null
 
 var allow_sensor_advance = true
 var prev_sensor_track = null
 var next_sensor_track = null
 var next_sensor_distance = 0.0
+
+var seek_forward_timer = -1.0
+var seek_forward_amount = 0.0
+var seek_forward_dirtrack = null
 
 var state = "stopped"
 
@@ -37,6 +45,32 @@ export(Color) var hover_color
 export(Color) var selected_color = Color.black
 
 signal marker(marker)
+signal switched_layers(new_l_idx)
+
+func seek_curve(t):
+	# return t
+	
+	return t*t*(1.0-t) + (1.0-(1.0-t)*(1.0-t))*t
+	
+	return 1.0-(1.0-t)*(1.0-t)
+
+func get_seek_offset(delta):
+	if seek_forward_timer < 0.0:
+		return 0.0
+	seek_forward_timer -= delta
+	if seek_forward_timer < 0.0:
+		# make sure to be after seek_dirtrack
+		cleanup_seek()
+		return 0.0
+	var t = 1.0 - seek_forward_timer
+	var curve_delta = seek_curve(t) - seek_curve(t - delta)
+	return curve_delta*seek_forward_amount
+
+func cleanup_seek():
+	set_dirtrack(seek_forward_dirtrack, true)
+	track_pos = 0.0
+	update_next_sensor_distance()
+	seek_forward_timer = -1.0
 
 func _ready():
 	_on_settings_colors_changed()
@@ -76,41 +110,64 @@ func set_facing(p_facing):
 	facing = p_facing
 	update_wagon_visuals()
 
+func set_route(p_route):
+	route = p_route
+
+func advance_route():
+	if seek_forward_timer >= 0.0:
+		cleanup_seek()
+	prints("virtual train advancing!", trainname)
+	execute_behavior(route.advance())
+	update_next_sensor_info()
+
 func update_next_sensor_info():
-	var distance
-	var itertrack
 	prev_sensor_track = next_sensor_track
-	if prev_sensor_track == null:
-		if track_pos<0.0:
-			itertrack = dirtrack
-		else:
-			itertrack = dirtrack.get_next()
-		distance = length - track_pos
-	else:
-		distance = next_sensor_distance + prev_sensor_track.get_connection_length()
-		itertrack = prev_sensor_track.get_next()
-	while itertrack.get_sensor()==null:
+	next_sensor_track = route.get_next_sensor_track()
+	update_next_sensor_distance()
+
+func update_next_sensor_distance():
+	if next_sensor_track == null:
+		next_sensor_distance = 0.0
+		return
+	var itertrack = dirtrack.get_next()
+	if track_pos < 0.0:
+		itertrack = dirtrack
+	var distance = length - track_pos
+	prints("measuring distance to next sensor track:", next_sensor_track.id)
+	prints("starting at:", itertrack.id)
+	var i = 0
+	while itertrack != next_sensor_track:
+		assert(i<1000)
 		var next_turn = itertrack.get_next_turn()
 		if next_turn == null:
 			next_sensor_track = null
 			next_sensor_distance = 0.0
 			return
-		distance += itertrack.get_connection_length(next_turn)
+		distance += itertrack.get_length_to(next_turn)
 		itertrack = itertrack.get_next(next_turn)
-
-	next_sensor_track = itertrack
+		i+=1
 	next_sensor_distance = distance
 
-func advance_to_next_sensor_track():
-	advance_position(next_sensor_distance)
-	pass_sensor(next_sensor_track.get_sensor())
+func manual_sensor_advance():
+	assert(state != "stopped")
+	if allow_sensor_advance:
+		return
+	var flips = route.next_sensor_flips()
+	prints("next sensor flips:", flips)
+	if flips:
+		seek_forward_timer = -1.0
+		set_dirtrack(next_sensor_track, true)
+		track_pos = 0.0
+	else:
+		if seek_forward_timer >= 0.0:
+			cleanup_seek()
+		seek_forward_timer = 1.0
+		seek_forward_amount = next_sensor_distance
+		seek_forward_dirtrack = next_sensor_track
+	pass_sensor(next_sensor_track)
 
-func set_expect_marker(colorname, behaviour):
-	expect_marker = colorname
-	expect_behaviour = behaviour
-
-func start():
-	Logger.verbose("start()", logging_module)
+func cruise():
+	Logger.verbose("cruise()", logging_module)
 	set_state("started")
 
 func slow():
@@ -123,9 +180,6 @@ func stop():
 
 func flip_heading():
 	Logger.verbose("flip_heading()", logging_module)
-	if state!="stopped":
-		push_error("can't flip heading while state is " + state)
-		return
 	var prev_pos = track_pos
 	if turn == null:
 		set_dirtrack(dirtrack.get_opposite())
@@ -146,6 +200,9 @@ func set_state(p_state):
 
 func _process(delta):
 	delta *= LayoutInfo.time_scale
+	update_velocity(delta)
+
+func update_velocity(delta):
 	if state=="started":
 		velocity = min(velocity+acceleration*delta, max_velocity)
 	if state=="slow":
@@ -157,24 +214,30 @@ func _process(delta):
 		velocity = max(velocity-2*deceleration*delta, 0.0)
 	
 	var distance_modulation = 1.0
+	var distance_offset = 0.0
 	if not allow_sensor_advance:
-		distance_modulation = min(next_sensor_distance/1.0, 1.0)
-	var delta_pos = velocity*delta*distance_modulation
+		if next_sensor_track != null:
+			distance_modulation = min(next_sensor_distance/1.0, 1.0)
+		distance_offset = get_seek_offset(delta*3)
+	var delta_pos = velocity*delta*distance_modulation + distance_offset
 	advance_position(delta_pos)
 
 func advance_position(delta_pos):
 	var prev_pos = track_pos
+	assert(delta_pos>=0.0)
 	track_pos += delta_pos
 	next_sensor_distance -= delta_pos
 	wrap_dirtrack()
 	if prev_pos<0.0 and track_pos>0.0:
-		if dirtrack == next_sensor_track and allow_sensor_advance:
-			var sensor = dirtrack.get_sensor()
-			pass_sensor(sensor)
+		if dirtrack.get_sensor() != null:
+			if allow_sensor_advance:
+				pass_sensor(dirtrack)
 	update_position()
 
 func wrap_dirtrack():
 	while track_pos > length:
+		if not allow_sensor_advance:
+			prints(next_sensor_distance, velocity)
 		track_pos -= length
 		set_dirtrack(dirtrack.get_next(turn))
 		var next_dirtrack = dirtrack.get_next(turn)
@@ -182,27 +245,38 @@ func wrap_dirtrack():
 		opposite_turn_history.push_front(opposite_turn)
 		if len(opposite_turn_history)>10:
 			opposite_turn_history.pop_back()
-		# print(opposite_turn_history)
-		if dirtrack == next_sensor_track and allow_sensor_advance:
-			var sensor = dirtrack.get_sensor()
-			pass_sensor(sensor)
+		if dirtrack == seek_forward_dirtrack:
+			print("resetting seek!")
+			seek_forward_timer = -1.0 # don't make seeking set dirtrack
+		if dirtrack.get_sensor() != null:
+			if allow_sensor_advance:
+				pass_sensor(dirtrack)
 
-func pass_sensor(sensor):
-	if expect_marker != null:
-		assert(sensor.get_colorname() == expect_marker)
-		if expect_behaviour == "stop":
-			stop()
-		if expect_behaviour == "slow":
-			slow()
-		if expect_behaviour == "flip_heading":
-			flip_heading()
-	if allow_sensor_advance:
-		sensor.trigger(null)
+func pass_sensor(sensor_dirtrack):
+	prints("virtual train pass sensor", sensor_dirtrack.id, trainname)
+	execute_behavior(route.advance_sensor(sensor_dirtrack))
+	
+	update_next_sensor_info()
+
+func execute_behavior(behavior):
+	prints("virtual train executing:", behavior, trainname)
+	if behavior == "ignore":
+		return
+	if behavior == "cruise":
+		cruise()
+	if behavior == "slow":
+		slow()
+	if behavior == "stop":
+		stop()
+	if behavior == "flip_cruise":
+		flip_heading()
+		cruise()
+	if behavior == "flip_slow":
+		flip_heading()
+		slow()
 
 func update_position():
 	var interpolation = dirtrack.interpolate(track_pos, turn)
-	position = dirtrack.to_world(interpolation.position)
-	rotation = interpolation.rotation
 	
 	update_wagon_position()
 
@@ -225,7 +299,6 @@ func update_wagon_position():
 
 func set_selected(p_selected):
 	selected = p_selected
-	prints("selected", selected, selected_color, color)
 	update_wagon_visuals()
 
 func set_hover(p_hover):
@@ -253,9 +326,13 @@ func update_wagon_visuals():
 		wagons[0].set_heading(0)
 		wagons[-1].set_heading(-1)
 
-func set_dirtrack(p_dirtrack):
+func set_dirtrack(p_dirtrack, teleport=false):
+	var prev_l_idx = l_idx
 	dirtrack = p_dirtrack
+	l_idx = dirtrack.l_idx
+	if l_idx != prev_l_idx:
+		emit_signal("switched_layers", l_idx)
 	turn = dirtrack.get_next_turn()
 	length = dirtrack.get_length_to(turn)
-	position = dirtrack.get_position()+LayoutInfo.spacing*dirtrack.get_center()
-	rotation = dirtrack.get_rotation()
+	if teleport:
+		opposite_turn_history = []

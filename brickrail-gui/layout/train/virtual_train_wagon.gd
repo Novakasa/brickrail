@@ -2,8 +2,6 @@
 class_name VirtualTrainWagon
 extends Node2D
 
-var color = Color.black
-
 func _init():
 	material = load("res://layout/train/wagon_shader.tres").duplicate()
 
@@ -28,5 +26,5 @@ func _draw():
 	
 	var size = Vector2(0.7,0.7)
 	var wsize = size*LayoutInfo.spacing
-	var col = color
+	var col = Color.black
 	draw_rect(Rect2(-wsize*0.5, wsize), col)

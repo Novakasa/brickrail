@@ -1,41 +1,95 @@
 class_name LayoutRouteLeg
 extends Reference
 
-var edges
-var full_section
+var edges = []
+var full_section = null
+var sensor_dirtracks = []
+var sensor_keys = []
+var current_index = 0
+var intention = "pass"
+var locked = false
 
 func _init(p_edges):
 	edges = p_edges
 
-func get_start():
+func get_start_node():
 	return edges[0].from_node
 
-func get_target():
+func get_target_node():
 	return edges[-1].to_node
 
-func get_from():
+func get_from_node():
 	return edges[0].from_node
 
 func get_type():
 	return edges[0].type
 
+func set_intention(intent):
+	intention = intent
+
+func advance_sensor():
+	current_index += 1
+
+func is_complete():
+	return current_index >= len(self.sensor_dirtracks)
+
+func get_next_sensor_dirtrack():
+	if current_index >= len(sensor_dirtracks):
+		return null
+	return sensor_dirtracks[current_index]
+
+func get_next_key():
+	return sensor_keys[current_index]
+
+func collect_sensor_list():
+	var target_node = get_target_node()
+	var start_node = get_start_node()
+	if get_type() == "flip":
+		sensor_keys.append("in")
+		sensor_dirtracks.append(target_node.sensors.sensor_dirtracks["in"])
+		return
+	var skip = true
+	for dirtrack in get_full_section().tracks:
+		if dirtrack.get_sensor() != null:
+			var start_key = start_node.sensors.get_sensor_dirtrack_key(dirtrack)
+			if start_key == "in":
+				skip=false
+				continue
+			if dirtrack in sensor_dirtracks or skip:
+				continue
+			var target_key = target_node.sensors.get_sensor_dirtrack_key(dirtrack)
+			sensor_keys.append(target_key)
+			sensor_dirtracks.append(dirtrack)
+			if target_key == "in":
+				return
+
+func get_section(with_start_block):
+	
+	var section = LayoutSection.new()
+	if get_type() == "start":
+		return section
+	
+	if with_start_block and edges[0].from_node.type=="block":
+		section.append(edges[0].from_node.obj.section)
+	for edge in edges:
+		if edge.section != null:
+			section.append(edge.section)
+		if edge.to_node.type=="block":
+			section.append(edge.to_node.obj.section)
+	
+	return section
+
 func get_full_section():
 	if full_section == null:
-		full_section = LayoutSection.new()
-		if edges[0].type=="start":
-			return full_section
-		if edges[0].from_node.type=="block":
-			full_section.append(edges[0].from_node.obj.section)
-		for edge in edges:
-			if edge.section != null:
-				full_section.append(edge.section)
-			if edge.to_node.type=="block":
-				full_section.append(edge.to_node.obj.section)
+		full_section = get_section(true)
 	return full_section
-		
+
+func lock_and_switch(trainname):
+	lock_tracks(trainname)
+	set_switches()
 
 func set_switches():
-	var last_track = get_start().obj.section.tracks[-1]
+	var last_track = get_start_node().obj.section.tracks[-1]
 	var forward_switches = []
 	for edge in edges:
 		if edge.section == null:
@@ -51,25 +105,24 @@ func set_switches():
 			last_track = dirtrack
 
 func lock_tracks(trainname):
+	var lock_trains = get_lock_trains()
+	assert(lock_trains==[trainname]) # only start block should be occupied (by this train)
 	get_full_section().set_track_attributes("locked", trainname, "<>")
-
-func increment_marks():
-	get_full_section().set_track_attributes("mark", 1, "<>", "increment")
-	get_full_section().set_track_attributes("arrow", 1, ">", "increment")
+	locked = true
 
 func unlock_tracks():
 	get_full_section().set_track_attributes("locked", null, "<>")
+	locked = false
 
-func decrement_marks():
-	get_full_section().set_track_attributes("mark", -1, "<>", "increment")
-	get_full_section().set_track_attributes("arrow", -1, ">", "increment")
+func set_attributes(key, value, direction="<>", operation="set"):
+	get_full_section().set_track_attributes(key, value, direction, operation)
 
-func get_locked():
+func get_lock_trains():
 	var locked = []
-	var trainname = get_start().obj.get_locked()
+	var trainname = get_start_node().obj.get_locked()
 	if trainname != null:
 		locked.append(trainname)
-	trainname = get_target().obj.get_locked()
+	trainname = get_target_node().obj.get_locked()
 	if trainname != null and not trainname in locked:
 		locked.append(trainname)
 	for trainname2 in get_full_section().get_locked():
@@ -77,8 +130,8 @@ func get_locked():
 			locked.append(trainname2)
 	return locked
 
-func is_train_allowed(trainname):
-	var leg_locked = get_locked()
+func can_lock(trainname):
+	var leg_locked = get_lock_trains()
 	if len(leg_locked)>0 and leg_locked != [trainname]:
 		return false
 	return true

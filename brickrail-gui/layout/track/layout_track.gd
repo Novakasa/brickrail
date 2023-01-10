@@ -34,6 +34,8 @@ var drawing_highlight=false
 var directed_tracks = {}
 var sensor = null
 
+var states_changed_emitted = false
+
 signal connections_changed(orientation)
 signal states_changed(orientation)
 signal route_lock_changed(lock)
@@ -60,11 +62,13 @@ func _init(p_slot0, p_slot1, l, i, j):
 	directed_tracks[slot0].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot0].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
+	directed_tracks[slot0].connect("remove_sensor_requested", self, "remove_sensor")
 	directed_tracks[slot0].connect("remove_requested", self, "remove")
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot1].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
+	directed_tracks[slot1].connect("remove_sensor_requested", self, "remove_sensor")
 	directed_tracks[slot1].connect("remove_requested", self, "remove")
 	
 	directed_tracks[slot0].set_opposite(directed_tracks[slot1])
@@ -74,7 +78,14 @@ func _init(p_slot0, p_slot1, l, i, j):
 	assert(slot0 in slots and slot1 in slots)
 
 func _on_dirtrack_states_changed(slot):
+	states_changed_emitted = false
+	call_deferred("emit_states_changed_once")
+
+func emit_states_changed_once():
+	if states_changed_emitted:
+		return
 	emit_signal("states_changed", get_orientation())
+	states_changed_emitted = true
 
 func _on_dirtrack_connections_changed(slot):
 	emit_signal("connections_changed", get_orientation())

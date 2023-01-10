@@ -1,0 +1,17 @@
+[tool.poetry]
+name = "ble-server"
+version = "0.1.0"
+description = "server to communicate with pybricks hubs"
+authors = ["Johannes Ringler <johannesringler@gmail.com>"]
+license = "MIT"
+readme = "README.md"
+packages = [{include = "ble_server"}]
+
+[tool.poetry.dependencies]
+python = ">=3.10,<3.11"
+pybricksdev = "^1.0.0a32"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
