@@ -61,6 +61,7 @@ func get_seek_offset(delta):
 	if seek_forward_timer < 0.0:
 		# make sure to be after seek_dirtrack
 		cleanup_seek()
+		return 0.0
 	var t = 1.0 - seek_forward_timer
 	var curve_delta = seek_curve(t) - seek_curve(t - delta)
 	return curve_delta*seek_forward_amount
@@ -215,13 +216,15 @@ func update_velocity(delta):
 	var distance_modulation = 1.0
 	var distance_offset = 0.0
 	if not allow_sensor_advance:
-		distance_modulation = min(next_sensor_distance/1.0, 1.0)
+		if next_sensor_track != null:
+			distance_modulation = min(next_sensor_distance/1.0, 1.0)
 		distance_offset = get_seek_offset(delta*3)
 	var delta_pos = velocity*delta*distance_modulation + distance_offset
 	advance_position(delta_pos)
 
 func advance_position(delta_pos):
 	var prev_pos = track_pos
+	assert(delta_pos>=0.0)
 	track_pos += delta_pos
 	next_sensor_distance -= delta_pos
 	wrap_dirtrack()
@@ -274,8 +277,6 @@ func execute_behavior(behavior):
 
 func update_position():
 	var interpolation = dirtrack.interpolate(track_pos, turn)
-	position = dirtrack.to_world(interpolation.position)
-	rotation = interpolation.rotation
 	
 	update_wagon_position()
 
@@ -298,7 +299,6 @@ func update_wagon_position():
 
 func set_selected(p_selected):
 	selected = p_selected
-	prints("selected", selected, selected_color, color)
 	update_wagon_visuals()
 
 func set_hover(p_hover):
