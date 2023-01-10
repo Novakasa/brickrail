@@ -201,6 +201,8 @@ func get_inspector():
 func get_next_segments():
 	var segments = []
 	for track in tracks[-1].get_next_tracks():
+		if track.prohibited:
+			continue
 		var segment = get_script().new()
 		segment.collect_segment(track)
 		segments.append(segment)
