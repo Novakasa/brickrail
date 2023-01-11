@@ -21,7 +21,7 @@ _DATA_SWITCH_CONFIRM  = const(0)
 class Switch:
     def __init__(self, port, pulse_duration = 600):
         pb_port = [Port.A, Port.B, Port.C, Port.D][port]
-        self.motor = Motor(pb_port)
+        self.motor = DCMotor(pb_port)
         self.position = _SWITCH_POS_NONE
         self.port = port
         self.pulse_duration = pulse_duration
@@ -45,7 +45,7 @@ class Switch:
             self.motor.stop()
             self.switch_stopwatch.pause()
             self.switching = False
-            io_hub.emit_data(bytes((_DATA_SWITCH_CONFIRM, self.position)))
+            io_hub.emit_data(bytes((_DATA_SWITCH_CONFIRM, self.port, self.position)))
     
     def execute(self, data):
         if data[0] == _SWITCH_COMMAND_SWITCH:
@@ -67,6 +67,8 @@ class Controller:
             device.update(delta)
     
     def device_execute(self, data):
+        if not data[0] in self.devices:
+            self.assign_switch([data[0]])
         self.devices[data[0]].execute(data[1:])
 
 controller = Controller()
