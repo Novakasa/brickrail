@@ -230,12 +230,12 @@ class Train:
         self.execute_behavior(behavior)
 
     def execute_behavior(self, behavior):
-        if behavior == _BEHAVIOR_FLAG_STOP:
+        if behavior & _BEHAVIOR_FLAG_STOP:
             self.motor.set_speed(0)
             return
-        if behavior & _BEHAVIOR_FLAG_FLIP == _BEHAVIOR_FLAG_FLIP:
+        if behavior & _BEHAVIOR_FLAG_FLIP:
             self.motor.flip_direction()
-        if behavior & _BEHAVIOR_FLAG_SPEED == _BEHAVIOR_FLAG_SPEED:
+        if behavior & _BEHAVIOR_FLAG_SPEED:
             self.motor.set_target(sensor_speed_to_motor_speed(behavior & 0x0F))
     
     def new_route(self):
