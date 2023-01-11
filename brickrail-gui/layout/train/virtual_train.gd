@@ -40,6 +40,7 @@ var wagons = []
 var opposite_turn_history = []
 
 export(Color) var color
+export(Color) var body_color
 export(Color) var accent_color
 export(Color) var hover_color
 export(Color) var selected_color = Color.black
@@ -72,20 +73,29 @@ func cleanup_seek():
 	update_next_sensor_distance()
 	seek_forward_timer = -1.0
 
-func _ready():
-	_on_settings_colors_changed()
+func _init(p_name):
+	trainname = p_name
+	logging_module = "virtual=" + trainname
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
 	for i in range(4):
 		wagons.append(VirtualTrainWagon.new())
-		get_parent().call_deferred("add_child", wagons[-1])
-		wagons[-1].set_color(color)
+		add_child(wagons[-1])
+		wagons[-1].set_body_color(body_color)
 		wagons[-1].set_heading(0)
 		wagons[-1].set_facing(0)
 	
 	update_wagon_visuals()
 	
 	connect("visibility_changed", self, "_on_visibility_changed")
+
+func _ready():
+	_on_settings_colors_changed()
+
+func set_color(p_color):
+	color = p_color
+	for wagon in wagons:
+		wagon.set_color(color)
 
 func remove():
 	for wagon in wagons:
@@ -97,7 +107,7 @@ func _on_visibility_changed():
 		wagon.visible = visible
 
 func _on_settings_colors_changed():
-	color = Settings.colors["primary"]*1.5
+	body_color = Settings.colors["primary"]*1.5
 	selected_color = Settings.colors["tertiary"]
 
 func has_point(pos):
@@ -310,13 +320,14 @@ func update_wagon_visuals():
 	if selected:
 		wagon_color = selected_color
 	else:
-		wagon_color = color
+		wagon_color = body_color
 	if hover:
 		wagon_color = wagon_color*1.7
 	for wagon in wagons:
-		wagon.set_color(wagon_color)
+		wagon.set_body_color(wagon_color)
 		wagon.set_facing(0)
 		wagon.set_heading(0)
+		wagon.set_color(color)
 	
 	wagons[0].set_facing(1)
 	if facing == 1:

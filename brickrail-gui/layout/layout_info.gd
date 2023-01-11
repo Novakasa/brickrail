@@ -210,6 +210,8 @@ func load(struct):
 				train.set_current_block(block)
 			if "ble_train" in train_data:
 				train.set_ble_train(train_data.ble_train)
+			if "color" in train_data:
+				train.virtual_train.set_color(Color(train_data.color))
 
 func get_hover_lock():
 	if drag_select or drawing_track:
@@ -413,7 +415,8 @@ func init_drag_select(track, slot):
 func init_drag_train(train):
 	drag_train = true
 	dragged_train = train
-	drag_virtual_train = load("res://layout/train/virtual_train.tscn").instance()
+	drag_virtual_train = VirtualTrain.new("drag-train")
+	drag_virtual_train.set_color(train.virtual_train.color)
 	grid.add_child(drag_virtual_train)
 	drag_virtual_train.set_process_unhandled_input(false)
 	drag_virtual_train.set_process(false)

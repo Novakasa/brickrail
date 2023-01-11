@@ -6,6 +6,7 @@ code = "shader_type canvas_item;
 uniform int facing = 1;
 uniform int heading = 1;
 uniform vec4 body_color: hint_color = vec4(1.0);
+uniform vec4 id_color: hint_color = vec4(0.0, 0.0, 0.0, 1.0);
 
 float sd_circle(vec2 pos, vec2 center, float radius) {
 	return length(pos-center)-radius;
@@ -72,11 +73,13 @@ void fragment() {
 	COLOR.a = 0.0;
 	mix_sdf(main_body, COLOR, body_color);
 	if (heading != 0) mix_sdf(heading_arrow, COLOR, body_color);
-	if (facing != 0) mix_sdf(facing_window, COLOR, vec4(0,0,0,1));
+	if (facing != 0) mix_sdf(facing_window, COLOR, vec4(vec3(0.0), 1.0));
+	if (facing != 0) mix_sdf(facing_window+0.05, COLOR, id_color);
 }"
 
 [resource]
 shader = SubResource( 1 )
 shader_param/facing = 1
 shader_param/heading = 1
-shader_param/body_color = Color( 0.811765, 0.8, 0.0431373, 1 )
+shader_param/body_color = Color( 0.65098, 0.52549, 0.14902, 1 )
+shader_param/id_color = Color( 0.12549, 0.764706, 0.780392, 1 )

@@ -8,6 +8,7 @@ func set_train(obj):
 	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
 	$FixedFacingCheckbox.pressed = train.fixed_facing
 	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance
+	$ColorContainer/ColorButton.color = train.virtual_train.color
 	Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
@@ -30,21 +31,6 @@ func update_ble_train_selector():
 func _on_train_unselected():
 	queue_free()
 
-func _on_FlipHeading_pressed():
-	train.virtual_train.flip_heading()
-
-func _on_FlipFacing_pressed():
-	train.flip_facing()
-
-func _on_Start_pressed():
-	train.start()
-
-func _on_Stop_pressed():
-	train.virtual_train.stop()
-
-func _on_Slow_pressed():
-	train.virtual_train.slow()
-
 func _on_FixedFacingCheckbox_toggled(button_pressed):
 	train.fixed_facing = button_pressed
 
@@ -53,3 +39,6 @@ func _on_BLETrainSelector_meta_selected(meta):
 
 func _on_SensorAdvanceCheckbox_toggled(button_pressed):
 	train.virtual_train.allow_sensor_advance = not button_pressed
+
+func _on_ColorButton_color_changed(color):
+	train.virtual_train.set_color(color)

@@ -15,5 +15,6 @@ size = Vector2( 200, 200 )
 
 [node name="Sprite" type="Sprite" parent="."]
 material = ExtResource( 4 )
-position = Vector2( 412, 191 )
+position = Vector2( 105.895, 128.232 )
+scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )

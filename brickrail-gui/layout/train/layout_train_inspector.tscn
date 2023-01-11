@@ -7,9 +7,6 @@
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Label" type="Label" parent="."]
 margin_right = 129.0
@@ -28,40 +25,10 @@ margin_right = 129.0
 margin_bottom = 70.0
 text = "manual sensors"
 
-[node name="FlipFacing" type="Button" parent="."]
+[node name="BLETrainContainer" type="VBoxContainer" parent="."]
 margin_top = 74.0
 margin_right = 129.0
-margin_bottom = 94.0
-text = "Flip facing"
-
-[node name="FlipHeading" type="Button" parent="."]
-margin_top = 98.0
-margin_right = 129.0
-margin_bottom = 118.0
-text = "Flip heading"
-
-[node name="Start" type="Button" parent="."]
-margin_top = 122.0
-margin_right = 129.0
-margin_bottom = 142.0
-text = "Start"
-
-[node name="Slow" type="Button" parent="."]
-margin_top = 146.0
-margin_right = 129.0
-margin_bottom = 166.0
-text = "Slow"
-
-[node name="Stop" type="Button" parent="."]
-margin_top = 170.0
-margin_right = 129.0
-margin_bottom = 190.0
-text = "Stop"
-
-[node name="BLETrainContainer" type="VBoxContainer" parent="."]
-margin_top = 194.0
-margin_right = 129.0
-margin_bottom = 232.0
+margin_bottom = 112.0
 
 [node name="Label" type="Label" parent="BLETrainContainer"]
 margin_right = 129.0
@@ -74,11 +41,22 @@ margin_right = 129.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
 
+[node name="ColorContainer" type="VBoxContainer" parent="."]
+margin_top = 116.0
+margin_right = 129.0
+margin_bottom = 154.0
+
+[node name="Label" type="Label" parent="ColorContainer"]
+margin_right = 129.0
+margin_bottom = 14.0
+text = "Color"
+
+[node name="ColorButton" type="ColorPickerButton" parent="ColorContainer"]
+margin_top = 18.0
+margin_right = 129.0
+margin_bottom = 38.0
+
 [connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
 [connection signal="toggled" from="SensorAdvanceCheckbox" to="." method="_on_SensorAdvanceCheckbox_toggled"]
-[connection signal="pressed" from="FlipFacing" to="." method="_on_FlipFacing_pressed"]
-[connection signal="pressed" from="FlipHeading" to="." method="_on_FlipHeading_pressed"]
-[connection signal="pressed" from="Start" to="." method="_on_Start_pressed"]
-[connection signal="pressed" from="Slow" to="." method="_on_Slow_pressed"]
-[connection signal="pressed" from="Stop" to="." method="_on_Stop_pressed"]
 [connection signal="meta_selected" from="BLETrainContainer/BLETrainSelector" to="." method="_on_BLETrainSelector_meta_selected"]
+[connection signal="color_changed" from="ColorContainer/ColorButton" to="." method="_on_ColorButton_color_changed"]

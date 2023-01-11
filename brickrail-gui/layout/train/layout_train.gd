@@ -28,9 +28,7 @@ func _init(p_name):
 	trainname = p_name
 	logging_module = trainname
 	name = "train_"+trainname
-	virtual_train = VirtualTrainScene.instance()
-	virtual_train.trainname = trainname
-	virtual_train.logging_module = "virtual-"+trainname
+	virtual_train = VirtualTrain.new(trainname)
 	add_child(virtual_train)
 	virtual_train.visible=false
 	virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
@@ -134,6 +132,7 @@ func serialize():
 	struct["name"] = trainname
 	struct["facing"] = facing
 	struct["fixed_facing"] = fixed_facing
+	struct["color"] = virtual_train.color.to_html()
 	if block != null:
 		struct["blockname"] = block.blockname
 		struct["blockindex"] = block.index

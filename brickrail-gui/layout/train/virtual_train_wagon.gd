@@ -5,8 +5,11 @@ extends Node2D
 func _init():
 	material = load("res://layout/train/wagon_shader.tres").duplicate()
 
-func set_color(color):
+func set_body_color(color):
 	material.set_shader_param("body_color", color)
+
+func set_color(color):
+	material.set_shader_param("id_color", color)
 
 func set_heading(heading):
 	material.set_shader_param("heading", heading)

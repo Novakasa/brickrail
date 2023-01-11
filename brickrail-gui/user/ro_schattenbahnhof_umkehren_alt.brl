@@ -1759,6 +1759,7 @@
 				"name": "train0",
 				"facing": 1,
 				"fixed_facing": true,
+				"color": "ff0242da",
 				"blockname": "block2",
 				"blockindex": 0
 			},
@@ -1766,6 +1767,7 @@
 				"name": "train1",
 				"facing": 1,
 				"fixed_facing": true,
+				"color": "ff00b007",
 				"blockname": "block3",
 				"blockindex": 0
 			}
