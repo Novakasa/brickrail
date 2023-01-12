@@ -23,7 +23,6 @@ signal removing(name)
 func _init(p_name, p_program, p_address):
 	name = p_name
 	program = p_program
-	# communicator = p_communicator
 	address = p_address
 
 func set_responsiveness(val):
@@ -87,9 +86,6 @@ func stop_program():
 	assert(connected and running)
 	send_command("stop", [])
 	set_responsiveness(false)
-	
-func hub_command(python_expression):
-	send_command("pipe_command", [python_expression])
 
 func rpc(funcname, args):
 	send_command("rpc", [funcname, args])

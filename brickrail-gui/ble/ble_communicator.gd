@@ -36,7 +36,6 @@ func _connected(proto = ""):
 
 func send_message(message):
 	_client.get_peer(1).put_packet(message.to_utf8())
-	
 
 func _on_data():
 	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()

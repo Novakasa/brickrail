@@ -15,16 +15,6 @@ func _ready():
 func _on_devices_data_received(key, data):
 	pass
 
-func _on_AddTrain_pressed():
-	var trainnum = len(Devices.trains)
-	var trainname = "train"+str(trainnum)
-	Devices.add_train(trainname, null)
-	
-func _on_AddLayoutController_pressed():
-	var controllernum = len(Devices.layout_controllers)
-	var controllername = "controller"+str(controllernum)
-	Devices.add_layout_controller(controllername, null)
-
 func _on_devices_train_added(p_name):
 	var train_controller_gui = TrainControllerGUI.instance()
 	train_controller_gui.setup(p_name)
@@ -38,10 +28,18 @@ func _on_devices_layout_controller_added(p_name):
 func _on_Devices_data_received(key, data):
 	pass
 
-
 func _on_LayoutSelect_pressed():
 	pass # Replace with function body.
 
-
 func _on_LayoutDraw_pressed():
 	pass # Replace with function body.
+
+func _on_AddTrainButton_pressed():
+	var trainnum = len(Devices.trains)
+	var trainname = "train"+str(trainnum)
+	Devices.add_train(trainname, null)
+
+func _on_AddLayoutControllerButton_pressed():
+	var controllernum = len(Devices.layout_controllers)
+	var controllername = "controller"+str(controllernum)
+	Devices.add_layout_controller(controllername, null)
