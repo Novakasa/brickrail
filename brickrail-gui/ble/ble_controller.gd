@@ -9,7 +9,7 @@ func _ready():
 	$BLECommunicator.connect("message_received", self, "_on_message_received")
 
 func add_hub(hub):
-	send_command(null, "add_hub", [hub.name, hub.program, hub.address], null)
+	send_command(null, "add_hub", [hub.name, hub.program], null)
 	hubs[hub.name] = hub
 	hub.connect("ble_command", self, "_on_hub_command")
 	hub.connect("name_changed", self, "_on_hub_name_changed")

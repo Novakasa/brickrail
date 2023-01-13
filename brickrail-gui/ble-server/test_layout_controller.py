@@ -3,7 +3,7 @@ import asyncio
 
 from pybricksdev.ble import find_device
 
-from ble_hub2 import BLEHub
+from ble_hub import BLEHub
 
 def const(x):
     return x
@@ -22,7 +22,7 @@ async def main():
     print(dev)
     await controller.connect(dev)
     try:
-        await controller.run("brickrail-gui/ble-server/hub_programs/layout_controller64.py")
+        await controller.run("brickrail-gui/ble-server/hub_programs/layout_controller.py")
 
         # await controller.rpc("assign_switch", bytearray([0]))
         await controller.rpc("device_execute", bytearray([0, _SWITCH_COMMAND_SWITCH, _SWITCH_POS_LEFT]))

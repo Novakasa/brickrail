@@ -1,9 +1,9 @@
 import asyncio
-import json
 
 from pybricksdev.ble import find_device
 
-from ble_hub import BLEHub, main as hub_demo
+from ble_hub import BLEHub
+from serial_data import SerialData
 
 class BLEProject:
 
@@ -11,8 +11,8 @@ class BLEProject:
         self.hubs = {}
         self.out_queue = asyncio.Queue()
     
-    def add_hub(self, name, script_path, address=None):
-        self.hubs[name] = BLEHub(name, script_path, self.out_queue, address)
+    def add_hub(self, name, program_name):
+        self.hubs[name] = BLEHub(name, program_name, self.out_queue)
     
     def rename_hub(self, name, new_name):
         hub = self.hubs[name]
@@ -25,13 +25,7 @@ class BLEProject:
     
     async def find_device(self):
         device =  await find_device()
-        return device.address
-    
-    def print(self, str):
-        print(str)
+        await self.out_queue.put(SerialData("device_name_found", None, device.name))
     
     def get_hubnames(self):
         return list(self.hubs.keys())
-    
-    async def hub_demo(self):
-        await hub_demo()

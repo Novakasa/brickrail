@@ -42,7 +42,6 @@ func send_message(message):
 
 func _on_data():
 	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()
-	print("Got data from server: ", msg)
 	emit_signal("message_received", msg)
 
 func _process(_delta):

@@ -36,18 +36,18 @@ func serialize():
 func load(struct):
 	
 	for train_data in struct.trains:
-		var train = add_train(train_data.name, train_data.address)
+		var train = add_train(train_data.name)
 		# train.load(train_data)
 	
 	for controller_data in struct.controllers:
-		var controller = add_layout_controller(controller_data.name, controller_data.address)
+		var controller = add_layout_controller(controller_data.name)
 		if "devices" in controller_data:
 			for port in controller_data.devices:
 				controller.set_device(int(port), controller_data.devices[port])
 		# controller.load(controller_data)
 
-func add_train(p_name, p_address=null):
-	var train = BLETrain.new(p_name, p_address)
+func add_train(p_name):
+	var train = BLETrain.new(p_name)
 	get_node("BLEController").add_hub(train.hub)
 	trains[p_name] = train
 	train.connect("name_changed", self, "_on_train_name_changed")
@@ -66,8 +66,8 @@ func _on_train_removing(p_name):
 	trains.erase(p_name)
 	emit_signal("trains_changed")
 
-func add_layout_controller(p_name, p_address=null):
-	var controller = LayoutController.new(p_name, p_address)
+func add_layout_controller(p_name):
+	var controller = LayoutController.new(p_name)
 	$BLEController.add_hub(controller.hub)
 	layout_controllers[p_name] = controller
 	controller.connect("name_changed", self, "_on_controller_name_changed")

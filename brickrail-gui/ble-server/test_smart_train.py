@@ -3,7 +3,7 @@ import asyncio
 
 from pybricksdev.ble import find_device
 
-from ble_hub2 import BLEHub
+from ble_hub import BLEHub
 
 def const(x):
     return x

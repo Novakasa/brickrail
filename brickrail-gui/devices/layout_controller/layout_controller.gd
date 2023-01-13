@@ -10,13 +10,13 @@ signal device_data_received(p_port, p_key, p_data)
 signal devices_changed(p_name)
 signal removing(p_name)
 
-func _init(p_name, p_address):
+func _init(p_name):
 	name = p_name
 	
 	for port in range(4):
 		devices[port] = null
 		
-	hub = BLEHub.new(p_name, "layout_controller", p_address)
+	hub = BLEHub.new(p_name, "layout_controller")
 	hub.connect("data_received", self, "_on_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
@@ -27,7 +27,6 @@ func _on_hub_program_started():
 func serialize():
 	var struct = {}
 	struct["name"] = name
-	struct["address"] = hub.address
 	struct["devices"] = {}
 	for port in devices:
 		if devices[port] == null:

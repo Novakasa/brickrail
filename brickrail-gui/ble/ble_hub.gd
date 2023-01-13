@@ -1,7 +1,6 @@
 class_name BLEHub
 extends Reference
 
-var address
 var program
 var name
 var connected = false
@@ -20,10 +19,9 @@ signal program_stopped
 signal responsiveness_changed(value)
 signal removing(name)
 
-func _init(p_name, p_program, p_address):
+func _init(p_name, p_program):
 	name = p_name
 	program = p_program
-	address = p_address
 
 func set_responsiveness(val):
 	responsiveness = val
@@ -33,10 +31,6 @@ func set_name(p_new_name):
 	var old_name = name
 	name = p_new_name
 	emit_signal("name_changed", old_name, p_new_name)
-
-func set_address(p_address):
-	address = p_address
-	send_command("set_address", [p_address], null)
 
 func _on_data_received(key, data):
 	prints("hub", name, "received data:", data)
@@ -84,7 +78,7 @@ func run_program():
 
 func stop_program():
 	assert(connected and running)
-	send_command("stop", [])
+	send_command("stop_program", [])
 	set_responsiveness(false)
 
 func rpc(funcname, args):

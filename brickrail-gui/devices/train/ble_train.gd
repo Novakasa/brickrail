@@ -12,16 +12,15 @@ signal handled_marker(colorname)
 signal unexpected_marker(colorname)
 signal removing(p_name)
 
-func _init(p_name, p_address):
+func _init(p_name):
 	name = p_name
-	hub = BLEHub.new(p_name, "train", p_address)
+	hub = BLEHub.new(p_name, "smart_train")
 	hub.connect("data_received", self, "_on_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 
 func serialize():
 	var struct = {}
 	struct["name"] = name
-	struct["address"] = hub.address
 	return struct
 
 func _on_hub_program_started():
