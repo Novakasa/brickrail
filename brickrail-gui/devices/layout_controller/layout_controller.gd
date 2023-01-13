@@ -17,7 +17,7 @@ func _init(p_name):
 		devices[port] = null
 		
 	hub = BLEHub.new(p_name, "layout_controller")
-	hub.connect("data_received", self, "_on_data_received")
+	hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 
@@ -57,12 +57,8 @@ func _on_device_removing(_controllername, port):
 	devices[port] = null
 	emit_signal("devices_changed", name)
 
-func _on_data_received(key, data):
-	if key == "device_data":
-		var devkey = data.key
-		var devport = data.port
-		var devdata = data.data
-		emit_signal("device_data_received", devport, devkey, devdata)
+func _on_hub_runtime_data_received(data):
+	pass
 
 func device_call(port, funcname, args):
 	hub.rpc("device_call", [port, funcname, args])

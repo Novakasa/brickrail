@@ -8,6 +8,12 @@ var responsiveness
 var controllername
 var device_type = "switch_motor"
 
+var position_to_enum = {"left": 0, "right": 1}
+
+const DATA_SWITCH_CONFIRM = 0
+
+const SWITCH_COMMAND_SWITCH = 0
+
 signal position_changed(position)
 signal responsiveness_changed(value)
 signal device_call(port, funcname, args)
@@ -23,20 +29,19 @@ func _init(p_hub, p_port, p_controllername):
 func set_hub(p_hub):
 	if hub != null:
 		hub.disconnect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
-		hub.disconnect("data_received", self, "_on_hub_data_received")
+		hub.disconnect("runtime_data_received", self, "_on_hub_runtime_data_received")
 	hub = p_hub
 	if hub != null:
 		hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
-		hub.connect("data_received", self, "_on_hub_data_received")
+		hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
 
-func _on_hub_data_received(key, data):
-	if key != "device_data":
-		return
-	if data.port != port:
-		return
-	var devkey = data.key
-	var devdata = data.data
-	_on_device_data_received(devkey, devdata)
+func _on_hub_runtime_data_received(data):
+	if data[0] == DATA_SWITCH_CONFIRM:
+		if data[1] != port:
+			return
+		position = ["left", "right", "none"][data[2]]
+		emit_signal("position_changed", position)
+		set_responsive()
 
 func serialize():
 	var struct = {}
@@ -49,13 +54,6 @@ func serialize_reference():
 	struct["port"] = port
 	return struct
 
-func _on_device_data_received(key, data):
-	prints("switch got data", key)
-	if key == "position_changed":
-		position = data
-		set_responsive()
-		emit_signal("position_changed", data)
-
 func _on_hub_responsiveness_changed(value):
 	if value:
 		position = "unknown"
@@ -66,10 +64,8 @@ func _on_hub_responsiveness_changed(value):
 		set_unresponsive()
 
 func setup_on_hub():
-	hub.rpc("add_switch", [port])
-
-func device_call(funcname, args):
-	hub.rpc("device_call", [port, funcname, args])
+	# hub.rpc("add_switch", [port])
+	pass
 
 func set_unresponsive():
 	responsiveness = false
@@ -81,7 +77,7 @@ func set_responsive():
 
 func switch(position):
 	set_unresponsive()
-	device_call("switch", [position])
+	hub.rpc("device_execute", [port, SWITCH_COMMAND_SWITCH, position_to_enum[position]])
 
 func remove():
 	set_hub(null)

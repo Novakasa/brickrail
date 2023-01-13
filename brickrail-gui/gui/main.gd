@@ -12,7 +12,7 @@ func _ready():
 	Devices.connect("train_added", self, "_on_devices_train_added")
 	Devices.connect("layout_controller_added", self, "_on_devices_layout_controller_added")
 
-func _on_devices_data_received(key, data):
+func _on_devices_data_received(_key, _data):
 	pass
 
 func _on_devices_train_added(p_name):
@@ -25,7 +25,7 @@ func _on_devices_layout_controller_added(p_name):
 	layout_controller_gui.setup(p_name)
 	get_node(layout_controller_container).add_child(layout_controller_gui)
 
-func _on_Devices_data_received(key, data):
+func _on_Devices_data_received(_key, _data):
 	pass
 
 func _on_LayoutSelect_pressed():
