@@ -52,19 +52,16 @@ func set_name(p_new_name):
 	emit_signal("name_changed", old_name, p_new_name)
 
 func start():
-	hub.rpc("start", [])
+	hub.rpc("execute_behavior", [64 ^ 3])
 
 func stop():
-	hub.rpc("stop", [])
-
-func wait():
-	hub.rpc("wait", [])
+	hub.rpc("execute_behavior", [32])
 
 func slow():
-	hub.rpc("slow", [])
+	hub.rpc("execute_behavior", [64 ^ 2])
 
 func flip_heading():
-	hub.rpc("flip_heading", [])
+	hub.rpc("execute_behavior", [128])
 
 func remove():
 	hub.remove()

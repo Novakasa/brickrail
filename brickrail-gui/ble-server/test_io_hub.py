@@ -33,7 +33,7 @@ async def io_test():
         await asyncio.sleep(1.0)
         await test_hub.rpc("print_data", bytearray([0, 1, 2, 10]))
         await asyncio.sleep(1.0)
-        for i in range(0,256-16):
+        for i in range(0,256-16, 8):
             await test_response(bytearray([j for j in range(i, i+16)]))
             # await asyncio.sleep(0.2)
         await asyncio.sleep(1)

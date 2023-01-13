@@ -24,8 +24,12 @@ class BLEProject:
         del self.hubs[name]
     
     async def find_device(self):
-        device =  await find_device()
-        await self.out_queue.put(SerialData("device_name_found", None, device.name))
+        try:
+            device =  await find_device()
+        except asyncio.TimeoutError:
+            await self.out_queue.put(SerialData("no_device_found", None, None))
+        else:
+            await self.out_queue.put(SerialData("device_name_found", None, device.name))
     
     def get_hubnames(self):
         return list(self.hubs.keys())

@@ -8,9 +8,6 @@ margin_right = 237.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 connect_button = NodePath("connect_button")
 run_button = NodePath("run_button")
 

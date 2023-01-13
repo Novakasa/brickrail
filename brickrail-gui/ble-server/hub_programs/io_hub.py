@@ -139,8 +139,10 @@ class IOHub:
             func_hash = bytes(msg[0:2])
             arg_bytes = msg[2:]
             func = getattr(self.device, self.device_attrs[func_hash])
-            if len(arg_bytes)>0:
+            if len(arg_bytes)>1:
                 _result = func(arg_bytes)
+            elif len(arg_bytes)==1:
+                _result = func(arg_bytes[0])
             else:
                 _result = func()
             return

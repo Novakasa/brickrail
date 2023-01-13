@@ -3,7 +3,6 @@
 [ext_resource path="res://devices/train/train_settings_dialog.gd" type="Script" id=1]
 
 [node name="TrainSettingsDialog" type="WindowDialog"]
-visible = true
 margin_left = 322.997
 margin_top = 118.621
 margin_right = 522.997

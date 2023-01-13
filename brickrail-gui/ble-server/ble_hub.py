@@ -162,7 +162,8 @@ class BLEHub:
         funcname_hash = bytes([attr_hash1,attr_hash2])
         if args is None:
             args = b""
-        args = bytes(args)
+        if not isinstance(args, bytes):
+            args = bytes(args)
         msg = bytes([_IN_ID_RPC]) + funcname_hash + args
         await self.send_safe(msg)
     
@@ -226,11 +227,12 @@ class BLEHub:
                 device = await find_device(self.name)
             await self.hub.connect(device)
         except Exception:
-            self.to_out_queue("connect_error", [str(Exception)])
+            self.to_out_queue("connect_error", [repr(Exception)])
         else:
             self.to_out_queue("connected", None)
     
     async def disconnect(self):
+        assert self.hub.connected
         print("disconnecting")
         await self.hub.disconnect()
         print("disconnected")
