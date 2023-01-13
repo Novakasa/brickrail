@@ -3,7 +3,7 @@ class_name LayoutRoute
 extends Reference
 
 var edges = []
-var legs = []
+var legs: Array = []
 
 var length = 0.0
 var leg_index = 0

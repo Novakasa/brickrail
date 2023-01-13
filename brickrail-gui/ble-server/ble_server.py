@@ -34,10 +34,10 @@ class ClientCommand:
             func = getattr(project.hubs[self.hub], self.funcname)
 
         if asyncio.iscoroutinefunction(func):
-            print(f"awaiting coroutine: {func} with args {self.args}")
+            # print(f"awaiting coroutine: {func} with args {self.args}")
             result = await func(*self.args)
         else:
-            print(f"executing func: {func}")
+            # print(f"executing func: {func}")
             result = func(*self.args)
         
         if self.return_key is not None:
@@ -57,7 +57,9 @@ class BLEServer:
         while True:
             print("[BLEServer] waiting for messages to send...")
             serial_data = await project.out_queue.get()
-            await websocket.send(serial_data.to_json())
+            message = serial_data.to_json()
+            print(f"[BLEServer] sending message: {message}")
+            await websocket.send(message)
     
     async def in_handler(self, websocket, path):
         print("[BLEServer] waiting for messages to receive...")

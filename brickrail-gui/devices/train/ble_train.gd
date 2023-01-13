@@ -17,6 +17,7 @@ const DATA_SENSOR_ADVANCE = 3
 var color_name_to_enum = {"yellow": 0, "blue": 1, "green": 2, "red": 3, "none": 15}
 var leg_type_to_enum = {"travel": 0, "flip": 1, "start": 2}
 var intention_to_enum = {"stop": 0, "pass": 1}
+var sensor_key_to_enum = {null: 0, "enter": 1, "in": 2, "leave": 3}
 
 func _init(p_name):
 	name = p_name
@@ -37,16 +38,16 @@ func set_route(p_route):
 	route.connect("intention_changed", self, "_on_route_intention_changed")
 	
 	hub.rpc("new_route", null)
-	var leg_index = 0
-	for leg in route.legs:
+	for leg_index in range(1, len(route.legs)):
+		var leg = route.legs[leg_index]
 		var data = [leg_index]
-		for sensor_index in range(len(leg.sensors_dirtracks)):
+		for sensor_index in range(len(leg.sensor_dirtracks)):
 			var key = leg.sensor_keys[sensor_index]
-			var color = leg.sensor_dirtracks.get_sensor().get_colorname()
-			var speed = 0
-			var composite = (speed << 6) + (key << 4) + color_name_to_enum[color]
+			var color = leg.sensor_dirtracks[sensor_index].get_sensor().get_colorname()
+			var speed = 3
+			var composite = (speed << 6) + (sensor_key_to_enum[key] << 4) + color_name_to_enum[color]
 			data.append(composite)
-		var composite = leg_type_to_enum[leg.get_type()] + intention_to_enum[leg.intention]
+		var composite = leg_type_to_enum[leg.get_type()] + (intention_to_enum[leg.intention]<<4)
 		data.append(composite)
 		hub.rpc("set_route_leg", data)
 		leg_index += 1
@@ -64,6 +65,9 @@ func set_name(p_new_name):
 	name = p_new_name
 	hub.set_name(p_new_name)
 	emit_signal("name_changed", old_name, p_new_name)
+
+func advance_route():
+	hub.rpc("advance_route", null)
 
 func fast():
 	hub.rpc("execute_behavior", [64 ^ 1])

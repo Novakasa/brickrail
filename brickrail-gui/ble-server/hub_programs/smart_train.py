@@ -9,6 +9,7 @@ _COLOR_YELLOW = const(0)
 _COLOR_BLUE   = const(1)
 _COLOR_GREEN  = const(2)
 _COLOR_RED    = const(3)
+_COLOR_NONE   = const(15)
 COLOR_HUES = (31, 199, 113, 339)
 
 _SENSOR_KEY_NONE  = const(0)
@@ -47,6 +48,7 @@ def sensor_speed_to_motor_speed(sensor_speed):
         return _MOTOR_FAST_SPEED
     if sensor_speed == _SENSOR_SPEED_SLOW:
         return _MOTOR_SLOW_SPEED
+    assert False, sensor_speed
 
 class TrainSensor:
 
@@ -147,7 +149,7 @@ class Route:
     
     def advance_sensor(self, color):
         next_color = self.get_current_leg().get_next_color()
-        if next_color != color:
+        if next_color != color and next_color != _COLOR_NONE:
             print("Marker", color, "!=", next_color)
             return 0
         

@@ -150,7 +150,7 @@ class BLEHub:
             # print("got data:", [byte for byte in data])
             await self.data_queue.put(data)
             self.data_subject.on_next(data)
-            self.to_out_queue("runtime_data", data)
+            self.to_out_queue("runtime_data", list(data))
     
     def queue_rpc(self, funcname, args=None):
         self.input_queue.put_nowait({"funcname": funcname, "args": args})
