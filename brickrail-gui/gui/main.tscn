@@ -45,7 +45,6 @@ size_flags_vertical = 3
 tab_align = 0
 
 [node name="trains" type="ScrollContainer" parent="HSplitContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -60,19 +59,20 @@ margin_bottom = 31.0
 size_flags_horizontal = 3
 
 [node name="AddTrainButton" type="Button" parent="HSplitContainer/TabContainer/trains/VBoxContainer"]
-margin_right = 291.0
+margin_right = 260.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "add train"
 
 [node name="trains" type="VBoxContainer" parent="HSplitContainer/TabContainer/trains/VBoxContainer"]
 margin_top = 31.0
-margin_right = 291.0
+margin_right = 260.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="controllers" type="ScrollContainer" parent="HSplitContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0

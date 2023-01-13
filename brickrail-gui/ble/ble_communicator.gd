@@ -4,16 +4,19 @@ extends Node
 
 export var websocket_url = "ws://localhost:64569"
 var _client = WebSocketClient.new()
+var process
 
 signal message_received(message)
 
 func _exit_tree():
 	_client.disconnect_from_host()
+	process.kill()
 
 func _ready():
 	
 	# OS.execute("cmd", ["start cmd /K"], false)
-	var process = load("res://ble/ble_process.gd").new()
+	process = BLEProcess.new()
+	add_child(process)
 	process.start_process()
 
 	_client.connect("connection_closed", self, "_closed")

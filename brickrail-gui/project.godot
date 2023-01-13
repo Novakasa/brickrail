@@ -185,7 +185,7 @@ window/energy_saving/keep_screen_on=false
 
 [gdnative]
 
-singletons=[ "res://pythonscript.gdnlib" ]
+singletons=[  ]
 
 [physics]
 
