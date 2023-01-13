@@ -114,7 +114,7 @@ class TrainMotor:
 class Route:
     def __init__(self):
         self.legs = [RouteLeg(b"\x02")]
-        assert self.legs[0].type == _LEG_TYPE_START, self.legs[0].type
+        # assert self.legs[0].type == _LEG_TYPE_START, self.legs[0].type
         self.index = 0
 
     def get_current_leg(self):
@@ -243,6 +243,9 @@ class Train:
 
     def set_route_leg(self, data):
         self.route.set_leg(data)
+    
+    def set_leg_intention(self, data):
+        self.route.legs[data[0]].intention = data[1]
 
     def update(self, delta):
         if self.motor.target_speed != 0:

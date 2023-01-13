@@ -153,7 +153,7 @@ class BLEHub:
             self.to_out_queue("runtime_data", data)
     
     def queue_rpc(self, funcname, args=None):
-        self.input_queue.put_nowait({"funcname": funcname, args: args})
+        self.input_queue.put_nowait({"funcname": funcname, "args": args})
     
     async def rpc(self, funcname, args=None):
         encoded = bytes(funcname, "ascii")

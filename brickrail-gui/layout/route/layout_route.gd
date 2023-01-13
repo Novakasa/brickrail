@@ -17,6 +17,7 @@ signal can_advance()
 signal target_entered(target_node)
 signal target_in(target_node)
 signal facing_flipped(facing)
+signal intention_changed(leg_index, intention)
 
 func add_prev_edge(edge):
 	edges.push_front(edge)
@@ -101,12 +102,18 @@ func update_intentions():
 
 func update_intention(i):
 	if i >= len(legs)-1:
-		legs[i].set_intention("stop")
+		set_leg_intention(i, "stop")
 		return
 	if can_lock_leg(i+1):
-		legs[i].set_intention("pass")
+		set_leg_intention(i, "pass")
 	else:
-		legs[i].set_intention("stop")
+		set_leg_intention(i, "stop")
+
+func set_leg_intention(index, intention):
+	var prev_intention = legs[index].intention
+	legs[index].set_intention(intention)
+	if intention != prev_intention:
+		emit_signal("intention_changed", index, intention)
 
 func can_advance():
 	if not get_current_leg().is_complete():

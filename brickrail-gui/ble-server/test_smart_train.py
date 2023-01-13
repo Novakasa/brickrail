@@ -12,6 +12,7 @@ _COLOR_YELLOW = const(0)
 _COLOR_BLUE   = const(1)
 _COLOR_GREEN  = const(2)
 _COLOR_RED    = const(3)
+_COLOR_NONE   = const(15)
 COLOR_HUES = (31, 199, 113, 339)
 
 _SENSOR_KEY_NONE  = const(0)
@@ -50,12 +51,12 @@ _STATE_STOPPED = const(0)
 _STATE_SLOW    = const(1)
 _STATE_CRUISE  = const(2)
 
-def create_leg_data(colors, keys, speeds, plan, start_index):
+def create_leg_data(colors, keys, speeds, plan, leg_type):
     data = bytearray()
     for color, key, speed in zip(colors, keys, speeds):
         composite = (speed << 6) + (key << 4) + color
         data.append(composite)
-    composite = start_index + (plan << 4)
+    composite = leg_type + (plan << 4)
     data.append(composite)
     return data
 

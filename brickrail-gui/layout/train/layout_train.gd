@@ -1,8 +1,8 @@
 class_name LayoutTrain
 extends Node2D
 
-var ble_train
-var virtual_train
+var ble_train: BLETrain
+var virtual_train: VirtualTrain
 var route
 var block
 var target_block
@@ -68,16 +68,14 @@ func can_control_ble_train():
 
 func set_ble_train(trainname):
 	if ble_train != null:
-		ble_train.disconnect("handled_marker", self, "_on_ble_train_handled_marker")
-		ble_train.disconnect("unexpected_marker", self, "_on_ble_train_unexpected_marker")
+		ble_train.disconnect("sensor_advance", self, "_on_ble_train_sensor_advance")
 		ble_train.disconnect("removing", self, "_on_ble_train_removing")
 	if trainname == null:
 		ble_train = null
 		emit_signal("ble_train_changed")
 		return
 	ble_train = Devices.trains[trainname]
-	ble_train.connect("handled_marker", self, "_on_ble_train_handled_marker")
-	ble_train.connect("unexpected_marker", self, "_on_ble_train_unexpected_marker")
+	ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
 	ble_train.connect("removing", self, "_on_ble_train_removing")
 	update_control_ble_train()
 	emit_signal("ble_train_changed")
@@ -100,9 +98,8 @@ func start():
 func _on_ble_train_removing(_name):
 	set_ble_train(null)
 
-func _on_ble_train_handled_marker(colorname):
-	assert(colorname==next_sensor_track.get_sensor().get_colorname())
-	next_sensor_track.get_sensor().trigger()
+func _on_ble_train_sensor_advance(colorname):
+	virtual_train.manual_sensor_advance()
 
 func _on_ble_train_unexpected_marker(colorname):
 	Logger.verbose("ble_train unexpected marker triggered", logging_module)

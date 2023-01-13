@@ -8,7 +8,7 @@ var running = false
 var communicator: BLECommunicator
 var responsiveness = false
 
-signal data_received(data)
+signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
 signal name_changed(p_name, p_new_name)
 signal connected
@@ -57,8 +57,11 @@ func _on_data_received(key, data):
 		emit_signal("program_stopped")
 		set_responsiveness(false)
 		return
+	if key == "runtime_data":
+		emit_signal("runtime_data_received", data)
+		return
 		
-	emit_signal("data_received", key, data)
+	prints("ble hub unrecognized data key:", key)
 
 func send_command(command, args, return_id=null):
 	# communicator.send_command(name, command, args, return_id)
