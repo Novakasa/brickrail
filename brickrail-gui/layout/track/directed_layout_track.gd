@@ -26,6 +26,7 @@ var prev_pos
 var id
 var prohibited
 var sensor
+var sensor_speed = "cruise"
 
 var l_idx
 var x_idx

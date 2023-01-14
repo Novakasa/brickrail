@@ -18,6 +18,7 @@ var color_name_to_enum = {"yellow": 0, "blue": 1, "green": 2, "red": 3, "none": 
 var leg_type_to_enum = {"travel": 0, "flip": 1, "start": 2}
 var intention_to_enum = {"stop": 0, "pass": 1}
 var sensor_key_to_enum = {null: 0, "enter": 1, "in": 2, "leave": 3}
+var sensor_speed_to_enum = {"fast": 1, "slow": 2, "cruise": 3}
 
 func _init(p_name):
 	name = p_name
@@ -44,8 +45,8 @@ func set_route(p_route):
 		for sensor_index in range(len(leg.sensor_dirtracks)):
 			var key = leg.sensor_keys[sensor_index]
 			var color = leg.sensor_dirtracks[sensor_index].get_sensor().get_colorname()
-			var speed = 3
-			var composite = (speed << 6) + (sensor_key_to_enum[key] << 4) + color_name_to_enum[color]
+			var speed = leg.sensor_dirtracks[sensor_index].sensor_speed
+			var composite = (sensor_speed_to_enum[speed] << 6) + (sensor_key_to_enum[key] << 4) + color_name_to_enum[color]
 			data.append(composite)
 		var composite = leg_type_to_enum[leg.get_type()] + (intention_to_enum[leg.intention]<<4)
 		data.append(composite)

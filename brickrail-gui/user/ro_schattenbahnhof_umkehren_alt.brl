@@ -266,7 +266,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -282,7 +286,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -298,7 +306,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -314,7 +326,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -352,7 +368,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "slow",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -420,7 +440,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "slow",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -514,7 +538,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "fast"
+					}
 				}
 			},
 			{
@@ -530,7 +558,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -546,7 +578,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -562,7 +598,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -578,7 +618,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -594,7 +638,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "fast"
+					}
 				}
 			},
 			{
@@ -995,7 +1043,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -1011,7 +1063,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -1136,7 +1192,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -1152,7 +1212,11 @@
 					]
 				},
 				"sensor": {
-					"markername": null
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{

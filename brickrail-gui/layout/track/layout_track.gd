@@ -107,6 +107,7 @@ func serialize(reference=false):
 	var connections_result = {}
 	var portals = {}
 	var switches_struct = {}
+	
 	if not reference:
 		for slot in directed_tracks:
 			var dirtrack = directed_tracks[slot]
@@ -128,6 +129,10 @@ func serialize(reference=false):
 		
 		if sensor != null:
 			result["sensor"] = sensor.serialize()
+			var sensor_speeds = {}
+			for slot in directed_tracks:
+				sensor_speeds[slot] = directed_tracks[slot].sensor_speed
+			result["sensor"]["speeds"] = sensor_speeds
 		
 		for slot in directed_tracks:
 			if directed_tracks[slot].prohibited:

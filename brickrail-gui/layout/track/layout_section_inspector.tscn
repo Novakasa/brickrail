@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://layout/track/layout_section_inspector.gd" type="Script" id=1]
+[ext_resource path="res://tools/selector.gd" type="Script" id=2]
 
 [node name="LayoutSectionInspector" type="VBoxContainer"]
 margin_right = 40.0
@@ -42,7 +43,7 @@ text = "add portal to..."
 [node name="SensorPanel" type="PanelContainer" parent="."]
 margin_top = 118.0
 margin_right = 156.0
-margin_bottom = 212.0
+margin_bottom = 254.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -51,13 +52,13 @@ __meta__ = {
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 149.0
-margin_bottom = 87.0
+margin_bottom = 129.0
 
 [node name="SensorInspector" type="VBoxContainer" parent="SensorPanel"]
 margin_left = 7.0
 margin_top = 7.0
 margin_right = 149.0
-margin_bottom = 87.0
+margin_bottom = 129.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -82,27 +83,24 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="HBoxContainer" type="HBoxContainer" parent="SensorPanel/SensorInspector"]
+[node name="MarkerSelect" type="OptionButton" parent="SensorPanel/SensorInspector"]
 margin_top = 60.0
 margin_right = 142.0
 margin_bottom = 80.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
-
-[node name="MarkerSelect" type="OptionButton" parent="SensorPanel/SensorInspector/HBoxContainer"]
-margin_right = 142.0
-margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="CollectSegment" type="Button" parent="."]
-margin_top = 216.0
-margin_right = 156.0
-margin_bottom = 236.0
-text = "Collect segment"
-__meta__ = {
-"_edit_use_anchors_": false
-}
+[node name="Label3" type="Label" parent="SensorPanel/SensorInspector"]
+margin_top = 84.0
+margin_right = 142.0
+margin_bottom = 98.0
+text = "Speed"
+
+[node name="SpeedSelect" type="OptionButton" parent="SensorPanel/SensorInspector"]
+margin_top = 102.0
+margin_right = 142.0
+margin_bottom = 122.0
+script = ExtResource( 2 )
+has_none = false
 
 [node name="CreateBlockPopup" type="PopupPanel" parent="."]
 margin_top = 66.0
@@ -169,7 +167,7 @@ text = "OK"
 [connection signal="toggled" from="OneWayCheckbox" to="." method="_on_OneWayCheckbox_toggled"]
 [connection signal="pressed" from="AddPortal" to="." method="_on_AddPortal_pressed"]
 [connection signal="pressed" from="SensorPanel/SensorInspector/RemoveSensor" to="." method="_on_RemoveSensor_pressed"]
-[connection signal="item_selected" from="SensorPanel/SensorInspector/HBoxContainer/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
-[connection signal="pressed" from="CollectSegment" to="." method="_on_CollectSegment_pressed"]
+[connection signal="item_selected" from="SensorPanel/SensorInspector/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
+[connection signal="meta_selected" from="SensorPanel/SensorInspector/SpeedSelect" to="." method="_on_SpeedSelect_meta_selected"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockCancelButton" to="." method="_on_BlockCancelButton_pressed"]
 [connection signal="pressed" from="CreateBlockPopup/VBoxContainer/HBoxContainer/BlockOKButton" to="." method="_on_BlockOKButton_pressed"]

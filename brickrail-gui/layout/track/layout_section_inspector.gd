@@ -24,6 +24,7 @@ func _on_section_track_added(track):
 			$AddSensor.visible=false
 			$SensorPanel.visible=true
 			update_marker_select()
+			update_speed_select()
 		if dirtrack.get_next() == null:
 			$AddPortal.visible=true
 		else:
@@ -57,25 +58,18 @@ func _on_AddSensor_pressed():
 	var sensor = LayoutSensor.new(null)
 	dirtrack.add_sensor(sensor)
 	update_marker_select()
+	update_speed_select()
 
 func _on_BlockOKButton_pressed():
 	var block_name = $CreateBlockPopup/VBoxContainer/NameEdit.text
 	LayoutInfo.create_block(block_name, section)
 	$CreateBlockPopup.hide()
 
-
 func _on_BlockCancelButton_pressed():
 	$CreateBlockPopup.hide()
 
-
-func _on_CollectSegment_pressed():
-	if len(section.tracks)==1:
-		section.collect_segment()
-	else:
-		push_error("can't collect segment on section with more than one track!")
-
 func update_marker_select():
-	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
+	var marker_select = $SensorPanel/SensorInspector/MarkerSelect
 	marker_select.clear()
 	marker_select.add_item("None")
 	marker_select.set_item_metadata(0, null)
@@ -90,16 +84,24 @@ func update_marker_select():
 			marker_select.select(get_colorname_index(sensor.marker_color))
 
 func get_selected_colorname():
-	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
+	var marker_select = $SensorPanel/SensorInspector/MarkerSelect
 	return marker_select.get_selected_metadata()
 
 func get_colorname_index(colorname):
-	var marker_select = $SensorPanel/SensorInspector/HBoxContainer/MarkerSelect
+	var marker_select = $SensorPanel/SensorInspector/MarkerSelect
 	for i in range(marker_select.get_item_count()):
 		if marker_select.get_item_metadata(i) == colorname:
 			return i
 	assert(false)
-		
+
+func update_speed_select():
+	var labels = ["slow", "cruise", "fast"]
+	var marker_select = $SensorPanel/SensorInspector/SpeedSelect
+	marker_select.set_items(labels, labels)
+	marker_select.select_meta(dirtrack.sensor_speed)
+
+func _on_SpeedSelect_meta_selected(meta):
+	dirtrack.sensor_speed = meta
 
 func _on_RemoveSensor_pressed():
 	dirtrack.remove_sensor()

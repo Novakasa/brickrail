@@ -183,6 +183,9 @@ func load(struct):
 			track_obj.load_switches(track.switches)
 		if "sensor" in track:
 			track_obj.load_sensor(track.sensor)
+			if "speeds" in track.sensor:
+				for slot in track.sensor.speeds:
+					track_obj.directed_tracks[slot].sensor_speed = track.sensor.speeds[slot]
 		if "prohibited_slot" in track:
 			track_obj.directed_tracks[track.prohibited_slot].get_opposite().set_one_way(true)
 	
