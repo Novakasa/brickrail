@@ -15,6 +15,7 @@ func _on_section_unselected():
 func _on_section_track_added(track):
 	if len(section.tracks) == 1:
 		dirtrack = section.tracks[0]
+		$CreateBlock.visible=false
 		$OneWayCheckbox.visible=true
 		$OneWayCheckbox.pressed = dirtrack.get_opposite().prohibited
 		if dirtrack.get_sensor() == null:
@@ -30,6 +31,7 @@ func _on_section_track_added(track):
 		else:
 			$AddPortal.visible=false
 	else:
+		$CreateBlock.visible=true
 		$AddSensor.visible=false
 		$SensorPanel.visible=false
 		$OneWayCheckbox.visible=false
