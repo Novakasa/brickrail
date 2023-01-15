@@ -38,4 +38,5 @@ func _on_AddLayoutControllerButton_pressed():
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		print("manual quit!")
+		yield(Devices.clean_exit_coroutine(), "completed")
 		get_tree().quit()

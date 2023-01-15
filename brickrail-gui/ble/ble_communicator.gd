@@ -8,10 +8,6 @@ var process
 
 signal message_received(message)
 
-func _exit_tree():
-	_client.disconnect_from_host()
-	process.kill()
-
 func _ready():
 	
 	# OS.execute("cmd", ["start cmd /K"], false)
@@ -46,3 +42,10 @@ func _on_data():
 
 func _process(_delta):
 	_client.poll()
+
+func clean_exit_coroutine():
+	_client.disconnect_from_host()
+	print("waiting for connection to ble-server closed")
+	yield(_client, "connection_closed")
+	print("closed!")
+	process.kill()

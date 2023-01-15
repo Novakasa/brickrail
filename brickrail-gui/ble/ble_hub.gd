@@ -90,3 +90,17 @@ func rpc(funcname, args):
 func remove():
 	assert(not connected)
 	emit_signal("removing", name)
+
+func stop_program_coroutine():
+	stop_program()
+	yield(self, "program_stopped")
+
+func disconnect_coroutine():
+	disconnect_hub()
+	yield(self, "disconnected")
+
+func clean_exit_coroutine():
+	if running:
+		yield(stop_program_coroutine(), "completed")
+	if connected:
+		yield(disconnect_coroutine(), "completed")
