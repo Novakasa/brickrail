@@ -244,9 +244,10 @@ class BLEHub:
             program = f"ble-server/hub_programs/{self.program_name}.py"
 
         async def run_coroutine():
+            self.program_stopped.clear()
+            self.hub_ready.clear()
             await self.hub.run(program, print_output=False, wait=True)
             self.program_stopped.set()
-            self.hub_ready.clear()
             self.to_out_queue("program_stopped", None)
         
         async def output_loop():
