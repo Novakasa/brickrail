@@ -8,7 +8,7 @@ onready var TrainControllerGUI = preload("res://devices/train/train_control_gui.
 onready var LayoutControllerGUI = preload("res://devices/layout_controller/layout_controller_gui.tscn")
 
 func _ready():
-	Devices.connect("data_received", self, "_on_devices_data_received")
+	get_tree().set_auto_accept_quit(false)
 	Devices.connect("train_added", self, "_on_devices_train_added")
 	Devices.connect("layout_controller_added", self, "_on_devices_layout_controller_added")
 
@@ -25,15 +25,6 @@ func _on_devices_layout_controller_added(p_name):
 	layout_controller_gui.setup(p_name)
 	get_node(layout_controller_container).add_child(layout_controller_gui)
 
-func _on_Devices_data_received(_key, _data):
-	pass
-
-func _on_LayoutSelect_pressed():
-	pass # Replace with function body.
-
-func _on_LayoutDraw_pressed():
-	pass # Replace with function body.
-
 func _on_AddTrainButton_pressed():
 	var trainnum = len(Devices.trains)
 	var trainname = "train"+str(trainnum)
@@ -43,3 +34,8 @@ func _on_AddLayoutControllerButton_pressed():
 	var controllernum = len(Devices.layout_controllers)
 	var controllername = "controller"+str(controllernum)
 	Devices.add_layout_controller(controllername)
+
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		print("manual quit!")
+		get_tree().quit()
