@@ -91,16 +91,31 @@ func remove():
 	assert(not connected)
 	emit_signal("removing", name)
 
-func stop_program_coroutine():
-	stop_program()
-	yield(self, "program_stopped")
+func connect_coroutine():
+	connect_hub()
+	yield(self, "connected")
 
 func disconnect_coroutine():
 	disconnect_hub()
 	yield(self, "disconnected")
+
+func run_program_coroutine():
+	run_program()
+	yield(self, "program_started")
+
+func stop_program_coroutine():
+	stop_program()
+	yield(self, "program_stopped")
 
 func clean_exit_coroutine():
 	if running:
 		yield(stop_program_coroutine(), "completed")
 	if connected:
 		yield(disconnect_coroutine(), "completed")
+
+func connect_and_run_coroutine():
+	if not connected:
+		yield(connect_coroutine(), "completed")
+		yield(Devices.get_tree().create_timer(0.5), "timeout")
+	if not running:
+		yield(run_program_coroutine(), "completed")

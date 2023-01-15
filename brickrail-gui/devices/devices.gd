@@ -98,3 +98,6 @@ func clear():
 
 func clean_exit_coroutine():
 	yield($BLEController.clean_exit_coroutine(), "completed")
+
+func connect_and_run_all_coroutine():
+	yield($BLEController.connect_and_run_all_coroutine(), "completed")

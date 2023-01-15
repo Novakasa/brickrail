@@ -40,3 +40,6 @@ func _notification(what):
 		print("manual quit!")
 		yield(Devices.clean_exit_coroutine(), "completed")
 		get_tree().quit()
+
+func _on_ConnectAllButton_pressed():
+	yield(Devices.connect_and_run_all_coroutine(), "completed")

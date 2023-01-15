@@ -49,3 +49,7 @@ func clean_exit_coroutine():
 	for hub in hubs.values():
 		yield(hub.clean_exit_coroutine(), "completed")
 	yield($BLECommunicator.clean_exit_coroutine(), "completed")
+
+func connect_and_run_all_coroutine():
+	for hub in hubs.values():
+		yield(hub.connect_and_run_coroutine(), "completed")

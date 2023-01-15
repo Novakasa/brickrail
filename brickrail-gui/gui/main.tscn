@@ -16,8 +16,8 @@ size_flags_vertical = 3
 theme = ExtResource( 7 )
 script = ExtResource( 5 )
 layout = NodePath("HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport/Layout")
-train_controller_container = NodePath("HSplitContainer/TabContainer/trains/VBoxContainer/trains")
-layout_controller_container = NodePath("HSplitContainer/TabContainer/controllers/VBoxContainer/controllers")
+train_controller_container = NodePath("HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer/trains")
+layout_controller_container = NodePath("HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer/controllers")
 
 [node name="Panel" type="Panel" parent="."]
 anchor_right = 1.0
@@ -37,14 +37,26 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 split_offset = 260
 
-[node name="TabContainer" type="TabContainer" parent="HSplitContainer"]
-margin_right = 270.0
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer"]
+margin_right = 301.0
+margin_bottom = 720.0
+size_flags_horizontal = 3
+
+[node name="ConnectAllButton" type="Button" parent="HSplitContainer/VBoxContainer"]
+margin_right = 301.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+text = "connect all"
+
+[node name="TabContainer" type="TabContainer" parent="HSplitContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 301.0
 margin_bottom = 720.0
 mouse_filter = 1
 size_flags_vertical = 3
 tab_align = 0
 
-[node name="trains" type="ScrollContainer" parent="HSplitContainer/TabContainer"]
+[node name="trains" type="ScrollContainer" parent="HSplitContainer/VBoxContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -53,25 +65,25 @@ margin_right = -5.0
 margin_bottom = -5.0
 size_flags_horizontal = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/TabContainer/trains"]
-margin_right = 260.0
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VBoxContainer/TabContainer/trains"]
+margin_right = 291.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 
-[node name="AddTrainButton" type="Button" parent="HSplitContainer/TabContainer/trains/VBoxContainer"]
-margin_right = 260.0
+[node name="AddTrainButton" type="Button" parent="HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer"]
+margin_right = 291.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "add train"
 
-[node name="trains" type="VBoxContainer" parent="HSplitContainer/TabContainer/trains/VBoxContainer"]
+[node name="trains" type="VBoxContainer" parent="HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer"]
 margin_top = 31.0
-margin_right = 260.0
+margin_right = 291.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="controllers" type="ScrollContainer" parent="HSplitContainer/TabContainer"]
+[node name="controllers" type="ScrollContainer" parent="HSplitContainer/VBoxContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -82,24 +94,24 @@ margin_bottom = -5.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/TabContainer/controllers"]
-margin_right = 260.0
+[node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/VBoxContainer/TabContainer/controllers"]
+margin_right = 291.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 
-[node name="AddLayoutControllerButton" type="Button" parent="HSplitContainer/TabContainer/controllers/VBoxContainer"]
+[node name="AddLayoutControllerButton" type="Button" parent="HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer"]
 margin_right = 260.0
 margin_bottom = 27.0
 text = "add layout controller"
 
-[node name="controllers" type="VBoxContainer" parent="HSplitContainer/TabContainer/controllers/VBoxContainer"]
+[node name="controllers" type="VBoxContainer" parent="HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer"]
 margin_top = 31.0
 margin_right = 260.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
-[node name="Settings" type="VBoxContainer" parent="HSplitContainer/TabContainer"]
+[node name="Settings" type="VBoxContainer" parent="HSplitContainer/VBoxContainer/TabContainer"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -109,17 +121,17 @@ margin_right = -5.0
 margin_bottom = -5.0
 script = ExtResource( 4 )
 
-[node name="GridContainer" type="GridContainer" parent="HSplitContainer/TabContainer/Settings"]
+[node name="GridContainer" type="GridContainer" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_right = 291.0
 margin_bottom = 27.0
 columns = 2
 
-[node name="RenderModeLabel" type="Label" parent="HSplitContainer/TabContainer/Settings/GridContainer"]
+[node name="RenderModeLabel" type="Label" parent="HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
 margin_right = 101.0
 margin_bottom = 27.0
 text = "Render mode"
 
-[node name="RenderModeOption" type="OptionButton" parent="HSplitContainer/TabContainer/Settings/GridContainer"]
+[node name="RenderModeOption" type="OptionButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
 margin_left = 105.0
 margin_right = 225.0
 margin_bottom = 27.0
@@ -130,38 +142,38 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BackgroundColor" type="ColorPickerButton" parent="HSplitContainer/TabContainer/Settings"]
+[node name="BackgroundColor" type="ColorPickerButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 31.0
 margin_right = 291.0
 margin_bottom = 58.0
 
-[node name="SurfaceColor" type="ColorPickerButton" parent="HSplitContainer/TabContainer/Settings"]
+[node name="SurfaceColor" type="ColorPickerButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 62.0
 margin_right = 291.0
 margin_bottom = 89.0
 
-[node name="PrimaryColor" type="ColorPickerButton" parent="HSplitContainer/TabContainer/Settings"]
+[node name="PrimaryColor" type="ColorPickerButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 93.0
 margin_right = 291.0
 margin_bottom = 120.0
 
-[node name="SecondaryColor" type="ColorPickerButton" parent="HSplitContainer/TabContainer/Settings"]
+[node name="SecondaryColor" type="ColorPickerButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 124.0
 margin_right = 291.0
 margin_bottom = 151.0
 
-[node name="TertiaryColor" type="ColorPickerButton" parent="HSplitContainer/TabContainer/Settings"]
+[node name="TertiaryColor" type="ColorPickerButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 155.0
 margin_right = 291.0
 margin_bottom = 182.0
 
-[node name="WhiteColor" type="ColorPickerButton" parent="HSplitContainer/TabContainer/Settings"]
+[node name="WhiteColor" type="ColorPickerButton" parent="HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 186.0
 margin_right = 291.0
 margin_bottom = 213.0
 
 [node name="LayoutGui" type="HSplitContainer" parent="HSplitContainer"]
-margin_left = 278.0
+margin_left = 309.0
 margin_right = 1280.0
 margin_bottom = 720.0
 split_offset = -202
@@ -298,12 +310,12 @@ render_target_update_mode = 3
 
 [node name="VSplitContainer" type="VSplitContainer" parent="HSplitContainer/LayoutGui"]
 margin_left = 814.0
-margin_right = 1002.0
+margin_right = 971.0
 margin_bottom = 720.0
 split_offset = 348
 
 [node name="TabContainer" type="TabContainer" parent="HSplitContainer/LayoutGui/VSplitContainer"]
-margin_right = 188.0
+margin_right = 157.0
 margin_bottom = 387.0
 
 [node name="InspectorContainer" type="Control" parent="HSplitContainer/LayoutGui/VSplitContainer/TabContainer"]
@@ -316,11 +328,11 @@ margin_bottom = -5.0
 
 [node name="VBoxContainer" type="VBoxContainer" parent="HSplitContainer/LayoutGui/VSplitContainer"]
 margin_top = 395.0
-margin_right = 188.0
+margin_right = 157.0
 margin_bottom = 720.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
-margin_right = 188.0
+margin_right = 157.0
 margin_bottom = 27.0
 
 [node name="add_layer_button" type="Button" parent="HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
@@ -338,7 +350,7 @@ rounded = true
 
 [node name="LayerContainer" type="ItemList" parent="HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
 margin_top = 31.0
-margin_right = 188.0
+margin_right = 157.0
 margin_bottom = 325.0
 size_flags_vertical = 3
 
@@ -359,15 +371,16 @@ resizable = true
 mode = 0
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
-[connection signal="pressed" from="HSplitContainer/TabContainer/trains/VBoxContainer/AddTrainButton" to="." method="_on_AddTrainButton_pressed"]
-[connection signal="pressed" from="HSplitContainer/TabContainer/controllers/VBoxContainer/AddLayoutControllerButton" to="." method="_on_AddLayoutControllerButton_pressed"]
-[connection signal="item_selected" from="HSplitContainer/TabContainer/Settings/GridContainer/RenderModeOption" to="HSplitContainer/TabContainer/Settings" method="_on_RenderModeOption_item_selected"]
-[connection signal="color_changed" from="HSplitContainer/TabContainer/Settings/BackgroundColor" to="HSplitContainer/TabContainer/Settings" method="_on_BackgroundColor_color_changed"]
-[connection signal="color_changed" from="HSplitContainer/TabContainer/Settings/SurfaceColor" to="HSplitContainer/TabContainer/Settings" method="_on_SurfaceColor_color_changed"]
-[connection signal="color_changed" from="HSplitContainer/TabContainer/Settings/PrimaryColor" to="HSplitContainer/TabContainer/Settings" method="_on_PrimaryColor_color_changed"]
-[connection signal="color_changed" from="HSplitContainer/TabContainer/Settings/SecondaryColor" to="HSplitContainer/TabContainer/Settings" method="_on_SecondaryColor_color_changed"]
-[connection signal="color_changed" from="HSplitContainer/TabContainer/Settings/TertiaryColor" to="HSplitContainer/TabContainer/Settings" method="_on_TertiaryColor_color_changed"]
-[connection signal="color_changed" from="HSplitContainer/TabContainer/Settings/WhiteColor" to="HSplitContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/ConnectAllButton" to="." method="_on_ConnectAllButton_pressed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer/AddTrainButton" to="." method="_on_AddTrainButton_pressed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer/AddLayoutControllerButton" to="." method="_on_AddLayoutControllerButton_pressed"]
+[connection signal="item_selected" from="HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/RenderModeOption" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_RenderModeOption_item_selected"]
+[connection signal="color_changed" from="HSplitContainer/VBoxContainer/TabContainer/Settings/BackgroundColor" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_BackgroundColor_color_changed"]
+[connection signal="color_changed" from="HSplitContainer/VBoxContainer/TabContainer/Settings/SurfaceColor" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_SurfaceColor_color_changed"]
+[connection signal="color_changed" from="HSplitContainer/VBoxContainer/TabContainer/Settings/PrimaryColor" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PrimaryColor_color_changed"]
+[connection signal="color_changed" from="HSplitContainer/VBoxContainer/TabContainer/Settings/SecondaryColor" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_SecondaryColor_color_changed"]
+[connection signal="color_changed" from="HSplitContainer/VBoxContainer/TabContainer/Settings/TertiaryColor" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_TertiaryColor_color_changed"]
+[connection signal="color_changed" from="HSplitContainer/VBoxContainer/TabContainer/Settings/WhiteColor" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
 [connection signal="pressed" from="HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutNew" to="HSplitContainer/LayoutGui" method="_on_LayoutNew_pressed"]
 [connection signal="pressed" from="HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutSave" to="HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]
 [connection signal="pressed" from="HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/LayoutOpen" to="HSplitContainer/LayoutGui" method="_on_LayoutOpen_pressed"]
