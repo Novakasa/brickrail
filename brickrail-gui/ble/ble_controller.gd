@@ -46,6 +46,9 @@ func _on_hub_command(hub, command, args, return_key):
 	send_command(hub, command, args, return_key)
 
 func clean_exit_coroutine():
+	if not $BLECommunicator.connected:
+		yield(Devices.get_tree(), "idle_frame")
+		return
 	for hub in hubs.values():
 		yield(hub.clean_exit_coroutine(), "completed")
 	yield($BLECommunicator.clean_exit_coroutine(), "completed")

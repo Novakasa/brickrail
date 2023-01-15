@@ -5,6 +5,7 @@ extends Node
 export var websocket_url = "ws://localhost:64569"
 var _client = WebSocketClient.new()
 var process
+var connected = false
 
 signal message_received(message)
 
@@ -28,10 +29,12 @@ func _ready():
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
 	set_process(false)
+	connected=false
 
 func _connected(proto = ""):
 	print("Connected with protocol: ", proto)
 	# send_command(null, "hub_demo", [], null)
+	connected=true
 
 func send_message(message):
 	_client.get_peer(1).put_packet(message.to_utf8())
