@@ -42,11 +42,22 @@ margin_right = 301.0
 margin_bottom = 720.0
 size_flags_horizontal = 3
 
-[node name="ConnectAllButton" type="Button" parent="HSplitContainer/VBoxContainer"]
+[node name="HBoxContainer" type="HBoxContainer" parent="HSplitContainer/VBoxContainer"]
 margin_right = 301.0
+margin_bottom = 27.0
+
+[node name="ConnectAllButton" type="Button" parent="HSplitContainer/VBoxContainer/HBoxContainer"]
+margin_right = 148.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "connect all"
+
+[node name="DisconnectAllButton" type="Button" parent="HSplitContainer/VBoxContainer/HBoxContainer"]
+margin_left = 152.0
+margin_right = 301.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+text = "disconnect all"
 
 [node name="TabContainer" type="TabContainer" parent="HSplitContainer/VBoxContainer"]
 margin_top = 31.0
@@ -371,7 +382,8 @@ resizable = true
 mode = 0
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
-[connection signal="pressed" from="HSplitContainer/VBoxContainer/ConnectAllButton" to="." method="_on_ConnectAllButton_pressed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/HBoxContainer/ConnectAllButton" to="." method="_on_ConnectAllButton_pressed"]
+[connection signal="pressed" from="HSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton" to="." method="_on_DisconnectAllButton_pressed"]
 [connection signal="pressed" from="HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer/AddTrainButton" to="." method="_on_AddTrainButton_pressed"]
 [connection signal="pressed" from="HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer/AddLayoutControllerButton" to="." method="_on_AddLayoutControllerButton_pressed"]
 [connection signal="item_selected" from="HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/RenderModeOption" to="HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_RenderModeOption_item_selected"]

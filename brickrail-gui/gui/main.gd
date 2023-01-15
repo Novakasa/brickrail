@@ -38,8 +38,11 @@ func _on_AddLayoutControllerButton_pressed():
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		print("manual quit!")
-		yield(Devices.clean_exit_coroutine(), "completed")
+		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
 		get_tree().quit()
 
 func _on_ConnectAllButton_pressed():
-	yield(Devices.connect_and_run_all_coroutine(), "completed")
+	yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
+
+func _on_DisconnectAllButton_pressed():
+	yield(Devices.get_ble_controller().disconnect_all_coroutine(), "completed")

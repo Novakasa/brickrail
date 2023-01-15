@@ -49,10 +49,22 @@ func clean_exit_coroutine():
 	if not $BLECommunicator.connected:
 		yield(Devices.get_tree(), "idle_frame")
 		return
-	for hub in hubs.values():
-		yield(hub.clean_exit_coroutine(), "completed")
+	yield(disconnect_all_coroutine(), "completed")
 	yield($BLECommunicator.clean_exit_coroutine(), "completed")
 
 func connect_and_run_all_coroutine():
+	yield(Devices.get_tree(), "idle_frame")
 	for hub in hubs.values():
-		yield(hub.connect_and_run_coroutine(), "completed")
+		if not hub.connected:
+			yield(hub.connect_coroutine(), "completed")
+			yield(Devices.get_tree().create_timer(0.5), "timeout")
+		if not hub.running:
+			yield(hub.run_program_coroutine(), "completed")
+
+func disconnect_all_coroutine():
+	yield(Devices.get_tree(), "idle_frame")
+	for hub in hubs.values():
+		if hub.running:
+			yield(hub.stop_program_coroutine(), "completed")
+		if hub.connected:
+			yield(hub.disconnect_coroutine(), "completed")

@@ -96,8 +96,5 @@ func clear():
 	for controller in layout_controllers.values():
 		controller.remove()
 
-func clean_exit_coroutine():
-	yield($BLEController.clean_exit_coroutine(), "completed")
-
-func connect_and_run_all_coroutine():
-	yield($BLEController.connect_and_run_all_coroutine(), "completed")
+func get_ble_controller():
+	return $BLEController

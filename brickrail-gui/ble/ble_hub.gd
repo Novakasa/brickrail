@@ -107,17 +107,3 @@ func stop_program_coroutine():
 	stop_program()
 	yield(self, "program_stopped")
 
-func clean_exit_coroutine():
-	yield(Devices.get_tree(), "idle_frame") #to make sure its a coroutine
-	if running:
-		yield(stop_program_coroutine(), "completed")
-	if connected:
-		yield(disconnect_coroutine(), "completed")
-
-func connect_and_run_coroutine():
-	yield(Devices.get_tree(), "idle_frame") #to make sure its a coroutine
-	if not connected:
-		yield(connect_coroutine(), "completed")
-		yield(Devices.get_tree().create_timer(0.5), "timeout")
-	if not running:
-		yield(run_program_coroutine(), "completed")
