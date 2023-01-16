@@ -250,8 +250,8 @@ func advance_sensor(sensor_dirtrack):
 	var current_leg = get_current_leg()
 	assert(sensor_dirtrack == current_leg.get_next_sensor_dirtrack())
 	
-	var behavior = get_next_sensor_behavior()
 	update_locks()
+	var behavior = get_next_sensor_behavior()
 	
 	current_leg.advance_sensor()
 	
