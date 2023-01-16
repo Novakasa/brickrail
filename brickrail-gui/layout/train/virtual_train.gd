@@ -121,7 +121,11 @@ func set_facing(p_facing):
 	update_wagon_visuals()
 
 func set_route(p_route):
+	if route != null:
+		route.disconnect("execute_behavior", self, "execute_behavior")
 	route = p_route
+	if route != null:
+		route.connect("execute_behavior", self, "execute_behavior")
 
 func advance_route():
 	if seek_forward_timer >= 0.0:

@@ -33,6 +33,11 @@ func advance_sensor():
 func is_complete():
 	return current_index >= len(self.sensor_dirtracks)
 
+func get_prev_sensor_key():
+	if current_index == 0:
+		return null
+	return sensor_keys[current_index-1]
+
 func get_next_sensor_dirtrack():
 	if current_index >= len(sensor_dirtracks):
 		return null
@@ -40,6 +45,9 @@ func get_next_sensor_dirtrack():
 
 func get_next_key():
 	return sensor_keys[current_index]
+
+func has_entered():
+	return sensor_keys.find("enter")<current_index
 
 func collect_sensor_list():
 	var target_node = get_target_node()

@@ -18,6 +18,7 @@ signal target_entered(target_node)
 signal target_in(target_node)
 signal facing_flipped(facing)
 signal intention_changed(leg_index, intention)
+signal execute_behavior(behavior)
 
 func add_prev_edge(edge):
 	edges.push_front(edge)
@@ -114,6 +115,23 @@ func set_leg_intention(index, intention):
 	legs[index].set_intention(intention)
 	if intention != prev_intention:
 		emit_signal("intention_changed", index, intention)
+		if index == leg_index:
+			_on_current_leg_intention_changed(prev_intention, intention)
+
+func _on_current_leg_intention_changed(old_intention, new_intention):
+	if get_current_leg().is_complete():
+		return
+	var prev_key = get_current_leg().get_prev_sensor_key()
+	var next_type = null
+	if get_next_leg() != null:
+		next_type = get_next_leg().get_type()
+	var old_behavior = get_sensor_behavior(prev_key, old_intention, next_type)
+	var new_behavior = get_sensor_behavior(prev_key, new_intention, next_type)
+	if new_behavior != old_behavior:
+		emit_signal("execute_behavior", new_behavior)
+
+	if get_current_leg().has_entered() and new_intention == "pass":
+		lock_and_switch_next()
 
 func can_advance():
 	if not get_current_leg().is_complete():
@@ -292,21 +310,23 @@ func update_locks():
 	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 
 func get_next_sensor_behavior():
-	var current_leg = get_current_leg()
-	var next_leg = get_next_leg()
+	var intention = get_current_leg().intention
+	var next_type = null
+	if get_next_leg() != null:
+		next_type = get_next_leg().get_type()
+	var key = get_current_leg().get_next_key()
 	
-	var key = current_leg.get_next_key()
+	return get_sensor_behavior(key, intention, next_type)
+
+func get_sensor_behavior(key, intention, next_type):
 	if key == null:
-		return "ignore"
+		return "cruise"
 	
 	var please_stop = false
-	if next_leg == null:
+	if intention == "stop" or next_type == "flip":
 		please_stop = true
-	elif current_leg.intention == "stop" or next_leg.get_type() == "flip":
-		please_stop = true
-	
 	if not please_stop:
-		return "ignore"
+		return "cruise"
 	
 	if key == "enter":
 		return "slow"
