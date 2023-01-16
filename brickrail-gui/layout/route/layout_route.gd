@@ -250,9 +250,18 @@ func advance_sensor(sensor_dirtrack):
 	var current_leg = get_current_leg()
 	assert(sensor_dirtrack == current_leg.get_next_sensor_dirtrack())
 	
+	# note:
+	# possible that update_locks blocks the next leg by starting another train,
+	# changing the current leg intention.
+	# This is prevented if the next leg is already locked at this point, which
+	# usually happens on "enter", but if passing is set only after "enter", next
+	# leg currently won't be locked. This is why it would be nice to have
+	# dynamic train behavior and leg locking if the intention changes after
+	# the "enter" sensor. See issue #50
+
 	update_locks()
-	var behavior = get_next_sensor_behavior()
 	
+	var behavior = get_next_sensor_behavior()
 	current_leg.advance_sensor()
 	
 	if current_leg.is_complete():
