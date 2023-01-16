@@ -131,7 +131,7 @@ func advance_route():
 	if seek_forward_timer >= 0.0:
 		cleanup_seek()
 	prints("virtual train advancing!", trainname)
-	execute_behavior(route.advance())
+	route.advance()
 	update_next_sensor_info()
 
 func update_next_sensor_info():
@@ -268,7 +268,7 @@ func wrap_dirtrack():
 
 func pass_sensor(sensor_dirtrack):
 	prints("virtual train pass sensor", sensor_dirtrack.id, trainname)
-	execute_behavior(route.advance_sensor(sensor_dirtrack))
+	route.advance_sensor(sensor_dirtrack)
 	
 	update_next_sensor_info()
 

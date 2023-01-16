@@ -242,12 +242,16 @@ func advance():
 	for i in range(len(current_leg.sensor_dirtracks)):
 		prints(i, current_leg.sensor_keys[i], current_leg.sensor_dirtracks[i].id)
 	
+	var behavior
 	if current_leg.get_type() == "flip":
 		emit_signal("facing_flipped", current_leg.get_target_node().facing)
 		if current_leg.intention == "pass":
-			return "flip_cruise"
-		return "flip_slow"
-	return "cruise"
+			behavior = "flip_cruise"
+		else:
+			behavior = "flip_slow"
+	else:
+		behavior = "cruise"
+	emit_signal("execute_behavior", behavior)
 
 func next_sensor_flips():
 	if get_next_leg() == null:
@@ -285,13 +289,14 @@ func advance_sensor(sensor_dirtrack):
 	if current_leg.is_complete():
 		if current_leg.intention == "pass":
 			assert(can_advance())
-			behavior = advance()
-		elif get_next_leg() == null:
+			advance()
+			return
+		if get_next_leg() == null:
 			emit_signal("completed")
 		else:
 			emit_signal("stopped")
 	
-	return behavior
+	emit_signal("execute_behavior", behavior)
 
 func update_locks():
 	var current_leg = get_current_leg()
