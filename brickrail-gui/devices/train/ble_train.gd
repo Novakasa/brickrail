@@ -35,12 +35,17 @@ func _on_hub_program_started():
 	pass
 
 func set_route(p_route):
+	if route != null:
+		route.disconnect("intention_changed", self, "_on_route_intention_changed")
 	route = p_route
-	route.connect("intention_changed", self, "_on_route_intention_changed")
-	
+	if route != null:
+		route.connect("intention_changed", self, "_on_route_intention_changed")
+		download_route(route)
+
+func download_route(p_route)
 	hub.rpc("new_route", null)
-	for leg_index in range(1, len(route.legs)):
-		var leg = route.legs[leg_index]
+	for leg_index in range(1, len(p_route.legs)):
+		var leg = p_route.legs[leg_index]
 		var data = [leg_index]
 		for sensor_index in range(len(leg.sensor_dirtracks)):
 			var key = leg.sensor_keys[sensor_index]
@@ -51,7 +56,6 @@ func set_route(p_route):
 		var composite = leg_type_to_enum[leg.get_type()] + (intention_to_enum[leg.intention]<<4)
 		data.append(composite)
 		hub.rpc("set_route_leg", data)
-		leg_index += 1
 
 func _on_route_intention_changed(leg_index, intention):
 	hub.rpc("set_leg_intention", [leg_index, intention_to_enum[intention]])
