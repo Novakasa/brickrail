@@ -11,6 +11,8 @@ var locked = false
 
 func _init(p_edges):
 	edges = p_edges
+	if get_type() == "start":
+		current_index = 1
 
 func get_start_node():
 	return edges[0].from_node
@@ -38,6 +40,11 @@ func get_prev_sensor_key():
 		return null
 	return sensor_keys[current_index-1]
 
+func get_prev_sensor_dirtrack():
+	if current_index == 0:
+		return null
+	return sensor_dirtracks[current_index-1]
+
 func get_next_sensor_dirtrack():
 	if current_index >= len(sensor_dirtracks):
 		return null
@@ -52,7 +59,7 @@ func has_entered():
 func collect_sensor_list():
 	var target_node = get_target_node()
 	var start_node = get_start_node()
-	if get_type() == "flip":
+	if get_type() != "travel":
 		sensor_keys.append("in")
 		sensor_dirtracks.append(target_node.sensors.sensor_dirtracks["in"])
 		return

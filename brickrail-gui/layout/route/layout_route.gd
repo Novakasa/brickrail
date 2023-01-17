@@ -93,8 +93,6 @@ func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 
 func collect_sensors():
 	for leg in legs:
-		if leg.get_type() == "start":
-			continue
 		leg.collect_sensor_list()
 
 func update_intentions():
@@ -122,11 +120,16 @@ func _on_current_leg_intention_changed(old_intention, new_intention):
 	if get_current_leg().is_complete():
 		return
 	var prev_key = get_current_leg().get_prev_sensor_key()
+	var prev_speed
+	if get_current_leg().get_prev_sensor_dirtrack() == null:
+		prev_speed = legs[leg_index-1].get_prev_sensor_dirtrack().sensor_speed
+	else:
+		prev_speed = get_current_leg().get_prev_sensor_dirtrack().sensor_speed
 	var next_type = null
 	if get_next_leg() != null:
 		next_type = get_next_leg().get_type()
-	var old_behavior = get_sensor_behavior(prev_key, old_intention, next_type)
-	var new_behavior = get_sensor_behavior(prev_key, new_intention, next_type)
+	var old_behavior = get_sensor_behavior(prev_key, prev_speed, old_intention, next_type)
+	var new_behavior = get_sensor_behavior(prev_key, prev_speed, new_intention, next_type)
 	if new_behavior != old_behavior:
 		emit_signal("execute_behavior", new_behavior)
 
@@ -227,10 +230,10 @@ func advance_leg():
 
 func advance():
 	var next_leg = get_next_leg()
-	if not next_leg == null:
-		if not next_leg.locked:
-			lock_and_switch_next()
-			LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
+	if not next_leg.locked:
+		lock_and_switch_next()
+		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
+	var prev_leg = get_current_leg()
 	
 	advance_leg()
 	
@@ -243,14 +246,15 @@ func advance():
 		prints(i, current_leg.sensor_keys[i], current_leg.sensor_dirtracks[i].id)
 	
 	var behavior
+	var speed = prev_leg.get_prev_sensor_dirtrack().sensor_speed
 	if current_leg.get_type() == "flip":
 		emit_signal("facing_flipped", current_leg.get_target_node().facing)
 		if current_leg.intention == "pass":
-			behavior = "flip_cruise"
+			behavior = "flip_"+speed
 		else:
 			behavior = "flip_slow"
 	else:
-		behavior = "cruise"
+		behavior = speed
 	emit_signal("execute_behavior", behavior)
 
 func next_sensor_flips():
@@ -320,18 +324,16 @@ func get_next_sensor_behavior():
 	if get_next_leg() != null:
 		next_type = get_next_leg().get_type()
 	var key = get_current_leg().get_next_key()
+	var speed = get_current_leg().get_next_sensor_dirtrack().sensor_speed
 	
-	return get_sensor_behavior(key, intention, next_type)
+	return get_sensor_behavior(key, speed, intention, next_type)
 
-func get_sensor_behavior(key, intention, next_type):
+func get_sensor_behavior(key, speed, intention, next_type):
 	if key == null:
-		return "cruise"
+		return speed
 	
-	var please_stop = false
-	if intention == "stop" or next_type == "flip":
-		please_stop = true
-	if not please_stop:
-		return "cruise"
+	if not (intention == "stop" or next_type == "flip"):
+		return speed
 	
 	if key == "enter":
 		return "slow"

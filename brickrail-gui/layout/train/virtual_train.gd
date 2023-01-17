@@ -17,7 +17,9 @@ var l_idx = 0
 
 var size = Vector2(0.3,0.2)
 var facing: int = 1
-var max_velocity = 3.0
+
+var fast_velocity = 5.0
+var cruise_velocity = 3.0
 var slow_velocity = 1.0
 
 var trainname
@@ -180,9 +182,13 @@ func manual_sensor_advance():
 		seek_forward_dirtrack = next_sensor_track
 	pass_sensor(next_sensor_track)
 
+func fast():
+	Logger.verbose("fast()", logging_module)
+	set_state("fast")
+
 func cruise():
 	Logger.verbose("cruise()", logging_module)
-	set_state("started")
+	set_state("cruise")
 
 func slow():
 	Logger.verbose("slow()", logging_module)
@@ -217,8 +223,16 @@ func _process(delta):
 	update_velocity(delta)
 
 func update_velocity(delta):
-	if state=="started":
-		velocity = min(velocity+acceleration*delta, max_velocity)
+	if state == "fast":
+		if velocity<fast_velocity:
+			velocity = min(velocity+acceleration*delta, fast_velocity)
+		else:
+			velocity = max(velocity-deceleration*delta, fast_velocity)
+	if state=="cruise":
+		if velocity<cruise_velocity:
+			velocity = min(velocity+acceleration*delta, cruise_velocity)
+		else:
+			velocity = max(velocity-deceleration*delta, cruise_velocity)
 	if state=="slow":
 		if velocity<slow_velocity:
 			velocity = min(velocity+acceleration*delta, slow_velocity)
@@ -272,22 +286,14 @@ func pass_sensor(sensor_dirtrack):
 	
 	update_next_sensor_info()
 
-func execute_behavior(behavior):
+func execute_behavior(behavior: String):
 	prints("virtual train executing:", behavior, trainname)
-	if behavior == "ignore":
-		return
-	if behavior == "cruise":
-		cruise()
-	if behavior == "slow":
-		slow()
-	if behavior == "stop":
-		stop()
-	if behavior == "flip_cruise":
+	var parts = behavior.split("_")
+	assert(len(parts)<=2)
+	if parts[0] == "flip":
 		flip_heading()
-		cruise()
-	if behavior == "flip_slow":
-		flip_heading()
-		slow()
+	if parts[-1] in ["stop", "slow", "cruise", "fast"]:
+		call(parts[-1])
 
 func update_position():
 	var interpolation = dirtrack.interpolate(track_pos, turn)
