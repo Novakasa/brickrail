@@ -118,6 +118,8 @@ class Route:
         self.legs = [RouteLeg(b"\x02")]
         # assert self.legs[0].type == _LEG_TYPE_START, self.legs[0].type
         self.index = 0
+        self.last_key = None
+        self.last_speed = None
 
     def get_current_leg(self):
         return self.legs[self.index]
@@ -131,8 +133,15 @@ class Route:
     def set_leg(self, data):
         leg_index = data[0]
         if leg_index == len(self.legs):
-            self.legs.append(None)    
-        self.legs[leg_index] = RouteLeg(data[1:])
+            self.legs.append(None)
+        leg = RouteLeg(data[1:])
+        self.legs[leg_index] = leg
+
+        if leg_index == 0:
+            assert leg.type == _LEG_TYPE_START
+            self.last_key = leg.get_next_key()
+            self.last_speed = leg.get_next_speed()
+            leg.index += 1
 
     def advance_leg(self):
         self.index += 1
@@ -143,17 +152,19 @@ class Route:
         self.advance_leg()
         if self.get_current_leg().type == _LEG_TYPE_FLIP:
             if self.get_current_leg().intention == _INTENTION_PASS:
-                return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_CRUISE
+                return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ self.last_speed
             return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_SLOW
-        return _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_CRUISE
+        return _BEHAVIOR_FLAG_SPEED ^ self.last_speed
     
     def advance_sensor(self, color):
         next_color = self.get_current_leg().get_next_color()
         if next_color != color and next_color != _COLOR_NONE:
             print("Marker", color, "!=", next_color)
             return 0
-        
-        behavior = self.get_next_sensor_behavior()
+        self.last_key = self.get_current_leg().get_next_key()
+        self.last_speed = self.get_current_leg().get_next_speed()
+
+        behavior = self.get_last_behavior()
 
         current_leg = self.get_current_leg()
         current_leg.advance_sensor()
@@ -164,24 +175,21 @@ class Route:
                 io_hub.emit_data(bytes((_DATA_ROUTE_COMPLETE, self.index)))
         
         return behavior
-        
-    def get_next_sensor_behavior(self):
 
-        current_leg = self.get_current_leg()
+    def get_next_type(self):
         next_leg = self.get_next_leg()
+        if next_leg is not None:
+            return next_leg.type
+        return None
 
-        key = current_leg.get_next_key()
-        speed = current_leg.get_next_speed()
+    def get_last_behavior(self):
+        intention = self.get_current_leg().intention
+        return self.get_behavior(self.last_key, self.last_speed, intention, self.get_next_type())
+
+    def get_behavior(self, key, speed, intention, next_type):
         if key == _SENSOR_KEY_NONE:
             return _BEHAVIOR_FLAG_SPEED ^ speed
-
-        please_stop = False
-        if next_leg is None:
-            please_stop = True
-        elif current_leg.intention == _INTENTION_STOP or next_leg.type == _LEG_TYPE_FLIP:
-            please_stop = True
-
-        if not please_stop:
+        if not (intention == _INTENTION_STOP or next_type == _LEG_TYPE_FLIP):
             return _BEHAVIOR_FLAG_SPEED ^ speed
 
         # stop the train
@@ -248,6 +256,9 @@ class Train:
     
     def set_leg_intention(self, data):
         self.route.legs[data[0]].intention = data[1]
+        if self.route.index == data[0]:
+            behavior = self.route.get_last_behavior()
+            self.execute_behavior(behavior)
 
     def update(self, delta):
         if self.motor.target_speed != 0:

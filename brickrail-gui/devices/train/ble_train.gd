@@ -44,7 +44,7 @@ func set_route(p_route):
 
 func download_route(p_route):
 	hub.rpc("new_route", null)
-	for leg_index in range(1, len(p_route.legs)):
+	for leg_index in range(len(p_route.legs)):
 		var leg = p_route.legs[leg_index]
 		var data = [leg_index]
 		for sensor_index in range(len(leg.sensor_dirtracks)):
