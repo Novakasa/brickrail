@@ -175,6 +175,7 @@ Devices="*res://devices/devices.tscn"
 Settings="*res://gui/settings.gd"
 Tools="*res://tools/tools.gd"
 Logger="*res://tools/logger.gd"
+GuiApi="*res://gui/gui_api.gd"
 
 [display]
 
