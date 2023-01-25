@@ -176,6 +176,7 @@ Settings="*res://gui/settings.gd"
 Tools="*res://tools/tools.gd"
 Logger="*res://tools/logger.gd"
 GuiApi="*res://gui/gui_api.gd"
+Coroutines="*res://tools/coroutines.gd"
 
 [display]
 
