@@ -176,6 +176,28 @@
 			{
 				"l_idx": 0,
 				"x_idx": 4,
+				"y_idx": 1,
+				"portals": {
+					"W": {
+						"l_idx": 1,
+						"x_idx": 3,
+						"y_idx": 1,
+						"next_slot": "W",
+						"orientation": "EW"
+					}
+				},
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
 				"y_idx": 2,
 				"connections": {
 					"E": [
@@ -254,13 +276,13 @@
 			},
 			{
 				"l_idx": 0,
-				"x_idx": 5,
-				"y_idx": 1,
+				"x_idx": 4,
+				"y_idx": 7,
 				"portals": {
 					"W": {
 						"l_idx": 1,
-						"x_idx": 4,
-						"y_idx": 1,
+						"x_idx": 3,
+						"y_idx": 7,
 						"next_slot": "W",
 						"orientation": "EW"
 					}
@@ -272,6 +294,26 @@
 					"W": [
 
 					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 5,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "slow",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -337,28 +379,6 @@
 				"l_idx": 0,
 				"x_idx": 5,
 				"y_idx": 7,
-				"portals": {
-					"W": {
-						"l_idx": 1,
-						"x_idx": 4,
-						"y_idx": 7,
-						"next_slot": "W",
-						"orientation": "EW"
-					}
-				},
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-
-					]
-				}
-			},
-			{
-				"l_idx": 0,
-				"x_idx": 6,
-				"y_idx": 1,
 				"connections": {
 					"E": [
 						"center"
@@ -373,6 +393,19 @@
 						"E": "slow",
 						"W": "cruise"
 					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 6,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
 				}
 			},
 			{
@@ -438,13 +471,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"sensor": {
-					"markername": null,
-					"speeds": {
-						"E": "slow",
-						"W": "cruise"
-					}
 				}
 			},
 			{
@@ -1010,76 +1036,10 @@
 				"l_idx": 1,
 				"x_idx": 3,
 				"y_idx": 1,
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"left"
-					]
-				}
-			},
-			{
-				"l_idx": 1,
-				"x_idx": 3,
-				"y_idx": 2,
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"left"
-					]
-				},
-				"sensor": {
-					"markername": null,
-					"speeds": {
-						"E": "cruise",
-						"W": "cruise"
-					}
-				}
-			},
-			{
-				"l_idx": 1,
-				"x_idx": 3,
-				"y_idx": 6,
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"right"
-					]
-				},
-				"sensor": {
-					"markername": null,
-					"speeds": {
-						"E": "cruise",
-						"W": "cruise"
-					}
-				}
-			},
-			{
-				"l_idx": 1,
-				"x_idx": 3,
-				"y_idx": 7,
-				"connections": {
-					"E": [
-						"center"
-					],
-					"W": [
-						"right"
-					]
-				}
-			},
-			{
-				"l_idx": 1,
-				"x_idx": 4,
-				"y_idx": 1,
 				"portals": {
 					"E": {
 						"l_idx": 0,
-						"x_idx": 5,
+						"x_idx": 4,
 						"y_idx": 1,
 						"next_slot": "E",
 						"orientation": "EW"
@@ -1090,7 +1050,69 @@
 
 					],
 					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 2,
+				"connections": {
+					"E": [
 						"center"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 6,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"right"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 7,
+				"portals": {
+					"E": {
+						"l_idx": 0,
+						"x_idx": 4,
+						"y_idx": 7,
+						"next_slot": "E",
+						"orientation": "EW"
+					}
+				},
+				"connections": {
+					"E": [
+
+					],
+					"W": [
+						"right"
 					]
 				}
 			},
@@ -1114,28 +1136,6 @@
 				"connections": {
 					"E": [
 						"center"
-					],
-					"W": [
-						"center"
-					]
-				}
-			},
-			{
-				"l_idx": 1,
-				"x_idx": 4,
-				"y_idx": 7,
-				"portals": {
-					"E": {
-						"l_idx": 0,
-						"x_idx": 5,
-						"y_idx": 7,
-						"next_slot": "E",
-						"orientation": "EW"
-					}
-				},
-				"connections": {
-					"E": [
-
 					],
 					"W": [
 						"center"
@@ -1527,76 +1527,6 @@
 				}
 			},
 			{
-				"name": "block6",
-				"section": {
-					"tracks": [
-						{
-							"l_idx": 0,
-							"x_idx": 8,
-							"y_idx": 1,
-							"next_slot": "W",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 0,
-							"x_idx": 7,
-							"y_idx": 1,
-							"next_slot": "W",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 0,
-							"x_idx": 6,
-							"y_idx": 1,
-							"next_slot": "W",
-							"orientation": "EW"
-						}
-					]
-				},
-				"prior_sensors": {
-
-				},
-				"can_stop": {
-					"0": false,
-					"1": false
-				}
-			},
-			{
-				"name": "block7",
-				"section": {
-					"tracks": [
-						{
-							"l_idx": 0,
-							"x_idx": 6,
-							"y_idx": 7,
-							"next_slot": "E",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 0,
-							"x_idx": 7,
-							"y_idx": 7,
-							"next_slot": "E",
-							"orientation": "EW"
-						},
-						{
-							"l_idx": 0,
-							"x_idx": 8,
-							"y_idx": 7,
-							"next_slot": "E",
-							"orientation": "EW"
-						}
-					]
-				},
-				"prior_sensors": {
-
-				},
-				"can_stop": {
-					"0": false,
-					"1": false
-				}
-			},
-			{
 				"name": "block6_",
 				"section": {
 					"tracks": [
@@ -1804,6 +1734,90 @@
 				"can_stop": {
 					"0": true,
 					"1": true
+				}
+			},
+			{
+				"name": "block6",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 5,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 6,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 7,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 8,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": false,
+					"1": false
+				}
+			},
+			{
+				"name": "block7",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 8,
+							"y_idx": 7,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 7,
+							"y_idx": 7,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 6,
+							"y_idx": 7,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 5,
+							"y_idx": 7,
+							"next_slot": "W",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": false,
+					"1": false
 				}
 			}
 		],
