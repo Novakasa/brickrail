@@ -552,6 +552,16 @@ func set_portal_target(track):
 		attempt_portal()
 
 func attempt_portal():
+	if len(portal_dirtrack.connections)>0:
+		push_error("portal start dirtrack already has connection!")
+		return
+	if len(portal_target.get_opposite().connections)>0:
+		if len(portal_target.connections)>0:
+			push_error("portal target dirtrack already has connection!")
+			return
+		else:
+			portal_target = portal_target.get_opposite()
+	
 	portal_dirtrack.connect_portal(portal_target)
 	portal_target.get_opposite().connect_portal(portal_dirtrack.get_opposite())
 	
