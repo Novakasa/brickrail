@@ -305,8 +305,19 @@ margin_left = 802.0
 margin_right = 806.0
 margin_bottom = 27.0
 
-[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit"]
+[node name="ControlTools" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit"]
 margin_top = 31.0
+margin_right = 806.0
+margin_bottom = 58.0
+size_flags_horizontal = 3
+
+[node name="StopAllButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/ControlTools"]
+margin_right = 109.0
+margin_bottom = 27.0
+text = "Stop all trains"
+
+[node name="ViewportContainer" type="ViewportContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit"]
+margin_top = 62.0
 margin_right = 806.0
 margin_bottom = 689.0
 mouse_filter = 1
@@ -316,7 +327,7 @@ stretch = true
 script = ExtResource( 6 )
 
 [node name="Viewport" type="Viewport" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer"]
-size = Vector2( 806, 658 )
+size = Vector2( 806, 627 )
 handle_input_locally = false
 msaa = 2
 fxaa = true
@@ -439,6 +450,7 @@ size_flags_horizontal = 3
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/CheckBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/AutoTarget" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
 [connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutTools/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/ControlTools/StopAllButton" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_StopAllButton_pressed"]
 [connection signal="button_down" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_button_down"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/SaveLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SaveLayoutDialog_file_selected"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/OpenLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_OpenLayoutDialog_file_selected"]

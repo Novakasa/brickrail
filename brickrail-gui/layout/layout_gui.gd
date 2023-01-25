@@ -14,6 +14,7 @@ func _ready():
 	LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
 	LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
 	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
+	_on_input_mode_changed(LayoutInfo.input_mode)
 
 func _on_layers_changed():
 	var layers = get_node(layer_container)
@@ -46,6 +47,10 @@ func _on_input_mode_changed(mode):
 			buttons[key].pressed=true
 		else:
 			buttons[key].pressed=false
+	if mode == "control":
+		$LayoutSplit/ControlTools.visible=true
+	else:
+		$LayoutSplit/ControlTools.visible=false
 
 func _on_LayoutControl_pressed():
 	LayoutInfo.set_input_mode("control")
@@ -123,3 +128,9 @@ func _on_add_layer_button_button_down():
 	var l = int(edit.value)
 	edit.value = l+1
 	LayoutInfo.add_layer(l)
+
+
+func _on_StopAllButton_pressed():
+	for train in LayoutInfo.trains.values():
+		if train.route != null:
+			train.cancel_route()

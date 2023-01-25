@@ -11,6 +11,8 @@ var leg_index = 0
 var trainname = null
 var highlighted=false
 
+var passing = true
+
 signal completed()
 signal stopped()
 signal can_advance()
@@ -66,6 +68,10 @@ func recalculate_route(fixed_facing):
 		redirect_with_route(new_route)
 		_on_LayoutInfo_blocked_tracks_changed(trainname)
 
+func set_passing(value):
+	passing = value
+	update_intentions()
+
 func get_start_node():
 	return legs[0].get_start_node()
 
@@ -76,6 +82,9 @@ func set_trainname(p_trainname):
 	if trainname != null:
 		LayoutInfo.disconnect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 		unset_all_attributes()
+		for leg in legs:
+			if leg.locked:
+				leg.unlock_tracks()
 	trainname = p_trainname
 
 	if trainname != null:
@@ -100,6 +109,9 @@ func update_intentions():
 		update_intention(i)
 
 func update_intention(i):
+	if not passing and not legs[i].has_entered() and not is_leg_greedy(i):
+		set_leg_intention(i, "stop")
+		return
 	if i >= len(legs)-1:
 		set_leg_intention(i, "stop")
 		return
@@ -157,13 +169,17 @@ func get_blocking_trains():
 			if blocking_train in blocking_trains:
 				continue
 			blocking_trains.append(blocking_train)
-		var greedy = not leg.get_target_node().obj.can_stop
-		if leg.get_type() == "flip" and index < len(legs)-1:
-			greedy = true
-		if not greedy:
+		if not is_leg_greedy(index):
 			break
 		index += 1
 	return blocking_trains
+
+func is_leg_greedy(index):
+	if not legs[index].get_target_node().obj.can_stop:
+		return true
+	if legs[index].get_type() == "flip" and index < len(legs)-1:
+		return true
+	return false
 
 func is_train_blocked():
 	if get_next_leg() == null:
@@ -177,10 +193,7 @@ func can_lock_leg(index):
 		var leg = legs[index]
 		if not leg.can_lock(trainname):
 			return false
-		var greedy = not leg.get_target_node().obj.can_stop
-		if leg.get_type() == "flip" and index < len(legs)-1:
-			greedy = true
-		if not greedy:
+		if not is_leg_greedy(index):
 			return true
 		index += 1
 
@@ -189,10 +202,7 @@ func lock_and_switch_next():
 	while index<len(legs):
 		var leg = legs[index]
 		leg.lock_and_switch(trainname)
-		var greedy = not leg.get_target_node().obj.can_stop
-		if leg.get_type() == "flip" and index < len(legs)-1:
-			greedy = true
-		if not greedy:
+		if not is_leg_greedy(index):
 			break
 		index += 1
 

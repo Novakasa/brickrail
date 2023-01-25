@@ -283,6 +283,16 @@ func set_route(p_route):
 		if selected:
 			route.set_highlight()
 
+func cancel_route():
+	assert(route != null)
+	if is_end_of_leg():
+		set_route(null)
+		return
+	route.set_passing(false)
+	yield(route, "stopped")
+	yield(get_tree(),"idle_frame") #wait for stopped signal to be handled
+	set_route(null)
+
 func _on_route_completed():
 	set_route(null)
 	if LayoutInfo.random_targets:
@@ -292,6 +302,8 @@ func _on_route_completed():
 			find_random_route(false)
 
 func _on_route_stopped():
+	if not route.passing:
+		return
 	prints("blocked, committed=", committed)
 	if not committed and not is_there_hope() and LayoutInfo.random_targets:
 		print("no hope, new route!")
