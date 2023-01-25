@@ -5,7 +5,8 @@ extends Reference
 var sensor_dirtracks = {"enter": null, "in": null, "leave": null}
 
 func set_sensor_dirtrack(key, dirtrack):
-	assert(dirtrack.get_sensor() != null)
+	if dirtrack != null:
+		assert(dirtrack.get_sensor() != null)
 	sensor_dirtracks[key] = dirtrack
 
 func get_sensor_dirtrack_key(dirtrack):
