@@ -131,6 +131,8 @@ func _on_add_layer_button_button_down():
 
 
 func _on_StopAllButton_pressed():
+	LayoutInfo.set_random_targets(false)
+	$LayoutSplit/LayoutTools/AutoTarget.pressed = false
 	for train in LayoutInfo.trains.values():
 		if train.route != null:
 			train.cancel_route()
