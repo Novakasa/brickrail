@@ -58,7 +58,11 @@ func connect_and_run_all_coroutine():
 	for hub in hubs.values():
 		if not hub.connected:
 			status.process("Connecting hub "+hub.name+"...")
-			yield(hub.connect_coroutine(), "completed")
+			var result = yield(hub.connect_coroutine(), "completed")
+			if result == "error":
+				push_error("connection error!")
+				status.ready()
+				return
 			yield(Devices.get_tree().create_timer(0.5), "timeout")
 		if not hub.running:
 			status.process("Hub "+hub.name+" downloading program...")

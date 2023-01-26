@@ -13,7 +13,7 @@ signal ble_command(hub, command, args, return_id)
 signal name_changed(p_name, p_new_name)
 signal connected
 signal disconnected
-signal connect_error(data)
+signal connect_error()
 signal program_started
 signal program_stopped
 signal responsiveness_changed(value)
@@ -45,7 +45,7 @@ func _on_data_received(key, data):
 		return
 	if key == "connect_error":
 		connected=false
-		emit_signal("connect_error", data)
+		emit_signal("connect_error")
 		return
 	if key == "program_started":
 		running=true
@@ -93,7 +93,11 @@ func remove():
 
 func connect_coroutine():
 	connect_hub()
-	yield(self, "connected")
+	var first_signal = yield(Await.first_signal(self, ["connected", "connect_error"]), "completed")
+	if first_signal == "connect_error":
+		push_error("connect error!")
+		return "error"
+	return "success"
 
 func disconnect_coroutine():
 	disconnect_hub()
