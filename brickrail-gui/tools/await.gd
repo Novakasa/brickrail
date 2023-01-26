@@ -1,6 +1,19 @@
 extends Node
 
-class _Emitter:
+# inspired by https://github.com/godotengine/godot/issues/21371
+
+class _SignalEmitter:
+	signal emitted(signal_name)
+	func emit(signal_name):
+		emit_signal("emitted", signal_name)
+
+func first_signal(obj, signals):
+	var emitter = _SignalEmitter.new()
+	for signal_name in signals:
+		obj.connect(signal_name, emitter, "emit", [signal_name])
+	return yield(emitter, "emitted")
+
+class _CoroutineEmitter:
 	signal emitted(done_coroutine)
 	func emit(result, coroutine=null):
 		var done_coroutine
@@ -12,7 +25,7 @@ class _Emitter:
 		emit_signal("emitted", done_coroutine)
 
 func any(coroutines):
-	var emitter = _Emitter.new()
+	var emitter = _CoroutineEmitter.new()
 	for coroutine in coroutines:
 		coroutine.connect("completed", emitter, "emit", [coroutine])
 	var completed = yield(emitter, 'emitted')
@@ -23,12 +36,12 @@ func any(coroutines):
 	return {"completed": completed, "pending": pending}
 
 func all(coroutines):
-	var emitter = _Emitter.new()
+	var emitter = _CoroutineEmitter.new()
 	for coroutine in coroutines:
 		coroutine.connect("completed", emitter, "emit", [coroutine])
 	var completed = []
 	for _coroutine in coroutines:
-		completed.append(yield(emitter, 'emitted'))
+		completed.append(yield(emitter, "emitted"))
 	return completed
 
 func wait(time):
