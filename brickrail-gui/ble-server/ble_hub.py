@@ -239,7 +239,6 @@ class BLEHub:
         self.to_out_queue("disconnected", None)
     
     async def run(self, program=None, wait=False):
-
         if program is None:
             program = f"ble-server/hub_programs/{self.program_name}.py"
 
@@ -277,7 +276,6 @@ class BLEHub:
                     await self.send_ack(False)
                 await asyncio.sleep(0.05)
         
-
         run_task = asyncio.create_task(run_coroutine())
         output_task = asyncio.create_task(output_loop())
         input_task = asyncio.create_task(input_loop())
@@ -290,11 +288,13 @@ class BLEHub:
         if not wait:
             return
 
-        await run_task
-        await asyncio.sleep(1)
-        output_task.cancel()
-        input_task.cancel()
-        timeout_task.cancel()
+        try:
+            await run_task
+            await asyncio.sleep(0.5)
+        finally:
+            output_task.cancel()
+            input_task.cancel()
+            timeout_task.cancel()
     
     async def stop_program(self):
         await self.send_sys_code(_SYS_CODE_STOP)

@@ -80,19 +80,29 @@ func _init(p_name):
 	logging_module = "virtual=" + trainname
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
-	for i in range(4):
-		wagons.append(VirtualTrainWagon.new())
-		add_child(wagons[-1])
-		wagons[-1].set_body_color(body_color)
-		wagons[-1].set_heading(0)
-		wagons[-1].set_facing(0)
-	
+	add_wagons(4)
 	update_wagon_visuals()
 	
 	connect("visibility_changed", self, "_on_visibility_changed")
 
 func _ready():
 	_on_settings_colors_changed()
+
+func add_wagons(num_wagons):
+	for wagon in wagons:
+		remove_child(wagon)
+		wagon.queue_free()
+	wagons = []
+	for i in range(num_wagons):
+		wagons.append(VirtualTrainWagon.new())
+		add_child(wagons[-1])
+		wagons[-1].set_body_color(body_color)
+		wagons[-1].set_heading(0)
+		wagons[-1].set_facing(0)
+
+func set_num_wagons(num_wagons):
+	add_wagons(num_wagons)
+	update_wagon_visuals()
 
 func set_color(p_color):
 	color = p_color

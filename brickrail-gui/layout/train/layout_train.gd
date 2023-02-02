@@ -130,6 +130,7 @@ func serialize():
 	struct["facing"] = facing
 	struct["fixed_facing"] = fixed_facing
 	struct["color"] = virtual_train.color.to_html()
+	struct["num_wagons"] = len(virtual_train.wagons)
 	if block != null:
 		struct["blockname"] = block.blockname
 		struct["blockindex"] = block.index

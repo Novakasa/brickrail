@@ -215,6 +215,8 @@ func load(struct):
 				train.set_ble_train(train_data.ble_train)
 			if "color" in train_data:
 				train.virtual_train.set_color(Color(train_data.color))
+			if "num_wagons" in train_data:
+				train.virtual_train.set_num_wagons(int(train_data.num_wagons))
 
 func get_hover_lock():
 	if drag_select or drawing_track:
@@ -420,6 +422,7 @@ func init_drag_train(train):
 	dragged_train = train
 	drag_virtual_train = VirtualTrain.new("drag-train")
 	drag_virtual_train.set_color(train.virtual_train.color)
+	drag_virtual_train.set_num_wagons(len(train.virtual_train.wagons))
 	grid.add_child(drag_virtual_train)
 	drag_virtual_train.set_process_unhandled_input(false)
 	drag_virtual_train.set_process(false)

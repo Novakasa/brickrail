@@ -8,7 +8,8 @@ func set_train(obj):
 	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
 	$FixedFacingCheckbox.pressed = train.fixed_facing
 	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance
-	$ColorContainer/ColorButton.color = train.virtual_train.color
+	$ColorButton.color = train.virtual_train.color
+	$WagonEdit.value = len(train.virtual_train.wagons)
 	Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
@@ -42,3 +43,6 @@ func _on_SensorAdvanceCheckbox_toggled(button_pressed):
 
 func _on_ColorButton_color_changed(color):
 	train.virtual_train.set_color(color)
+
+func _on_WagonEdit_value_changed(value):
+	train.virtual_train.set_num_wagons(int(value))

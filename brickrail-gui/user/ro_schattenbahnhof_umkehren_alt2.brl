@@ -1827,6 +1827,7 @@
 				"facing": 1,
 				"fixed_facing": true,
 				"color": "ff0242da",
+				"num_wagons": 5,
 				"blockname": "block5",
 				"blockindex": 1
 			},
@@ -1835,6 +1836,7 @@
 				"facing": 1,
 				"fixed_facing": true,
 				"color": "ff00b007",
+				"num_wagons": 5,
 				"blockname": "block6__",
 				"blockindex": 1
 			}

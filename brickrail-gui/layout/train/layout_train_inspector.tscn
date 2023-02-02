@@ -41,22 +41,34 @@ margin_right = 129.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
 
-[node name="ColorContainer" type="VBoxContainer" parent="."]
+[node name="ColorLabel" type="Label" parent="."]
 margin_top = 116.0
+margin_right = 129.0
+margin_bottom = 130.0
+text = "Color"
+
+[node name="ColorButton" type="ColorPickerButton" parent="."]
+margin_top = 134.0
 margin_right = 129.0
 margin_bottom = 154.0
 
-[node name="Label" type="Label" parent="ColorContainer"]
+[node name="WagonLabel" type="Label" parent="."]
+margin_top = 158.0
 margin_right = 129.0
-margin_bottom = 14.0
-text = "Color"
+margin_bottom = 172.0
+text = "Wagons"
 
-[node name="ColorButton" type="ColorPickerButton" parent="ColorContainer"]
-margin_top = 18.0
+[node name="WagonEdit" type="SpinBox" parent="."]
+margin_top = 176.0
 margin_right = 129.0
-margin_bottom = 38.0
+margin_bottom = 200.0
+min_value = 1.0
+max_value = 16.0
+value = 4.0
+rounded = true
 
 [connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
 [connection signal="toggled" from="SensorAdvanceCheckbox" to="." method="_on_SensorAdvanceCheckbox_toggled"]
 [connection signal="meta_selected" from="BLETrainContainer/BLETrainSelector" to="." method="_on_BLETrainSelector_meta_selected"]
-[connection signal="color_changed" from="ColorContainer/ColorButton" to="." method="_on_ColorButton_color_changed"]
+[connection signal="color_changed" from="ColorButton" to="." method="_on_ColorButton_color_changed"]
+[connection signal="value_changed" from="WagonEdit" to="." method="_on_WagonEdit_value_changed"]
