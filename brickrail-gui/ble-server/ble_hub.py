@@ -232,7 +232,6 @@ class BLEHub:
             self.to_out_queue("connected", None)
     
     async def disconnect(self):
-        assert self.hub.connected
         print("disconnecting")
         await self.hub.disconnect()
         print("disconnected")

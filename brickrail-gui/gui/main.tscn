@@ -431,6 +431,18 @@ margin_right = 1280.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 
+[node name="ErrorDialog" type="AcceptDialog" parent="."]
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+margin_left = -42.0
+margin_top = -39.0
+margin_right = 42.0
+margin_bottom = 39.0
+popup_exclusive = true
+window_title = "Error"
+
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/ConnectAllButton" to="." method="_on_ConnectAllButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton" to="." method="_on_DisconnectAllButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer/AddTrainButton" to="." method="_on_AddTrainButton_pressed"]

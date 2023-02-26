@@ -62,37 +62,28 @@ func clean_exit_coroutine():
 
 func connect_and_run_all_coroutine():
 	yield(Devices.get_tree(), "idle_frame")
-	var status = GuiApi.status_gui
 	hub_control_enabled = false
 	emit_signal("hubs_state_changed")
 	for hub in hubs.values():
 		if not hub.connected:
-			status.process("Connecting hub "+hub.name+"...")
 			var result = yield(hub.connect_coroutine(), "completed")
 			if result == "error":
 				push_error("connection error!")
-				status.ready()
 				return
 			yield(Devices.get_tree().create_timer(0.5), "timeout")
 		if not hub.running:
-			status.process("Hub "+hub.name+" downloading program...")
 			yield(hub.run_program_coroutine(), "completed")
 	hub_control_enabled = true
 	emit_signal("hubs_state_changed")
-	status.ready()
 
 func disconnect_all_coroutine():
 	yield(Devices.get_tree(), "idle_frame")
-	var status = GuiApi.status_gui
 	hub_control_enabled = false
 	emit_signal("hubs_state_changed")
 	for hub in hubs.values():
 		if hub.running:
-			status.process("Hub "+hub.name+" stopping program...")
 			yield(hub.stop_program_coroutine(), "completed")
 		if hub.connected:
-			status.process("Disconnecting hub "+hub.name+"...")
 			yield(hub.disconnect_coroutine(), "completed")
 	hub_control_enabled = true
 	emit_signal("hubs_state_changed")
-	status.ready()

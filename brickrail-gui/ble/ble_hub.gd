@@ -112,22 +112,31 @@ func remove():
 	emit_signal("removing", name)
 
 func connect_coroutine():
+	GuiApi.status_process("Connecting hub "+name+"...")
 	connect_hub()
 	var first_signal = yield(Await.first_signal(self, ["connected", "connect_error"]), "completed")
 	if first_signal == "connect_error":
-		push_error("connect error!")
+		GuiApi.show_error("Connection error!")
+		GuiApi.status_ready()
 		return "error"
+	GuiApi.status_ready()
 	return "success"
 
 func disconnect_coroutine():
+	GuiApi.status_process("Disconnecting hub "+name+"...")
 	disconnect_hub()
 	yield(self, "disconnected")
+	GuiApi.status_ready()
 
 func run_program_coroutine():
+	GuiApi.status_process("Hub "+name+" starting program...")
 	run_program()
 	yield(self, "program_started")
+	GuiApi.status_ready()
 
 func stop_program_coroutine():
+	GuiApi.status_process("Hub "+name+" stopping program...")
 	stop_program()
 	yield(self, "program_stopped")
+	GuiApi.status_ready()
 

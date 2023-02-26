@@ -31,14 +31,14 @@ func _on_run_button_pressed():
 	var runbutton = get_node(run_button)
 	var connectbutton = get_node(connect_button)
 	if runbutton.text == "run":
-		hub.run_program()
+		hub.run_program_coroutine()
 	if runbutton.text == "stop":
-		hub.stop_program()
+		hub.stop_program_coroutine()
 
 func _on_connect_button_pressed():
 	var runbutton = get_node(run_button)
 	var connectbutton = get_node(connect_button)
 	if connectbutton.text == "connect":
-		hub.connect_hub()
+		hub.connect_coroutine()
 	if connectbutton.text == "disconnect":
-		hub.disconnect_hub()
+		hub.disconnect_coroutine()
