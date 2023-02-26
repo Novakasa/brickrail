@@ -7,11 +7,25 @@ var hub
 
 func setup(p_hub):
 	hub = p_hub
-	hub.connect("connected", self, "_on_hub_connected")
-	hub.connect("disconnected", self, "_on_hub_disconnected")
-	hub.connect("connect_error", self, "_on_hub_connect_error")
-	hub.connect("program_started", self, "_on_hub_program_started")
-	hub.connect("program_stopped", self, "_on_hub_program_stopped")
+	Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
+	_on_hubs_state_changed()
+
+func _on_hubs_state_changed():
+	var control_enabled = Devices.get_ble_controller().hub_control_enabled and not hub.busy
+	var runbutton = get_node(run_button)
+	var connectbutton = get_node(connect_button)
+	if hub.connected:
+		connectbutton.text = "disconnect"
+		runbutton.disabled = not control_enabled
+	else:
+		connectbutton.text = "connect"
+		runbutton.disabled = true
+	if hub.running:
+		runbutton.text = "stop"
+		connectbutton.disabled = true
+	else:
+		runbutton.text = "run"
+		connectbutton.disabled = not control_enabled
 
 func _on_run_button_pressed():
 	var runbutton = get_node(run_button)
@@ -20,8 +34,6 @@ func _on_run_button_pressed():
 		hub.run_program()
 	if runbutton.text == "stop":
 		hub.stop_program()
-	runbutton.disabled=true
-	connectbutton.disabled=true
 
 func _on_connect_button_pressed():
 	var runbutton = get_node(run_button)
@@ -30,38 +42,3 @@ func _on_connect_button_pressed():
 		hub.connect_hub()
 	if connectbutton.text == "disconnect":
 		hub.disconnect_hub()
-	connectbutton.disabled=true
-	runbutton.disabled=true
-
-func _on_hub_connected():
-	var runbutton = get_node(run_button)
-	var connectbutton = get_node(connect_button)
-	connectbutton.disabled=false
-	runbutton.disabled=false
-	connectbutton.text="disconnect"
-
-func _on_hub_disconnected():
-	var runbutton = get_node(run_button)
-	var connectbutton = get_node(connect_button)
-	connectbutton.disabled=false
-	connectbutton.text="connect"
-	runbutton.disabled=true
-
-func _on_hub_connect_error(data):
-	var button = get_node(connect_button)
-	button.disabled=false
-	button.text="connect"
-
-func _on_hub_program_started():
-	var runbutton = get_node(run_button)
-	var connectbutton = get_node(connect_button)
-	runbutton.text="stop"
-	runbutton.disabled=false
-	connectbutton.disabled=true
-
-func _on_hub_program_stopped():
-	var runbutton = get_node(run_button)
-	var connectbutton = get_node(connect_button)
-	runbutton.text="run"
-	runbutton.disabled=false
-	connectbutton.disabled=false

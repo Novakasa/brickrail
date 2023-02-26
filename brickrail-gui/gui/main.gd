@@ -3,6 +3,8 @@ extends Control
 export(NodePath) var layout
 export(NodePath) var train_controller_container
 export(NodePath) var layout_controller_container
+export(NodePath) var connect_all_button
+export(NodePath) var disconnect_all_button
 
 onready var TrainControllerGUI = preload("res://devices/train/train_control_gui.tscn")
 onready var LayoutControllerGUI = preload("res://devices/layout_controller/layout_controller_gui.tscn")
@@ -11,9 +13,12 @@ func _ready():
 	get_tree().set_auto_accept_quit(false)
 	Devices.connect("train_added", self, "_on_devices_train_added")
 	Devices.connect("layout_controller_added", self, "_on_devices_layout_controller_added")
+	Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
 
-func _on_devices_data_received(_key, _data):
-	pass
+func _on_hubs_state_changed():
+	var enabled = Devices.get_ble_controller().hub_control_enabled
+	get_node(connect_all_button).disabled = not enabled
+	get_node(disconnect_all_button).disabled = not enabled
 
 func _on_devices_train_added(p_name):
 	var train_controller_gui = TrainControllerGUI.instance()

@@ -7,6 +7,7 @@ var connected = false
 var running = false
 var communicator: BLECommunicator
 var responsiveness = false
+var busy = false
 
 signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
@@ -18,6 +19,7 @@ signal program_started
 signal program_stopped
 signal responsiveness_changed(value)
 signal removing(name)
+signal state_changed()
 
 func _init(p_name, p_program):
 	name = p_name
@@ -37,25 +39,35 @@ func _on_data_received(key, data):
 	if key == "connected":
 		connected=true
 		emit_signal("connected")
+		busy=false
+		emit_signal("state_changed")
 		return
 	if key == "disconnected":
 		connected=false
 		emit_signal("disconnected")
 		set_responsiveness(false)
+		busy=false
+		emit_signal("state_changed")
 		return
 	if key == "connect_error":
 		connected=false
 		emit_signal("connect_error")
+		busy=false
+		emit_signal("state_changed")
 		return
 	if key == "program_started":
 		running=true
 		emit_signal("program_started")
 		set_responsiveness(true)
+		busy=false
+		emit_signal("state_changed")
 		return
 	if key == "program_stopped":
 		running=false
 		emit_signal("program_stopped")
 		set_responsiveness(false)
+		busy=false
+		emit_signal("state_changed")
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", data)
@@ -70,19 +82,27 @@ func send_command(command, args, return_id=null):
 func connect_hub():
 	assert(not connected)
 	send_command("connect", [])
+	busy=true
+	emit_signal("state_changed")
 
 func disconnect_hub():
 	assert(connected)
 	send_command("disconnect", [])
+	busy=true
+	emit_signal("state_changed")
 
 func run_program():
 	assert(connected and not running)
 	send_command("run", [])
+	busy=true
+	emit_signal("state_changed")
 
 func stop_program():
 	assert(connected and running)
 	send_command("stop_program", [])
 	set_responsiveness(false)
+	busy=true
+	emit_signal("state_changed")
 
 func rpc(funcname, args):
 	send_command("rpc", [funcname, args])

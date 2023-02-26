@@ -96,5 +96,5 @@ func clear():
 	for controller in layout_controllers.values():
 		controller.remove()
 
-func get_ble_controller():
-	return $BLEController
+func get_ble_controller() -> BLEController:
+	return $BLEController as BLEController

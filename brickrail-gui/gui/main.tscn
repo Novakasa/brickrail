@@ -19,6 +19,8 @@ script = ExtResource( 5 )
 layout = NodePath("VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/ViewportContainer/Viewport/Layout")
 train_controller_container = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer/trains")
 layout_controller_container = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer/controllers")
+connect_all_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/ConnectAllButton")
+disconnect_all_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton")
 
 [node name="Panel" type="Panel" parent="."]
 anchor_right = 1.0
