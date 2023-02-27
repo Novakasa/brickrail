@@ -57,6 +57,7 @@ signal layer_added(l)
 signal layer_removed(l)
 signal active_layer_changed(l)
 signal cell_added(cell)
+signal trains_running(running)
 
 func get_cell(l, i, j):
 	if cells[l][i][j] != null:
@@ -272,12 +273,21 @@ func create_train(p_name):
 	var train = LayoutTrain.new(p_name)
 	trains[p_name] = train
 	train.connect("removing", self, "_on_train_removing")
+	train.connect("route_changed", self, "_on_train_route_changed")
 	grid.add_child(train)
 	return train
 
 func _on_train_removing(p_name):
 	trains[p_name].disconnect("removing", self, "_on_train_removing")
+	trains[p_name].disconnect("route_changed", self, "_on_train_route_changed")
 	trains.erase(p_name)
+
+func _on_train_route_changed():
+	for train in trains.values():
+		if train.route != null:
+			emit_signal("trains_running", true)
+			return
+	emit_signal("trains_running", false)
 
 func create_switch(directed_track):
 	var switch = LayoutSwitch.new(directed_track)

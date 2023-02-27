@@ -23,6 +23,7 @@ signal removing(p_name)
 signal selected()
 signal unselected()
 signal ble_train_changed()
+signal route_changed()
 
 func _init(p_name):
 	trainname = p_name
@@ -283,6 +284,7 @@ func set_route(p_route):
 		virtual_train.set_route(route)
 		if selected:
 			route.set_highlight()
+	emit_signal("route_changed")
 
 func cancel_route():
 	assert(route != null)
