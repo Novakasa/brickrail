@@ -76,7 +76,6 @@ tab_align = 0
 use_hidden_tabs_for_min_size = true
 
 [node name="trains" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -91,14 +90,14 @@ margin_bottom = 31.0
 size_flags_horizontal = 3
 
 [node name="AddTrainButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer"]
-margin_right = 453.0
+margin_right = 225.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "add train"
 
 [node name="trains" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer"]
 margin_top = 31.0
-margin_right = 453.0
+margin_right = 225.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -132,6 +131,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Settings" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -214,7 +214,38 @@ margin_bottom = 66.0
 tab_align = 0
 use_hidden_tabs_for_min_size = true
 
-[node name="LayoutTools" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
+[node name="edit" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
+anchor_right = 1.0
+anchor_bottom = 1.0
+margin_left = 5.0
+margin_top = 34.0
+margin_right = -5.0
+margin_bottom = -5.0
+size_flags_horizontal = 3
+
+[node name="LayoutNew" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit"]
+margin_right = 41.0
+margin_bottom = 27.0
+text = "new"
+
+[node name="LayoutSave" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit"]
+margin_left = 45.0
+margin_right = 90.0
+margin_bottom = 27.0
+text = "save"
+
+[node name="LayoutOpen" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit"]
+margin_left = 94.0
+margin_right = 141.0
+margin_bottom = 27.0
+text = "open"
+
+[node name="VSeparator" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit"]
+margin_left = 145.0
+margin_right = 149.0
+margin_bottom = 27.0
+
+[node name="run" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
 visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
@@ -224,71 +255,40 @@ margin_right = -5.0
 margin_bottom = -5.0
 size_flags_horizontal = 3
 
-[node name="LayoutNew" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_right = 41.0
-margin_bottom = 27.0
-text = "new"
-
-[node name="LayoutSave" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_left = 45.0
-margin_right = 90.0
-margin_bottom = 27.0
-text = "save"
-
-[node name="LayoutOpen" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_left = 94.0
-margin_right = 141.0
-margin_bottom = 27.0
-text = "open"
-
-[node name="VSeparator" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_left = 145.0
-margin_right = 149.0
-margin_bottom = 27.0
-
-[node name="ControlTools" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
-anchor_right = 1.0
-anchor_bottom = 1.0
-margin_left = 5.0
-margin_top = 34.0
-margin_right = -5.0
-margin_bottom = -5.0
-size_flags_horizontal = 3
-
-[node name="StopAllButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="StopAllButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_right = 109.0
 margin_bottom = 27.0
 text = "Stop all trains"
 
-[node name="VSeparator3" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="VSeparator3" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 113.0
 margin_right = 117.0
 margin_bottom = 27.0
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="CheckBox" type="CheckBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 121.0
 margin_right = 255.0
 margin_bottom = 27.0
 text = "control devices"
 
-[node name="AutoTarget" type="CheckBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="AutoTarget" type="CheckBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 259.0
 margin_right = 395.0
 margin_bottom = 27.0
 text = "random targets"
 
-[node name="VSeparator4" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="VSeparator4" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 399.0
 margin_right = 403.0
 margin_bottom = 27.0
 
-[node name="Label" type="Label" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="Label" type="Label" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 407.0
 margin_right = 505.0
 margin_bottom = 27.0
 text = "virtual speed"
 
-[node name="SpinBox" type="SpinBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools"]
+[node name="SpinBox" type="SpinBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 509.0
 margin_right = 585.0
 margin_bottom = 27.0
@@ -436,13 +436,13 @@ window_title = "Error"
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/TertiaryColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_TertiaryColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/WhiteColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
 [connection signal="tab_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutModeTabs_tab_changed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutNew" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutNew_pressed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutSave" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutOpen" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutOpen_pressed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/StopAllButton" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_StopAllButton_pressed"]
-[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/CheckBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
-[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/AutoTarget" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
-[connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit/LayoutNew" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutNew_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit/LayoutSave" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit/LayoutOpen" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutOpen_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/StopAllButton" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_StopAllButton_pressed"]
+[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/CheckBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
+[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/AutoTarget" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
+[connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
 [connection signal="button_down" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_button_down"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/SaveLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SaveLayoutDialog_file_selected"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/OpenLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_OpenLayoutDialog_file_selected"]
