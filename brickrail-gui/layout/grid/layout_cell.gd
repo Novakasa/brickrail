@@ -138,9 +138,9 @@ func process_mouse_button(event, pos):
 	if obj != null:
 		obj.process_mouse_button(event, normalized_pos)
 		return
-	if event.button_index == BUTTON_LEFT:
+	if event.button_index == BUTTON_RIGHT:
 		if event.pressed:
-			if LayoutInfo.layout_mode == "draw":
+			if LayoutInfo.layout_mode == "edit":
 				LayoutInfo.init_draw_track(self)
 				return
 

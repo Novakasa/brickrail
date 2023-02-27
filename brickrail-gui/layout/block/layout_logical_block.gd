@@ -121,6 +121,7 @@ func process_mouse_button(event, pos):
 		if event.pressed:
 			if not selected:
 				select()
+	if event.button_index == BUTTON_RIGHT:
 		if not event.pressed:
 			if LayoutInfo.drag_train:
 				var train = LayoutInfo.dragged_train

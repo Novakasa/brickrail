@@ -174,9 +174,9 @@ func stop_hover():
 func process_mouse_button(event, mpos):
 	# prints("train:", trainname)
 	if event.button_index == BUTTON_LEFT:
-		if LayoutInfo.layout_mode == "select":
-			if not selected:
-				select()
+		if not selected:
+			select()
+	if event.button_index == BUTTON_RIGHT:
 		if LayoutInfo.layout_mode == "control":
 			LayoutInfo.init_drag_train(self)
 

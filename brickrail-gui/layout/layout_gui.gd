@@ -37,36 +37,16 @@ func _on_layer_container_item_selected(index):
 	LayoutInfo.set_active_layer(l)
 
 func _on_layout_mode_changed(mode):
-	var buttons = {
-		"control": get_node(input_control_button),
-		"select": get_node(input_select_button),
-		"draw": get_node(input_draw_button)
-		}
-	for key in buttons:
-		if key == mode:
-			buttons[key].pressed=true
-		else:
-			buttons[key].pressed=false
-
-func _on_LayoutControl_pressed():
-	LayoutInfo.set_layout_mode("control")
-
-
-func _on_LayoutSelect_pressed():
-	LayoutInfo.set_layout_mode("select")
-
-
-func _on_LayoutDraw_pressed():
-	LayoutInfo.set_layout_mode("draw")
+	var index = ["edit", "control"].find(mode)
+	if index < 0:
+		return
+	$LayoutSplit/LayoutModeTabs.current_tab = index
 
 func _on_selected(obj):
 	get_node(inspector_container).add_child(obj.get_inspector())
 
-
 func _on_LayoutSave_pressed():
-	
 	$SaveLayoutDialog.popup()
-
 
 func _on_SaveLayoutDialog_file_selected(path):
 	var struct = {}
@@ -81,10 +61,8 @@ func _on_SaveLayoutDialog_file_selected(path):
 	file.store_string(serial)
 	file.close()
 
-
 func _on_LayoutOpen_pressed():
 	$OpenLayoutDialog.popup()
-
 
 func _on_OpenLayoutDialog_file_selected(path):
 	Devices.clear()
@@ -132,3 +110,8 @@ func _on_StopAllButton_pressed():
 	for train in LayoutInfo.trains.values():
 		if train.route != null:
 			train.cancel_route()
+
+
+func _on_LayoutModeTabs_tab_changed(tab):
+	var mode = ["edit", "control"][tab]
+	LayoutInfo.set_layout_mode(mode)

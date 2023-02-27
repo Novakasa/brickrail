@@ -22,7 +22,7 @@ var pretty_tracks = true
 var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
 
-var layout_mode = "select"
+var layout_mode = "edit"
 var selection = null
 var control_devices = false
 
@@ -309,11 +309,9 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_Q:
-				set_layout_mode("control")
+				set_layout_mode("edit")
 			if event.scancode == KEY_W:
-				set_layout_mode("select")
-			if event.scancode == KEY_E:
-				set_layout_mode("draw")
+				set_layout_mode("control")
 			
 			if event.scancode == KEY_DELETE:
 				if selection is LayoutSection:
@@ -568,6 +566,6 @@ func attempt_portal():
 	portal_dirtrack.connect_portal(portal_target)
 	portal_target.get_opposite().connect_portal(portal_dirtrack.get_opposite())
 	
-	set_layout_mode("select")
+	set_layout_mode("edit")
 	portal_dirtrack = null
 	portal_target = null

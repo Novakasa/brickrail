@@ -142,10 +142,11 @@ func get_position():
 	return switch_positions[position_index]
 
 func process_mouse_button(event, pos):
-	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		if LayoutInfo.layout_mode == "control":
-			toggle_switch()
-		if LayoutInfo.layout_mode == "select":
+	if event is InputEventMouseButton and event.pressed:
+		if event.button_index == BUTTON_RIGHT:
+			if LayoutInfo.layout_mode == "control":
+				toggle_switch()
+		if event.button_index == BUTTON_LEFT:
 			select()
 
 func select():

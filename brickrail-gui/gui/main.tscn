@@ -198,9 +198,6 @@ margin_right = 1280.0
 margin_bottom = 689.0
 split_offset = -202
 script = ExtResource( 3 )
-input_control_button = NodePath("LayoutSplit/LayoutModeTabs/LayoutTools/LayoutControl")
-input_select_button = NodePath("LayoutSplit/LayoutModeTabs/LayoutTools/LayoutSelect")
-input_draw_button = NodePath("LayoutSplit/LayoutModeTabs/LayoutTools/LayoutDraw")
 inspector_container = NodePath("VSplitContainer/TabContainer/InspectorContainer")
 layer_container = NodePath("VSplitContainer/VBoxContainer/LayerContainer")
 layer_index_edit = NodePath("VSplitContainer/VBoxContainer/HBoxContainer/layer_index_edit")
@@ -248,32 +245,6 @@ text = "open"
 margin_left = 145.0
 margin_right = 149.0
 margin_bottom = 27.0
-
-[node name="LayoutControl" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_left = 153.0
-margin_right = 214.0
-margin_bottom = 27.0
-focus_mode = 0
-toggle_mode = true
-shortcut_in_tooltip = false
-text = "control"
-
-[node name="LayoutSelect" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_left = 218.0
-margin_right = 271.0
-margin_bottom = 27.0
-focus_mode = 0
-toggle_mode = true
-pressed = true
-text = "select"
-
-[node name="LayoutDraw" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools"]
-margin_left = 275.0
-margin_right = 322.0
-margin_bottom = 27.0
-focus_mode = 0
-toggle_mode = true
-text = "draw"
 
 [node name="ControlTools" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
 anchor_right = 1.0
@@ -464,12 +435,10 @@ window_title = "Error"
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/SecondaryColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_SecondaryColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/TertiaryColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_TertiaryColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/WhiteColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
+[connection signal="tab_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutModeTabs_tab_changed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutNew" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutNew_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutSave" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutOpen" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutOpen_pressed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutControl" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutControl_pressed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutSelect" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutSelect_pressed"]
-[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/LayoutTools/LayoutDraw" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutDraw_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/StopAllButton" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_StopAllButton_pressed"]
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/CheckBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/ControlTools/AutoTarget" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
