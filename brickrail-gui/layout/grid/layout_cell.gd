@@ -140,7 +140,7 @@ func process_mouse_button(event, pos):
 		return
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
-			if LayoutInfo.input_mode == "draw":
+			if LayoutInfo.layout_mode == "draw":
 				LayoutInfo.init_draw_track(self)
 				return
 

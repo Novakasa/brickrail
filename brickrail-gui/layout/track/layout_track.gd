@@ -434,7 +434,7 @@ func get_hover_obj_at(pos):
 	var hover_switch = get_switch_at(pos)
 	if hover_switch != null:
 		return hover_switch
-	if LayoutInfo.input_mode=="control":
+	if LayoutInfo.layout_mode=="control":
 		return null
 	if (pos-pos0).length()<(pos-pos1).length():
 		return directed_tracks[slot0]
@@ -460,38 +460,38 @@ func stop_hover():
 
 func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_RIGHT and event.pressed:
-		if LayoutInfo.input_mode == "draw":
+		if LayoutInfo.layout_mode == "draw":
 			remove()
 	
 	if event.button_index == BUTTON_LEFT and event.pressed:
 		var switch = get_switch_at(pos)
-		if LayoutInfo.input_mode == "draw":
+		if LayoutInfo.layout_mode == "draw":
 			switch = null
 		if switch != null:
 			switch.process_mouse_button(event, pos)
 			return
 		
-		if LayoutInfo.input_mode == "select":
+		if LayoutInfo.layout_mode == "select":
 			if (pos0-pos).length()<(pos1-pos).length():
 				LayoutInfo.init_drag_select(self, slot0)
 			else:
 				LayoutInfo.init_drag_select(self, slot1)
 		
-		if LayoutInfo.input_mode == "draw":
+		if LayoutInfo.layout_mode == "draw":
 			LayoutInfo.init_connected_draw_track(self)
 		
-		if LayoutInfo.input_mode == "portal":
+		if LayoutInfo.layout_mode == "portal":
 			if (pos0-pos).length()<(pos1-pos).length():
 				LayoutInfo.set_portal_target(directed_tracks[slot0])
 			else:
 				LayoutInfo.set_portal_target(directed_tracks[slot1])
 		
-		if LayoutInfo.input_mode == "prior_sensor":
+		if LayoutInfo.layout_mode == "prior_sensor":
 			if (pos0-pos).length()<(pos1-pos).length():
-				LayoutInfo.set_input_mode("select")
+				LayoutInfo.set_layout_mode("select")
 				LayoutInfo.selection.add_prior_sensor_dirtrack(directed_tracks[slot0])
 			else:
-				LayoutInfo.set_input_mode("select")
+				LayoutInfo.set_layout_mode("select")
 				LayoutInfo.selection.add_prior_sensor_dirtrack(directed_tracks[slot1])
 
 func get_tangent_to(slot):

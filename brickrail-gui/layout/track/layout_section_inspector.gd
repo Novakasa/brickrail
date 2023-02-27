@@ -119,4 +119,4 @@ func _on_OneWayCheckbox_toggled(button_pressed):
 
 func _on_AddPortal_pressed():
 	LayoutInfo.set_portal_dirtrack(dirtrack)
-	LayoutInfo.set_input_mode("portal")
+	LayoutInfo.set_layout_mode("portal")

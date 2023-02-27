@@ -9,12 +9,12 @@ export(NodePath) var layer_container
 export(NodePath) var layer_index_edit
 
 func _ready():
-	LayoutInfo.connect("input_mode_changed", self, "_on_input_mode_changed")
+	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 	LayoutInfo.connect("selected", self, "_on_selected")
 	LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
 	LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
 	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
-	_on_input_mode_changed(LayoutInfo.input_mode)
+	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func _on_layers_changed():
 	var layers = get_node(layer_container)
@@ -36,7 +36,7 @@ func _on_layer_container_item_selected(index):
 	var l = LayoutInfo.cells.keys()[index]
 	LayoutInfo.set_active_layer(l)
 
-func _on_input_mode_changed(mode):
+func _on_layout_mode_changed(mode):
 	var buttons = {
 		"control": get_node(input_control_button),
 		"select": get_node(input_select_button),
@@ -47,21 +47,17 @@ func _on_input_mode_changed(mode):
 			buttons[key].pressed=true
 		else:
 			buttons[key].pressed=false
-	if mode == "control":
-		$LayoutSplit/ControlTools.visible=true
-	else:
-		$LayoutSplit/ControlTools.visible=false
 
 func _on_LayoutControl_pressed():
-	LayoutInfo.set_input_mode("control")
+	LayoutInfo.set_layout_mode("control")
 
 
 func _on_LayoutSelect_pressed():
-	LayoutInfo.set_input_mode("select")
+	LayoutInfo.set_layout_mode("select")
 
 
 func _on_LayoutDraw_pressed():
-	LayoutInfo.set_input_mode("draw")
+	LayoutInfo.set_layout_mode("draw")
 
 func _on_selected(obj):
 	get_node(inspector_container).add_child(obj.get_inspector())
@@ -132,7 +128,7 @@ func _on_add_layer_button_button_down():
 
 func _on_StopAllButton_pressed():
 	LayoutInfo.set_random_targets(false)
-	$LayoutSplit/LayoutTools/AutoTarget.pressed = false
+	$LayoutSplit/LayoutModeTabs/ControlTools/AutoTarget.pressed = false
 	for train in LayoutInfo.trains.values():
 		if train.route != null:
 			train.cancel_route()

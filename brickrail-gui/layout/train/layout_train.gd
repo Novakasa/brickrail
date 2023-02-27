@@ -174,10 +174,10 @@ func stop_hover():
 func process_mouse_button(event, mpos):
 	# prints("train:", trainname)
 	if event.button_index == BUTTON_LEFT:
-		if LayoutInfo.input_mode == "select":
+		if LayoutInfo.layout_mode == "select":
 			if not selected:
 				select()
-		if LayoutInfo.input_mode == "control":
+		if LayoutInfo.layout_mode == "control":
 			LayoutInfo.init_drag_train(self)
 
 func get_route_to(p_target, no_locked=true):

@@ -143,9 +143,9 @@ func get_position():
 
 func process_mouse_button(event, pos):
 	if event is InputEventMouseButton and event.pressed and event.button_index == BUTTON_LEFT:
-		if LayoutInfo.input_mode == "control":
+		if LayoutInfo.layout_mode == "control":
 			toggle_switch()
-		if LayoutInfo.input_mode == "select":
+		if LayoutInfo.layout_mode == "select":
 			select()
 
 func select():

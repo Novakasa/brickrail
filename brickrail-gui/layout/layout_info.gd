@@ -22,7 +22,7 @@ var pretty_tracks = true
 var slot_index = {"N": 0, "E": 1, "S": 2, "W": 3}
 var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0.5), "W": Vector2(0,0.5)}
 
-var input_mode = "select"
+var layout_mode = "select"
 var selection = null
 var control_devices = false
 
@@ -47,7 +47,7 @@ var portal_target = null
 var random_targets = false
 var time_scale = 1.0
 
-signal input_mode_changed(mode)
+signal layout_mode_changed(mode)
 signal selected(obj)
 signal control_devices_changed(control_device)
 signal blocked_tracks_changed(trainname)
@@ -309,11 +309,11 @@ func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
 			if event.scancode == KEY_Q:
-				set_input_mode("control")
+				set_layout_mode("control")
 			if event.scancode == KEY_W:
-				set_input_mode("select")
+				set_layout_mode("select")
 			if event.scancode == KEY_E:
-				set_input_mode("draw")
+				set_layout_mode("draw")
 			
 			if event.scancode == KEY_DELETE:
 				if selection is LayoutSection:
@@ -358,9 +358,9 @@ func bresenham_line(startx, starty, stopx, stopy):
 			points.append([px, py])
 	return points
 
-func set_input_mode(mode):
-	input_mode = mode
-	emit_signal("input_mode_changed", mode)
+func set_layout_mode(mode):
+	layout_mode = mode
+	emit_signal("layout_mode_changed", mode)
 
 func unselect():
 	if selection != null:
@@ -568,6 +568,6 @@ func attempt_portal():
 	portal_dirtrack.connect_portal(portal_target)
 	portal_target.get_opposite().connect_portal(portal_dirtrack.get_opposite())
 	
-	set_input_mode("select")
+	set_layout_mode("select")
 	portal_dirtrack = null
 	portal_target = null

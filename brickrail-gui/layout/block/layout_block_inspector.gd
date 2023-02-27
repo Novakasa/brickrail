@@ -25,7 +25,7 @@ func _on_AddTrainDialog_confirmed():
 	train.set_current_block(block)
 
 func _on_AddPriorSensorButton_pressed():
-	LayoutInfo.set_input_mode("prior_sensor")
+	LayoutInfo.set_layout_mode("prior_sensor")
 
 
 func _on_CanStopCheckBox_toggled(button_pressed):
