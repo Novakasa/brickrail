@@ -32,6 +32,5 @@ script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
-none_meta = null
 
 [connection signal="meta_selected" from="DeviceOption" to="." method="_on_DeviceOption_meta_selected"]
