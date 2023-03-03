@@ -30,11 +30,11 @@ func setup_options():
 	controller_option.set_items(Devices.layout_controllers.keys(), Devices.layout_controllers.keys())
 
 	var port_option: Selector = $VBoxContainer/GridContainer/PortOption
+	controller_option.select_meta(controllername)
 	if controllername == null:
 		port_option.set_items([], [])
 		return
 	
-	controller_option.select_meta(controllername)
 		
 	var controller: LayoutController = Devices.layout_controllers[controllername]
 	var num_ports = len(controller.devices)

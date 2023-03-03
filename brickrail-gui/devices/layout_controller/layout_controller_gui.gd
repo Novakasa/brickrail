@@ -9,8 +9,6 @@ var LayoutControllerPortSelector = preload("res://devices/layout_controller/layo
 export(NodePath) var controller_label
 export(NodePath) var hub_controls
 
-signal train_action(train, action)
-
 func setup(p_controller_name):
 	set_controller_name(p_controller_name)
 	get_controller().connect("name_changed", self, "_on_controller_name_changed")
