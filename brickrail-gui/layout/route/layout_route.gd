@@ -152,7 +152,7 @@ func can_advance():
 	if not get_current_leg().is_complete():
 		return false
 	if get_next_leg() == null:
-		return true
+		return false
 	return can_lock_leg(leg_index+1)
 
 func get_blocking_trains():
@@ -240,13 +240,20 @@ func advance_leg():
 
 func advance():
 	var next_leg = get_next_leg()
+	var lock_changed = false
 	if not next_leg.locked:
 		lock_and_switch_next()
-		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
+		lock_changed = true
 	var prev_leg = get_current_leg()
+	assert(prev_leg != next_leg)
 	
 	advance_leg()
-	
+	if lock_changed:
+		# delay emitting this signal so another train doesn't trigger us
+		# advancing _again_, whie this function is still running.
+		# Emitting after advance_leg makes can_advance() return false, so there
+		# will be no further calls.
+		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 	var current_leg = get_current_leg()
 	print("next leg")
 	prints("type:", current_leg.get_type())

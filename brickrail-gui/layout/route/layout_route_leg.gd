@@ -54,7 +54,10 @@ func get_next_key():
 	return sensor_keys[current_index]
 
 func has_entered():
-	return sensor_keys.find("enter")<current_index
+	var enter_index = sensor_keys.find("enter")
+	if enter_index == -1:
+		return false
+	return enter_index<current_index
 
 func collect_sensor_list():
 	var target_node = get_target_node()
