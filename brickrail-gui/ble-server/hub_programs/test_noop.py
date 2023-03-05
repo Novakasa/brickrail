@@ -4,5 +4,7 @@ from pybricks.tools import wait
 
 print(usys.version)
 print("[hub] program start")
-wait(3000)
+for i in range(25):
+    wait(100)
+    print(i)
 print("[hub] program end")
