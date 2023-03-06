@@ -38,12 +38,17 @@ func _ready():
 	LayoutInfo.connect("cell_added", self, "_on_cell_added")
 	LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
 	LayoutInfo.connect("layer_added", self, "_on_layer_added")
+	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 	LayoutInfo.grid = self
 	
 	LayoutInfo.add_layer(0)
 
+func _on_layout_mode_changed(mode):
+	update()
+
 func _draw():
-	
+	if LayoutInfo.layout_mode == "control":
+		return
 	var spacing = LayoutInfo.spacing
 	
 	for i in range(nx+1):

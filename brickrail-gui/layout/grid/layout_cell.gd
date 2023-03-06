@@ -47,6 +47,8 @@ func _enter_tree():
 	_on_settings_colors_changed()
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
+	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	_on_settings_render_mode_changed(Settings.render_mode)
 	get_tree().connect("idle_frame", self, "_on_idle_frame")
 
@@ -66,6 +68,12 @@ func _on_settings_render_mode_changed(mode):
 		# $RenderDynamic.texture.size = Vector2(LayoutInfo.spacing, LayoutInfo.spacing)
 		_redraw=true
 
+func _on_layout_mode_changed(mode):
+	if mode == "edit":
+		set_shader_param("grid_color", Settings.colors["surface"])
+	if mode == "control":
+		set_shader_param("grid_color", Settings.colors["background"])
+
 func _on_settings_colors_changed():
 	set_shader_param("background", Settings.colors["background"])
 	set_shader_param("background_drawing_highlight", Settings.colors["tertiary"].linear_interpolate(Settings.colors["background"], 0.8))
@@ -81,7 +89,7 @@ func _on_settings_colors_changed():
 
 func hover_at(pos):
 	
-	if not hover:
+	if not hover and LayoutInfo.layout_mode == "edit":
 		set_hover(true)
 	
 	if LayoutInfo.drawing_track:
