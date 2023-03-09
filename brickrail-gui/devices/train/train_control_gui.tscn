@@ -1,6 +1,5 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
-[ext_resource path="res://devices/train/train_settings_dialog.tscn" type="PackedScene" id=1]
 [ext_resource path="res://ble/hub_control_gui.tscn" type="PackedScene" id=2]
 [ext_resource path="res://devices/train/train_control_gui.gd" type="Script" id=3]
 
@@ -22,7 +21,7 @@ rect_min_size = Vector2( 0, 44 )
 size_flags_horizontal = 3
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 220.0
+margin_right = 172.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
@@ -37,22 +36,16 @@ __meta__ = {
 
 [node name="Container" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 75.0
-margin_right = 153.0
+margin_right = 172.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 157.0
-margin_right = 220.0
-margin_bottom = 20.0
-text = "Settings"
-
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 2 )]
-margin_right = 220.0
+margin_right = 172.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 48.0
-margin_right = 220.0
+margin_right = 172.0
 margin_bottom = 68.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -89,16 +82,13 @@ __meta__ = {
 
 [node name="change_heading_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 134.0
-margin_right = 220.0
+margin_right = 172.0
 margin_bottom = 20.0
-text = "flip heading"
+text = "turn"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="TrainSettingsDialog" parent="." instance=ExtResource( 1 )]
-
-[connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/start_button" to="." method="_on_start_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/stop_button" to="." method="_on_stop_button_pressed"]
 [connection signal="pressed" from="VBoxContainer/HBoxContainer/slow_button" to="." method="_on_slow_button_pressed"]

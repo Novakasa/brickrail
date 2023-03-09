@@ -10,6 +10,7 @@ size_flags_horizontal = 3
 script = ExtResource( 1 )
 connect_button = NodePath("connect_button")
 run_button = NodePath("run_button")
+scan_button = NodePath("scan_button")
 
 [node name="connect_button" type="Button" parent="."]
 margin_right = 63.0
@@ -29,5 +30,18 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Control" type="Control" parent="."]
+margin_left = 104.0
+margin_right = 104.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="scan_button" type="Button" parent="."]
+margin_left = 196.0
+margin_right = 237.0
+margin_bottom = 20.0
+text = "scan"
+
 [connection signal="pressed" from="connect_button" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="run_button" to="." method="_on_run_button_pressed"]
+[connection signal="pressed" from="scan_button" to="." method="_on_scan_button_pressed"]

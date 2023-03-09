@@ -14,7 +14,6 @@ func setup(p_controller_name):
 	get_controller().connect("name_changed", self, "_on_controller_name_changed")
 	get_controller().connect("removing", self, "_on_controller_removing")
 	get_node(hub_controls).setup(get_controller().hub)
-	$LayoutControllerSettingsDialog.setup(p_controller_name)
 	# $LayoutControllerSettingsDialog.show()
 	for port in controller.devices:
 		var port_selector = LayoutControllerPortSelector.instance()
@@ -48,6 +47,3 @@ func _on_controller_devices_changed(p_name):
 
 func get_controller():
 	return Devices.layout_controllers[controller_name]
-
-func _on_settings_button_pressed():
-	$LayoutControllerSettingsDialog.show()

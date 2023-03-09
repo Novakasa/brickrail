@@ -86,9 +86,6 @@ func _on_controller_removing(p_name):
 	layout_controllers.erase(p_name)
 	emit_signal("layout_controllers_changed")
 
-func find_device(return_key):
-	$BLEController.send_command(null, "find_device", [], return_key)
-
 func clear():
 	for train in trains.values():
 		train.remove()

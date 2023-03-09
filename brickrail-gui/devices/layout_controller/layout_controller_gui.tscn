@@ -1,7 +1,6 @@
-[gd_scene load_steps=4 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://ble/hub_control_gui.tscn" type="PackedScene" id=1]
-[ext_resource path="res://devices/layout_controller/layout_controller_settings_dialog.tscn" type="PackedScene" id=2]
 [ext_resource path="res://devices/layout_controller/layout_controller_gui.gd" type="Script" id=3]
 
 [node name="LayoutControllerGui" type="Panel"]
@@ -41,18 +40,12 @@ __meta__ = {
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 153.0
-margin_right = 1213.0
+margin_right = 1280.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
 }
-
-[node name="settings_button" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 1217.0
-margin_right = 1280.0
-margin_bottom = 20.0
-text = "settings"
 
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 1 )]
 margin_right = 1280.0
@@ -69,7 +62,3 @@ __meta__ = {
 margin_right = 1280.0
 margin_bottom = 14.0
 text = "Connected devices"
-
-[node name="LayoutControllerSettingsDialog" parent="." instance=ExtResource( 2 )]
-
-[connection signal="pressed" from="VBoxContainer/HBoxContainer2/settings_button" to="." method="_on_settings_button_pressed"]

@@ -17,7 +17,6 @@ func setup(p_train_name):
 	set_controls_disabled(true)
 	
 	get_node(hub_controls).setup(get_train().hub)
-	$TrainSettingsDialog.setup(p_train_name)
 
 func _on_hub_responsiveness_changed(val):
 	set_controls_disabled(not val)
@@ -50,6 +49,3 @@ func _on_slow_button_pressed():
 
 func _on_change_heading_button_pressed():
 	get_train().flip_heading()
-
-func _on_settings_button_pressed():
-	$TrainSettingsDialog.show()

@@ -20,6 +20,7 @@ func _init(p_name):
 	hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
+	hub.connect("name_changed", self, "_on_hub_name_changed")
 
 func _on_hub_program_started():
 	pass
@@ -66,10 +67,9 @@ func device_call(port, funcname, args):
 func _on_hub_responsiveness_changed(value):
 	pass
 
-func set_name(p_new_name):
+func _on_hub_name_changed(p_old_name, p_new_name):
 	var old_name = name
 	name = p_new_name
-	hub.set_name(p_new_name)
 	emit_signal("name_changed", old_name, p_new_name)
 
 func set_address(p_address):

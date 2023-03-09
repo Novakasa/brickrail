@@ -6,6 +6,7 @@ var hub_control_enabled = true
 
 signal data_received(key, data)
 signal hubs_state_changed()
+signal device_name_discovered(p_name)
 
 func _ready():
 	$BLECommunicator.connect("message_received", self, "_on_message_received")
@@ -41,6 +42,9 @@ func _on_message_received(message):
 	var hubname = obj.hub
 	if hubname != null:
 		hubs[hubname]._on_data_received(key, obj.data)
+		return
+	if key == "device_name_found":
+		emit_signal("device_name_discovered", obj.data)
 		return
 	emit_signal("data_received", key, obj.data)
 
@@ -88,3 +92,8 @@ func disconnect_all_coroutine():
 			yield(hub.disconnect_coroutine(), "completed")
 	hub_control_enabled = true
 	emit_signal("hubs_state_changed")
+
+func scan_for_hub_name_coroutine():
+	send_command(null, "find_device", [], "return_key")
+	var new_name = yield(self, "device_name_discovered")
+	return new_name
