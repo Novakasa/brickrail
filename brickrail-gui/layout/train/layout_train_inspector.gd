@@ -2,6 +2,15 @@ extends VBoxContainer
 
 var train = null
 
+func _enter_tree():
+	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+
+func _on_layout_mode_changed(mode):
+	var edit_exclusive_nodes = [$FixedFacingCheckbox, $BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton]
+	
+	for node in edit_exclusive_nodes:
+		node.visible = (mode != "control")
+
 func set_train(obj):
 	train = obj
 	train.connect("unselected", self, "_on_train_unselected")
@@ -13,6 +22,7 @@ func set_train(obj):
 	Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
+	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func select_ble_train(ble_train):
 	if ble_train == null:

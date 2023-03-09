@@ -3,14 +3,23 @@ extends VBoxContainer
 
 var block
 
+func _enter_tree():
+	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+
+func _on_layout_mode_changed(mode):
+	var edit_exclusive_nodes = [$AddTrain, $AddPriorSensorButton, $CanStopCheckBox]
+	
+	for node in edit_exclusive_nodes:
+		node.visible = (mode != "control")
+
 func set_block(p_block):
 	block = p_block
 	block.connect("unselected", self, "_on_block_unselected")
 	$CanStopCheckBox.pressed = block.can_stop
+	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func _on_block_unselected():
 	queue_free()
-
 
 func _on_AddTrain_pressed():
 	var new_name = "train" + str(len(LayoutInfo.trains))
