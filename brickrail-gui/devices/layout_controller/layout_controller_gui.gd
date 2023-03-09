@@ -36,7 +36,8 @@ func set_controller_name(p_controller_name):
 	controller_name = p_controller_name
 	get_node(controller_label).text = controller_name
 	controller = Devices.layout_controllers[controller_name]
-	controller.connect("devices_changed", self, "_on_controller_devices_changed")
+	if not controller.is_connected("devices_changed", self, "_on_controller_devices_changed"):
+		controller.connect("devices_changed", self, "_on_controller_devices_changed")
 
 func _on_controller_devices_changed(p_name):
 	for port in controller.devices:
