@@ -368,6 +368,8 @@ func bresenham_line(startx, starty, stopx, stopy):
 
 func set_layout_mode(mode):
 	layout_mode = mode
+	if mode != "control":
+		set_random_targets(false)
 	emit_signal("layout_mode_changed", mode)
 
 func unselect():

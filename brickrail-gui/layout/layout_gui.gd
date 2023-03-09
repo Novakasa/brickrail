@@ -14,8 +14,12 @@ func _ready():
 	LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
 	LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
 	LayoutInfo.connect("trains_running", self, "_on_layout_trains_running")
+	LayoutInfo.connect("random_targets_set", self, "_on_layout_random_targets_set")
 	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
+
+func _on_layout_random_targets_set(set):
+	$LayoutSplit/LayoutModeTabs/run/AutoTarget.pressed = set
 
 func _on_layout_trains_running(running):
 	if running:
