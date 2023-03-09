@@ -323,7 +323,7 @@ func _unhandled_input(event):
 			if event.scancode == KEY_W:
 				set_layout_mode("control")
 			
-			if event.scancode == KEY_DELETE:
+			if event.scancode == KEY_DELETE and layout_mode == "edit":
 				if selection is LayoutSection:
 					var dirtracks = Array(selection.tracks)
 					selection.unselect()
