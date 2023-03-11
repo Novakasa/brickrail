@@ -228,3 +228,17 @@ func has_block():
 		if track.get_block() != null:
 			return true
 	return false
+
+func has_connections():
+	if len(tracks[-1].connections) == 0:
+		return false
+	if len(tracks[0].get_opposite().connections) == 0:
+		return false
+	return true
+
+func is_connected_to(dirtrack):
+	if dirtrack in tracks[-1].connections.values():
+		return true
+	if dirtrack in tracks[0].get_opposite().connections.values():
+		return true
+	return false

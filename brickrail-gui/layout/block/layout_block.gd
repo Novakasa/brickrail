@@ -65,6 +65,13 @@ func set_section(p_section):
 
 	update()
 
+func depends_on(dirtrack):
+	if section.is_connected_to(dirtrack):
+		return true
+	if section.is_connected_to(dirtrack.get_opposite()):
+		return true
+	return false
+
 func serialize():
 	var result = {}
 	result["name"] = blockname

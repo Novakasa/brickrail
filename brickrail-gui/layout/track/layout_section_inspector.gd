@@ -55,6 +55,9 @@ func _on_CreateBlock_pressed():
 	if section.has_block():
 		push_error("Can't create block on sections with other blocks")
 		return
+	if not section.has_connections():
+		push_error("Can't create block on sections with no connections")
+		return
 	var new_name = "block" + str(len(LayoutInfo.blocks))
 	while new_name in LayoutInfo.blocks:
 		new_name = new_name + "_"

@@ -316,6 +316,12 @@ func set_random_targets(p_random_targets):
 	random_targets = p_random_targets
 	emit_signal("random_targets_set", p_random_targets)
 
+func blocks_depend_on(dirtrack):
+	for block in blocks.values():
+		if block.depends_on(dirtrack):
+			return true
+	return false
+
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
@@ -329,8 +335,11 @@ func _unhandled_input(event):
 					var dirtracks = Array(selection.tracks)
 					selection.unselect()
 					for dirtrack in dirtracks:
-						if dirtrack.get_block() == null:
-							dirtrack.remove()
+						if dirtrack.get_block() != null:
+							continue
+						if blocks_depend_on(dirtrack):
+							continue
+						dirtrack.remove()
 				
 				if selection is LayoutLogicalBlock:
 					blocks[selection.blockname].remove()
