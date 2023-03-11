@@ -323,7 +323,13 @@ func update_wagon_position():
 		else:
 			wagon_pos += track_pos
 			interpolation = dirtrack.interpolate_world(wagon_pos)
-			
+		
+		if interpolation == null:
+			wagon.visible = false
+			wagon.position = Vector2(-1000.0, 0.0)
+			continue
+		
+		wagon.visible = true
 		wagon.position = interpolation.position
 		wagon.rotation = interpolation.rotation + PI
 
