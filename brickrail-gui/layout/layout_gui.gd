@@ -16,6 +16,7 @@ func _ready():
 	LayoutInfo.connect("trains_running", self, "_on_layout_trains_running")
 	LayoutInfo.connect("random_targets_set", self, "_on_layout_random_targets_set")
 	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
+	_on_layers_changed()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func _on_layout_random_targets_set(set):

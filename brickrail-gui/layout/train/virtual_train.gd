@@ -81,12 +81,12 @@ func _init(p_name):
 	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
 	add_wagons(4)
-	update_wagon_visuals()
 	
 	connect("visibility_changed", self, "_on_visibility_changed")
 
 func _ready():
 	_on_settings_colors_changed()
+	update_wagon_visuals()
 
 func add_wagons(num_wagons):
 	for wagon in wagons:
