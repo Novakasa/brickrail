@@ -231,7 +231,7 @@ func interpolate_world(pos, turns = []):
 	var turn = get_next_turn()
 	if len(turns)>0:
 		turn = turns[0]
-	if turn == null:
+	if turn == null or not turn in connections:
 		return null
 	var length = get_length_to(turn)
 	if pos > length:
