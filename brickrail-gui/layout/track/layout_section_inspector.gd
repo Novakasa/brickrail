@@ -19,7 +19,7 @@ func set_section(obj):
 func _on_section_unselected():
 	queue_free()
 
-func _on_section_track_added(track):
+func _on_section_track_added(_track):
 	if len(section.tracks) == 1:
 		dirtrack = section.tracks[0]
 		$CreateBlock.visible=false
@@ -116,7 +116,7 @@ func _on_RemoveSensor_pressed():
 	dirtrack.remove_sensor()
 
 
-func _on_MarkerSelect_item_selected(index):
+func _on_MarkerSelect_item_selected(_index):
 	dirtrack.get_sensor().set_marker_color(get_selected_colorname())
 
 

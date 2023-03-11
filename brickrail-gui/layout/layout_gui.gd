@@ -9,13 +9,13 @@ export(NodePath) var layer_container
 export(NodePath) var layer_index_edit
 
 func _ready():
-	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
-	LayoutInfo.connect("selected", self, "_on_selected")
-	LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
-	LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
-	LayoutInfo.connect("trains_running", self, "_on_layout_trains_running")
-	LayoutInfo.connect("random_targets_set", self, "_on_layout_random_targets_set")
-	get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
+	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	_err = LayoutInfo.connect("selected", self, "_on_selected")
+	_err = LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
+	_err = LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
+	_err = LayoutInfo.connect("trains_running", self, "_on_layout_trains_running")
+	_err = LayoutInfo.connect("random_targets_set", self, "_on_layout_random_targets_set")
+	_err = get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
 	_on_layers_changed()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 

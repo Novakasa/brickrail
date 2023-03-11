@@ -13,8 +13,6 @@ var dragging_view_camera_reference = null
 
 onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
-signal grid_view_changed(p_pretty_tracks)
-
 func _on_layer_added(l):
 	var layer = Node2D.new()
 	layer.name = "layer" + str(l)
@@ -35,15 +33,15 @@ func _on_cell_added(cell):
 
 func _ready():
 	
-	LayoutInfo.connect("cell_added", self, "_on_cell_added")
-	LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
-	LayoutInfo.connect("layer_added", self, "_on_layer_added")
-	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = LayoutInfo.connect("cell_added", self, "_on_cell_added")
+	_err = LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
+	_err = LayoutInfo.connect("layer_added", self, "_on_layer_added")
+	_err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 	LayoutInfo.grid = self
 	
 	LayoutInfo.add_layer(0)
 
-func _on_layout_mode_changed(mode):
+func _on_layout_mode_changed(_mode):
 	update()
 
 func _draw():
@@ -72,7 +70,7 @@ func process_input(event):
 	if event is InputEventMouse:
 		process_mouse_input(event)
 
-func process_key_input(event):
+func process_key_input(_event):
 	pass
 
 func process_mouse_input(event):
@@ -82,7 +80,6 @@ func process_mouse_input(event):
 	var j = int(mpos.y/spacing)
 	if not (i>=0 and i<nx and j>=0 and j<ny):
 		return
-	var l = LayoutInfo.active_layer
 	var mpos_cell = mpos-LayoutInfo.spacing*Vector2(i,j)
 	if event is InputEventMouseMotion:
 		process_mouse_motion(event, i, j, mpos_cell, mpos)

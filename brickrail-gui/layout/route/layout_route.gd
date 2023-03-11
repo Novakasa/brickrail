@@ -52,7 +52,7 @@ func redirect_with_route(route):
 			break
 	assert(start!=null)
 	unset_all_attributes()
-	for i in range(len(legs)-leg_index-1):
+	for _i in range(len(legs)-leg_index-1):
 		prints(legs[-1].get_from().id, legs[-1].get_target().id)
 		legs.remove(len(legs)-1)
 	for i in range(len(route.legs)-start):

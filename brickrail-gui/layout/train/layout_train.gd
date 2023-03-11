@@ -32,10 +32,10 @@ func _init(p_name):
 	virtual_train = VirtualTrain.new(trainname)
 	add_child(virtual_train)
 	virtual_train.visible=false
-	virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
-	LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
-	LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
-	LayoutInfo.connect("active_layer_changed",self, "_on_LayoutInfo_active_layer_changed")
+	var _err = virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
+	_err = LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
+	_err = LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
+	_err = LayoutInfo.connect("active_layer_changed",self, "_on_LayoutInfo_active_layer_changed")
 	wait_timer = Timer.new()
 	add_child(wait_timer)
 	blocked_by = null
@@ -49,12 +49,12 @@ func _enter_tree():
 		if LayoutInfo.random_targets:
 			find_random_route(false)
 
-func _on_LayoutInfo_active_layer_changed(l_idx):
+func _on_LayoutInfo_active_layer_changed(_l_idx):
 	update_layer_visibility()
 
-func _on_virtual_train_switched_layer(l_idx):
+func _on_virtual_train_switched_layer(p_l_idx):
 	if selected:
-		LayoutInfo.set_active_layer(l_idx)
+		LayoutInfo.set_active_layer(p_l_idx)
 	update_layer_visibility()
 
 func update_layer_visibility():
@@ -67,17 +67,17 @@ func update_layer_visibility():
 func can_control_ble_train():
 	return LayoutInfo.control_devices and ble_train != null and ble_train.hub.running
 
-func set_ble_train(trainname):
+func set_ble_train(p_trainname):
 	if ble_train != null:
 		ble_train.disconnect("sensor_advance", self, "_on_ble_train_sensor_advance")
 		ble_train.disconnect("removing", self, "_on_ble_train_removing")
-	if trainname == null:
+	if p_trainname == null:
 		ble_train = null
 		emit_signal("ble_train_changed")
 		return
-	ble_train = Devices.trains[trainname]
-	ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
-	ble_train.connect("removing", self, "_on_ble_train_removing")
+	ble_train = Devices.trains[p_trainname]
+	var _err = ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
+	_err = ble_train.connect("removing", self, "_on_ble_train_removing")
 	update_control_ble_train()
 	emit_signal("ble_train_changed")
 
@@ -99,15 +99,15 @@ func start():
 func _on_ble_train_removing(_name):
 	set_ble_train(null)
 
-func _on_ble_train_sensor_advance(colorname):
+func _on_ble_train_sensor_advance(_colorname):
 	virtual_train.manual_sensor_advance()
 
-func _on_ble_train_unexpected_marker(colorname):
+func _on_ble_train_unexpected_marker(_colorname):
 	Logger.verbose("ble_train unexpected marker triggered", logging_module)
 	push_error("unexpected marker not aligned with next sensor")
 	ble_train.stop()
 
-func _on_LayoutInfo_control_devices_changed(control_devices):
+func _on_LayoutInfo_control_devices_changed(_control_devices):
 	update_control_ble_train()
 
 func is_end_of_leg():
@@ -160,7 +160,7 @@ func unselect():
 func has_point(point):
 	return virtual_train.has_point(point)
 
-func hover_at(mpos):
+func hover_at(_mpos):
 	virtual_train.set_hover(true)
 	if route != null:
 		if not route.highlighted:
@@ -172,7 +172,7 @@ func stop_hover():
 		if route.highlighted:
 			route.clear_highlight()
 
-func process_mouse_button(event, mpos):
+func process_mouse_button(event, _mpos):
 	# prints("train:", trainname)
 	if event.button_index == BUTTON_LEFT:
 		if not selected:
@@ -220,7 +220,7 @@ func find_random_route(no_blocked):
 	set_route(valid_routes[random_target])
 	try_advancing()
 
-func find_route(p_target, no_locked=true):
+func find_route(p_target, _no_locked=true):
 	if route != null and not is_end_of_leg():
 		push_error("Not at end of leg!")
 		return
@@ -319,7 +319,7 @@ func _on_route_facing_flipped(p_facing):
 func _on_route_can_advance():
 	try_advancing()
 
-func _on_target_entered(target_node):
+func _on_target_entered(_target_node):
 	pass
 
 func _on_target_in(target_node):

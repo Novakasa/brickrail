@@ -9,7 +9,7 @@ signal hubs_state_changed()
 signal device_name_discovered(p_name)
 
 func _ready():
-	$BLECommunicator.connect("message_received", self, "_on_message_received")
+	var _err = $BLECommunicator.connect("message_received", self, "_on_message_received")
 
 func add_hub(hub):
 	send_command(null, "add_hub", [hub.name, hub.program], null)

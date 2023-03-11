@@ -40,7 +40,7 @@ func set_route(p_route):
 		route.disconnect("intention_changed", self, "_on_route_intention_changed")
 	route = p_route
 	if route != null:
-		route.connect("intention_changed", self, "_on_route_intention_changed")
+		var _err = route.connect("intention_changed", self, "_on_route_intention_changed")
 		download_route(route)
 
 func download_route(p_route):
@@ -66,7 +66,7 @@ func _on_runtime_data_received(data):
 	if data[0] == DATA_SENSOR_ADVANCE:
 		emit_signal("sensor_advance", data)
 
-func _on_hub_name_changed(p_old_name, p_new_name):
+func _on_hub_name_changed(_p_old_name, p_new_name):
 	var old_name = name
 	name = p_new_name
 	emit_signal("name_changed", old_name, p_new_name)

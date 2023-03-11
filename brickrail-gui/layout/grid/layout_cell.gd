@@ -45,12 +45,12 @@ func _enter_tree():
 	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
 	set_shader_param("has_switch", false)
 	_on_settings_colors_changed()
-	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
-	Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
-	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	_err = Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
+	_err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	_on_settings_render_mode_changed(Settings.render_mode)
-	get_tree().connect("idle_frame", self, "_on_idle_frame")
+	_err = get_tree().connect("idle_frame", self, "_on_idle_frame")
 
 func _on_idle_frame():
 	if _redraw:
@@ -119,12 +119,14 @@ func hover_at(pos):
 
 func set_hover_obj(obj):
 	if hover_obj != null:
-		hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
+		if hover_obj.has_signal("removing"):
+			hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
 	if obj!=null:
-		obj.connect("removing", self, "_on_hover_obj_removing")
+		if obj.has_signal("removing"):
+			obj.connect("removing", self, "_on_hover_obj_removing")
 	hover_obj = obj
 
-func _on_hover_obj_removing(id):
+func _on_hover_obj_removing(_id):
 	set_hover_obj(null)
 
 func stop_hover():
@@ -153,7 +155,6 @@ func process_mouse_button(event, pos):
 				return
 
 func get_obj_at(normalized_pos):
-	var i = 0
 	var closest_dist = LayoutInfo.spacing+1
 	var closest_track = null
 	for track in tracks.values():
@@ -173,7 +174,6 @@ func get_obj_at(normalized_pos):
 	return closest_track
 
 func create_track_at(pos, direction=null):
-	var i = 0
 	var closest_dist = LayoutInfo.spacing+1
 	var closest_track = null
 	var normalized_pos = pos/LayoutInfo.spacing
@@ -232,7 +232,6 @@ func add_track(track):
 	track.connect("connections_changed", self, "_on_track_connections_changed")
 	track.connect("states_changed", self, "_on_track_states_changed")
 	track.connect("removing", self, "_on_track_removing")
-	track.connect("selected", self, "_on_track_selected")
 	# update()
 	_on_track_connections_changed(track.get_orientation())
 	return track
@@ -242,7 +241,6 @@ func _on_track_removing(orientation):
 	track.disconnect("connections_changed", self, "_on_track_connections_changed")
 	track.disconnect("states_changed", self, "_on_track_states_changed")
 	track.disconnect("removing", self, "_on_track_removing")
-	track.disconnect("selected", self, "_on_track_selected")
 	tracks.erase(orientation)
 	if track == hover_obj:
 		set_hover_obj(null)
@@ -270,8 +268,6 @@ func _on_track_selected(track):
 func get_colliding_tracks(orientation):
 	assert(orientation in tracks)
 	var coll_tracks = []
-	var slot0 = tracks[orientation].slot0
-	var slot1 = tracks[orientation].slot1
 	for track in tracks.values():
 		if track.collides_with(tracks[orientation]):
 			coll_tracks.append(track)

@@ -32,7 +32,7 @@ class ExternalSink:
 		"""Flush the buffer, i.e. write its contents to the target external sink."""
 		print("[ERROR] [logger] Using method which has to be overriden in your custom sink")
 
-	func write(output, level):
+	func write(_output, _level):
 		"""Write the string at the end of the sink (append mode), following
 		the queue mode."""
 		print("[ERROR] [logger] Using method which has to be overriden in your custom sink")
@@ -75,6 +75,7 @@ class Logfile:
 		else:
 			return File.READ_WRITE  # append
 
+#warning-ignore:shadowed_variable
 	func validate_path(path):
 		"""Validate the path given as argument, making it possible to write to
 		the designated file or folder. Returns whether the path is valid."""
@@ -152,7 +153,7 @@ class Module:
 		set_output_level(_output_level)
 
 		if typeof(_output_strategies) == TYPE_INT:  # Only one strategy, use it for all
-			for i in range(0, LEVELS.size()):
+			for _i in range(0, LEVELS.size()):
 				output_strategies.append(_output_strategies)
 		else:
 			for strategy in _output_strategies:  # Need to force deep copy

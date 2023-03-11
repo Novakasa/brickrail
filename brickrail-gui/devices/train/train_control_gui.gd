@@ -25,10 +25,10 @@ func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():
 		child.disabled=mode
 
-func _on_train_name_changed(old_name, new_name):
+func _on_train_name_changed(_old_name, new_name):
 	set_train_name(new_name)
 
-func _on_train_removing(p_name):
+func _on_train_removing(_p_name):
 	queue_free()
 
 func set_train_name(p_train_name):

@@ -25,10 +25,10 @@ func setup(p_controller_name):
 func _on_port_selector_device_selected(port, type):
 	controller.set_device(port, type)
 
-func _on_controller_name_changed(p_old_name, p_new_name):
+func _on_controller_name_changed(_p_old_name, p_new_name):
 	set_controller_name(p_new_name)
 
-func _on_controller_removing(p_name):
+func _on_controller_removing(_p_name):
 	queue_free()
 
 func set_controller_name(p_controller_name):
@@ -38,7 +38,7 @@ func set_controller_name(p_controller_name):
 	if not controller.is_connected("devices_changed", self, "_on_controller_devices_changed"):
 		controller.connect("devices_changed", self, "_on_controller_devices_changed")
 
-func _on_controller_devices_changed(p_name):
+func _on_controller_devices_changed(_p_name):
 	for port in controller.devices:
 		if controller.devices[port] == null:
 			port_selectors[port].select_device(null)

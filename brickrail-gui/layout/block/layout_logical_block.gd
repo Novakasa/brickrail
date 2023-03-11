@@ -9,11 +9,12 @@ var train: LayoutTrain
 var index: int
 var nodes = {}
 var selected = false
-var hover = false
+var _hover = false
 var can_stop = true
 
 var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.tscn")
 
+#warning-ignore:unused_signal
 signal removing(blockname)
 signal selected()
 signal unselected()
@@ -116,7 +117,7 @@ func get_inspector():
 	inspector.set_block(self)
 	return inspector
 
-func process_mouse_button(event, pos):
+func process_mouse_button(event, _pos):
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
 			if not selected:
@@ -124,14 +125,13 @@ func process_mouse_button(event, pos):
 	if event.button_index == BUTTON_RIGHT:
 		if not event.pressed:
 			if LayoutInfo.drag_train:
-				var train = LayoutInfo.dragged_train
-				var start_facing = train.facing
+				var train_obj = LayoutInfo.dragged_train
 				var end_facing = LayoutInfo.drag_virtual_train.facing
 				var target = nodes[end_facing].id
-				train.find_route(target)
+				train_obj.find_route(target)
 
-func hover(pos):
-	hover = true
+func hover(_pos):
+	_hover = true
 	section.set_track_attributes("block", blockname)
 	
 	if LayoutInfo.drag_train:
@@ -145,7 +145,7 @@ func set_drag_virtual_train():
 	LayoutInfo.drag_layout_block = self
 
 func stop_hover():
-	hover = false
+	_hover = false
 	section.set_track_attributes("block", blockname)
 
 	if LayoutInfo.drag_train:

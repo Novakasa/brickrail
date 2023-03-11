@@ -9,7 +9,7 @@ export(String) var none_meta = null
 signal meta_selected(meta)
 
 func _ready():
-	connect("item_selected", self, "_on_item_selected")
+	var _err = connect("item_selected", self, "_on_item_selected")
 
 func _on_item_selected(idx):
 	emit_signal("meta_selected", get_item_metadata(idx))

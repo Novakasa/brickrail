@@ -16,7 +16,6 @@ const SWITCH_COMMAND_SWITCH = 0
 
 signal position_changed(position)
 signal responsiveness_changed(value)
-signal device_call(port, funcname, args)
 signal removing(controllername, port)
 
 func _init(p_hub, p_port, p_controllername):
@@ -75,9 +74,9 @@ func set_responsive():
 	responsiveness = true
 	emit_signal("responsiveness_changed", true)
 
-func switch(position):
+func switch(p_position):
 	set_unresponsive()
-	hub.rpc("device_execute", [port, SWITCH_COMMAND_SWITCH, position_to_enum[position]])
+	hub.rpc("device_execute", [port, SWITCH_COMMAND_SWITCH, position_to_enum[p_position]])
 
 func remove():
 	set_hub(null)

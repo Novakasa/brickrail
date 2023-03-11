@@ -82,7 +82,7 @@ func set_motor1(motor):
 	
 	emit_signal("motors_changed")
 
-func set_motor2(motor):
+func set_motor2(_motor):
 	pass
 
 func _on_motor1_removing(_controllername, _port):
@@ -98,7 +98,7 @@ func _on_motor1_position_changed(ble_pos):
 	position_index = switch_positions.find(pos)
 	emit_signal("position_changed", pos)
 
-func hover(_pos):
+func set_hover(_pos):
 	hover=true
 	emit_signal("state_changed")
 
@@ -141,7 +141,7 @@ func switch(pos):
 func get_position():
 	return switch_positions[position_index]
 
-func process_mouse_button(event, pos):
+func process_mouse_button(event, _pos):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == BUTTON_RIGHT:
 			if LayoutInfo.layout_mode == "control":

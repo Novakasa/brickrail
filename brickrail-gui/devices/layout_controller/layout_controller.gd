@@ -6,7 +6,6 @@ var hub
 var devices = {}
 
 signal name_changed(p_name, p_new_name)
-signal device_data_received(p_port, p_key, p_data)
 signal devices_changed(p_name)
 signal removing(p_name)
 
@@ -58,16 +57,16 @@ func _on_device_removing(_controllername, port):
 	devices[port] = null
 	emit_signal("devices_changed", name)
 
-func _on_hub_runtime_data_received(data):
+func _on_hub_runtime_data_received(_data):
 	pass
 
 func device_call(port, funcname, args):
 	hub.rpc("device_call", [port, funcname, args])
 
-func _on_hub_responsiveness_changed(value):
+func _on_hub_responsiveness_changed(_value):
 	pass
 
-func _on_hub_name_changed(p_old_name, p_new_name):
+func _on_hub_name_changed(_p_old_name, p_new_name):
 	var old_name = name
 	name = p_new_name
 	emit_signal("name_changed", old_name, p_new_name)

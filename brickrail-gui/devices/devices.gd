@@ -36,7 +36,7 @@ func serialize():
 func load(struct):
 	
 	for train_data in struct.trains:
-		var train = add_train(train_data.name)
+		var _train = add_train(train_data.name)
 		# train.load(train_data)
 	
 	for controller_data in struct.controllers:

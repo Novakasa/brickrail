@@ -47,7 +47,6 @@ export(Color) var accent_color
 export(Color) var hover_color
 export(Color) var selected_color = Color.black
 
-signal marker(marker)
 signal switched_layers(new_l_idx)
 
 func seek_curve(t):
@@ -55,7 +54,7 @@ func seek_curve(t):
 	
 	return t*t*(1.0-t) + (1.0-(1.0-t)*(1.0-t))*t
 	
-	return 1.0-(1.0-t)*(1.0-t)
+	# return 1.0-(1.0-t)*(1.0-t)
 
 func get_seek_offset(delta):
 	if seek_forward_timer < 0.0:
@@ -78,11 +77,11 @@ func cleanup_seek():
 func _init(p_name):
 	trainname = p_name
 	logging_module = "virtual=" + trainname
-	Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
 	add_wagons(4)
 	
-	connect("visibility_changed", self, "_on_visibility_changed")
+	_err = connect("visibility_changed", self, "_on_visibility_changed")
 
 func _ready():
 	_on_settings_colors_changed()
@@ -93,7 +92,7 @@ func add_wagons(num_wagons):
 		remove_child(wagon)
 		wagon.queue_free()
 	wagons = []
-	for i in range(num_wagons):
+	for _i in range(num_wagons):
 		wagons.append(VirtualTrainWagon.new())
 		add_child(wagons[-1])
 		wagons[-1].set_body_color(body_color)
@@ -137,7 +136,7 @@ func set_route(p_route):
 		route.disconnect("execute_behavior", self, "execute_behavior")
 	route = p_route
 	if route != null:
-		route.connect("execute_behavior", self, "execute_behavior")
+		var _err = route.connect("execute_behavior", self, "execute_behavior")
 
 func advance_route():
 	if seek_forward_timer >= 0.0:
@@ -306,8 +305,6 @@ func execute_behavior(behavior: String):
 		call(parts[-1])
 
 func update_position():
-	var interpolation = dirtrack.interpolate(track_pos, turn)
-	
 	update_wagon_position()
 
 func update_wagon_position():

@@ -5,7 +5,6 @@ signal motor_selected(switch_motor)
 
 var controllername
 var port
-var switch_motor
 
 func setup(p_motor):
 	select(p_motor)

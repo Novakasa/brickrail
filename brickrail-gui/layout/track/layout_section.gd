@@ -31,8 +31,6 @@ func load(struct):
 
 func can_add_track(track):
 	if len(tracks)>0:
-		var last_track = tracks[-1]
-		
 		if track is DirectedLayoutTrack:
 			return track in tracks[-1].get_next_tracks()
 		
@@ -90,7 +88,6 @@ func add_track(track):
 	if selected:
 		set_track_attributes("selected", false)
 		set_track_attributes("arrow", -1, ">", "increment")
-	var next_slot
 
 	if track is DirectedLayoutTrack:
 		add_dirtrack(track)

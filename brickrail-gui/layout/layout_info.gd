@@ -50,6 +50,7 @@ var time_scale = 1.0
 signal layout_mode_changed(mode)
 signal selected(obj)
 signal control_devices_changed(control_device)
+#warning-ignore:unused_signal
 signal blocked_tracks_changed(trainname)
 signal random_targets_set(rand_target)
 signal layers_changed()
@@ -78,7 +79,7 @@ func add_layer(l):
 	cells[l] = []
 	for i in range(grid.nx):
 		cells[l].append([])
-		for j in range(grid.ny):
+		for _j in range(grid.ny):
 			cells[l][i].append(null)
 	
 	emit_signal("layer_added", l)
@@ -386,7 +387,7 @@ func _on_selection_unselected():
 	selection.disconnect("unselected", self, "_on_selection_unselected")
 	selection = null
 
-func _on_drawing_last_track_removing(orientation):
+func _on_drawing_last_track_removing(_orientation):
 	drawing_last_track.disconnect("removing", self, "_on_drawing_last_track_removing")
 	drawing_last_track = null
 

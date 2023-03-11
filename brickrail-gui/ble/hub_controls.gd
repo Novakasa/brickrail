@@ -8,7 +8,7 @@ var hub
 
 func setup(p_hub):
 	hub = p_hub
-	Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
+	var _err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
 	_on_hubs_state_changed()
 
 func _on_hubs_state_changed():
@@ -34,14 +34,12 @@ func _on_hubs_state_changed():
 
 func _on_run_button_pressed():
 	var runbutton = get_node(run_button)
-	var connectbutton = get_node(connect_button)
 	if runbutton.text == "run":
 		hub.run_program_coroutine()
 	if runbutton.text == "stop":
 		hub.stop_program_coroutine()
 
 func _on_connect_button_pressed():
-	var runbutton = get_node(run_button)
 	var connectbutton = get_node(connect_button)
 	if connectbutton.text == "connect":
 		hub.connect_coroutine()

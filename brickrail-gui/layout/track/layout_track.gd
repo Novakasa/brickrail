@@ -38,9 +38,6 @@ var states_changed_emitted = false
 
 signal connections_changed(orientation)
 signal states_changed(orientation)
-signal route_lock_changed(lock)
-signal selected(obj)
-signal unselected(obj)
 signal removing(orientation)
 signal sensor_changed(track)
 
@@ -77,7 +74,7 @@ func _init(p_slot0, p_slot1, l, i, j):
 	assert(slot0 != slot1)
 	assert(slot0 in slots and slot1 in slots)
 
-func _on_dirtrack_states_changed(slot):
+func _on_dirtrack_states_changed(_slot):
 	states_changed_emitted = false
 	call_deferred("emit_states_changed_once")
 
@@ -87,7 +84,7 @@ func emit_states_changed_once():
 	emit_signal("states_changed", get_orientation())
 	states_changed_emitted = true
 
-func _on_dirtrack_connections_changed(slot):
+func _on_dirtrack_connections_changed(_slot):
 	emit_signal("connections_changed", get_orientation())
 
 func get_directed_to(slot):
@@ -153,6 +150,7 @@ func get_logical_block():
 	var block = get_block()
 	if block == null:
 		return null
+	#warning-ignore:integer_division
 	if block.logical_blocks[0].section.get_track_index(self)>=(len(block.section.tracks)/2):
 		return block.logical_blocks[0]
 	return block.logical_blocks[1]
@@ -371,9 +369,6 @@ func get_slot_tangent(slot):
 func get_slot_pos(slot):
 	return LayoutInfo.slot_positions[slot]
 
-func has_point(pos):
-	pass
-
 func get_switches():
 	var switches = []
 	for dirtrack in directed_tracks.values():
@@ -451,7 +446,7 @@ func hover(pos):
 			hover_obj.stop_hover()
 		hover_obj = hover_candidate
 		if hover_obj != null:
-			hover_obj.hover(pos)
+			hover_obj.set_hover(pos)
 
 func stop_hover():
 	if hover_obj != null:

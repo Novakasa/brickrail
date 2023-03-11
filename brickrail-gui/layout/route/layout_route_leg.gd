@@ -133,17 +133,17 @@ func set_attributes(key, value, direction="<>", operation="set"):
 	get_full_section().set_track_attributes(key, value, direction, operation)
 
 func get_lock_trains():
-	var locked = []
+	var locked_trains = []
 	var trainname = get_start_node().obj.get_locked()
 	if trainname != null:
-		locked.append(trainname)
+		locked_trains.append(trainname)
 	trainname = get_target_node().obj.get_locked()
-	if trainname != null and not trainname in locked:
-		locked.append(trainname)
+	if trainname != null and not trainname in locked_trains:
+		locked_trains.append(trainname)
 	for trainname2 in get_full_section().get_locked():
-		if not trainname2 in locked:
-			locked.append(trainname2)
-	return locked
+		if not trainname2 in locked_trains:
+			locked_trains.append(trainname2)
+	return locked_trains
 
 func can_lock(trainname):
 	var leg_locked = get_lock_trains()

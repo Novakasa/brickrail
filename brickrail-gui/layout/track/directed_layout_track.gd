@@ -69,7 +69,7 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	
 	metadata = {"none": default_meta.duplicate()}
 
-func serialize(reference=false):
+func serialize(_reference=false):
 	var result = {}
 	result["l_idx"] = l_idx
 	result["x_idx"] = x_idx
@@ -182,11 +182,11 @@ func _on_switch_state_changed():
 	emit_signal("states_changed", next_slot)
 	emit_signal("switch_changed", next_slot)
 
-func _on_switch_position_changed(pos):
+func _on_switch_position_changed(_pos):
 	emit_signal("states_changed", next_slot)
 	emit_signal("switch_changed", next_slot)
 
-func get_next_track(slot, segment=true):
+func get_next_track(_slot, segment=true):
 	if segment and switch != null:
 			return null
 	return null
@@ -308,9 +308,9 @@ func get_orientation():
 	return prev_slot+next_slot
 
 func get_node_obj():
-	var switch = get_switch()
-	if switch != null:
-		return switch
+	var switch_obj = get_switch()
+	if switch_obj != null:
+		return switch_obj
 	return get_next_block()
 
 func get_locked(turn=null):
@@ -448,7 +448,7 @@ func interpolate_position_linear(t):
 		return prev_pos
 	return prev_pos + (next_pos-prev_pos)*t
 
-func hover(pos):
+func set_hover(_pos):
 	hover=true
 	emit_signal("states_changed", next_slot)
 
@@ -493,7 +493,7 @@ func get_shader_state(turn):
 		state |= STATE_BLOCK
 		var block = LayoutInfo.blocks[metadata[turn]["block"]]
 		for logical_block in block.logical_blocks:
-			if logical_block.hover:
+			if logical_block._hover:
 				state |= STATE_BLOCK_HOVER
 				if logical_block.section.tracks[-1] == self:
 					state |= [STATE_BLOCK_PLUS, STATE_BLOCK_MINUS][logical_block.index]

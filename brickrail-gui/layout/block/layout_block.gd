@@ -14,8 +14,6 @@ export(Font) var font
 var hover_block = null
 
 signal removing(p_name)
-signal selected()
-signal unselected()
 
 func setup(p_name):
 	blockname = p_name
@@ -49,6 +47,7 @@ func set_section(p_section):
 	p_section.set_track_attributes("block", blockname)
 	section = p_section
 	
+	#warning-ignore:integer_division
 	var index = len(p_section.tracks)/2
 	var track = p_section.tracks[index]
 	var tangent = track.get_tangent()
