@@ -315,7 +315,11 @@ func get_node_obj():
 
 func get_locked(turn=null):
 	if turn==null:
-		turn = get_next_turn()
+		for turn in connections:
+			var locked = get_locked(turn)
+			if locked != null:
+				return locked
+		return null
 	var locked_trainname = metadata[turn]["locked"]
 	if locked_trainname != null:
 		return locked_trainname

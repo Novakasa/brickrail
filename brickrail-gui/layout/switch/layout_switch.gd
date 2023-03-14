@@ -144,7 +144,9 @@ func get_position():
 func process_mouse_button(event, _pos):
 	if event is InputEventMouseButton and event.pressed:
 		if event.button_index == BUTTON_RIGHT:
-			if LayoutInfo.layout_mode == "control":
+			if LayoutInfo.layout_mode == "control" and LayoutInfo.control_enabled:
+				if directed_track.get_locked() != null:
+					return
 				toggle_switch()
 		if event.button_index == BUTTON_LEFT:
 			select()
