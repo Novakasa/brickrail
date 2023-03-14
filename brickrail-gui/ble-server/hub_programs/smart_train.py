@@ -118,8 +118,8 @@ class Route:
         self.legs = [RouteLeg(b"\x02")]
         # assert self.legs[0].type == _LEG_TYPE_START, self.legs[0].type
         self.index = 0
-        self.last_key = None
-        self.last_speed = None
+        self.last_key = _SENSOR_KEY_NONE
+        self.last_speed = _SENSOR_SPEED_CRUISE
 
     def get_current_leg(self):
         return self.legs[self.index]
@@ -151,9 +151,12 @@ class Route:
     def advance(self):
         self.advance_leg()
         if self.get_current_leg().type == _LEG_TYPE_FLIP:
+            self.last_key = _SENSOR_KEY_NONE
             if self.get_current_leg().intention == _INTENTION_PASS:
                 return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ self.last_speed
+            self.last_speed = _SENSOR_SPEED_SLOW
             return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_SLOW
+        self.last_key = _SENSOR_KEY_NONE
         return _BEHAVIOR_FLAG_SPEED ^ self.last_speed
     
     def advance_sensor(self, color):
