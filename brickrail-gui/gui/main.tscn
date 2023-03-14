@@ -265,13 +265,13 @@ margin_left = 113.0
 margin_right = 117.0
 margin_bottom = 27.0
 
-[node name="CheckBox" type="CheckBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
+[node name="ControlDevicesToggle" type="CheckButton" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 121.0
 margin_right = 255.0
 margin_bottom = 27.0
 text = "control devices"
 
-[node name="AutoTarget" type="CheckBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
+[node name="AutoTarget" type="CheckButton" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run"]
 margin_left = 259.0
 margin_right = 395.0
 margin_bottom = 27.0
@@ -440,7 +440,7 @@ window_title = "Error"
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit/LayoutSave" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/edit/LayoutOpen" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutOpen_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/StopAllButton" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_StopAllButton_pressed"]
-[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/CheckBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_CheckBox_toggled"]
+[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_control_devices_toggled"]
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/AutoTarget" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
 [connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
 [connection signal="button_down" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_button_down"]

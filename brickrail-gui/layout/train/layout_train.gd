@@ -179,6 +179,8 @@ func process_mouse_button(event, _mpos):
 			select()
 	if event.button_index == BUTTON_RIGHT:
 		if LayoutInfo.layout_mode == "control":
+			if not LayoutInfo.control_enabled:
+				return
 			LayoutInfo.init_drag_train(self)
 
 func get_route_to(p_target, no_locked=true):

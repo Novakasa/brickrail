@@ -8,7 +8,7 @@ var port
 
 func setup(p_motor):
 	select(p_motor)
-	Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
+	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
 
 func select(p_motor):
 	if p_motor == null:

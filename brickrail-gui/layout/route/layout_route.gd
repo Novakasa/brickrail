@@ -90,7 +90,7 @@ func set_trainname(p_trainname):
 	if trainname != null:
 		collect_sensors()
 		update_intentions()
-		LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+		var _err = LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 		set_all_attributes()
 
 func _on_LayoutInfo_blocked_tracks_changed(p_trainname):

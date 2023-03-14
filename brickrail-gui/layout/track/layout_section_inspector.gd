@@ -4,7 +4,7 @@ var section = null
 var dirtrack = null
 
 func _enter_tree():
-	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
 	if mode == "control":

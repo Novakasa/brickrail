@@ -7,7 +7,7 @@ var inspector2
 var SwitchInspectorMotorSettings = preload("res://layout/switch/switch_inspector_motor_settings.tscn")
 
 func _enter_tree():
-	LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
 	var edit_exclusive_nodes = [inspector1]

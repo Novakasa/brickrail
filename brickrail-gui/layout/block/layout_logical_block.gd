@@ -128,6 +128,8 @@ func process_mouse_button(event, _pos):
 				var train_obj = LayoutInfo.dragged_train
 				var end_facing = LayoutInfo.drag_virtual_train.facing
 				var target = nodes[end_facing].id
+				if not LayoutInfo.control_enabled:
+					return
 				train_obj.find_route(target)
 
 func hover(_pos):

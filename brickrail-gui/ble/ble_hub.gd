@@ -102,6 +102,7 @@ func stop_program():
 	send_command("stop_program", [])
 	set_responsiveness(false)
 	busy=true
+	running = false
 	emit_signal("state_changed")
 
 func rpc(funcname, args):

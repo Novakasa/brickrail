@@ -25,6 +25,7 @@ var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0
 var layout_mode = "edit"
 var selection = null
 var control_devices = false
+var control_enabled = true
 
 var drawing_track = false
 var drawing_last = null

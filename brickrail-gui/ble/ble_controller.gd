@@ -27,7 +27,15 @@ func _on_hub_removing(hubname):
 	hubs.erase(hubname)
 
 func _on_hub_state_changed():
+	if not are_hubs_ready() and LayoutInfo.control_devices:
+		LayoutInfo.set_control_devices(false)
 	emit_signal("hubs_state_changed")
+
+func are_hubs_ready():
+	for hub in hubs.values():
+		if not hub.running:
+			return false
+	return true
 
 func rename_hub(p_name, p_new_name):
 	var hub = hubs[p_name]
