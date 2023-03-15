@@ -99,16 +99,4 @@ func remove():
 	queue_free()
 
 func _draw():
-	size = $scaler.scale*$scaler/Label.rect_size
-	# draw_rect(Rect2(-0.5*size, size), color)
-	var i = 0
-	var next
-	var xpos = -size.x/2
-	for ch in blockname:
-		if i<len(blockname)-1:
-			next = blockname[i+1]
-		else:
-			next = ""
-		xpos += draw_char(font, Vector2(xpos,0.0),ch,next, Color.black)
-		i += 1
-		# xpos += size.x/len(name)
+	return
