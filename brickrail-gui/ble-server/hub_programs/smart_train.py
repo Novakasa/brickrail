@@ -150,13 +150,12 @@ class Route:
     
     def advance(self):
         self.advance_leg()
+        self.last_key = _SENSOR_KEY_NONE
         if self.get_current_leg().type == _LEG_TYPE_FLIP:
-            self.last_key = _SENSOR_KEY_NONE
+            self.last_speed = _SENSOR_SPEED_CRUISE
             if self.get_current_leg().intention == _INTENTION_PASS:
                 return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ self.last_speed
-            self.last_speed = _SENSOR_SPEED_SLOW
             return _BEHAVIOR_FLAG_FLIP ^ _BEHAVIOR_FLAG_SPEED ^ _SENSOR_SPEED_SLOW
-        self.last_key = _SENSOR_KEY_NONE
         return _BEHAVIOR_FLAG_SPEED ^ self.last_speed
     
     def advance_sensor(self, color):
