@@ -19,6 +19,8 @@ func _ready():
 	_err = get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
 	_on_layers_changed()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
+	$SaveLayoutDialog.current_path = Settings.layout_path
+	$OpenLayoutDialog.current_path = Settings.layout_path
 
 func _on_layout_random_targets_set(set):
 	$LayoutSplit/LayoutModeTabs/run/AutoTarget.pressed = set
@@ -75,6 +77,7 @@ func _on_SaveLayoutDialog_file_selected(path):
 	file.open(path, 2)
 	file.store_string(serial)
 	file.close()
+	Settings.layout_path = $OpenLayoutDialog.current_path
 
 func _on_LayoutOpen_pressed():
 	$OpenLayoutDialog.popup()
@@ -93,6 +96,7 @@ func _on_OpenLayoutDialog_file_selected(path):
 	if "devices" in struct:
 		Devices.load(struct.devices)
 	LayoutInfo.load(struct.layout)
+	Settings.layout_path = $OpenLayoutDialog.current_path
 
 
 func _on_LayoutNew_pressed():

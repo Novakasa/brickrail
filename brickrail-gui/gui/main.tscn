@@ -378,6 +378,7 @@ margin_bottom = 400.0
 rect_min_size = Vector2( 300, 105 )
 window_title = "Save project"
 resizable = true
+access = 2
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
 [node name="OpenLayoutDialog" type="FileDialog" parent="VBoxContainer2/HSplitContainer/LayoutGui"]
@@ -387,6 +388,7 @@ rect_min_size = Vector2( 300, 105 )
 window_title = "Open a File"
 resizable = true
 mode = 0
+access = 2
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
 [node name="StatusGUI" type="HBoxContainer" parent="VBoxContainer2"]

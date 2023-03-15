@@ -2,7 +2,7 @@ tool
 extends Node
 
 var render_mode = "dynamic"
-
+onready var layout_path = ProjectSettings.globalize_path("user://")
 
 var colors = {
 	"background": Color("161614"),
@@ -33,6 +33,7 @@ func save_configfile():
 	for colorname in colors:
 		data.colors[colorname] = colors[colorname].to_html()
 	data["render_mode"] = render_mode
+	data["layout_path"] = layout_path
 	var jsonstr = JSON.print(data, "\t")
 	var configfil = File.new()
 	configfil.open("user://config.json", File.WRITE)
@@ -57,6 +58,8 @@ func read_configfile():
 	for colorname in data.colors:
 		colors[colorname] = Color(data.colors[colorname])
 	render_mode = data.render_mode
+	if "layout_path" in data:
+		layout_path = data.layout_path
 	
 	emit_signal("render_mode_changed")
 	emit_signal("colors_changed")
