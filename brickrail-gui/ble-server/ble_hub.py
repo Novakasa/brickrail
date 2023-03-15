@@ -222,6 +222,10 @@ class BLEHub:
         await self.send_safe(bytes([_IN_ID_SYS, code]))
     
     async def connect(self, device=None):
+        # workaround for https://github.com/pybricks/support/issues/971
+        # self.hub.nus_observable.dispose()
+        # self.hub = PybricksHub()
+        # self.hub.nus_observable.subscribe(self._on_hub_nus)
         try:
             if device is None:
                 device = await find_device(self.name)
@@ -232,9 +236,11 @@ class BLEHub:
             self.to_out_queue("connected", None)
     
     async def disconnect(self):
-        print("disconnecting")
-        await self.hub.disconnect()
-        print("disconnected")
+        try:
+            await asyncio.wait_for(self.hub.disconnect(), 10.0)
+        except asyncio.TimeoutError:
+            print("disconnect timeout")
+            await asyncio.sleep(1.0)
         self.to_out_queue("disconnected", None)
     
     async def run(self, program=None, wait=False):
