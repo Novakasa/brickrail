@@ -118,6 +118,7 @@ func _on_control_devices_toggled(button_pressed):
 
 func _on_layout_control_devices_changed(control_devices):
 	$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.pressed = control_devices
+	$LayoutSplit/LayoutModeTabs/run/EmergencyStopButton.disabled = not control_devices
 
 func _on_AutoTarget_toggled(button_pressed):
 	LayoutInfo.set_random_targets(button_pressed)
@@ -145,3 +146,11 @@ func _on_StopAllButton_pressed():
 func _on_LayoutModeTabs_tab_changed(tab):
 	var mode = ["edit", "control"][tab]
 	LayoutInfo.set_layout_mode(mode)
+
+
+func _on_EmergencyStopButton_pressed():
+	LayoutInfo.set_control_devices(false)
+	for ble_train in Devices.trains.values():
+		if ble_train.hub.running:
+			ble_train.stop()
+	_on_StopAllButton_pressed()

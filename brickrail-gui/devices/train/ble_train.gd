@@ -59,6 +59,8 @@ func download_route(p_route):
 		hub.rpc("set_route_leg", data)
 
 func _on_route_intention_changed(leg_index, intention):
+	if not LayoutInfo.control_devices:
+		return
 	hub.rpc("set_leg_intention", [leg_index, intention_to_enum[intention]])
 
 func _on_runtime_data_received(data):
