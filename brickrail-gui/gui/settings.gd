@@ -15,6 +15,10 @@ var colors = {
 signal render_mode_changed(mode)
 signal colors_changed()
 
+func _ready():
+	print("settings ready")
+	read_configfile()
+
 func set_color(cname, color):
 	colors[cname] = color
 	emit_signal("colors_changed")
@@ -22,3 +26,37 @@ func set_color(cname, color):
 func set_render_mode(mode):
 	render_mode = mode
 	emit_signal("render_mode_changed", render_mode)
+
+func save_configfile():
+	var data = {}
+	data["colors"] = {}
+	for colorname in colors:
+		data.colors[colorname] = colors[colorname].to_html()
+	data["render_mode"] = render_mode
+	var jsonstr = JSON.print(data, "\t")
+	var configfil = File.new()
+	configfil.open("user://config.json", File.WRITE)
+	configfil.store_string(jsonstr)
+	configfil.close()
+
+func read_configfile():
+	var dir = Directory.new()
+	var _err = dir.open("user://")
+	var exists = dir.file_exists("config.json")
+	if not exists:
+		emit_signal("render_mode_changed")
+		emit_signal("colors_changed")
+		return
+	var configfil = File.new()
+	configfil.open("user://config.json", File.READ)
+	var jsonstr = configfil.get_as_text()
+	configfil.close()
+	
+	var data = JSON.parse(jsonstr).result
+	
+	for colorname in data.colors:
+		colors[colorname] = Color(data.colors[colorname])
+	render_mode = data.render_mode
+	
+	emit_signal("render_mode_changed")
+	emit_signal("colors_changed")

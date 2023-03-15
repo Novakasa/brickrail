@@ -7,7 +7,7 @@ func _ready():
 	$SecondaryColor.color = Settings.colors["secondary"]
 	$TertiaryColor.color = Settings.colors["tertiary"]
 	$WhiteColor.color = Settings.colors["white"]
-
+	$GridContainer/RenderModeOption.select(["dynamic", "cached"].find(Settings.render_mode))
 
 func _on_BackgroundColor_color_changed(color):
 	Settings.set_color("background", color)

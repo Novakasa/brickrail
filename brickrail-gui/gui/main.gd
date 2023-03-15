@@ -45,6 +45,7 @@ func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		print("manual quit!")
 		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
+		Settings.save_configfile()
 		get_tree().quit()
 
 func _on_ConnectAllButton_pressed():
