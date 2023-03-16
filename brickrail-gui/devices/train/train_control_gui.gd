@@ -10,16 +10,20 @@ var modes = ["block", "auto", "manual"]
 
 func setup(p_train_name):
 	set_train_name(p_train_name)
-	get_train().connect("name_changed", self, "_on_train_name_changed")
-	get_train().connect("removing", self, "_on_train_removing")
-	get_train().hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
+	var _err = get_train().connect("name_changed", self, "_on_train_name_changed")
+	_err = get_train().connect("removing", self, "_on_train_removing")
+	_err = get_train().hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
+	_err = LayoutInfo.connect("control_devices_changed", self, "_on_layout_control_devices_changed")
 	
 	set_controls_disabled(true)
 	
 	get_node(hub_controls).setup(get_train().hub)
 
+func _on_layout_control_devices_changed(control_devices):
+	set_controls_disabled(control_devices or not get_train().hub.responsiveness)
+
 func _on_hub_responsiveness_changed(val):
-	set_controls_disabled(not val)
+	set_controls_disabled(LayoutInfo.control_devices or not val)
 
 func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():
