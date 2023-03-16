@@ -5,6 +5,7 @@ extends Reference
 var name
 var hub
 var route : LayoutRoute
+var heading = 1
 
 signal name_changed(old_name, new_name)
 signal removing(p_name)
@@ -90,6 +91,7 @@ func slow():
 
 func flip_heading():
 	hub.rpc("execute_behavior", [128])
+	heading *= -1
 
 func remove():
 	hub.remove()

@@ -121,6 +121,8 @@ func update_control_ble_train():
 	if can_control_ble_train():
 		virtual_train.allow_sensor_advance=false
 		ble_train.stop()
+		if ble_train.heading == -1:
+			ble_train.flip_heading()
 	else:
 		virtual_train.allow_sensor_advance=true
 		if ble_train != null and ble_train.hub.running:
