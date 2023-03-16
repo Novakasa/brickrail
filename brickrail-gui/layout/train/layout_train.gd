@@ -120,6 +120,7 @@ func _on_LayoutInfo_random_targets_set(random_targets):
 func update_control_ble_train():
 	if can_control_ble_train():
 		virtual_train.allow_sensor_advance=false
+		ble_train.stop()
 	else:
 		virtual_train.allow_sensor_advance=true
 		if ble_train != null and ble_train.hub.running:

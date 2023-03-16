@@ -12,7 +12,8 @@ func setup(p_hub):
 	_on_hubs_state_changed()
 
 func _on_hubs_state_changed():
-	var control_enabled = Devices.get_ble_controller().hub_control_enabled and not hub.busy
+	var controller = Devices.get_ble_controller()
+	var control_enabled = controller.hub_control_enabled and not controller.is_busy()
 	var runbutton = get_node(run_button)
 	var connectbutton = get_node(connect_button)
 	var scanbutton = get_node(scan_button)
@@ -45,7 +46,6 @@ func _on_connect_button_pressed():
 		hub.connect_coroutine()
 	if connectbutton.text == "disconnect":
 		hub.disconnect_coroutine()
-
 
 func _on_scan_button_pressed():
 	var new_name = yield(Devices.get_ble_controller().scan_for_hub_name_coroutine(), "completed")

@@ -37,6 +37,12 @@ func are_hubs_ready():
 			return false
 	return true
 
+func is_busy():
+	for hub in hubs.values():
+		if hub.busy:
+			return true
+	return false
+
 func rename_hub(p_name, p_new_name):
 	var hub = hubs[p_name]
 	hubs.erase(p_name)
