@@ -72,7 +72,15 @@ margin_bottom = 90.0
 pressed = true
 text = "can stop"
 
+[node name="CanFlipCheckBox" type="CheckBox" parent="."]
+margin_top = 94.0
+margin_right = 118.0
+margin_bottom = 118.0
+pressed = true
+text = "can reverse"
+
 [connection signal="pressed" from="AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="AddPriorSensorButton" to="." method="_on_AddPriorSensorButton_pressed"]
 [connection signal="confirmed" from="AddTrainDialog" to="." method="_on_AddTrainDialog_confirmed"]
 [connection signal="toggled" from="CanStopCheckBox" to="." method="_on_CanStopCheckBox_toggled"]
+[connection signal="toggled" from="CanFlipCheckBox" to="." method="_on_CanFlipCheckBox_toggled"]

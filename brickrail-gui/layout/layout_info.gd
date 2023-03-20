@@ -204,6 +204,9 @@ func load(struct):
 			if "can_stop" in block_data:
 				for index in block_data.can_stop:
 					block.logical_blocks[int(index)].can_stop = block_data.can_stop[index]
+			if "can_flip" in block_data:
+				for index in block_data.can_flip:
+					block.logical_blocks[int(index)].can_flip = block_data.can_flip[index]
 	
 	if "trains" in struct:
 		for train_data in struct.trains:

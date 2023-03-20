@@ -11,6 +11,7 @@ var nodes = {}
 var selected = false
 var _hover = false
 var can_stop = true
+var can_flip = true
 
 var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.tscn")
 
@@ -83,7 +84,8 @@ func get_route_to(from_facing, node_id, fixed_facing, trainname):
 func collect_edges(facing):
 	var edges = []
 	
-	edges.append(LayoutEdge.new(nodes[facing], get_opposite_block().nodes[-1*facing], "flip", null))
+	if can_flip:
+		edges.append(LayoutEdge.new(nodes[facing], get_opposite_block().nodes[-1*facing], "flip", null))
 	
 	var node_obj = section.tracks[-1].get_node_obj()
 	if node_obj != null:

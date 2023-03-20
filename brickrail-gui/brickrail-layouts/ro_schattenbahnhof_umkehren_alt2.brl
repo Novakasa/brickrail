@@ -1524,6 +1524,10 @@
 				"can_stop": {
 					"0": false,
 					"1": false
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1564,6 +1568,10 @@
 
 				},
 				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
 					"0": true,
 					"1": true
 				}
@@ -1608,6 +1616,10 @@
 				"can_stop": {
 					"0": true,
 					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1648,6 +1660,10 @@
 
 				},
 				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
 					"0": true,
 					"1": true
 				}
@@ -1692,6 +1708,10 @@
 				"can_stop": {
 					"0": true,
 					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
 				}
 			},
 			{
@@ -1732,6 +1752,10 @@
 
 				},
 				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
 					"0": true,
 					"1": true
 				}
@@ -1776,6 +1800,10 @@
 				"can_stop": {
 					"0": false,
 					"1": false
+				},
+				"can_flip": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1816,6 +1844,10 @@
 
 				},
 				"can_stop": {
+					"0": false,
+					"1": false
+				},
+				"can_flip": {
 					"0": false,
 					"1": false
 				}
