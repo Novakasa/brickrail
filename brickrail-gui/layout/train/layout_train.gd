@@ -182,10 +182,9 @@ func process_mouse_button(event, _mpos):
 		if not selected:
 			select()
 	if event.button_index == BUTTON_RIGHT:
-		if LayoutInfo.layout_mode == "control":
-			if not LayoutInfo.control_enabled:
-				return
-			LayoutInfo.init_drag_train(self)
+		if LayoutInfo.layout_mode == "control" and not LayoutInfo.control_enabled:
+			return
+		LayoutInfo.init_drag_train(self)
 
 func get_route_to(p_target, no_locked=true):
 	var locked_trainname = trainname

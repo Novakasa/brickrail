@@ -129,10 +129,15 @@ func process_mouse_button(event, _pos):
 			if LayoutInfo.drag_train:
 				var train_obj = LayoutInfo.dragged_train
 				var end_facing = LayoutInfo.drag_virtual_train.facing
-				var target = nodes[end_facing].id
-				if not LayoutInfo.control_enabled:
-					return
-				train_obj.find_route(target)
+				if LayoutInfo.layout_mode == "control":
+					var target = nodes[end_facing].id
+					if not LayoutInfo.control_enabled:
+						return
+					train_obj.find_route(target)
+				else:
+					if end_facing != train_obj.facing:
+						train_obj.flip_facing()
+					train_obj.set_current_block(self)
 
 func hover(_pos):
 	_hover = true
