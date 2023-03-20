@@ -46,6 +46,8 @@ func set_route(p_route):
 
 func download_route(p_route):
 	hub.rpc("new_route", null)
+	if p_route == null:
+		return
 	for leg_index in range(len(p_route.legs)):
 		var leg = p_route.legs[leg_index]
 		var data = [leg_index]

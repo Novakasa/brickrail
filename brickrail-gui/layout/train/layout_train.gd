@@ -127,6 +127,7 @@ func update_control_ble_train():
 		virtual_train.allow_sensor_advance=true
 		if ble_train != null and ble_train.hub.running:
 			ble_train.stop()
+			ble_train.download_route(null)
 
 func serialize():
 	var struct = {}

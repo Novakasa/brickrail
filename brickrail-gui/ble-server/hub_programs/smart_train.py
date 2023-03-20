@@ -229,7 +229,7 @@ class Train:
         self.motor = TrainMotor()
         self.sensor = TrainSensor(self.on_marker_passed)
 
-        self.route : Route = None
+        self.route : Route = Route()
     
     def on_marker_passed(self, color):
         behavior = self.route.advance_sensor(color)
@@ -263,7 +263,7 @@ class Train:
             self.execute_behavior(behavior)
 
     def update(self, delta):
-        if self.motor.target_speed != 0:
+        if self.motor.target_speed != 0 and len(self.route.legs) > 1:
             self.sensor.update(delta)
 
         self.motor.update(delta)
