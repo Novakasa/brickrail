@@ -214,16 +214,13 @@ func find_random_route(no_blocked):
 	var valid_routes = get_all_valid_routes(no_blocked)
 	var valid_targets = valid_routes.keys()
 	
-	if len(valid_targets) == 0 and no_blocked:
-		valid_routes = get_all_valid_routes(false)
-		valid_targets = valid_routes.keys()
 	if len(valid_targets) == 0:
-		push_error("no route available")
-		return
+		return false
 	var random_target = valid_targets[randi()%len(valid_targets)]
 	committed = false
 	set_route(valid_routes[random_target])
 	try_advancing()
+	return true
 
 func find_route(p_target, _no_locked=true):
 	if route != null and not is_end_of_leg():
@@ -250,21 +247,27 @@ func try_advancing():
 		return
 	_on_route_stopped()
 
-func is_there_hope():
+func escape_deadlock():
+	# returns true if no deadlock present or some train found a new route, escaping the deadlock
 	if route == null:
 		return true
 	if not is_end_of_leg():
 		return true
 	if blocked_by != null:
-		return false
+		if committed:
+			return false
+		return find_random_route(true)
 	blocked_by = route.get_blocking_trains()
 	for blocked_trainname in blocked_by:
 		var train = LayoutInfo.trains[blocked_trainname]
-		if train.is_there_hope():
+		if train.escape_deadlock():
 			blocked_by = null
 			return true
+	
 	blocked_by = null
-	return false
+	if committed:
+		return false
+	return find_random_route(true)
 
 func set_route(p_route):
 	if route != null:
@@ -313,9 +316,10 @@ func _on_route_stopped():
 	if not route.passing:
 		return
 	prints("blocked, committed=", committed)
-	if not committed and not is_there_hope() and LayoutInfo.random_targets:
-		print("no hope, new route!")
-		call_deferred("find_random_route", true)
+	if not committed and LayoutInfo.random_targets:
+		yield(get_tree(), "idle_frame")
+		if not escape_deadlock():
+			push_error("couldn't escape deadlock! " + trainname)
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)
