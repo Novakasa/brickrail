@@ -504,7 +504,14 @@ void fragment() {
 	
 		float inner = base + track_width - inner_track_width;
 		vec4 inner_col = get_inner_color(state);
-		inner_col *= (1.5+cos(track_t*40.0 * PI))*0.5;
+		// inner_col *= (1.5+cos(track_t*40.0 * PI))*0.5;
+		float dirhint = base + track_width;
+		if (mod(track_t+base,0.2)<0.1) {
+			dirhint = -1.0;
+		}
+		if (dirhint < 0.0) {
+			inner_col *= 0.9;
+		}
 		mix_sdf(inner, color_mix, inner_col);
 		
 		if ((state & STATE_ARROW) == STATE_ARROW) {
