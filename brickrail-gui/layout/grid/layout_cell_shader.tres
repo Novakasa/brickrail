@@ -467,8 +467,7 @@ void fragment() {
 		mix_sdf(inner, color_mix, get_inner_color(state));
 		
 		if ((state & STATE_ARROW) == STATE_ARROW) {
-			int dummy_state;
-			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, dummy_state);
+			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, state_dummy);
 			mix_sdf(arrow, color_mix, get_arrow_color(state));
 		}
 		
