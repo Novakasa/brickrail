@@ -316,7 +316,7 @@ func _on_route_stopped():
 	if not route.passing:
 		return
 	prints("blocked, committed=", committed)
-	if not committed and LayoutInfo.random_targets:
+	if LayoutInfo.random_targets:
 		yield(get_tree(), "idle_frame")
 		if not escape_deadlock():
 			push_error("couldn't escape deadlock! " + trainname)
