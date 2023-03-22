@@ -24,11 +24,12 @@ _OUT_ID_END     = const(10) #ASCII line feed
 _OUT_ID_MSG_ACK = const(6)  #ASCII ack
 _OUT_ID_DATA    = const(17) #ASCII device control 1
 _OUT_ID_SYS     = const(18) #ASCII device control 2
-# _OUT_ID_SIGNAL  = const(19) #ASCII device control 3
+# _OUT_ID_ALIVE   = const(19) #ASCII device control 3
 _OUT_ID_MSG_ERR = const(21) #ASCII nak
 
 _SYS_CODE_STOP = const(0)
 _SYS_CODE_READY = const(1)
+_SYS_CODE_ALIVE = const(2)
 
 # _CHUNK_LENGTH = const(80)
 
@@ -170,9 +171,12 @@ class IOHub:
         self.input_watch.resume()
         self.output_watch = StopWatch()
         self.output_watch.resume()
+        self.alive_watch = StopWatch()
+        self.alive_watch.resume()
         last_time = loop_watch.time()
         self.running = True
         self.emit_sys_code(_SYS_CODE_READY)
+        alive_data = bytes([_OUT_ID_SYS, _SYS_CODE_ALIVE])
 
         while self.running:
             if self.poll.poll(int(1000*max_delta)):
@@ -185,6 +189,11 @@ class IOHub:
                 self.msg_len = None
             if self.last_output is not None and self.output_watch.time() > 500:
                 self.retry_last_output()
+                if self.last_output[1:3] == alive_data:
+                    self.running = False
+            if self.alive_watch.time() > 5000:
+                self.emit_sys_code(_SYS_CODE_ALIVE)
+                self.alive_watch.reset()
             t = loop_watch.time()
             delta = (t-last_time)/1000
             last_time = t

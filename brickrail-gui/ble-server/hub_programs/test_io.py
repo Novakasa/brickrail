@@ -1,4 +1,4 @@
-from io_hub import IOHub
+from io_hub_unfrozen import IOHub
 
 class TestDevice:
     

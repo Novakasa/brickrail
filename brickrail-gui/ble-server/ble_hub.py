@@ -15,7 +15,7 @@ _IN_ID_END     = 10 #ASCII line feed
 _IN_ID_MSG_ACK = 6  #ASCII ack
 _IN_ID_RPC     = 17 #ASCII device control 1
 _IN_ID_SYS     = 18 #ASCII device control 2
-_IN_ID_SIGNAL  = 19 #ASCII device control 3
+# _IN_ID_SIGNAL  = 19 #ASCII device control 3
 _IN_ID_MSG_ERR = 21 #ASCII nak
 
 _OUT_ID_START   = 2  #ASCII start of text
@@ -23,11 +23,12 @@ _OUT_ID_END     = 10 #ASCII line feed
 _OUT_ID_MSG_ACK = 6  #ASCII ack
 _OUT_ID_DATA    = 17 #ASCII device control 1
 _OUT_ID_SYS     = 18 #ASCII device control 2
-_OUT_ID_SIGNAL  = 19 #ASCII device control 3
+# _OUT_ID_ALIVE  = 19 #ASCII device control 3
 _OUT_ID_MSG_ERR = 21 #ASCII nak
 
 _SYS_CODE_STOP  = 0
 _SYS_CODE_READY = 1
+_SYS_CODE_ALIVE = 2
 
 _CHUNK_LENGTH = 80
 
@@ -145,6 +146,8 @@ class BLEHub:
                 self.hub_ready.set()
             if sys_code == _SYS_CODE_STOP:
                 self.hub_ready.clear()
+            if sys_code == _SYS_CODE_ALIVE:
+                print(f"{self.name} is alive!")
         
         if out_id == _OUT_ID_DATA:
             # print("got data:", [byte for byte in data])
