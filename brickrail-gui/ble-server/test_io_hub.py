@@ -38,6 +38,7 @@ async def io_test():
             # await asyncio.sleep(0.2)
         await asyncio.sleep(1)
         await test_hub.stop_program()
+        await asyncio.sleep(1)
     finally:
         await test_hub.disconnect()
     

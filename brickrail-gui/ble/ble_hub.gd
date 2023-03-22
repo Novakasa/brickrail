@@ -120,6 +120,7 @@ func connect_coroutine():
 		GuiApi.show_error("Connection error!")
 		GuiApi.status_ready()
 		return "error"
+	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 	return "success"
 
@@ -127,17 +128,20 @@ func disconnect_coroutine():
 	GuiApi.status_process("Disconnecting hub "+name+"...")
 	disconnect_hub()
 	yield(self, "disconnected")
+	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 
 func run_program_coroutine():
 	GuiApi.status_process("Hub "+name+" starting program...")
 	run_program()
 	yield(self, "program_started")
+	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 
 func stop_program_coroutine():
 	GuiApi.status_process("Hub "+name+" stopping program...")
 	stop_program()
 	yield(self, "program_stopped")
+	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 

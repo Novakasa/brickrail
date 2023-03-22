@@ -89,7 +89,6 @@ func connect_and_run_all_coroutine():
 				push_error("connection error!")
 				hub_control_enabled = true
 				return
-			yield(Devices.get_tree().create_timer(0.5), "timeout")
 		if not hub.running:
 			yield(hub.run_program_coroutine(), "completed")
 	hub_control_enabled = true

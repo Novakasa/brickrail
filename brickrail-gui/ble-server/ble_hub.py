@@ -286,7 +286,15 @@ class BLEHub:
         input_task = asyncio.create_task(input_loop())
         timeout_task = asyncio.create_task(timeout_loop())
 
-        await asyncio.wait_for(self.hub_ready.wait(), timeout=5.0)
+        try:
+            await asyncio.wait_for(self.hub_ready.wait(), timeout=10.0)
+        except asyncio.TimeoutError:
+            print(f"hub '{self.name}' wait for hub_ready timed out!!")
+            output_task.cancel()
+            input_task.cancel()
+            timeout_task.cancel()
+            self.to_out_queue("program_error", "program_start_timeout")
+            return
 
         self.to_out_queue("program_started", None)
 
