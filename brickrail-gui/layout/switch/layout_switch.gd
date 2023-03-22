@@ -129,14 +129,13 @@ func switch(pos):
 			#check only here in case ble switch position is unknown
 			pass
 		var motor_pos = pos_to_dev1(pos)
-		if motor_pos == motor1.position:
-			return
-		prints("switching motor1:", motor_pos)
-		motor1.switch(motor_pos)
-		position_index = switch_positions.find(pos)
-	else:
+		if motor_pos != motor1.position:
+			prints("switching motor1:", motor_pos)
+			motor1.switch(motor_pos)
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", pos)
+	else:
+		position_index = switch_positions.find(pos)
 
 func get_position():
 	return switch_positions[position_index]
