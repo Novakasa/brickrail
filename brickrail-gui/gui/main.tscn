@@ -359,12 +359,19 @@ margin_bottom = 27.0
 text = "add layer"
 
 [node name="layer_index_edit" type="SpinBox" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
+visible = false
 margin_left = 81.0
 margin_right = 157.0
 margin_bottom = 27.0
 min_value = -100.0
 value = 1.0
 rounded = true
+
+[node name="remove_layer_button" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
+margin_left = 81.0
+margin_right = 183.0
+margin_bottom = 27.0
+text = "remove layer"
 
 [node name="LayerContainer" type="ItemList" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
 margin_top = 31.0
@@ -453,6 +460,7 @@ window_title = "Error"
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_control_devices_toggled"]
 [connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/AutoTarget" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_AutoTarget_toggled"]
 [connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
-[connection signal="button_down" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_button_down"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/remove_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_remove_layer_button_pressed"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/SaveLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SaveLayoutDialog_file_selected"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/OpenLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_OpenLayoutDialog_file_selected"]

@@ -90,9 +90,6 @@ func add_layer(l):
 func remove_layer(l):
 	assert(l in cells)
 	
-	if active_layer == l:
-		set_active_layer(null)
-	
 	for row in cells[l]:
 		for cell in row:
 			if cell == null:
@@ -100,8 +97,9 @@ func remove_layer(l):
 			for track in cell.tracks.values():
 				track.remove()
 			cell.remove()
+	if active_layer == l:
+		set_active_layer(null)
 	cells.erase(l)
-	
 	emit_signal("layer_removed", l)
 	emit_signal("layers_changed")
 

@@ -36,11 +36,14 @@ func _on_layout_trains_running(running):
 func _on_layers_changed():
 	var layers = get_node(layer_container)
 	layers.clear()
+	var remove_button = $VSplitContainer/VBoxContainer/HBoxContainer/remove_layer_button
+	remove_button.disabled=true
+	if len(LayoutInfo.cells)>1:
+		remove_button.disabled=false
 	for layer in LayoutInfo.cells:
 		layers.add_item("layer "+str(layer))
-	
-	var edit = get_node(layer_index_edit)
-	edit.value = len(LayoutInfo.cells)
+	# var edit = get_node(layer_index_edit)
+	# edit.value = len(LayoutInfo.cells)
 
 func _on_active_layer_changed(l):
 	if l==null:
@@ -136,7 +139,7 @@ func _on_SpinBox_value_changed(value):
 	LayoutInfo.time_scale = value
 
 
-func _on_add_layer_button_button_down():
+func _on_add_layer_button_pressed():
 	var edit = get_node(layer_index_edit)
 	var l = int(edit.value)
 	edit.value = l+1
@@ -162,3 +165,12 @@ func _on_EmergencyStopButton_pressed():
 		if ble_train.hub.running:
 			ble_train.stop()
 	_on_StopAllButton_pressed()
+
+
+func _on_remove_layer_button_pressed():
+	var idx = LayoutInfo.cells.keys().find(LayoutInfo.active_layer)
+	LayoutInfo.remove_layer(LayoutInfo.active_layer)
+	var new_active = LayoutInfo.cells.keys()[idx-1]
+	if idx == 0:
+		new_active = LayoutInfo.cells.keys()[idx]
+	LayoutInfo.set_active_layer(new_active)
