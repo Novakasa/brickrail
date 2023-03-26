@@ -147,7 +147,8 @@ class BLEHub:
             if sys_code == _SYS_CODE_STOP:
                 self.hub_ready.clear()
             if sys_code == _SYS_CODE_ALIVE:
-                print(f"{self.name} is alive!")
+                # print(f"{self.name} is alive!")
+                pass
         
         if out_id == _OUT_ID_DATA:
             # print("got data:", [byte for byte in data])

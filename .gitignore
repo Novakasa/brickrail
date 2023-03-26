@@ -8,3 +8,4 @@ brickrail-gui/addons/pythonscript
 brickrail-gui/ble-server/.env/
 .envs/
 build/
+firmware/
