@@ -89,7 +89,7 @@ func _on_LayoutOpen_pressed():
 	$OpenLayoutDialog.popup()
 
 func _on_OpenLayoutDialog_file_selected(path):
-	Devices.clear()
+	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
 	
 	var file = File.new()
@@ -106,7 +106,7 @@ func _on_OpenLayoutDialog_file_selected(path):
 
 
 func _on_LayoutNew_pressed():
-	Devices.clear()
+	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
 
 

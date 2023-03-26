@@ -74,11 +74,10 @@ func _on_hub_name_changed(_p_old_name, p_new_name):
 func set_address(p_address):
 	hub.set_address(p_address)
 
-func remove():
+func safe_remove_coroutine():
 	for device in devices.values():
 		if device == null:
 			continue
 		device.remove()
-
-	hub.remove()
+	yield(hub.safe_remove_coroutine(), "completed")
 	emit_signal("removing", name)

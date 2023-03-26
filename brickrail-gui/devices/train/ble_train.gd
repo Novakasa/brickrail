@@ -95,6 +95,6 @@ func flip_heading():
 	hub.rpc("execute_behavior", [128])
 	heading *= -1
 
-func remove():
-	hub.remove()
+func safe_remove_coroutine():
+	yield(hub.safe_remove_coroutine(), "completed")
 	emit_signal("removing", name)

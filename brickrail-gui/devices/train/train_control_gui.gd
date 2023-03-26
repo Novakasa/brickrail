@@ -31,6 +31,7 @@ func _on_train_name_changed(_old_name, new_name):
 	set_train_name(new_name)
 
 func _on_train_removing(_p_name):
+	Devices.get_ble_controller().disconnect("hubs_state_changed", self, "update_controls_enabled")
 	queue_free()
 
 func set_train_name(p_train_name):

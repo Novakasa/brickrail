@@ -86,12 +86,13 @@ func _on_controller_removing(p_name):
 	layout_controllers.erase(p_name)
 	emit_signal("layout_controllers_changed")
 
-func clear():
+func clear_coroutine():
+	yield(get_tree(), "idle_frame")
 	for train in trains.values():
-		train.remove()
+		yield(train.safe_remove_coroutine(), "completed")
 	
 	for controller in layout_controllers.values():
-		controller.remove()
+		yield(controller.safe_remove_coroutine(), "completed")
 
 func get_ble_controller() -> BLEController:
 	return $BLEController as BLEController

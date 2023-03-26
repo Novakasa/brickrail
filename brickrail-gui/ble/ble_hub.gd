@@ -112,6 +112,15 @@ func remove():
 	assert(not connected)
 	emit_signal("removing", name)
 
+func safe_remove_coroutine():
+	if not connected:
+		yield(Devices.get_tree(), "idle_frame")
+	if running:
+		yield(stop_program_coroutine(), "completed")
+	if connected:
+		yield(disconnect_coroutine(), "completed")
+	remove()
+
 func connect_coroutine():
 	GuiApi.status_process("Connecting hub "+name+"...")
 	connect_hub()
