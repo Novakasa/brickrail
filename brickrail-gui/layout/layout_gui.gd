@@ -16,11 +16,18 @@ func _ready():
 	_err = LayoutInfo.connect("trains_running", self, "_on_layout_trains_running")
 	_err = LayoutInfo.connect("random_targets_set", self, "_on_layout_random_targets_set")
 	_err = LayoutInfo.connect("control_devices_changed", self, "_on_layout_control_devices_changed")
+	
+	_err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
 	_err = get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
 	_on_layers_changed()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	$SaveLayoutDialog.current_path = Settings.layout_path
 	$OpenLayoutDialog.current_path = Settings.layout_path
+
+func _on_hubs_state_changed():
+	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
+	$LayoutSplit/LayoutModeTabs/edit/LayoutNew.disabled = new_layout_disabled
+	$LayoutSplit/LayoutModeTabs/edit/LayoutOpen.disabled = new_layout_disabled
 
 func _on_layout_random_targets_set(set):
 	$LayoutSplit/LayoutModeTabs/run/AutoTarget.pressed = set

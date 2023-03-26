@@ -7,12 +7,13 @@ export(NodePath) var hub_controls
 
 var markers = ["blue_marker", "red_marker"]
 var modes = ["block", "auto", "manual"]
+var train: BLETrain
 
 func setup(p_train_name):
 	set_train_name(p_train_name)
 	var _err = get_train().connect("name_changed", self, "_on_train_name_changed")
-	_err = get_train().connect("removing", self, "_on_train_removing")
-	_err = get_train().hub.connect("responsiveness_changed", self, "update_controls_enabled")
+	_err = train.connect("removing", self, "_on_train_removing")
+	_err = train.hub.connect("responsiveness_changed", self, "update_controls_enabled")
 	_err = LayoutInfo.connect("control_devices_changed", self, "update_controls_enabled")
 	_err = Devices.get_ble_controller().connect("hubs_state_changed", self, "update_controls_enabled")
 	
@@ -21,7 +22,7 @@ func setup(p_train_name):
 	get_node(hub_controls).setup(get_train().hub)
 
 func update_controls_enabled(_dummy=null):
-	set_controls_disabled(LayoutInfo.control_devices or not get_train().hub.responsiveness or Devices.get_ble_controller().is_busy())
+	set_controls_disabled(LayoutInfo.control_devices or not get_train().hub.responsiveness or not Devices.get_ble_controller().hub_control_enabled)
 
 func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():
@@ -31,12 +32,17 @@ func _on_train_name_changed(_old_name, new_name):
 	set_train_name(new_name)
 
 func _on_train_removing(_p_name):
+	train.disconnect("removing", self, "_on_train_removing")
+	train.hub.disconnect("responsiveness_changed", self, "update_controls_enabled")
+	LayoutInfo.disconnect("control_devices_changed", self, "update_controls_enabled")
 	Devices.get_ble_controller().disconnect("hubs_state_changed", self, "update_controls_enabled")
+	train = null
 	queue_free()
 
 func set_train_name(p_train_name):
 	train_name = p_train_name
 	get_node(train_label).text = train_name
+	train = get_train()
 
 func get_train():
 	return Devices.trains[train_name]

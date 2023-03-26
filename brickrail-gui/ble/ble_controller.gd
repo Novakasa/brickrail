@@ -29,6 +29,7 @@ func _on_hub_removing(hubname):
 func _on_hub_state_changed():
 	if not are_hubs_ready() and LayoutInfo.control_devices:
 		LayoutInfo.set_control_devices(false)
+	hub_control_enabled = not is_busy()
 	emit_signal("hubs_state_changed")
 
 func are_hubs_ready():
@@ -74,37 +75,26 @@ func clean_exit_coroutine():
 		yield(Devices.get_tree(), "idle_frame")
 		return
 	yield(disconnect_all_coroutine(), "completed")
-	hub_control_enabled = false
-	emit_signal("hubs_state_changed")
 	yield($BLECommunicator.clean_exit_coroutine(), "completed")
 
 func connect_and_run_all_coroutine():
 	yield(Devices.get_tree(), "idle_frame")
-	hub_control_enabled = false
-	emit_signal("hubs_state_changed")
 	for hub in hubs.values():
 		if not hub.connected:
 			var result = yield(hub.connect_coroutine(), "completed")
 			if result == "error":
 				push_error("connection error!")
-				hub_control_enabled = true
 				return
 		if not hub.running:
 			yield(hub.run_program_coroutine(), "completed")
-	hub_control_enabled = true
-	emit_signal("hubs_state_changed")
 
 func disconnect_all_coroutine():
 	yield(Devices.get_tree(), "idle_frame")
-	hub_control_enabled = false
-	emit_signal("hubs_state_changed")
 	for hub in hubs.values():
 		if hub.running:
 			yield(hub.stop_program_coroutine(), "completed")
 		if hub.connected:
 			yield(hub.disconnect_coroutine(), "completed")
-	hub_control_enabled = true
-	emit_signal("hubs_state_changed")
 
 func scan_for_hub_name_coroutine():
 	send_command(null, "find_device", [], "return_key")

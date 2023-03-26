@@ -38,35 +38,35 @@ func _on_data_received(key, data):
 	prints("hub", name, "received data:", data)
 	if key == "connected":
 		connected=true
-		emit_signal("connected")
 		busy=false
+		emit_signal("connected")
 		emit_signal("state_changed")
 		return
 	if key == "disconnected":
 		connected=false
-		emit_signal("disconnected")
-		set_responsiveness(false)
 		busy=false
+		set_responsiveness(false)
+		emit_signal("disconnected")
 		emit_signal("state_changed")
 		return
 	if key == "connect_error":
 		connected=false
-		emit_signal("connect_error")
 		busy=false
+		emit_signal("connect_error")
 		emit_signal("state_changed")
 		return
 	if key == "program_started":
 		running=true
-		emit_signal("program_started")
-		set_responsiveness(true)
 		busy=false
+		set_responsiveness(true)
+		emit_signal("program_started")
 		emit_signal("state_changed")
 		return
 	if key == "program_stopped":
 		running=false
-		emit_signal("program_stopped")
-		set_responsiveness(false)
 		busy=false
+		set_responsiveness(false)
+		emit_signal("program_stopped")
 		emit_signal("state_changed")
 		return
 	if key == "runtime_data":
@@ -129,7 +129,6 @@ func connect_coroutine():
 		GuiApi.show_error("Connection error!")
 		GuiApi.status_ready()
 		return "error"
-	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 	return "success"
 
@@ -137,20 +136,17 @@ func disconnect_coroutine():
 	GuiApi.status_process("Disconnecting hub "+name+"...")
 	disconnect_hub()
 	yield(self, "disconnected")
-	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 
 func run_program_coroutine():
 	GuiApi.status_process("Hub "+name+" starting program...")
 	run_program()
 	yield(self, "program_started")
-	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 
 func stop_program_coroutine():
 	GuiApi.status_process("Hub "+name+" stopping program...")
 	stop_program()
 	yield(self, "program_stopped")
-	yield(Devices.get_tree().create_timer(0.5), "timeout")
 	GuiApi.status_ready()
 

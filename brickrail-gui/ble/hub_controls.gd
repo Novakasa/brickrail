@@ -13,7 +13,7 @@ func setup(p_hub):
 
 func _on_hubs_state_changed():
 	var controller = Devices.get_ble_controller()
-	var control_enabled = controller.hub_control_enabled and not controller.is_busy()
+	var control_enabled = controller.hub_control_enabled
 	var runbutton = get_node(run_button)
 	var connectbutton = get_node(connect_button)
 	var scanbutton = get_node(scan_button)
