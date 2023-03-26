@@ -58,6 +58,9 @@ func _on_layer_container_item_selected(index):
 
 func _on_layout_mode_changed(mode):
 	var index = ["edit", "control"].find(mode)
+	var disabled = mode == "control"
+	$VSplitContainer/VBoxContainer/HBoxContainer/remove_layer_button.disabled = disabled or len(LayoutInfo.cells)<=1
+	$VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button.disabled = disabled
 	if index < 0:
 		return
 	$LayoutSplit/LayoutModeTabs.current_tab = index
