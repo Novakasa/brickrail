@@ -49,4 +49,7 @@ func _on_connect_button_pressed():
 
 func _on_scan_button_pressed():
 	var new_name = yield(Devices.get_ble_controller().scan_for_hub_name_coroutine(), "completed")
+	if new_name == null:
+		push_error("scanned name is null!")
+		return
 	hub.set_name(new_name)

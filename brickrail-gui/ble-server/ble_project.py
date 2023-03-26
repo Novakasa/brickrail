@@ -29,7 +29,10 @@ class BLEProject:
         except asyncio.TimeoutError:
             await self.out_queue.put(SerialData("no_device_found", None, None))
         else:
-            await self.out_queue.put(SerialData("device_name_found", None, device.name))
+            name = device.name
+            if device.name is None:
+                name = device.address
+            await self.out_queue.put(SerialData("device_name_found", None, name))
     
     def get_hubnames(self):
         return list(self.hubs.keys())
