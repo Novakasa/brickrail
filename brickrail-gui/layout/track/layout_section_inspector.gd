@@ -39,6 +39,12 @@ func _on_section_track_added(_track):
 			$AddPortal.visible=false
 	else:
 		$CreateBlock.visible=true
+		$CreateBlock.disabled = false
+		$CreateBlock.hint_tooltip = "create block"
+		var reason = section.get_block_blocked_reason()
+		if reason != null:
+			$CreateBlock.disabled = true
+			$CreateBlock.hint_tooltip = reason
 		$AddSensor.visible=false
 		$SensorPanel.visible=false
 		$OneWayCheckbox.visible=false
@@ -46,22 +52,13 @@ func _on_section_track_added(_track):
 
 
 func _on_CreateBlock_pressed():
-	if not len(section.tracks)>1:
-		push_error("Can't create block on sections with length < 2")
-		return
-	if section.has_switch():
-		push_error("Can't create block on sections with switches")
-		return
-	if section.has_block():
-		push_error("Can't create block on sections with other blocks")
-		return
-	if not section.has_connections():
-		push_error("Can't create block on sections with no connections")
+	if section.get_block_blocked_reason() != null:
 		return
 	var new_name = "block" + str(len(LayoutInfo.blocks))
 	while new_name in LayoutInfo.blocks:
 		new_name = new_name + "_"
 	LayoutInfo.create_block(new_name, section)
+	_on_section_track_added(null)
 	# $CreateBlockPopup/VBoxContainer/NameEdit.text = new_name
 	# $CreateBlockPopup.popup_centered()
 

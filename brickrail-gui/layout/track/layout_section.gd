@@ -242,3 +242,14 @@ func is_connected_to(dirtrack):
 	if dirtrack in tracks[0].get_opposite().connections.values():
 		return true
 	return false
+
+func get_block_blocked_reason():
+	if not len(tracks)>1:
+		return "Can't create block on sections with length < 2"
+	if has_switch():
+		return "Can't create block on sections with switches"
+	if has_block():
+		return "Can't create block on sections with other blocks"
+	if not has_connections():
+		return "Can't create block on sections with no connections"
+	return null

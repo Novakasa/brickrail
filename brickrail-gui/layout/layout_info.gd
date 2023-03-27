@@ -416,6 +416,7 @@ func init_draw_track(cell):
 	drawing_last = cell
 	drawing_last2 = null
 	set_drawing_last_track(null)
+	unselect()
 
 func stop_draw_track():
 	drawing_track = false
