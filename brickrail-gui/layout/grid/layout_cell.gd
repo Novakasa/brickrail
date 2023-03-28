@@ -235,6 +235,7 @@ func add_track(track):
 	track.connect("removing", self, "_on_track_removing")
 	# update()
 	_on_track_connections_changed(track.get_orientation())
+	LayoutInfo.layout_changed = true
 	return track
 
 func _on_track_removing(orientation):
@@ -300,6 +301,7 @@ func _on_track_connections_changed(orientation):
 			has_switch=true
 	set_shader_param("has_switch", has_switch)
 	_on_track_states_changed(orientation)
+	LayoutInfo.layout_changed = true
 	# update() 
 
 func _on_track_states_changed(orientation=null):

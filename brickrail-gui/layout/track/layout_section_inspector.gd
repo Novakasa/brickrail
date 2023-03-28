@@ -111,7 +111,7 @@ func update_speed_select():
 	marker_select.select_meta(dirtrack.sensor_speed)
 
 func _on_SpeedSelect_meta_selected(meta):
-	dirtrack.sensor_speed = meta
+	dirtrack.set_sensor_speed(meta)
 
 func _on_RemoveSensor_pressed():
 	dirtrack.remove_sensor()

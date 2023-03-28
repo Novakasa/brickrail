@@ -398,6 +398,43 @@ mode = 0
 access = 2
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
+[node name="SaveConfirm" type="WindowDialog" parent="VBoxContainer2/HSplitContainer/LayoutGui"]
+margin_right = 48.0
+margin_bottom = 40.0
+window_title = "save confirmation"
+resizable = true
+
+[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm"]
+margin_right = 40.0
+margin_bottom = 40.0
+
+[node name="Label" type="Label" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer"]
+margin_right = 189.0
+margin_bottom = 27.0
+text = "Save layout?"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer"]
+margin_top = 31.0
+margin_right = 189.0
+margin_bottom = 58.0
+
+[node name="SaveCancelButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer/HBoxContainer"]
+margin_right = 58.0
+margin_bottom = 27.0
+text = "cancel"
+
+[node name="SaveButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer/HBoxContainer"]
+margin_left = 62.0
+margin_right = 107.0
+margin_bottom = 27.0
+text = "save"
+
+[node name="SaveAsButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer/HBoxContainer"]
+margin_left = 111.0
+margin_right = 189.0
+margin_bottom = 27.0
+text = "save as..."
+
 [node name="StatusGUI" type="HBoxContainer" parent="VBoxContainer2"]
 unique_name_in_owner = true
 margin_top = 693.0
@@ -462,5 +499,4 @@ window_title = "Error"
 [connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/remove_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_remove_layer_button_pressed"]
-[connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/SaveLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SaveLayoutDialog_file_selected"]
 [connection signal="file_selected" from="VBoxContainer2/HSplitContainer/LayoutGui/OpenLayoutDialog" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_OpenLayoutDialog_file_selected"]

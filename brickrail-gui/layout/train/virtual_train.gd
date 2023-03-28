@@ -101,12 +101,14 @@ func add_wagons(num_wagons):
 
 func set_num_wagons(num_wagons):
 	add_wagons(num_wagons)
+	LayoutInfo.layout_changed = true
 	update_wagon_visuals()
 
 func set_color(p_color):
 	color = p_color
 	for wagon in wagons:
 		wagon.set_color(color)
+	LayoutInfo.layout_changed = true
 
 func remove():
 	for wagon in wagons:

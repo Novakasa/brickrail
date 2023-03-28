@@ -75,10 +75,45 @@ func _on_layout_mode_changed(mode):
 func _on_selected(obj):
 	get_node(inspector_container).add_child(obj.get_inspector())
 
+func _notification(what):
+	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+		print("manual quit!")
+		yield(get_tree(), "idle_frame")
+		yield(check_save_changes_coroutine(), "completed")
+		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
+		Settings.save_configfile()
+		get_tree().quit()
+
+func check_save_changes_coroutine():
+	if not LayoutInfo.layout_changed:
+		yield(get_tree(), "idle_frame")
+		return
+	$SaveConfirm/VBoxContainer/HBoxContainer/SaveButton.visible = LayoutInfo.layout_file != null
+	$SaveConfirm.popup_centered()
+	var obj = yield(Await.first_signal_objs(
+		[$SaveConfirm/VBoxContainer/HBoxContainer/SaveAsButton,
+		$SaveConfirm/VBoxContainer/HBoxContainer/SaveButton,
+		$SaveConfirm/VBoxContainer/HBoxContainer/SaveCancelButton,
+		$SaveConfirm
+	],
+	["pressed",
+	"pressed",
+	"pressed",
+	"popup_hide"]), "completed")
+	print(obj)
+	if obj == $SaveConfirm/VBoxContainer/HBoxContainer/SaveAsButton:
+		yield(_on_LayoutSave_pressed(), "completed")
+		return
+	if obj == $SaveConfirm/VBoxContainer/HBoxContainer/SaveButton:
+		save_layout(LayoutInfo.layout_file)
+		return
+
 func _on_LayoutSave_pressed():
 	$SaveLayoutDialog.popup()
+	var path = yield($SaveLayoutDialog, "file_selected")
+	save_layout(path)
 
-func _on_SaveLayoutDialog_file_selected(path):
+func save_layout(path):
 	var struct = {}
 	struct["devices"] = Devices.serialize()
 	struct["layout"] = LayoutInfo.serialize()
@@ -90,9 +125,13 @@ func _on_SaveLayoutDialog_file_selected(path):
 	file.open(path, 2)
 	file.store_string(serial)
 	file.close()
-	Settings.layout_path = $OpenLayoutDialog.current_path
+	LayoutInfo.layout_file = path
+	Settings.layout_path = path
+	$OpenLayoutDialog.current_path = path
+	$SaveLayoutDialog.current_path = path
 
 func _on_LayoutOpen_pressed():
+	yield(check_save_changes_coroutine(), "completed")
 	$OpenLayoutDialog.popup()
 
 func _on_OpenLayoutDialog_file_selected(path):
@@ -109,12 +148,16 @@ func _on_OpenLayoutDialog_file_selected(path):
 	if "devices" in struct:
 		Devices.load(struct.devices)
 	LayoutInfo.load(struct.layout)
+	LayoutInfo.layout_file = path
 	Settings.layout_path = $OpenLayoutDialog.current_path
+	$OpenLayoutDialog.current_path = Settings.layout_path
 
 
 func _on_LayoutNew_pressed():
+	yield(check_save_changes_coroutine(), "completed")
 	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
+	LayoutInfo.layout_file = null
 
 
 func _on_control_devices_toggled(button_pressed):

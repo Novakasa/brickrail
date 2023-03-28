@@ -41,13 +41,6 @@ func _on_AddLayoutControllerButton_pressed():
 	var controllername = "controller"+str(controllernum)
 	Devices.add_layout_controller(controllername)
 
-func _notification(what):
-	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
-		print("manual quit!")
-		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
-		Settings.save_configfile()
-		get_tree().quit()
-
 func _on_ConnectAllButton_pressed():
 	yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
 

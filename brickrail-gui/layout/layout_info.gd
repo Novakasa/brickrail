@@ -48,6 +48,9 @@ var portal_target = null
 var random_targets = false
 var time_scale = 1.0
 
+var layout_file = null
+var layout_changed = false
+
 signal layout_mode_changed(mode)
 signal selected(obj)
 signal control_devices_changed(control_device)
@@ -83,6 +86,7 @@ func add_layer(l):
 		for _j in range(grid.ny):
 			cells[l][i].append(null)
 	
+	layout_changed = true
 	emit_signal("layer_added", l)
 	emit_signal("layers_changed")
 	set_active_layer(l)
@@ -100,6 +104,9 @@ func remove_layer(l):
 	if active_layer == l:
 		set_active_layer(null)
 	cells.erase(l)
+	
+	layout_changed = true
+	
 	emit_signal("layer_removed", l)
 	emit_signal("layers_changed")
 
@@ -150,6 +157,7 @@ func clear():
 		remove_layer(layer)
 	
 	add_layer(0)
+	layout_changed = false
 
 func load(struct):
 	clear()
@@ -221,6 +229,8 @@ func load(struct):
 				train.virtual_train.set_color(Color(train_data.color))
 			if "num_wagons" in train_data:
 				train.virtual_train.set_num_wagons(int(train_data.num_wagons))
+	
+	layout_changed = false
 
 func get_hover_lock():
 	if drag_select or drawing_track:
@@ -262,6 +272,7 @@ func create_block(p_name, section):
 		for node in logical_block.nodes.values():
 			nodes[node.id] = node
 	
+	layout_changed = true
 	return block
 
 func _on_block_removing(p_name):
@@ -270,6 +281,7 @@ func _on_block_removing(p_name):
 			nodes.erase(node.id)
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")
 	blocks.erase(p_name)
+	layout_changed = true
 
 func create_train(p_name):
 	assert(not p_name in trains)
@@ -278,11 +290,13 @@ func create_train(p_name):
 	train.connect("removing", self, "_on_train_removing")
 	train.connect("route_changed", self, "_on_train_route_changed")
 	grid.add_child(train)
+	layout_changed = true
 	return train
 
 func _on_train_removing(p_name):
 	trains[p_name].disconnect("removing", self, "_on_train_removing")
 	trains[p_name].disconnect("route_changed", self, "_on_train_route_changed")
+	layout_changed = true
 	trains.erase(p_name)
 
 func _on_train_route_changed():

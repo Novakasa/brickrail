@@ -329,6 +329,11 @@ func set_one_way(one_way):
 	prohibited = false
 	get_opposite().prohibited = one_way
 	emit_signal("states_changed", next_slot)
+	LayoutInfo.layout_changed = true
+
+func set_sensor_speed(speed):
+	sensor_speed = speed
+	LayoutInfo.layout_changed = true
 
 func get_turn_angle(turn):
 	var this_turn = get_turn()

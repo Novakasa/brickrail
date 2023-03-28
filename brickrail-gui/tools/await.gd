@@ -13,6 +13,14 @@ func first_signal(obj, signals):
 		obj.connect(signal_name, emitter, "emit", [signal_name])
 	return yield(emitter, "emitted")
 
+func first_signal_objs(objs, signals):
+	var emitter = _SignalEmitter.new()
+	for i in range(len(signals)):
+		var obj = objs[i]
+		var signal_name = signals[i]
+		obj.connect(signal_name, emitter, "emit", [obj])
+	return yield(emitter, "emitted")
+
 class _CoroutineEmitter:
 	signal emitted(done_coroutine)
 	func emit(result, coroutine=null):
