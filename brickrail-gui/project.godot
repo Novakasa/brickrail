@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "PopupPanel",
+"class": "AsyncWindow",
+"language": "GDScript",
+"path": "res://tools/async_window.gd"
+}, {
 "base": "Reference",
 "class": "BLECommand",
 "language": "GDScript",
@@ -135,6 +140,7 @@ _global_script_classes=[ {
 "path": "res://layout/train/virtual_train_wagon.gd"
 } ]
 _global_script_class_icons={
+"AsyncWindow": "",
 "BLECommand": "",
 "BLECommunicator": "",
 "BLEController": "",

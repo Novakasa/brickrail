@@ -40,6 +40,7 @@ func _ready():
 	LayoutInfo.grid = self
 	
 	LayoutInfo.add_layer(0)
+	LayoutInfo.set_layout_changed(false)
 
 func _on_layout_mode_changed(_mode):
 	update()

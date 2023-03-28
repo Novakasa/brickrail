@@ -1,4 +1,4 @@
-[gd_scene load_steps=8 format=2]
+[gd_scene load_steps=9 format=2]
 
 [ext_resource path="res://layout/layout.tscn" type="PackedScene" id=1]
 [ext_resource path="res://gui/status_bar.gd" type="Script" id=2]
@@ -7,6 +7,7 @@
 [ext_resource path="res://gui/main.gd" type="Script" id=5]
 [ext_resource path="res://gui/ViewportContainer.gd" type="Script" id=6]
 [ext_resource path="res://gui/ui_theme.tres" type="Theme" id=7]
+[ext_resource path="res://tools/AsyncWindow.tscn" type="PackedScene" id=8]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
@@ -398,42 +399,7 @@ mode = 0
 access = 2
 filters = PoolStringArray( "*.brl ; brickrail layout" )
 
-[node name="SaveConfirm" type="WindowDialog" parent="VBoxContainer2/HSplitContainer/LayoutGui"]
-margin_right = 48.0
-margin_bottom = 40.0
-window_title = "save confirmation"
-resizable = true
-
-[node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm"]
-margin_right = 40.0
-margin_bottom = 40.0
-
-[node name="Label" type="Label" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer"]
-margin_right = 189.0
-margin_bottom = 27.0
-text = "Save layout?"
-
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer"]
-margin_top = 31.0
-margin_right = 189.0
-margin_bottom = 58.0
-
-[node name="SaveCancelButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer/HBoxContainer"]
-margin_right = 58.0
-margin_bottom = 27.0
-text = "cancel"
-
-[node name="SaveButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer/HBoxContainer"]
-margin_left = 62.0
-margin_right = 107.0
-margin_bottom = 27.0
-text = "save"
-
-[node name="SaveAsButton" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/SaveConfirm/VBoxContainer/HBoxContainer"]
-margin_left = 111.0
-margin_right = 189.0
-margin_bottom = 27.0
-text = "save as..."
+[node name="SaveConfirm" parent="VBoxContainer2/HSplitContainer/LayoutGui" instance=ExtResource( 8 )]
 
 [node name="StatusGUI" type="HBoxContainer" parent="VBoxContainer2"]
 unique_name_in_owner = true

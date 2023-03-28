@@ -54,19 +54,19 @@ func add_train(p_name):
 	train.connect("removing", self, "_on_train_removing")
 	emit_signal("trains_changed")
 	emit_signal("train_added", p_name)
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	return train
 
 func _on_train_name_changed(p_name, p_new_name):
 	var train = trains[p_name]
 	trains.erase(p_name)
 	trains[p_new_name] = train
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("trains_changed")
 
 func _on_train_removing(p_name):
 	trains.erase(p_name)
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("trains_changed")
 
 func add_layout_controller(p_name):
@@ -77,19 +77,19 @@ func add_layout_controller(p_name):
 	controller.connect("removing", self, "_on_controller_removing")
 	emit_signal("layout_controllers_changed")
 	emit_signal("layout_controller_added", p_name)
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	return controller
 
 func _on_controller_name_changed(p_name, p_new_name):
 	var controller = layout_controllers[p_name]
 	layout_controllers.erase(p_name)
 	layout_controllers[p_new_name] = controller
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("layout_controllers_changed")
 
 func _on_controller_removing(p_name):
 	layout_controllers.erase(p_name)
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("layout_controllers_changed")
 
 func clear_coroutine():

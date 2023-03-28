@@ -399,7 +399,7 @@ func set_sensor(p_sensor):
 	if sensor != null:
 		sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
 	
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("states_changed", get_orientation())
 	emit_signal("sensor_changed", self)
 	update()
@@ -414,7 +414,7 @@ func _on_sensor_marker_color_changed():
 
 func remove_sensor():
 	set_sensor(null)
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 
 func set_drawing_highlight(highlight):
 	drawing_highlight = highlight

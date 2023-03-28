@@ -23,6 +23,11 @@ func _ready():
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	$SaveLayoutDialog.current_path = Settings.layout_path
 	$OpenLayoutDialog.current_path = Settings.layout_path
+	$SaveConfirm.set_label("Layout changed! Save?")
+	$SaveConfirm.add_action_button("cancel", "cancel")
+	$SaveConfirm.add_action_button("no save", "don't save")
+	$SaveConfirm.add_action_button("save", "save")
+	$SaveConfirm.add_action_button("save as", "save as...")
 
 func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
@@ -79,7 +84,9 @@ func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		print("manual quit!")
 		yield(get_tree(), "idle_frame")
-		yield(check_save_changes_coroutine(), "completed")
+		var saved = yield(check_save_changes_coroutine(), "completed")
+		if saved == "cancelled":
+			return
 		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
 		Settings.save_configfile()
 		get_tree().quit()
@@ -88,25 +95,17 @@ func check_save_changes_coroutine():
 	if not LayoutInfo.layout_changed:
 		yield(get_tree(), "idle_frame")
 		return
-	$SaveConfirm/VBoxContainer/HBoxContainer/SaveButton.visible = LayoutInfo.layout_file != null
 	$SaveConfirm.popup_centered()
-	var obj = yield(Await.first_signal_objs(
-		[$SaveConfirm/VBoxContainer/HBoxContainer/SaveAsButton,
-		$SaveConfirm/VBoxContainer/HBoxContainer/SaveButton,
-		$SaveConfirm/VBoxContainer/HBoxContainer/SaveCancelButton,
-		$SaveConfirm
-	],
-	["pressed",
-	"pressed",
-	"pressed",
-	"popup_hide"]), "completed")
-	print(obj)
-	if obj == $SaveConfirm/VBoxContainer/HBoxContainer/SaveAsButton:
+	var action = yield($SaveConfirm.get_user_action_coroutine(), "completed")
+	if action == "save as":
 		yield(_on_LayoutSave_pressed(), "completed")
-		return
-	if obj == $SaveConfirm/VBoxContainer/HBoxContainer/SaveButton:
+		return "saved"
+	if action == "save":
 		save_layout(LayoutInfo.layout_file)
-		return
+		return "saved"
+	if action == "cancel":
+		return "cancelled"
+	return "not saved"
 
 func _on_LayoutSave_pressed():
 	$SaveLayoutDialog.popup()
@@ -129,9 +128,12 @@ func save_layout(path):
 	Settings.layout_path = path
 	$OpenLayoutDialog.current_path = path
 	$SaveLayoutDialog.current_path = path
+	LayoutInfo.set_layout_changed(false)
 
 func _on_LayoutOpen_pressed():
-	yield(check_save_changes_coroutine(), "completed")
+	var saved = yield(check_save_changes_coroutine(), "completed")
+	if saved == "cancelled":
+		return
 	$OpenLayoutDialog.popup()
 
 func _on_OpenLayoutDialog_file_selected(path):
@@ -151,13 +153,17 @@ func _on_OpenLayoutDialog_file_selected(path):
 	LayoutInfo.layout_file = path
 	Settings.layout_path = $OpenLayoutDialog.current_path
 	$OpenLayoutDialog.current_path = Settings.layout_path
+	LayoutInfo.set_layout_changed(false)
 
 
 func _on_LayoutNew_pressed():
-	yield(check_save_changes_coroutine(), "completed")
+	var saved = yield(check_save_changes_coroutine(), "completed")
+	if saved == "cancelled":
+		return
 	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
 	LayoutInfo.layout_file = null
+	LayoutInfo.set_layout_changed(false)
 
 
 func _on_control_devices_toggled(button_pressed):

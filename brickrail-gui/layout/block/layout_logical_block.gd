@@ -42,7 +42,7 @@ func add_prior_sensor_dirtrack(dirtrack):
 	if dirtrack.get_sensor() == null:
 		dirtrack.add_sensor(LayoutSensor.new())
 	nodes[-1].sensors.set_sensor_dirtrack("enter", dirtrack)
-	LayoutInfo.layout_changed = true
+	LayoutInfo.set_layout_changed(true)
 
 func get_prior_sensor_dirtrack():
 	return nodes[-1].sensors.sensor_dirtracks["enter"]
