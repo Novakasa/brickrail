@@ -12,6 +12,6 @@ As of now, trains detect their location via a Boost Color and Distance Sensor po
 
 # How to run
 Download the Godot Engine binary from the [official website](https://godotengine.org/download). Open the project `brickrail-gui/project.godot`, hit F5.
-The gui is looking for a python environment with the installed package `pybricksdev` in ble-server/.env to start the ble-server, which is not currently included in the repo, but will be in releases once they are available.
+The gui is looking for a python environment with the installed packages `pybricksdev` and `websockets` in ble-server/.env to start the ble-server, which is not currently included in the repo, but will be in releases once they are available.
 
 Instructions for setup of your switches and calibration of the color sensors are coming in the future, as the process is not finalized yet.
