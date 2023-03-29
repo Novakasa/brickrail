@@ -484,9 +484,11 @@ func connect_portal(dirtrack):
 func is_continuous_to(dirtrack):
 	if l_idx != dirtrack.l_idx:
 		return false
-	if abs(x_idx - dirtrack.x_idx) > 1:
+	if dirtrack.x_idx - x_idx != LayoutInfo.get_slot_x_idx_delta(next_slot):
 		return false
-	if abs(y_idx - dirtrack.y_idx) > 1:
+	if dirtrack.y_idx - y_idx != LayoutInfo.get_slot_y_idx_delta(next_slot):
+		return false
+	if LayoutInfo.get_neighbour_slot(next_slot) != dirtrack.prev_slot:
 		return false
 	return true
 

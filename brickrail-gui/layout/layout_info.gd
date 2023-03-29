@@ -621,3 +621,27 @@ func emergency_stop():
 		if ble_train.hub.running:
 			ble_train.stop()
 	stop_all_trains()
+
+func get_neighbour_slot(slot):
+	if slot == "N":
+		return "S"
+	if slot == "S":
+		return "N"
+	if slot == "E":
+		return "W"
+	if slot == "W":
+		return "E"
+
+func get_slot_x_idx_delta(slot):
+	if slot == "E":
+		return 1
+	if slot == "W":
+		return -1
+	return 0
+
+func get_slot_y_idx_delta(slot):
+	if slot == "N":
+		return -1
+	if slot == "S":
+		return 1
+	return 0
