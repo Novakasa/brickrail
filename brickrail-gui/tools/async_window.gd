@@ -22,5 +22,4 @@ func get_user_action_coroutine():
 	popup_centered()
 	var action = yield(self, "action_button_pressed")
 	hide()
-	print(action)
 	return action
