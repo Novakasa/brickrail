@@ -148,7 +148,6 @@ func serialize():
 	result["blocks"] = blockdata
 	result["trains"] = traindata
 	
-	print(result)
 	return result
 
 func clear():

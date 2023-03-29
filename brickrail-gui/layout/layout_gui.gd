@@ -23,11 +23,11 @@ func _ready():
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	$SaveLayoutDialog.current_path = Settings.layout_path
 	$OpenLayoutDialog.current_path = Settings.layout_path
-	$SaveConfirm.set_label("Layout changed! Save?")
-	$SaveConfirm.add_action_button("cancel", "cancel")
-	$SaveConfirm.add_action_button("no save", "don't save")
-	$SaveConfirm.add_action_button("save", "save")
-	$SaveConfirm.add_action_button("save as", "save as...")
+	$SaveConfirm.set_label("Unsaved changes! Save?")
+	$SaveConfirm.add_action_button("cancel", "Cancel")
+	$SaveConfirm.add_action_button("no save", "Discard")
+	$SaveConfirm.add_action_button("save", "Save")
+	$SaveConfirm.add_action_button("save as", "Save as...")
 
 func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
@@ -97,9 +97,14 @@ func check_save_changes_coroutine():
 		return
 	$SaveConfirm.popup_centered()
 	var action = yield($SaveConfirm.get_user_action_coroutine(), "completed")
+	if action == "save" and LayoutInfo.layout_file == null:
+		action = "save as"
 	if action == "save as":
-		yield(_on_LayoutSave_pressed(), "completed")
-		return "saved"
+		var result = yield($SaveLayoutDialog.get_file_action_coroutine(), "completed")
+		if result[0] == "file_selected":
+			save_layout(result[1])
+			return "saved"
+		return "cancelled"
 	if action == "save":
 		save_layout(LayoutInfo.layout_file)
 		return "saved"
@@ -108,9 +113,9 @@ func check_save_changes_coroutine():
 	return "not saved"
 
 func _on_LayoutSave_pressed():
-	$SaveLayoutDialog.popup()
-	var path = yield($SaveLayoutDialog, "file_selected")
-	save_layout(path)
+	var result = yield($SaveLayoutDialog.get_file_action_coroutine(), "completed")
+	if result[0] == "file_selected":
+		save_layout(result[1])
 
 func save_layout(path):
 	var struct = {}
@@ -126,17 +131,19 @@ func save_layout(path):
 	file.close()
 	LayoutInfo.layout_file = path
 	Settings.layout_path = path
-	$OpenLayoutDialog.current_path = path
 	$SaveLayoutDialog.current_path = path
+	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
 
 func _on_LayoutOpen_pressed():
 	var saved = yield(check_save_changes_coroutine(), "completed")
 	if saved == "cancelled":
 		return
-	$OpenLayoutDialog.popup()
+	var result = yield($OpenLayoutDialog.get_file_action_coroutine(), "completed")
+	if result[0] == "file_selected":
+		open_layout(result[1])
 
-func _on_OpenLayoutDialog_file_selected(path):
+func open_layout(path):
 	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
 	
@@ -151,8 +158,9 @@ func _on_OpenLayoutDialog_file_selected(path):
 		Devices.load(struct.devices)
 	LayoutInfo.load(struct.layout)
 	LayoutInfo.layout_file = path
-	Settings.layout_path = $OpenLayoutDialog.current_path
-	$OpenLayoutDialog.current_path = Settings.layout_path
+	Settings.layout_path = path
+	$SaveLayoutDialog.current_path = path
+	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
 
 
