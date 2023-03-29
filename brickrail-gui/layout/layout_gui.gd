@@ -214,25 +214,14 @@ func _on_add_layer_button_pressed():
 
 
 func _on_StopAllButton_pressed():
-	LayoutInfo.set_random_targets(false)
-	$LayoutSplit/LayoutModeTabs/run/AutoTarget.pressed = false
-	for train in LayoutInfo.trains.values():
-		if train.route != null:
-			train.cancel_route()
-
+	LayoutInfo.stop_all_trains()
 
 func _on_LayoutModeTabs_tab_changed(tab):
 	var mode = ["edit", "control"][tab]
 	LayoutInfo.set_layout_mode(mode)
 
-
 func _on_EmergencyStopButton_pressed():
-	LayoutInfo.set_control_devices(false)
-	for ble_train in Devices.trains.values():
-		if ble_train.hub.running:
-			ble_train.stop()
-	_on_StopAllButton_pressed()
-
+	LayoutInfo.emergency_stop()
 
 func _on_remove_layer_button_pressed():
 	var idx = LayoutInfo.cells.keys().find(LayoutInfo.active_layer)

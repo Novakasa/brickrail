@@ -608,3 +608,16 @@ func attempt_portal():
 	set_layout_mode("edit")
 	portal_dirtrack = null
 	portal_target = null
+
+func stop_all_trains():
+	set_random_targets(false)
+	for train in trains.values():
+		if train.route != null:
+			train.cancel_route()
+
+func emergency_stop():
+	set_control_devices(false)
+	for ble_train in Devices.trains.values():
+		if ble_train.hub.running:
+			ble_train.stop()
+	stop_all_trains()

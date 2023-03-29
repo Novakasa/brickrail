@@ -28,7 +28,7 @@ func _on_hub_removing(hubname):
 
 func _on_hub_state_changed():
 	if not are_hubs_ready() and LayoutInfo.control_devices:
-		LayoutInfo.set_control_devices(false)
+		LayoutInfo.emergency_stop()
 	hub_control_enabled = not is_busy()
 	emit_signal("hubs_state_changed")
 
