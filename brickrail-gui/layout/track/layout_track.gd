@@ -247,6 +247,12 @@ func is_connected_to_track(track):
 func can_connect_track(slot, track):
 	if not slot in directed_tracks:
 		return false
+	if directed_tracks[slot].has_portal():
+		return false
+	if get_block() != null:
+		return false
+	if track.get_block() != null:
+		return false
 	if not get_neighbour_slot(slot) in track.directed_tracks:
 		return false
 	if track == self:

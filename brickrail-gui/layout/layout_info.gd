@@ -511,15 +511,6 @@ func draw_track_add_cell(draw_cell):
 		else:
 			track = drawing_last.tracks[track.get_orientation()]
 		if drawing_last_track != null:
-			#don't allow switches within blocks
-			if track.get_block() != null:
-				if track.has_connection_at(slot0):
-					set_drawing_last_track(null)
-		if drawing_last_track != null:
-			if drawing_last_track.get_block()!=null:
-				if drawing_last_track.has_connection_at(track.get_neighbour_slot(slot0)):
-					set_drawing_last_track(null)
-		if drawing_last_track != null:
 			if track.can_connect_track(slot0, drawing_last_track):
 				track.connect_track(slot0, drawing_last_track)
 		set_drawing_last_track(track)
