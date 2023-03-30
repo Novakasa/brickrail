@@ -25,6 +25,7 @@ __meta__ = {
 margin_left = 56.0
 margin_right = 119.0
 margin_bottom = 20.0
+disabled = true
 text = "None"
 items = [ "None", null, false, 0, null ]
 selected = 0
