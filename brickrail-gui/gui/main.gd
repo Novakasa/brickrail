@@ -14,7 +14,6 @@ func _ready():
 	var _err = Devices.connect("train_added", self, "_on_devices_train_added")
 	_err = Devices.connect("layout_controller_added", self, "_on_devices_layout_controller_added")
 	_err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
-	GuiApi.error_dialog = $ErrorDialog
 
 func _on_hubs_state_changed():
 	var enabled = Devices.get_ble_controller().hub_control_enabled

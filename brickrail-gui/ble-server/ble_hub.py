@@ -97,6 +97,8 @@ class BLEHub:
                         print("[IOHub]", line)
                         self.output_buffer = bytearray()
                         self.msg_len = None
+                        if "Error" in line:
+                            self.to_out_queue("program_error", line)
                         return
 
         if len(self.output_buffer) == self.msg_len and byte == _OUT_ID_END:
@@ -294,9 +296,6 @@ class BLEHub:
             await asyncio.wait_for(self.hub_ready.wait(), timeout=10.0)
         except asyncio.TimeoutError:
             print(f"hub '{self.name}' wait for hub_ready timed out!!")
-            output_task.cancel()
-            input_task.cancel()
-            timeout_task.cancel()
             self.to_out_queue("program_error", "program_start_timeout")
             return
 

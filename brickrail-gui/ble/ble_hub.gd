@@ -17,6 +17,7 @@ signal disconnected
 signal connect_error()
 signal program_started
 signal program_stopped
+signal program_error(message)
 signal responsiveness_changed(value)
 signal removing(name)
 signal state_changed()
@@ -68,6 +69,14 @@ func _on_data_received(key, data):
 		set_responsiveness(false)
 		emit_signal("program_stopped")
 		emit_signal("state_changed")
+		return
+	if key == "program_error":
+		running=false
+		busy=false
+		set_responsiveness(false)
+		emit_signal("program_error")
+		emit_signal("state_changed")
+		GuiApi.show_error("Program Error:" + data)
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", data)

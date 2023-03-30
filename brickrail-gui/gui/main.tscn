@@ -429,23 +429,24 @@ min_value = 50.0
 page = 15.0
 value = 55.668
 
-[node name="Label" type="Label" parent="VBoxContainer2/StatusGUI"]
+[node name="Error" type="HBoxContainer" parent="VBoxContainer2/StatusGUI"]
 margin_left = 794.0
 margin_right = 1280.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 
-[node name="ErrorDialog" type="AcceptDialog" parent="."]
-anchor_left = 0.5
-anchor_top = 0.5
-anchor_right = 0.5
-anchor_bottom = 0.5
-margin_left = -42.0
-margin_top = -39.0
-margin_right = 42.0
-margin_bottom = 39.0
-popup_exclusive = true
-window_title = "Error"
+[node name="ErrorLabel" type="Label" parent="VBoxContainer2/StatusGUI/Error"]
+margin_right = 436.0
+margin_bottom = 27.0
+size_flags_horizontal = 3
+custom_colors/font_color = Color( 1, 0, 0, 1 )
+text = "test"
+
+[node name="ClearErrorButton" type="Button" parent="VBoxContainer2/StatusGUI/Error"]
+margin_left = 440.0
+margin_right = 486.0
+margin_bottom = 27.0
+text = "clear"
 
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/ConnectAllButton" to="." method="_on_ConnectAllButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton" to="." method="_on_DisconnectAllButton_pressed"]
@@ -469,3 +470,4 @@ window_title = "Error"
 [connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/remove_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_remove_layer_button_pressed"]
+[connection signal="pressed" from="VBoxContainer2/StatusGUI/Error/ClearErrorButton" to="VBoxContainer2/StatusGUI" method="_on_ClearErrorButton_pressed"]
