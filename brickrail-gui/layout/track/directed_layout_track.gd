@@ -481,7 +481,7 @@ func connect_portal(dirtrack):
 	
 	connect_dirtrack(portal_turn, dirtrack)
 
-func is_continuous_to(dirtrack):
+func is_continuous_to(dirtrack, turn=null):
 	if l_idx != dirtrack.l_idx:
 		return false
 	if dirtrack.x_idx - x_idx != LayoutInfo.get_slot_x_idx_delta(next_slot):
@@ -490,11 +490,13 @@ func is_continuous_to(dirtrack):
 		return false
 	if LayoutInfo.get_neighbour_slot(next_slot) != dirtrack.prev_slot:
 		return false
+	if turn != null and dirtrack.get_turn() != turn:
+		return false
 	return true
 
 func has_portal():
 	for turn in connections:
-		if not is_continuous_to(connections[turn]):
+		if not is_continuous_to(connections[turn], turn):
 			return true
 	return false
 	
@@ -515,7 +517,7 @@ func get_shader_state(turn):
 		if block.get_occupied():
 			state |= STATE_BLOCK_OCCUPIED
 	if turn in connections:
-		if is_continuous_to(connections[turn]):
+		if is_continuous_to(connections[turn], turn):
 			state |= STATE_CONNECTED
 	if turn == "none":
 		if len(connections) == 0:
