@@ -78,6 +78,7 @@ func set_ble_train(p_trainname):
 	ble_train = Devices.trains[p_trainname]
 	var _err = ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
 	_err = ble_train.connect("removing", self, "_on_ble_train_removing")
+	LayoutInfo.set_layout_changed(true)
 	update_control_ble_train()
 	emit_signal("ble_train_changed")
 

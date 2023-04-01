@@ -44,6 +44,7 @@ func _on_train_unselected():
 
 func _on_FixedFacingCheckbox_toggled(button_pressed):
 	train.fixed_facing = button_pressed
+	LayoutInfo.set_layout_changed(true)
 
 func _on_BLETrainSelector_meta_selected(meta):
 	train.set_ble_train(meta)
