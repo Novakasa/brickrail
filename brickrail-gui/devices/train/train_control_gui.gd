@@ -27,6 +27,7 @@ func update_controls_enabled(_dummy=null):
 func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():
 		child.disabled=mode
+	$VBoxContainer/change_heading_button.disabled=mode
 
 func _on_train_name_changed(_old_name, new_name):
 	set_train_name(new_name)
@@ -58,3 +59,6 @@ func _on_slow_button_pressed():
 
 func _on_change_heading_button_pressed():
 	get_train().flip_heading()
+
+func _on_fast_button_pressed():
+	get_train().fast()
