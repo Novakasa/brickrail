@@ -6,6 +6,9 @@
 			},
 			{
 				"name": "city-red"
+			},
+			{
+				"name": "city-orange"
 			}
 		],
 		"controllers": [
@@ -1924,19 +1927,29 @@
 				"fixed_facing": true,
 				"color": "ff00b007",
 				"num_wagons": 4,
-				"blockname": "block7_",
-				"blockindex": 1,
+				"blockname": "block6_",
+				"blockindex": 0,
 				"ble_train": "city-green"
 			},
 			{
 				"name": "train-red",
 				"facing": 1,
-				"fixed_facing": false,
+				"fixed_facing": true,
 				"color": "ffff0000",
 				"num_wagons": 5,
-				"blockname": "block6_",
-				"blockindex": 1,
+				"blockname": "block7__",
+				"blockindex": 0,
 				"ble_train": "city-red"
+			},
+			{
+				"name": "train2",
+				"facing": 1,
+				"fixed_facing": true,
+				"color": "ffff9500",
+				"num_wagons": 5,
+				"blockname": "block7_",
+				"blockindex": 1,
+				"ble_train": "city-orange"
 			}
 		]
 	}
