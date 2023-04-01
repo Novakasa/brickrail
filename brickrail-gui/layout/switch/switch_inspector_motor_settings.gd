@@ -6,9 +6,10 @@ signal motor_selected(switch_motor)
 var controllername
 var port
 
-func setup(p_motor):
+func setup(p_motor, inverted):
 	select(p_motor)
 	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
+	$VBoxContainer/GridContainer/InvertCheckBox.pressed = inverted
 
 func select(p_motor):
 	if p_motor == null:

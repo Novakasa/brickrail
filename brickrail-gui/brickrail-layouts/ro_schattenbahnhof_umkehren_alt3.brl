@@ -1,7 +1,12 @@
 {
 	"devices": {
 		"trains": [
-
+			{
+				"name": "city-green"
+			},
+			{
+				"name": "city-red"
+			}
 		],
 		"controllers": [
 			{
@@ -146,7 +151,9 @@
 						"motor1": {
 							"controller": "city-yellow",
 							"port": 3
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -242,7 +249,9 @@
 						"motor1": {
 							"controller": "city-yellow",
 							"port": 2
-						}
+						},
+						"motor1_inverted": true,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -760,7 +769,9 @@
 						"motor1": {
 							"controller": "technic-red",
 							"port": 0
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -860,7 +871,9 @@
 						"motor1": {
 							"controller": "technic-red",
 							"port": 3
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -882,7 +895,9 @@
 						"motor1": {
 							"controller": "technic-red",
 							"port": 2
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -917,7 +932,9 @@
 						"motor1": {
 							"controller": "technic-red",
 							"port": 1
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1004,7 +1021,9 @@
 						"motor1": {
 							"controller": "city-yellow",
 							"port": 0
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1039,7 +1058,9 @@
 						"motor1": {
 							"controller": "city-yellow",
 							"port": 1
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1276,7 +1297,9 @@
 						"motor1": {
 							"controller": "city-lime",
 							"port": 1
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1298,7 +1321,9 @@
 						"motor1": {
 							"controller": "city-lime",
 							"port": 0
-						}
+						},
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1358,7 +1383,8 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1390,7 +1416,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1450,7 +1477,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1469,7 +1497,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1890,22 +1919,24 @@
 		],
 		"trains": [
 			{
-				"name": "train0",
-				"facing": 1,
-				"fixed_facing": true,
-				"color": "ffda0202",
-				"num_wagons": 5,
-				"blockname": "block5",
-				"blockindex": 0
-			},
-			{
 				"name": "train1",
 				"facing": 1,
 				"fixed_facing": true,
 				"color": "ff00b007",
+				"num_wagons": 4,
+				"blockname": "block7_",
+				"blockindex": 1,
+				"ble_train": "city-green"
+			},
+			{
+				"name": "train-red",
+				"facing": 1,
+				"fixed_facing": false,
+				"color": "ffff0000",
 				"num_wagons": 5,
-				"blockname": "block6__",
-				"blockindex": 0
+				"blockname": "block6_",
+				"blockindex": 1,
+				"ble_train": "city-red"
 			}
 		]
 	}
