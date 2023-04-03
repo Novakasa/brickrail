@@ -53,6 +53,7 @@ func set_layer_positions():
 		if LayoutInfo.layers_unfolded:
 			layer.position = layer_pos-layer.get_pos()
 		layer_pos.y += layer.get_size().y+LayoutInfo.spacing
+	LayoutInfo.emit_signal("layer_positions_changed")
 
 func _on_cell_added(cell):
 	var layer = get_layer(cell.l_idx)

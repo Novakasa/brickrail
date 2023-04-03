@@ -63,6 +63,8 @@ signal layer_added(l)
 signal layer_removed(l)
 signal active_layer_changed(l)
 signal layers_unfolded_changed(mode)
+#warning-ignore:unused_signal
+signal layer_positions_changed()
 signal cell_added(cell)
 signal trains_running(running)
 
