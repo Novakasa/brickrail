@@ -286,6 +286,7 @@ func _on_block_removing(p_name):
 func create_train(p_name):
 	assert(not p_name in trains)
 	var train = LayoutTrain.new(p_name)
+	grid.add_child(train)
 	trains[p_name] = train
 	train.connect("removing", self, "_on_train_removing")
 	train.connect("route_changed", self, "_on_train_route_changed")

@@ -118,7 +118,7 @@ func _on_LayoutInfo_control_devices_changed(_control_devices):
 	update_control_ble_train()
 
 func is_end_of_leg():
-	return block == route.get_current_leg().get_target_node().obj
+	return route.get_current_leg().is_complete()
 
 func _on_LayoutInfo_random_targets_set(random_targets):
 	if random_targets and route==null:
