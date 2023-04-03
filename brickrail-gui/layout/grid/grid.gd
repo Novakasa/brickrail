@@ -122,9 +122,10 @@ func process_mouse_motion(event, l, i, j, mpos_cell, mpos):
 	
 	for train in LayoutInfo.trains.values():
 		if train.has_point(mpos):
-			if train != hover_obj and hover_obj != null:
-				hover_obj.stop_hover()
-			set_hover_obj(train)
+			if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
+				continue
+			if train != hover_obj:
+				set_hover_obj(train)
 			train.hover_at(mpos)
 			return
 	
@@ -179,6 +180,8 @@ func process_mouse_button(event, l, i, j, mpos_cell, mpos):
 				return
 	
 	for train in LayoutInfo.trains.values():
+		if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
+			continue
 		if train.has_point(mpos):
 			if train.process_mouse_button(event, mpos):
 				return true

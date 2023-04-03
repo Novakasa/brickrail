@@ -149,9 +149,12 @@ func hover(_pos):
 
 func set_drag_virtual_train():
 	var spawn_track = get_train_spawn_dirtrack(LayoutInfo.drag_virtual_train.facing)
-	LayoutInfo.drag_virtual_train.set_dirtrack(spawn_track)
-	LayoutInfo.drag_virtual_train.update_wagon_position()
-	LayoutInfo.drag_virtual_train.visible=true
+	var vtrain = LayoutInfo.drag_virtual_train
+	vtrain.set_dirtrack(spawn_track)
+	vtrain.get_parent().remove_child(vtrain)
+	LayoutInfo.grid.get_layer(vtrain.l_idx).add_child(vtrain)
+	vtrain.update_wagon_position()
+	vtrain.visible=true
 	LayoutInfo.drag_layout_block = self
 
 func stop_hover():

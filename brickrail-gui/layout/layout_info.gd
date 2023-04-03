@@ -289,7 +289,6 @@ func create_train(p_name):
 	trains[p_name] = train
 	train.connect("removing", self, "_on_train_removing")
 	train.connect("route_changed", self, "_on_train_route_changed")
-	grid.add_child(train)
 	set_layout_changed(true)
 	return train
 

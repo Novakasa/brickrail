@@ -374,3 +374,4 @@ func set_dirtrack(p_dirtrack, teleport=false):
 	length = dirtrack.get_length_to(turn)
 	if teleport:
 		opposite_turn_history = []
+		emit_signal("switched_layers", l_idx)
