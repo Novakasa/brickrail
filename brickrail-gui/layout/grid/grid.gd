@@ -151,8 +151,8 @@ func process_mouse_button(event, i, j, mpos_cell, mpos):
 	
 	for train in LayoutInfo.trains.values():
 		if train.has_point(mpos):
-			train.process_mouse_button(event, mpos)
-			return
+			if train.process_mouse_button(event, mpos):
+				return true
 	
 	var l = LayoutInfo.active_layer
 	LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell)
