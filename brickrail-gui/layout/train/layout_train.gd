@@ -13,9 +13,9 @@ var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
 var selected=false
 var fixed_facing=false
 var next_sensor_track
-var wait_timer: Timer
 var committed = true
 var logging_module
+var wait_time = 2.0
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
@@ -37,16 +37,12 @@ func _init(p_name):
 	_err = LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
 	_err = LayoutInfo.connect("active_layer_changed",self, "_on_layer_info_changed")
 	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layer_info_changed")
-	wait_timer = Timer.new()
-	add_child(wait_timer)
 	blocked_by = null
 	update_layer_visibility()
 
 func _enter_tree():
 	if LayoutInfo.random_targets:
-		wait_timer.wait_time = 1.0/LayoutInfo.time_scale
-		wait_timer.start()
-		yield(get_tree().create_timer(wait_timer.wait_time/LayoutInfo.time_scale), "timeout")
+		yield(get_tree().create_timer(wait_time/LayoutInfo.time_scale), "timeout")
 		if LayoutInfo.random_targets:
 			find_random_route(false)
 
@@ -322,8 +318,7 @@ func cancel_route():
 func _on_route_completed():
 	set_route(null)
 	if LayoutInfo.random_targets:
-		wait_timer.start()
-		yield(wait_timer, "timeout")
+		yield(get_tree().create_timer(wait_time/LayoutInfo.time_scale), "timeout")
 		if LayoutInfo.random_targets:
 			find_random_route(false)
 
@@ -391,9 +386,6 @@ func get_inspector():
 	var inspector = TrainInspector.instance()
 	inspector.set_train(self)
 	return inspector
-
-func _process(_delta):
-	wait_timer.wait_time = 1.0/LayoutInfo.time_scale
 
 func _unhandled_input(event):
 	if event is InputEventKey:
