@@ -18,7 +18,7 @@ func set_facing(facing):
 	material.set_shader_param("facing", facing)
 
 func has_point(pos):
-	pos = to_local(pos)
+	pos = pos - position
 	var spacing = LayoutInfo.spacing
 	var wsize = Vector2(0.35, 0.2)*spacing
 	wsize.x = wsize.x + wsize.y

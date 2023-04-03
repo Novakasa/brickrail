@@ -35,7 +35,8 @@ func _init(p_name):
 	var _err = virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
 	_err = LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
 	_err = LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
-	_err = LayoutInfo.connect("active_layer_changed",self, "_on_LayoutInfo_active_layer_changed")
+	_err = LayoutInfo.connect("active_layer_changed",self, "_on_layer_info_changed")
+	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layer_info_changed")
 	wait_timer = Timer.new()
 	add_child(wait_timer)
 	blocked_by = null
@@ -49,17 +50,26 @@ func _enter_tree():
 		if LayoutInfo.random_targets:
 			find_random_route(false)
 
-func _on_LayoutInfo_active_layer_changed(_l_idx):
+func _on_layer_info_changed(_l_idx=null):
 	update_layer_visibility()
 
 func _on_virtual_train_switched_layer(p_l_idx):
 	if selected:
 		LayoutInfo.set_active_layer(p_l_idx)
+	
 	update_layer_visibility()
 
 func update_layer_visibility():
+	
 	var l_idx = virtual_train.l_idx
-	if l_idx != LayoutInfo.active_layer:
+	if get_parent() != null:
+		get_parent().remove_child(self)
+	if LayoutInfo.layers_unfolded:
+		LayoutInfo.grid.get_layer(l_idx).add_child(self)
+	else:
+		LayoutInfo.grid.add_child(self)
+	
+	if l_idx != LayoutInfo.active_layer and not LayoutInfo.layers_unfolded:
 		modulate = Color(1.0, 1.0, 1.0, 0.3)
 	else:
 		modulate = Color.white
