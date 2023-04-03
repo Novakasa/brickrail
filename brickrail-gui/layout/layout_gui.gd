@@ -230,3 +230,6 @@ func _on_remove_layer_button_pressed():
 	if idx == 0:
 		new_active = LayoutInfo.cells.keys()[idx]
 	LayoutInfo.set_active_layer(new_active)
+
+func _on_LayerUnfoldCheckbox_toggled(button_pressed):
+	LayoutInfo.set_layers_unfolded(button_pressed)

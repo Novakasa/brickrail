@@ -1,7 +1,5 @@
 extends Node2D
 
-export var nx = 60
-export var ny = 60
 export(Color) var grid_line_color
 export(float) var grid_line_width
 
@@ -14,51 +12,63 @@ var dragging_view_camera_reference = null
 onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
 func _on_layer_added(l):
-	var layer = Node2D.new()
+	var layer = GridLayer.new()
 	layer.name = "layer" + str(l)
 	add_child(layer)
+	var _err = layer.connect("size_changed", self, "_on_layer_size_changed", [layer])
+	set_layer_positions()
+
+func _on_layer_size_changed(layer):
+	var prev_pos = layer.position
+	set_layer_positions()
+	$Camera2D.position += layer.position - prev_pos
 
 func _on_layer_removed(l):
 	var layer = get_layer(l)
 	remove_child(layer)
+	layer.disconnect("size_changed", self, "_on_layer_size_changed")
 	layer.queue_free()
+	set_layer_positions()
 
 func get_layer(l):
 	return get_node("layer"+str(l))
 
+func update_layers(_dummy=null):
+	set_layer_visibility()
+	set_layer_positions()
+	
+func set_layer_visibility():
+	for l in LayoutInfo.cells.keys():
+		var layer = get_layer(l)
+		if l == LayoutInfo.active_layer:
+			layer.visible=true
+		else:
+			layer.visible=LayoutInfo.layers_unfolded
+
+func set_layer_positions():
+	var layer_pos = Vector2()
+	for l in LayoutInfo.cells:
+		var layer = get_layer(l)
+		layer.position = Vector2()
+		if LayoutInfo.layers_unfolded:
+			layer.position = layer_pos-layer.get_pos()
+		layer_pos.y += layer.get_size().y+LayoutInfo.spacing*2.0
+
 func _on_cell_added(cell):
 	var layer = get_layer(cell.l_idx)
-	layer.add_child(cell)
-	cell.connect("track_selected", self, "_on_cell_track_selected")
+	layer.add_cell(cell)
 
 func _ready():
 	
 	var _err = LayoutInfo.connect("cell_added", self, "_on_cell_added")
 	_err = LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
 	_err = LayoutInfo.connect("layer_added", self, "_on_layer_added")
-	_err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	_err = LayoutInfo.connect("active_layer_changed", self, "update_layers")
+	_err = LayoutInfo.connect("layers_unfolded_changed", self, "update_layers")
 	LayoutInfo.grid = self
 	
 	LayoutInfo.add_layer(0)
 	LayoutInfo.set_layout_changed(false)
-
-func _on_layout_mode_changed(_mode):
-	update()
-
-func _draw():
-	if LayoutInfo.layout_mode == "control":
-		return
-	var spacing = LayoutInfo.spacing
-	
-	for i in range(nx+1):
-		var start = Vector2(i*spacing, 0.0)
-		var end = Vector2(i*spacing, ny*spacing)
-		draw_line(start, end, Settings.colors["surface"]*0.8, 0.1*spacing, true)
-	
-	for j in range(ny+1):
-		var start = Vector2(0.0, j*spacing)
-		var end = Vector2(nx*spacing, j*spacing)
-		draw_line(start, end, Settings.colors["surface"]*0.8, 0.1*spacing, true)
 
 func _unhandled_input(event):
 	process_input(event)
@@ -76,11 +86,14 @@ func process_key_input(_event):
 
 func process_mouse_input(event):
 	var spacing = LayoutInfo.spacing
-	var mpos = get_viewport_transform().affine_inverse()*event.position
+	var layer_pos = get_layer(LayoutInfo.active_layer).position
+	var mpos = get_viewport_transform().affine_inverse()*event.position - layer_pos
 	var i = int(mpos.x/spacing)
 	var j = int(mpos.y/spacing)
-	if not (i>=0 and i<nx and j>=0 and j<ny):
-		return
+	if mpos.x<0.0:
+		i -= 1
+	if mpos.y<0.0:
+		j -= 1
 	var mpos_cell = mpos-LayoutInfo.spacing*Vector2(i,j)
 	if event is InputEventMouseMotion:
 		process_mouse_motion(event, i, j, mpos_cell, mpos)
@@ -101,22 +114,23 @@ func process_mouse_motion(event, i, j, mpos_cell, mpos):
 			return
 	
 	var cell = LayoutInfo.get_cell(l, i, j)
-	if cell != hover_obj and hover_obj != null:
-		hover_obj.stop_hover()
-	set_hover_obj(cell)
+	if cell != hover_obj:
+		set_hover_obj(cell)
 	cell.hover_at(mpos_cell)
 
 func set_hover_obj(obj):
 	if hover_obj != null:
+		# prints("disconnecting signal from hover_obj", hover_obj)
 		hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
 		hover_obj.stop_hover()
 	hover_obj = obj
 	if hover_obj != null:
+		# prints("connecting signal to hover_obj", hover_obj)
 		hover_obj.connect("removing", self, "_on_hover_obj_removing")
 
-func _on_hover_obj_removing(_cell):
-	hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
-	hover_obj = null
+func _on_hover_obj_removing(_obj):
+	# print("hover obj removing!")
+	set_hover_obj(null)
 
 func stop_hover():
 	if hover_obj != null:

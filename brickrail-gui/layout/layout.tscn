@@ -6,8 +6,6 @@
 
 [node name="Grid" type="Node2D" parent="."]
 script = ExtResource( 2 )
-nx = 20
-ny = 20
 
 [node name="Camera2D" type="Camera2D" parent="Grid"]
 anchor_mode = 0

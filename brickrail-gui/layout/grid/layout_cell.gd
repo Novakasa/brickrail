@@ -1,3 +1,5 @@
+
+class_name LayoutCell
 extends Node2D
 
 var l_idx
@@ -20,7 +22,8 @@ var _redraw=false
 var track_material = preload("res://layout/grid/layout_cell_shader.tres")
 
 signal track_selected(cell, orientation)
-signal removing()
+signal removing(cell)
+signal tracks_changed()
 
 func setup(p_l_idx, p_x_idx, p_y_idx):
 	l_idx = p_l_idx
@@ -30,7 +33,9 @@ func setup(p_l_idx, p_x_idx, p_y_idx):
 	position = Vector2(x_idx, y_idx)*LayoutInfo.spacing
 
 func remove():
+	# print("removing cell")
 	emit_signal("removing", self)
+	# print("removing cell2")
 	queue_free()
 	
 func _enter_tree():
@@ -70,15 +75,19 @@ func _on_settings_render_mode_changed(mode):
 
 func _on_layout_mode_changed(mode):
 	if mode == "edit":
-		set_shader_param("grid_color", Settings.colors["surface"])
+		# set_shader_param("grid_color", Settings.colors["surface"])
+		set_shader_param("background", Color(0.0, 0.0, 0.0, 0.0))
 	if mode == "control":
-		set_shader_param("grid_color", Settings.colors["background"])
+		# set_shader_param("grid_color", Settings.colors["background"])
+		set_shader_param("background", Color(0.0, 0.0, 0.0, 0.0))
 
 func _on_settings_colors_changed():
-	set_shader_param("background", Settings.colors["background"])
+	# set_shader_param("background", Settings.colors["background"])
+	set_shader_param("background", Color(0.0, 0.0, 0.0, 0.0))
 	set_shader_param("background_drawing_highlight", Settings.colors["tertiary"].linear_interpolate(Settings.colors["background"], 0.8))
 	if LayoutInfo.layout_mode != "control":
-		set_shader_param("grid_color", Settings.colors["surface"])
+		# set_shader_param("grid_color", Settings.colors["surface"])
+		set_shader_param("grid_color", Color(0.0, 0.0, 0.0, 0.0))
 	set_shader_param("track_base", Settings.colors["white"])
 	set_shader_param("track_inner", Settings.colors["surface"])
 	set_shader_param("selected_color", Settings.colors["tertiary"])
@@ -140,7 +149,20 @@ func stop_hover():
 	
 	# if len(tracks) == 0:
 	# 	remove()
+	check_remove()
 
+func check_remove():
+	if len(tracks)>0:
+		return
+	if hover:
+		return
+	if drawing_highlight:
+		return
+	if self == LayoutInfo.drawing_last:
+		return
+	if self == LayoutInfo.drawing_last2:
+		return
+	remove()
 
 func process_mouse_button(event, pos):
 	var normalized_pos = pos/LayoutInfo.spacing
@@ -202,14 +224,10 @@ func get_slot_to_cell(cell):
 
 func get_neighbors():
 	var neighbors = []
-	if x_idx>0:
-		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx-1, y_idx))
-	if y_idx>0:
-		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx, y_idx-1))
-	if x_idx<len(LayoutInfo.cells[l_idx])-1:
-		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx+1, y_idx))
-	if y_idx<len(LayoutInfo.cells[l_idx][0])-1:
-		neighbors.append(LayoutInfo.get_cell(l_idx, x_idx, y_idx+1))
+	neighbors.append(LayoutInfo.get_cell(l_idx, x_idx-1, y_idx))
+	neighbors.append(LayoutInfo.get_cell(l_idx, x_idx, y_idx-1))
+	neighbors.append(LayoutInfo.get_cell(l_idx, x_idx+1, y_idx))
+	neighbors.append(LayoutInfo.get_cell(l_idx, x_idx, y_idx+1))
 	return neighbors
 
 func get_turn_track_from(slot, turn):
@@ -236,6 +254,7 @@ func add_track(track):
 	# update()
 	_on_track_connections_changed(track.get_orientation())
 	LayoutInfo.set_layout_changed(true)
+	emit_signal("tracks_changed")
 	return track
 
 func _on_track_removing(orientation):
@@ -246,6 +265,7 @@ func _on_track_removing(orientation):
 	tracks.erase(orientation)
 	if track == hover_obj:
 		set_hover_obj(null)
+	emit_signal("tracks_changed")
 
 	for to_slot in [track.slot0, track.slot1]:
 		var from_slot = track.get_opposite_slot(to_slot)
@@ -289,6 +309,8 @@ func set_hover(p_hover):
 func set_drawing_highlight(highlight):
 	drawing_highlight = highlight
 	update_state()
+	
+	check_remove()
 
 func update_state():
 	set_shader_param("cell_hover", hover)
@@ -334,5 +356,5 @@ func set_shader_param(key, value):
 	# $RenderCacheViewport.update_worlds()
 
 func _draw():
-	var spacing = LayoutInfo.spacing
-	draw_rect(Rect2(Vector2(0,0), Vector2(spacing, spacing)), Color.black)
+	# for debugging
+	draw_circle(Vector2(0.5,0.5)*LayoutInfo.spacing, LayoutInfo.spacing*0.1, Color.black)
