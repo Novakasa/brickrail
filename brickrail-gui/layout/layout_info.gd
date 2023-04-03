@@ -14,6 +14,7 @@ var BlockScene = preload("res://layout/block/layout_block.tscn")
 onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
 var active_layer = 0
+var layers_unfolded = false
 
 var spacing = 1024.0
 var track_stopper_length = 0.6
@@ -61,6 +62,7 @@ signal layers_changed()
 signal layer_added(l)
 signal layer_removed(l)
 signal active_layer_changed(l)
+signal layers_unfolded_changed(mode)
 signal cell_added(cell)
 signal trains_running(running)
 
@@ -69,26 +71,26 @@ func set_layout_changed(value):
 	# prints("layout changed", value)
 
 func get_cell(l, i, j):
-	if cells[l][i][j] != null:
-		return cells[l][i][j]
-	var cell = LayoutCell.instance()
-	cells[l][i][j] = cell
-	cell.setup(l, i, j)
-	cell.connect("removing", self, "_on_cell_removing")
-	emit_signal("cell_added", cell)
-	return cell
+	assert(l in cells)
+	if not i in cells[l]:
+		cells[l][i] = {}
+	if not j in cells[l][i]:
+		var cell = LayoutCell.instance()
+		cells[l][i][j] = cell
+		cell.setup(l, i, j)
+		cell.connect("removing", self, "_on_cell_removing")
+		emit_signal("cell_added", cell)
+
+	return cells[l][i][j]
 
 func _on_cell_removing(cell):
+	# print("layout info cell removing")
 	cell.disconnect("removing", self, "_on_cell_removing")
-	cells[cell.l_idx][cell.x_idx][cell.y_idx] = null
+	cells[cell.l_idx][cell.x_idx].erase(cell.y_idx)
 
 func add_layer(l):
 	assert(not l in cells)
-	cells[l] = []
-	for i in range(grid.nx):
-		cells[l].append([])
-		for _j in range(grid.ny):
-			cells[l][i].append(null)
+	cells[l] = {}
 	
 	set_layout_changed(true)
 	emit_signal("layer_added", l)
@@ -98,16 +100,16 @@ func add_layer(l):
 func remove_layer(l):
 	assert(l in cells)
 	
-	for row in cells[l]:
-		for cell in row:
-			if cell == null:
-				continue
+	for column in cells[l].values():
+		for cell in column.values():
 			for track in cell.tracks.values():
 				track.remove()
 			cell.remove()
 	if active_layer == l:
 		set_active_layer(null)
 	cells.erase(l)
+	prints("removed layer", l)
+	print(cells)
 	
 	set_layout_changed(true)
 	
@@ -115,22 +117,20 @@ func remove_layer(l):
 	emit_signal("layers_changed")
 
 func set_active_layer(l):
-	if active_layer != null:
-		grid.get_layer(active_layer).visible=false
 	active_layer = l
-	if active_layer != null:
-		grid.get_layer(active_layer).visible=true
 	emit_signal("active_layer_changed", l)
+
+func set_layers_unfolded(val):
+	layers_unfolded = val
+	emit_signal("layers_unfolded_changed", val)
 
 func serialize():
 	var result = {}
-	result["nx"] = len(cells[0])
-	result["ny"] = len(cells[0][0])
 	
 	var tracks = []
 	for layer in cells:
-		for row in cells[layer]:
-			for cell in row:
+		for column in cells[layer].values():
+			for cell in column.values():
 				if cell == null:
 					continue
 				for track in cell.tracks.values():
@@ -170,8 +170,8 @@ func load(struct):
 			l = int(track.l_idx)
 		if not l in cells:
 			add_layer(l)
-		var i = track.x_idx
-		var j = track.y_idx
+		var i = int(track.x_idx)
+		var j = int(track.y_idx)
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
 		var track_obj = get_cell(l, i, j).create_track(slot0, slot1)
@@ -181,8 +181,8 @@ func load(struct):
 		var l = 0
 		if "l_idx" in track:
 			l = int(track.l_idx)
-		var i = track.x_idx
-		var j = track.y_idx
+		var i = int(track.x_idx)
+		var j = int(track.y_idx)
 		var slot0 = track.connections.keys()[0]
 		var slot1 = track.connections.keys()[1]
 		var orientation = slot0 + slot1
@@ -243,8 +243,8 @@ func get_track_from_struct(struct):
 	var l = 0
 	if "l_idx" in struct:
 		l = int(struct.l_idx)
-	var i = struct.x_idx
-	var j = struct.y_idx
+	var i = int(struct.x_idx)
+	var j = int(struct.y_idx)
 	var orientation
 	if "orientation" in struct:
 		orientation = struct.orientation

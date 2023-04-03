@@ -351,9 +351,15 @@ margin_top = 395.0
 margin_right = 270.0
 margin_bottom = 689.0
 
-[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
+[node name="Label" type="Label" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
 margin_right = 270.0
 margin_bottom = 27.0
+text = "Layers"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
+margin_top = 31.0
+margin_right = 270.0
+margin_bottom = 58.0
 
 [node name="add_layer_button" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
 margin_right = 77.0
@@ -375,8 +381,14 @@ margin_right = 183.0
 margin_bottom = 27.0
 text = "remove layer"
 
+[node name="LayerUnfoldCheckbox" type="CheckButton" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
+margin_top = 62.0
+margin_right = 270.0
+margin_bottom = 89.0
+text = "unfolded layer view"
+
 [node name="LayerContainer" type="ItemList" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
-margin_top = 31.0
+margin_top = 93.0
 margin_right = 270.0
 margin_bottom = 294.0
 size_flags_vertical = 3
@@ -470,4 +482,5 @@ text = "clear"
 [connection signal="value_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/run/SpinBox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_SpinBox_value_changed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/add_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_add_layer_button_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer/remove_layer_button" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_remove_layer_button_pressed"]
+[connection signal="toggled" from="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/LayerUnfoldCheckbox" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayerUnfoldCheckbox_toggled"]
 [connection signal="pressed" from="VBoxContainer2/StatusGUI/Error/ClearErrorButton" to="VBoxContainer2/StatusGUI" method="_on_ClearErrorButton_pressed"]
