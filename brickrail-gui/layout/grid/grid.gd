@@ -52,7 +52,7 @@ func set_layer_positions():
 		layer.position = Vector2()
 		if LayoutInfo.layers_unfolded:
 			layer.position = layer_pos-layer.get_pos()
-		layer_pos.y += layer.get_size().y+LayoutInfo.spacing*2.0
+		layer_pos.y += layer.get_size().y+LayoutInfo.spacing
 
 func _on_cell_added(cell):
 	var layer = get_layer(cell.l_idx)
@@ -84,10 +84,26 @@ func process_input(event):
 func process_key_input(_event):
 	pass
 
+func get_input_layer(world_mouse):
+	if not LayoutInfo.layers_unfolded:
+		return LayoutInfo.active_layer
+	if LayoutInfo.drawing_track:
+		if LayoutInfo.drawing_last != null:
+			return LayoutInfo.drawing_last.l_idx
+		
+	for l_idx in LayoutInfo.cells.keys():
+		var layer = get_layer(l_idx)
+		if layer.has_point(world_mouse - layer.position):
+			return l_idx
+	
+	return LayoutInfo.active_layer
+
 func process_mouse_input(event):
 	var spacing = LayoutInfo.spacing
-	var layer_pos = get_layer(LayoutInfo.active_layer).position
-	var mpos = get_viewport_transform().affine_inverse()*event.position - layer_pos
+	var world_mouse = get_viewport_transform().affine_inverse()*event.position
+	var l = get_input_layer(world_mouse)
+	var mpos = world_mouse - get_layer(l).position
+
 	var i = int(mpos.x/spacing)
 	var j = int(mpos.y/spacing)
 	if mpos.x<0.0:
@@ -96,12 +112,11 @@ func process_mouse_input(event):
 		j -= 1
 	var mpos_cell = mpos-LayoutInfo.spacing*Vector2(i,j)
 	if event is InputEventMouseMotion:
-		process_mouse_motion(event, i, j, mpos_cell, mpos)
+		process_mouse_motion(event, l, i, j, mpos_cell, mpos)
 	if event is InputEventMouseButton:
-		process_mouse_button(event, i, j, mpos_cell, mpos)
+		process_mouse_button(event, l, i, j, mpos_cell, mpos)
 
-func process_mouse_motion(event, i, j, mpos_cell, mpos):
-	var l = LayoutInfo.active_layer
+func process_mouse_motion(event, l, i, j, mpos_cell, mpos):
 	if dragging_view:
 		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
 	
@@ -136,7 +151,7 @@ func stop_hover():
 	if hover_obj != null:
 		hover_obj.stop_hover()
 
-func process_mouse_button(event, i, j, mpos_cell, mpos):
+func process_mouse_button(event, l, i, j, mpos_cell, mpos):
 	if event.button_index == BUTTON_WHEEL_UP:
 		$Camera2D.position += event.position*0.05*$Camera2D.zoom
 		$Camera2D.zoom*=0.95
@@ -168,7 +183,6 @@ func process_mouse_button(event, i, j, mpos_cell, mpos):
 			if train.process_mouse_button(event, mpos):
 				return true
 	
-	var l = LayoutInfo.active_layer
 	LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell)
 	
 	# If we release the button outside of the grid, disable the hold modes.
