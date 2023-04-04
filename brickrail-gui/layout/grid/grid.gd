@@ -101,9 +101,9 @@ func get_input_layer(world_mouse):
 
 func process_mouse_input(event):
 	var spacing = LayoutInfo.spacing
-	var world_mouse = get_viewport_transform().affine_inverse()*event.position
-	var l = get_input_layer(world_mouse)
-	var mpos = world_mouse - get_layer(l).position
+	var mouse_world = get_viewport_transform().affine_inverse()*event.position
+	var l = get_input_layer(mouse_world)
+	var mpos = mouse_world - get_layer(l).position
 
 	var i = int(mpos.x/spacing)
 	var j = int(mpos.y/spacing)
@@ -113,16 +113,16 @@ func process_mouse_input(event):
 		j -= 1
 	var mpos_cell = mpos-LayoutInfo.spacing*Vector2(i,j)
 	if event is InputEventMouseMotion:
-		process_mouse_motion(event, l, i, j, mpos_cell, mpos)
+		process_mouse_motion(event, l, i, j, mpos_cell, mpos, mouse_world)
 	if event is InputEventMouseButton:
-		process_mouse_button(event, l, i, j, mpos_cell, mpos)
+		process_mouse_button(event, l, i, j, mpos_cell, mpos, mouse_world)
 
-func process_mouse_motion(event, l, i, j, mpos_cell, mpos):
+func process_mouse_motion(event, l, i, j, mpos_cell, mpos, mouse_world):
 	if dragging_view:
 		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
 	
 	for train in LayoutInfo.trains.values():
-		if train.has_point(mpos):
+		if train.has_point(mouse_world):
 			if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
 				continue
 			if train != hover_obj:
@@ -153,7 +153,7 @@ func stop_hover():
 	if hover_obj != null:
 		hover_obj.stop_hover()
 
-func process_mouse_button(event, l, i, j, mpos_cell, mpos):
+func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 	if event.button_index == BUTTON_WHEEL_UP:
 		$Camera2D.position += event.position*0.05*$Camera2D.zoom
 		$Camera2D.zoom*=0.95
@@ -183,8 +183,8 @@ func process_mouse_button(event, l, i, j, mpos_cell, mpos):
 	for train in LayoutInfo.trains.values():
 		if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
 			continue
-		if train.has_point(mpos):
-			if train.process_mouse_button(event, mpos):
+		if train.has_point(mouse_world):
+			if train.process_mouse_button(event, mouse_world):
 				return true
 	
 	LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell)

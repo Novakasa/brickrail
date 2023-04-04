@@ -37,7 +37,6 @@ func _init(p_name):
 	_err = LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
 	_err = LayoutInfo.connect("active_layer_changed",self, "_on_layer_info_changed")
 	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layer_info_changed")
-	_err = LayoutInfo.connect("layer_positions_changed", self, "_on_layer_info_changed")
 	blocked_by = null
 	update_layer_visibility()
 
@@ -59,7 +58,6 @@ func _on_virtual_train_switched_layer(p_l_idx):
 func update_layer_visibility():
 	
 	var l_idx = virtual_train.l_idx
-	position = LayoutInfo.grid.get_layer(l_idx).position
 	
 	if l_idx != LayoutInfo.active_layer and not LayoutInfo.layers_unfolded:
 		modulate = Color(1.0, 1.0, 1.0, 0.3)
