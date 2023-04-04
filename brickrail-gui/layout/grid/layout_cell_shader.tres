@@ -225,6 +225,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		return scene;
 	}
 	if (track_type == TRACK_BLOCK_PLUS) {
+		scene = 20.0;
 		float size = (block_width-track_width)*0.5;
 		float swidth = 0.3*size;
 		for (int s=-1; s<3; s+=2) {
@@ -238,6 +239,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		return scene;
 	}
 	if (track_type == TRACK_BLOCK_MINUS) {
+		scene = 20.0;
 		float size = (block_width-track_width)*0.5;
 		float swidth = 0.3*size;
 		for (int s=-1; s<3; s+=2) {
@@ -358,7 +360,7 @@ float tracks(vec2 position, int turn_type, int track_type, out int state, out fl
 				float temp_t;
 				connection = track_connection(position, from_slot, to_slot2, turn, track_type, temp_t);
 				int temp_state = turn_state[flag];
-				if (connection<0.0) {
+				if (connection<0.002) {
 					state |= temp_state;
 					t = temp_t;
 				}
@@ -448,29 +450,29 @@ void fragment() {
 	if ((block_state & STATE_BLOCK_PLUS) == STATE_BLOCK_PLUS) {
 		int dummy_state;
 		float plus = tracks(position, STATE_BLOCK_PLUS, TRACK_BLOCK_PLUS, dummy_state, dummy_t);
-		mix_sdf(plus, color_mix, track_inner);
+		mix_sdf(intersect(plus, block), color_mix, track_inner);
 	}
 		if ((block_state & STATE_BLOCK_MINUS) == STATE_BLOCK_MINUS) {
 		int dummy_state;
 		float plus = tracks(position, STATE_BLOCK_MINUS, TRACK_BLOCK_MINUS, dummy_state, dummy_t);
-		mix_sdf(plus, color_mix, track_inner);
+		mix_sdf(intersect(plus, block), color_mix, track_inner);
 	}
 	
 	int track_state;
 	int track_state_stopper;
 	float track_t;
-	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state, track_t);
-	float stopper = tracks(position, STATE_STOPPER, TRACK_STOPPER, track_state_stopper, dummy_t);
-	float portal = tracks(position, STATE_PORTAL, TRACK_PORTAL, track_state_stopper, dummy_t);
+	float base = tracks(position, STATE_CONNECTED, TRACK_FULL, track_state, track_t) + 0.002;
+	float stopper = tracks(position, STATE_STOPPER, TRACK_STOPPER, track_state_stopper, dummy_t) + 0.002;
+	float portal = tracks(position, STATE_PORTAL, TRACK_PORTAL, track_state_stopper, dummy_t) + 0.002;
 	int state = track_state;
 	base = merge(base, stopper);
 	float t = mix_sdf(merge(base, portal), color_mix, get_border_color(state));
 	
 	int state_dummy;
-	if (t > 0.0) {
+	if (base < 0.005) {
 	
 		float inner = base + track_width - inner_track_width;
-		mix_sdf(inner, color_mix, get_inner_color(state)*((track_t+1.0)*0.5));
+		mix_sdf(inner, color_mix, get_inner_color(state));
 		
 		if ((state & STATE_ARROW) == STATE_ARROW) {
 			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, state_dummy, dummy_t);
