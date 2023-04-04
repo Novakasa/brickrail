@@ -52,7 +52,7 @@ func set_layer_positions():
 		layer.position = Vector2()
 		if LayoutInfo.layers_unfolded:
 			layer.position = layer_pos-layer.get_pos()
-		layer_pos.y += layer.get_size().y+LayoutInfo.spacing
+		layer_pos.y += layer.get_size().y+LayoutInfo.spacing*0.5
 	LayoutInfo.emit_signal("layer_positions_changed")
 
 func _on_cell_added(cell):
@@ -97,13 +97,15 @@ func get_input_layer(world_mouse):
 		if layer.has_point(world_mouse - layer.position):
 			return l_idx
 	
-	return LayoutInfo.active_layer
+	return null
 
 func process_mouse_input(event):
 	var spacing = LayoutInfo.spacing
 	var mouse_world = get_viewport_transform().affine_inverse()*event.position
 	var l = get_input_layer(mouse_world)
-	var mpos = mouse_world - get_layer(l).position
+	var mpos = mouse_world
+	if l != null:
+		mpos -= get_layer(l).position
 
 	var i = int(mpos.x/spacing)
 	var j = int(mpos.y/spacing)
@@ -120,6 +122,9 @@ func process_mouse_input(event):
 func process_mouse_motion(event, l, i, j, mpos_cell, mpos, mouse_world):
 	if dragging_view:
 		$Camera2D.position = $Camera2D.zoom*(dragging_view_reference-event.position) + dragging_view_camera_reference
+	if l == null:
+		set_hover_obj(null)
+		return
 	
 	for train in LayoutInfo.trains.values():
 		if train.has_point(mouse_world):
@@ -179,6 +184,9 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 			if LayoutInfo.drag_train:
 				LayoutInfo.flip_drag_train_facing()
 				return
+	
+	if l==null:
+		return
 	
 	for train in LayoutInfo.trains.values():
 		if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
