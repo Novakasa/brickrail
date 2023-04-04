@@ -236,16 +236,7 @@ func interpolate_world(pos, turns = []):
 	var length = get_length_to(turn)
 	if pos > length:
 		return connections[turn].interpolate_world(pos-length, turns.slice(1, 10))
-	var interpolation = interpolate(pos, turn)
-	interpolation["position"] = to_world(interpolation.position)
-	return interpolation
-
-func interpolate(pos, turn=null):
-	if turn == null:
-		var position = 0.5*(prev_pos+next_pos) + pos*get_tangent().normalized()
-		var rotation = get_rotation()
-		return {"position": position, "rotation": rotation}
-	return interpolate_turn_connection(turn, pos)
+	return interpolate_turn_connection_world(turn, pos)
 
 func to_world(vec):
 	var layer_pos = LayoutInfo.grid.get_layer(l_idx).position
@@ -408,6 +399,12 @@ func get_connection_length(turn=null):
 		turn = get_next_turn()
 	return interpolation_params[turn].connection_length
 
+func interpolate_connection_world(turn, t, normalized=false):
+	var result = interpolate_connection(turn, t, normalized)
+	result.position *= LayoutInfo.spacing
+	result.position += LayoutInfo.grid.get_layer(l_idx).position + LayoutInfo.spacing*(Vector2(x_idx, y_idx))
+	return result
+
 func interpolate_connection(turn, t, normalized=false):
 	var params = interpolation_params[turn]
 	var x = t
@@ -434,7 +431,12 @@ func interpolate_connection(turn, t, normalized=false):
 	result["rotation"] = angle+0.5*PI*sign(params.angle)
 	return result
 
-func interpolate_turn_connection(turn, t, normalized=false):
+func interpolate_turn_connection_world(turn, t, normalized=false):
+	if turn == null:
+		var position = 0.5*(prev_pos+next_pos) + t*get_tangent().normalized()
+		var rotation = get_rotation()
+		return {"position": position, "rotation": rotation}
+	
 	var reverse_dirtrack = connections[turn].get_opposite()
 	var reverse_turn = reverse_dirtrack.get_turn_to(get_opposite())
 	var this_length = get_connection_length(turn)
@@ -445,18 +447,10 @@ func interpolate_turn_connection(turn, t, normalized=false):
 		x = t*total_length
 	# printt(total_length, this_length, reverse_length, x)
 	if x<this_length:
-		return interpolate_connection(turn, x, false)
-	var result = reverse_dirtrack.interpolate_connection(reverse_turn, total_length-x, false)
-	result["position"] += Vector2(reverse_dirtrack.x_idx-x_idx, reverse_dirtrack.y_idx-y_idx)
+		return interpolate_connection_world(turn, x, false)
+	var result = reverse_dirtrack.interpolate_connection_world(reverse_turn, total_length-x, false)
 	result["rotation"] += PI
 	return result
-
-func interpolate_position_linear(t):
-	if t>=1.0:
-		return next_pos
-	if t<=0.0:
-		return prev_pos
-	return prev_pos + (next_pos-prev_pos)*t
 
 func set_hover(_pos):
 	hover=true
