@@ -83,10 +83,12 @@ func connect_and_run_all_coroutine():
 		if not hub.connected:
 			var result = yield(hub.connect_coroutine(), "completed")
 			if result == "error":
-				push_error("connection error!")
-				return
+				return "error"
 		if not hub.running:
-			yield(hub.run_program_coroutine(), "completed")
+			var result = yield(hub.run_program_coroutine(), "completed")
+			if result == "error":
+				return "error"
+	return "success"
 
 func disconnect_all_coroutine():
 	yield(Devices.get_tree(), "idle_frame")

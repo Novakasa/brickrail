@@ -97,7 +97,7 @@ class BLEHub:
                         print("[IOHub]", line)
                         self.output_buffer = bytearray()
                         self.msg_len = None
-                        if "Error" in line:
+                        if "ERROR" in line.upper() or "EXCEPTION" in line.upper():
                             self.to_out_queue("program_error", line)
                         return
 

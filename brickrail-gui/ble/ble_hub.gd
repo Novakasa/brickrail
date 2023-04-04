@@ -40,6 +40,7 @@ func _on_data_received(key, data):
 	if key == "connected":
 		connected=true
 		busy=false
+		GuiApi.status_ready()
 		emit_signal("connected")
 		emit_signal("state_changed")
 		return
@@ -47,12 +48,15 @@ func _on_data_received(key, data):
 		connected=false
 		busy=false
 		set_responsiveness(false)
+		GuiApi.status_ready()
 		emit_signal("disconnected")
 		emit_signal("state_changed")
 		return
 	if key == "connect_error":
 		connected=false
 		busy=false
+		GuiApi.show_error("Connection error!")
+		GuiApi.status_ready()
 		emit_signal("connect_error")
 		emit_signal("state_changed")
 		return
@@ -60,6 +64,7 @@ func _on_data_received(key, data):
 		running=true
 		busy=false
 		set_responsiveness(true)
+		GuiApi.status_ready()
 		emit_signal("program_started")
 		emit_signal("state_changed")
 		return
@@ -67,16 +72,14 @@ func _on_data_received(key, data):
 		running=false
 		busy=false
 		set_responsiveness(false)
+		GuiApi.status_ready()
 		emit_signal("program_stopped")
 		emit_signal("state_changed")
 		return
 	if key == "program_error":
-		running=false
-		busy=false
-		set_responsiveness(false)
-		emit_signal("program_error")
-		emit_signal("state_changed")
-		GuiApi.show_error("Program Error:" + data)
+		GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
+		GuiApi.status_ready()
+		emit_signal("program_error", data)
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", data)
@@ -90,12 +93,14 @@ func send_command(command, args, return_id=null):
 
 func connect_hub():
 	assert(not connected)
+	GuiApi.status_process("Connecting hub "+name+"...")
 	send_command("connect", [])
 	busy=true
 	emit_signal("state_changed")
 
 func disconnect_hub():
 	assert(connected)
+	GuiApi.status_process("Disconnecting hub "+name+"...")
 	send_command("disconnect", [])
 	busy=true
 	emit_signal("state_changed")
@@ -104,10 +109,12 @@ func run_program():
 	assert(connected and not running)
 	send_command("run", [])
 	busy=true
+	GuiApi.status_process("Hub "+name+" starting program...")
 	emit_signal("state_changed")
 
 func stop_program():
 	assert(connected and running)
+	GuiApi.status_process("Hub "+name+" stopping program...")
 	send_command("stop_program", [])
 	set_responsiveness(false)
 	busy=true
@@ -131,31 +138,23 @@ func safe_remove_coroutine():
 	remove()
 
 func connect_coroutine():
-	GuiApi.status_process("Connecting hub "+name+"...")
 	connect_hub()
 	var first_signal = yield(Await.first_signal(self, ["connected", "connect_error"]), "completed")
 	if first_signal == "connect_error":
-		GuiApi.show_error("Connection error!")
-		GuiApi.status_ready()
 		return "error"
-	GuiApi.status_ready()
 	return "success"
 
 func disconnect_coroutine():
-	GuiApi.status_process("Disconnecting hub "+name+"...")
 	disconnect_hub()
 	yield(self, "disconnected")
-	GuiApi.status_ready()
 
 func run_program_coroutine():
-	GuiApi.status_process("Hub "+name+" starting program...")
 	run_program()
-	yield(self, "program_started")
-	GuiApi.status_ready()
+	var first_signal = yield(Await.first_signal(self, ["program_started", "program_error"]), "completed")
+	if first_signal == "program_error":
+		return "error"
+	return "success"
 
 func stop_program_coroutine():
-	GuiApi.status_process("Hub "+name+" stopping program...")
 	stop_program()
 	yield(self, "program_stopped")
-	GuiApi.status_ready()
-

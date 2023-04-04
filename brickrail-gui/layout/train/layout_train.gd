@@ -101,7 +101,8 @@ func _on_ble_train_removing(_name):
 	set_ble_train(null)
 
 func _on_ble_train_sensor_advance(_colorname):
-	virtual_train.manual_sensor_advance()
+	if LayoutInfo.control_devices:
+		virtual_train.manual_sensor_advance()
 
 func _on_ble_train_unexpected_marker(_colorname):
 	Logger.verbose("ble_train unexpected marker triggered", logging_module)

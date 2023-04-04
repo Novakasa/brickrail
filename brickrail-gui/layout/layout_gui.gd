@@ -187,8 +187,8 @@ func _on_control_devices_toggled(button_pressed):
 		LayoutInfo.set_random_targets(false)
 		$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.disabled = true
 		$LayoutSplit/LayoutModeTabs/run/AutoTarget.disabled = true
-		yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
-		if Devices.get_ble_controller().are_hubs_ready():
+		var result = yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
+		if Devices.get_ble_controller().are_hubs_ready() and result=="success":
 			LayoutInfo.set_control_devices(true)
 		$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.disabled = false
 		LayoutInfo.control_enabled = true
