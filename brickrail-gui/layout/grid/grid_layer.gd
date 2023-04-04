@@ -40,7 +40,7 @@ func _on_cell_tracks_changed(cell):
 
 func get_size():
 	if bounds == null:
-		return Vector2(1.0, 1.0)*LayoutInfo.spacing
+		return Vector2(5.0, 5.0)*LayoutInfo.spacing
 	return bounds.size
 
 func get_pos():
@@ -50,7 +50,7 @@ func get_pos():
 
 func has_point(point):
 	if bounds == null:
-		return false
+		return Rect2(get_pos(), get_size()).grow(LayoutInfo.spacing*0.5).has_point(point)
 	return bounds.grow(LayoutInfo.spacing*0.5).has_point(point)
 
 func _draw():
