@@ -248,7 +248,8 @@ func interpolate(pos, turn=null):
 	return interpolate_turn_connection(turn, pos)
 
 func to_world(vec):
-	return LayoutInfo.spacing*(Vector2(x_idx, y_idx)+vec)
+	var layer_pos = LayoutInfo.grid.get_layer(l_idx).position
+	return layer_pos + LayoutInfo.spacing*(Vector2(x_idx, y_idx)+vec)
 
 func get_next_tracks():
 	return connections.values()

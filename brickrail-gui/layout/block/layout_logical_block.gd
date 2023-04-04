@@ -151,8 +151,6 @@ func set_drag_virtual_train():
 	var spawn_track = get_train_spawn_dirtrack(LayoutInfo.drag_virtual_train.facing)
 	var vtrain = LayoutInfo.drag_virtual_train
 	vtrain.set_dirtrack(spawn_track)
-	vtrain.get_parent().remove_child(vtrain)
-	LayoutInfo.grid.get_layer(vtrain.l_idx).add_child(vtrain)
 	vtrain.update_wagon_position()
 	vtrain.visible=true
 	LayoutInfo.drag_layout_block = self
