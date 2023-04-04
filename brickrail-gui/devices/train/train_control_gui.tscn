@@ -6,7 +6,7 @@
 [node name="TrainControlGui" type="Panel"]
 anchor_bottom = 1.0
 margin_bottom = -650.0
-rect_min_size = Vector2( 0, 90 )
+rect_min_size = Vector2( 0, 120 )
 size_flags_horizontal = 3
 script = ExtResource( 3 )
 train_label = NodePath("VBoxContainer/HBoxContainer2/Label")
