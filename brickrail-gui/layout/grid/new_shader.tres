@@ -244,11 +244,13 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		vec2 end_pos = from_pos+tangent*(stopper_delta+stopper_width);
 		float round_straight = segment(position, from_pos+tangent*0.5, end_pos - normalize(tangent)*track_width) - width;
 		scene = min(scene, round_straight);
-		// float endcap = circle(position-from_pos-tangent*0.5, width);
-		// scene = merge(scene, endcap);
+		vec2 stopper_pos = from_pos+tangent*stopper_delta;
+		float stopper = segment(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size) -stopper_width;
+		scene = min(scene, stopper);
+		return scene;
 	}
 	else if (abs(curve_index)==2) {
-		radius = 0.25*sqrt(2.0);
+		radius = 0.35355339059; // 0.25*sqrt(2.0);
 		center = from_pos + aligned*0.5;
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
 		scene = min(scene, connection);
@@ -263,15 +265,15 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		t = pos_angle/delta_angle;
 	}
 	else if (abs(curve_index)==1) {
-		radius = 0.5+sqrt(2.0)*0.25;
+		radius = 0.85355339059; //0.5 + 0.25*sqrt(2.0)
 		float arclen = radius*delta_angle;
 		float center_angle = this_angle + 0.5*PI*float(sign(curve_index));
-		float straight_length = (0.5 - 0.25*sqrt(2.0));
+		float straight_length = 0.1464466094; //(0.5 - 0.25*sqrt(2.0));
 		float start_t = 0.0;
 		center = from_pos + tangent*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
 		if (dot(tangent,aligned) > 0.99) {
-			center += tangent*0.25*(2.0-sqrt(2.0));
-			float straight = segment(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0))) - width;
+			center += tangent*0.1464466094; //*0.25*(2.0-sqrt(2.0));
+			float straight = segment(position, from_pos+tangent*0.5, to_pos-tangent*0.35355339059) - width; //*0.25*sqrt(2.0)
 			scene = min(scene, straight);
 			t = dot(position-from_pos-tangent*0.5, tangent);
 			start_t = straight_length;
@@ -296,8 +298,6 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		float straight = segment(position, from_pos+tangent*0.5, to_pos+tangent) - width;
 		scene = min(scene, straight);
 		t = dot(position-(from_pos+tangent*0.5), tangent)/pow(length(tangent),2.0);
-		// float endcap = circle(position-from_pos-tangent*0.5, width);
-		// scene = merge(scene, endcap);
 	}
 	t = max(t, 0.0);
 	
@@ -313,7 +313,7 @@ vec4 cell_composite(vec2 position) {
 		color_mix = grid_color;
 	}
 	
-	float sd_base;
+	float sd_base = 1.0;
 	float sd_block;
 	float sd_block_decor;
 	float sd_arrows;
@@ -340,13 +340,18 @@ vec4 cell_composite(vec2 position) {
 			float width = track_width;
 			for (int flag=0; flag<4; flag++) {
 				int turn = flag-1;
-				float track_t;
-				sd_base = min(sd_base, track_connection(position, from_slot, to_slot, turn, track_t));
 				int state = turn_state[flag];
+				
+				float track_t;
+				if ((state & STATE_CONNECTED) > 0) {
+					sd_base = min(sd_base, track_connection(position, from_slot, to_slot, turn, track_t));
+				}
 			}
 		}
 	}
 	mix_sdf(sd_base, color_mix, get_border_color(0));
+	float inner = sd_base + track_width - inner_track_width;
+	mix_sdf(inner, color_mix, get_inner_color(0));
 	return color_mix;
 }
 
