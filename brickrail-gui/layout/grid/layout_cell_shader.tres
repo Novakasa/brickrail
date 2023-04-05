@@ -13,13 +13,8 @@ uniform vec4 occupied_color: hint_color;
 uniform vec4 mark_color: hint_color;
 uniform vec4 switch_color: hint_color;
 uniform vec4 grid_color: hint_color;
-uniform vec4 switch_inner_color: hint_color;
 uniform vec4 selected_color: hint_color;
-uniform vec4 hover_color: hint_color;
 uniform vec4 block_color: hint_color;
-uniform vec4 block_color_hover: hint_color;
-uniform vec4 block_color_selected: hint_color;
-uniform vec4 track_border_block: hint_color;
 
 uniform bool cell_hover;
 uniform bool cell_drawing_highlight;
@@ -88,10 +83,6 @@ float rectangle(vec2 position, vec2 size) {
 	// return component_distance.x;
 }
 
-vec2 translate(vec2 position, vec2 offset) {
-	return position - offset;
-}
-
 vec2 rotate(vec2 position, float rotation) {
     float angle = rotation;
     float sine = sin(angle);
@@ -104,7 +95,7 @@ float ndot(vec2 a, vec2 b) {
 }
 
 float rhombus(vec2 position, vec2 origin, float angle, vec2 b) {
-	vec2 p = translate(position, origin);
+	vec2 p = position - origin;
 	
 	p = rotate(p, angle);
 
@@ -114,14 +105,6 @@ float rhombus(vec2 position, vec2 origin, float angle, vec2 b) {
     d *= sign( q.x*b.y + q.y*b.x - b.x*b.y );
     
 	return d;
-}
-
-float pie(vec2 position, vec2 aperture, float radius)
-{
-    position.x = abs(position.x);
-    float l = length(position) - radius;
-	float m = length(position - aperture*clamp(dot(position,aperture),0.0,radius) );
-    return max(l,m*sign(aperture.y*position.x-aperture.x*position.y));
 }
 
 float arc( vec2 p, float aperture, float orientation, float ra, float rb )
@@ -137,24 +120,7 @@ float arc( vec2 p, float aperture, float orientation, float ra, float rb )
 float track_arc( vec2 position, vec2 center, float radius, float start_angle, float delta_angle, float width) {
 	float aperture = abs(delta_angle*0.5);
 	float orientation = (-start_angle - delta_angle*0.5) + PI;
-	position = translate(position, center);
-	return arc(position, aperture, orientation, radius, width);
-}
-
-float merge(float shape1, float shape2) {
-	return min(shape1, shape2);
-}
-
-float intersect(float shape1, float shape2) {
-	return max(shape1, shape2);
-}
-
-float substract(float shape1, float shape2) {
-	return intersect(shape1, -shape2);
-}
-
-float interpolate(float shape1, float shape2, float t) {
-	return mix(shape1, shape2, t);
+	return arc(position - center, aperture, orientation, radius, width);
 }
 
 float segment( vec2 p, vec2 a, vec2 b )
@@ -164,14 +130,10 @@ float segment( vec2 p, vec2 a, vec2 b )
     return length( pa - ba*h );
 }
 
-float line( vec2 position, vec2 from, vec2 to, float width) {
-	return segment(position, from, to) - width;
-}
-
 float line_rect(vec2 position, vec2 from, vec2 to, float width) {
 	vec2 delta = to-from;
 	vec2 rect_pos = position;
-	rect_pos = translate(rect_pos, 0.5*(from+to));
+	rect_pos = rect_pos - 0.5*(from+to);
 	float angle = atan(delta.y, delta.x);
 	rect_pos = rotate(rect_pos, angle);
 	float rect = rectangle(rect_pos,vec2(length(delta)*0.5, width));
@@ -218,9 +180,9 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*arrowdims);
 		float rhomb2 = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*vec2(0.3,1.0)*arrowdims);
 		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
-		scene = substract(rhomb, rhomb2);
+		scene = max(rhomb, -rhomb2);
 		//scene = rhomb;
-		scene = substract(scene, mask);
+		scene = max(scene, -mask);
 		return scene;
 	}
 	if (track_type == TRACK_BLOCK_PLUS) {
@@ -230,8 +192,8 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 			vec2 sign_pos = 0.5*(from_pos+to_pos) + float(s)*normal*(track_width + 0.5*(block_width-track_width));
 			float hbar = line_rect(position, sign_pos-size*normalize(tangent), sign_pos+size*normalize(tangent), swidth);
 			float vbar = line_rect(position, sign_pos-size*normal, sign_pos+size*normal, swidth);
-			scene = merge(scene, hbar);
-			scene = merge(scene, vbar);
+			scene = hbar;
+			scene = min(scene, vbar);
 		}
 		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
 		return scene;
@@ -242,7 +204,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		for (int s=-1; s<3; s+=2) {
 			vec2 sign_pos = 0.5*(from_pos+to_pos) + float(s)*normal*(track_width + 0.5*(block_width-track_width));
 			float hbar = line_rect(position, sign_pos-size*normalize(tangent), sign_pos+size*normalize(tangent), swidth);
-			scene = merge(scene, hbar);
+			scene = hbar;
 		}
 		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
 		return scene;
@@ -250,26 +212,26 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	if (turn_index == 2) {
 		if (track_type == TRACK_FULL) {
 			vec2 end_pos = from_pos+tangent*(stopper_delta+stopper_width);
-			float round_straight = line(position, from_pos+tangent*0.5, end_pos - normalize(tangent)*track_width, width);
-			scene = merge(scene, round_straight);
+			float round_straight = segment(position, from_pos+tangent*0.5, end_pos - normalize(tangent)*track_width) - width;
+			scene = min(scene, round_straight);
 			// float endcap = circle(position-from_pos-tangent*0.5, width);
 			// scene = merge(scene, endcap);
 		}
 		if (track_type == TRACK_STOPPER) {
 			vec2 stopper_pos = from_pos+tangent*stopper_delta;
-			float stopper = line(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size, stopper_width);
-			scene = merge(scene, stopper);
+			float stopper = segment(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size) - stopper_width;
+			scene = min(scene, stopper);
 			return scene;
 		}
 		if (track_type == TRACK_PORTAL) {
 			vec2 stopper_pos = from_pos+tangent*stopper_delta;
-			float stopper = line(position, stopper_pos-track_width*tangent*0.5, stopper_pos-track_width*tangent*0.5, track_width*1.5);
-			scene = merge(scene, stopper);
+			float stopper = segment(position, stopper_pos-track_width*tangent*0.5, stopper_pos-track_width*tangent*0.5) - track_width*1.5;
+			scene = min(scene, stopper);
 			return scene;
 		}
 		if (track_type == TRACK_BLOCK) {
 			float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, vec2(block_width-0.2))-0.2;
-			scene = merge(scene, rhomb);
+			scene = min(scene, rhomb);
 			return scene;
 		}
 	}
@@ -277,7 +239,7 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		radius = 0.25*sqrt(2.0);
 		center = from_pos + aligned*0.5;
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
-		scene = merge(scene, connection);
+		scene = min(scene, connection);
 	}
 	else if (abs(curve_index)==1) {
 		radius = 0.5+sqrt(2.0)*0.25;
@@ -285,15 +247,15 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		center = from_pos + tangent*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
 		if (dot(tangent,aligned) > 0.99) {
 			center += tangent*0.25*(2.0-sqrt(2.0));
-			float straight = line(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0)),width);
-			scene = merge(scene, straight);
+			float straight = segment(position, from_pos+tangent*0.5, to_pos-tangent*(0.25*sqrt(2.0))) - width;
+			scene = min(scene, straight);
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
-		scene = merge(scene, connection);
+		scene = min(scene, connection);
 	}
 	else if (curve_index == 0) {
-		float straight = line(position, from_pos+tangent*0.5, to_pos+tangent, width);
-		scene = merge(scene, straight);
+		float straight = segment(position, from_pos+tangent*0.5, to_pos+tangent) - width;
+		scene = min(scene, straight);
 		// float endcap = circle(position-from_pos-tangent*0.5, width);
 		// scene = merge(scene, endcap);
 	}
@@ -301,19 +263,19 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	if (track_type == TRACK_BORDER) {
 		float inner = scene - inner_track_width;
 		float outer = scene - track_width;
-		scene = substract(outer, inner);
+		scene = max(outer, -inner);
 		float center_substract = line_rect(position, from_pos+tangent*0.5,from_pos, track_width);
 		if (abs(tangent.x) < 0.0005 || abs(tangent.y) < 0.0005) {
 			center_substract = line_rect(position, from_pos+tangent*(0.5+track_width),from_pos, track_width*1.05);
 		}
-		scene = substract(scene, center_substract);
+		scene = max(scene, -center_substract);
 	}
 	if (track_type == TRACK_BLOCK) {
 		scene = scene - block_width;
 		float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos),1.0);
-		scene = substract(scene, mask);
+		scene = max(scene, -mask);
 		float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, vec2(block_width-0.2))-0.2;
-		scene = merge(scene, rhomb);
+		scene = min(scene, rhomb);
 	}
 	
 	return scene;
@@ -355,11 +317,11 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 				}
 				connection = track_connection(position, from_slot, to_slot2, turn, track_type);
 				int temp_state = turn_state[flag];
-				if (connection<0.0) {
+				if (connection<0.002) {
 					state |= temp_state;
 				}
 				if ((turn_state[flag] & turn_type) == turn_type) {
-					scene = merge(scene, connection);
+					scene = min(scene, connection);
 				}
 			}
 	
@@ -416,7 +378,14 @@ vec4 get_arrow_color(int state) {
 
 float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
 	float sdf_change = fwidth(sdf)*0.5;
+	if (abs(sdf_change)>.1) {
+		sdf_change = 0.0;
+	}
 	float t = smoothstep(sdf_change, -sdf_change, sdf);
+	// t = 0.0;
+	// if (sdf<0.0) {
+	// 	t = 1.0;
+	// }
 	base_color = mix(base_color, color_sdf, t);
 	return t;
 }
@@ -437,18 +406,20 @@ void fragment() {
 	}
 	
 	int block_state;
-	float block = tracks(position, STATE_BLOCK, TRACK_BLOCK, block_state)+0.002; // add constant for antialiasing state issues. could also fix this with a border
-	mix_sdf(block, color_mix, get_block_color(block_state));
+	float t;
+	float temp_sdf = 1.0;
+	float block = tracks(position, STATE_BLOCK, TRACK_BLOCK, block_state); // add constant for antialiasing state issues. could also fix this with a border
+	t = mix_sdf(block, color_mix, get_block_color(block_state));
 	
-	if ((block_state & STATE_BLOCK_PLUS) == STATE_BLOCK_PLUS) {
+	if ((block_state & STATE_BLOCK_PLUS) == STATE_BLOCK_PLUS && t>0.0) {
 		int dummy_state;
-		float plus = tracks(position, STATE_BLOCK_PLUS, TRACK_BLOCK_PLUS, dummy_state);
-		mix_sdf(plus, color_mix, track_inner);
+		temp_sdf = tracks(position, STATE_BLOCK_PLUS, TRACK_BLOCK_PLUS, dummy_state);
+		mix_sdf(temp_sdf, color_mix, track_inner);
 	}
-		if ((block_state & STATE_BLOCK_MINUS) == STATE_BLOCK_MINUS) {
+	if ((block_state & STATE_BLOCK_MINUS) == STATE_BLOCK_MINUS && t>0.0) {
 		int dummy_state;
-		float plus = tracks(position, STATE_BLOCK_MINUS, TRACK_BLOCK_MINUS, dummy_state);
-		mix_sdf(plus, color_mix, track_inner);
+		temp_sdf = tracks(position, STATE_BLOCK_MINUS, TRACK_BLOCK_MINUS, dummy_state);
+		mix_sdf(temp_sdf, color_mix, track_inner);
 	}
 	
 	int track_state;
@@ -457,24 +428,24 @@ void fragment() {
 	float stopper = tracks(position, STATE_STOPPER, TRACK_STOPPER, track_state_stopper);
 	float portal = tracks(position, STATE_PORTAL, TRACK_PORTAL, track_state_stopper);
 	int state = track_state;
-	base = merge(base, stopper);
-	float t = mix_sdf(merge(base, portal), color_mix, get_border_color(state));
+	base = min(base, stopper);
+	t = mix_sdf(min(base, portal), color_mix, get_border_color(state));
 	
 	int state_dummy;
 	if (t > 0.0) {
 	
 		float inner = base + track_width - inner_track_width;
-		mix_sdf(inner, color_mix, get_inner_color(state));
+		 mix_sdf(inner, color_mix, get_inner_color(state));
 		
 		if ((state & STATE_ARROW) == STATE_ARROW) {
-			float arrow = tracks(position, STATE_ARROW, TRACK_ARROW, state_dummy);
-			mix_sdf(arrow, color_mix, get_arrow_color(state));
+			temp_sdf = tracks(position, STATE_ARROW, TRACK_ARROW, state_dummy);
+			mix_sdf(temp_sdf, color_mix, get_arrow_color(state));
 		}
 		
-		if (has_switch && t > 0.0) {
+		if (has_switch) {
 			float turn_outer = tracks(position, STATE_SWITCH, TRACK_BORDER, state_dummy);
 			
-			float switch_outer = intersect(turn_outer, inner);
+			float switch_outer = max(turn_outer, inner);
 			float switch_base = tracks(position, STATE_SWITCH_PRIORITY, TRACK_LINE, state_dummy);
 			
 			float arrow_cap = clamp(20.0*(border_dist-0.02), -1.0, 1.0);
@@ -489,9 +460,9 @@ void fragment() {
 	}
 	COLOR = color_mix;
 	
-	if (contours) {
+	if (false) {
 		COLOR = vec4(1);
-		float dist = base;
+		float dist = temp_sdf;
 		vec3 col = vec3(1.0) - sign(dist)*vec3(0.1,0.4,0.7);
 		col *= 1.0 - exp(-2.0*abs(dist));
 		col *= 0.8 + 0.2*cos(128.0*abs(dist));
@@ -506,19 +477,14 @@ shader_param/background = Color( 0.105882, 0.109804, 0.121569, 1 )
 shader_param/background_hover = Color( 0.109804, 0.188235, 0.262745, 1 )
 shader_param/background_drawing_highlight = null
 shader_param/track_base = Color( 0.768627, 0.345098, 0.345098, 1 )
-shader_param/track_inner = Color( 0.54902, 0.980392, 1, 1 )
+shader_param/track_inner = Color( 0.313726, 1, 0, 1 )
 shader_param/arrow_color = Color( 0.0666667, 0.0588235, 0.164706, 1 )
 shader_param/occupied_color = Color( 0.945098, 0, 1, 1 )
 shader_param/mark_color = Color( 0.2, 0, 0.4, 1 )
 shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
 shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
-shader_param/switch_inner_color = Color( 0.509804, 0.87451, 1, 1 )
-shader_param/selected_color = Color( 0.133333, 0.615686, 0.647059, 1 )
-shader_param/hover_color = Color( 0, 0.368627, 1, 1 )
+shader_param/selected_color = Color( 0.458824, 0.180392, 0.556863, 1 )
 shader_param/block_color = Color( 0.788235, 0.976471, 0.00392157, 1 )
-shader_param/block_color_hover = Color( 1, 0.470588, 0, 1 )
-shader_param/block_color_selected = Color( 0.560784, 0.0941176, 0, 1 )
-shader_param/track_border_block = Color( 0.321569, 0.494118, 0.0470588, 1 )
 shader_param/cell_hover = false
 shader_param/cell_drawing_highlight = null
 shader_param/grid_width = 0.097
@@ -533,5 +499,5 @@ shader_param/has_switch = true
 shader_param/has_block = true
 shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 4296, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 16512, 0 )
+shader_param/state_center = Transform( 0, 0, 0, 0, 5320, 0, 0, 0, 0, 0, 0, 0 )
+shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 17536, 0 )

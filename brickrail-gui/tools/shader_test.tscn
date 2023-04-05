@@ -9,12 +9,12 @@
 
 [node name="Node2D" type="Node2D" parent="."]
 material = ExtResource( 1 )
-position = Vector2( 60.7352, 27.8183 )
+position = Vector2( 0, 2 )
 script = ExtResource( 2 )
 size = Vector2( 200, 200 )
 
 [node name="Sprite" type="Sprite" parent="."]
 material = ExtResource( 4 )
-position = Vector2( 105.895, 128.232 )
+position = Vector2( 420, 129 )
 scale = Vector2( 2, 2 )
 texture = ExtResource( 3 )
