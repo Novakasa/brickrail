@@ -107,20 +107,20 @@ float rhombus(vec2 position, vec2 origin, float angle, vec2 b) {
 	return d;
 }
 
-float arc( vec2 p, float aperture, float orientation, float ra, float rb )
+float arc( vec2 p, float aperture, float orientation, float ra)
 {
 	vec2 scb = vec2(sin(aperture), cos(aperture));
 	vec2 sca = vec2(sin(orientation), cos(orientation));
     p *= mat2(vec2(sca.x,sca.y), vec2(-sca.y,sca.x));
     p.x = abs(p.x);
     float k = (scb.y*p.x>scb.x*p.y) ? dot(p.xy,scb) : length(p);
-    return sqrt( max(0.0, dot(p,p) + ra*ra - 2.0*ra*k ) ) - rb;
+    return sqrt( max(0.0, dot(p,p) + ra*ra - 2.0*ra*k ) );
 }
 
-float track_arc( vec2 position, vec2 center, float radius, float start_angle, float delta_angle, float width) {
+float track_arc( vec2 position, vec2 center, float radius, float start_angle, float delta_angle) {
 	float aperture = abs(delta_angle*0.5);
 	float orientation = (-start_angle - delta_angle*0.5) + PI;
-	return arc(position - center, aperture, orientation, radius, width);
+	return arc(position - center, aperture, orientation, radius);
 }
 
 float segment( vec2 p, vec2 a, vec2 b )
@@ -212,94 +212,58 @@ float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
 float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, out float t) {
 	
 	float scene = 20.0;
-	float width = track_width;
 	vec2 slot_positions[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
 	vec2 from_pos = slot_positions[from_slot];
 	vec2 to_pos = slot_positions[to_slot];
 	vec2 tangent = to_pos-from_pos;
 	float angle = atan(tangent.y, tangent.x);
 	vec2 normal = vec2(cos(angle+0.5*PI), sin(angle+0.5*PI));
-	vec2 to_pos_opposite = slot_positions[(to_slot+2)%4];
-	vec2 aligned = to_pos - to_pos_opposite;
+	vec2 aligned = to_pos - slot_positions[(to_slot+2)%4];
 	float this_angle = atan(tangent.y, tangent.x);
-	float straight_angle = atan(aligned.y, aligned.x);
-	float aligned_angle = this_angle - straight_angle;
-	while (aligned_angle > PI) {
-		aligned_angle -= 2.0*PI;
-	}
-	while (aligned_angle < -PI) {
-		aligned_angle += 2.0*PI;
-	}
+	float aligned_angle = mod(this_angle - atan(aligned.y, aligned.x) + PI, 2.0*PI) - PI;
 	int track_alignment = int(sign(aligned_angle));
-	// track_alignment = -1;
 	int curve_index = turn_index-track_alignment;
-	float radius;
-	float start_angle;
-	float delta_angle;
-	vec2 center;
-	start_angle = this_angle - 0.5*PI*float(sign(curve_index));
-	delta_angle = float(curve_index)*PI/4.0;
+	float start_angle = this_angle - 0.5*PI*float(sign(curve_index));
+	float delta_angle = float(curve_index)*PI/4.0;
 
-	if (turn_index == 2) {
-		vec2 end_pos = from_pos+tangent*(stopper_delta+stopper_width);
-		float round_straight = segment(position, from_pos+tangent*0.5, end_pos - normalize(tangent)*track_width) - width;
-		scene = min(scene, round_straight);
-		vec2 stopper_pos = from_pos+tangent*stopper_delta;
-		float stopper = segment(position, stopper_pos-normal*track_width*stopper_size, stopper_pos+normal*track_width*stopper_size) -stopper_width;
-		scene = min(scene, stopper);
-		return scene;
-	}
-	else if (abs(curve_index)==2) {
-		radius = 0.35355339059; // 0.25*sqrt(2.0);
-		center = from_pos + aligned*0.5;
-		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
+	if (abs(curve_index)==2) {
+		float radius = 0.35355339059; // 0.25*sqrt(2.0);
+		vec2 center = from_pos + aligned*0.5;
+		float connection = track_arc(position, center, radius, start_angle, delta_angle);
 		scene = min(scene, connection);
 		vec2 r = position - center;
-		float pos_angle = atan(r.y, r.x) - start_angle;
-		while (pos_angle > PI) {
-			pos_angle -= 2.0*PI;
-		}
-		while (pos_angle < -PI) {
-			pos_angle += 2.0*PI;
-		}
+		float pos_angle = mod(atan(r.y, r.x) - start_angle + PI, 2.0*PI) - PI;
 		t = pos_angle/delta_angle;
 	}
 	else if (abs(curve_index)==1) {
-		radius = 0.85355339059; //0.5 + 0.25*sqrt(2.0)
+		float radius = 0.85355339059; //0.5 + 0.25*sqrt(2.0)
 		float arclen = radius*delta_angle;
 		float center_angle = this_angle + 0.5*PI*float(sign(curve_index));
 		float straight_length = 0.1464466094; //(0.5 - 0.25*sqrt(2.0));
 		float start_t = 0.0;
-		center = from_pos + tangent*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
+		vec2 center = from_pos + tangent*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
 		if (dot(tangent,aligned) > 0.99) {
 			center += tangent*0.1464466094; //*0.25*(2.0-sqrt(2.0));
-			float straight = segment(position, from_pos+tangent*0.5, to_pos-tangent*0.35355339059) - width; //*0.25*sqrt(2.0)
+			float straight = segment(position, from_pos+tangent*0.5, to_pos-tangent*0.35355339059); //*0.25*sqrt(2.0)
 			scene = min(scene, straight);
 			t = dot(position-from_pos-tangent*0.5, tangent);
 			start_t = straight_length;
 		}
 		vec2 r = position - center;
-		float pos_angle = atan(r.y, r.x) - start_angle;
-		while (pos_angle > PI) {
-			pos_angle -= 2.0*PI;
-		}
-		while (pos_angle < -PI) {
-			pos_angle += 2.0*PI;
-		}
+		float pos_angle = mod(atan(r.y, r.x) - start_angle + PI, 2.0*PI) - PI;
 		float arcpos = pos_angle/delta_angle;
 		t = arcpos*(1.0-straight_length) + start_t;
 		if (arcpos<0.0) {
 			t = dot(position-from_pos-tangent*0.5, tangent);
 		}
-		float connection = track_arc(position, center, radius, start_angle, delta_angle, width);
+		float connection = track_arc(position, center, radius, start_angle, delta_angle);
 		scene = min(scene, connection);
 	}
 	else if (curve_index == 0) {
-		float straight = segment(position, from_pos+tangent*0.5, to_pos+tangent) - width;
+		float straight = segment(position, from_pos+tangent*0.5, to_pos+tangent);
 		scene = min(scene, straight);
 		t = dot(position-(from_pos+tangent*0.5), tangent)/pow(length(tangent),2.0);
 	}
-	t = max(t, 0.0);
 	
 	return scene;
 	
@@ -314,9 +278,9 @@ vec4 cell_composite(vec2 position) {
 	}
 	
 	float sd_base = 1.0;
-	float sd_block;
-	float sd_block_decor;
-	float sd_arrows;
+	float sd_block = 1.0;
+	float sd_block_decor = 1.0;
+	float sd_arrows = 1.0;
 
 	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
 	
@@ -349,8 +313,9 @@ vec4 cell_composite(vec2 position) {
 			}
 		}
 	}
-	mix_sdf(sd_base, color_mix, get_border_color(0));
-	float inner = sd_base + track_width - inner_track_width;
+	float outer = sd_base - track_width;
+	mix_sdf(outer, color_mix, get_border_color(0));
+	float inner = sd_base - inner_track_width;
 	mix_sdf(inner, color_mix, get_inner_color(0));
 	return color_mix;
 }
