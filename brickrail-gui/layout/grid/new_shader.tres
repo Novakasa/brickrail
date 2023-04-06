@@ -285,7 +285,7 @@ vec4 cell_composite(vec2 position) {
 	vec4 color_mix = get_background_color();
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
 	if (border_dist<grid_width*0.5) {
-		color_mix = grid_color;
+		//color_mix = grid_color;
 	}
 	
 	float sd_base = 1.0;
@@ -294,7 +294,7 @@ vec4 cell_composite(vec2 position) {
 	float sd_arrows = 1.0;
 	float sd_border = 1.0;
 	float sd_sleepers = 1.0;
-	float sd_switch_prio = 1.0;
+	float sd_switch_arrows = 1.0;
 	float sd_switch = 1.0;
 
 	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
@@ -349,7 +349,8 @@ vec4 cell_composite(vec2 position) {
 							sd_switch = min(sd_switch, sd_base_this);
 						}
 						if ((state & STATE_SWITCH_PRIORITY) > 0) {
-							sd_switch_prio = min(sd_switch_prio, sd_base_this);
+							float arrow = sd_base_this + max(abs(0.15-border_dist), 0.09) - track_width;
+							sd_switch_arrows = min(sd_switch_arrows, arrow);
 						}
 					}
 				}
@@ -363,6 +364,7 @@ vec4 cell_composite(vec2 position) {
 	// float sd_switch = max(sd_border, -sd_switch_prio + inner_track_width);
 	float sd_switch_border = max(max(sd_switch-track_width, - sd_switch + inner_track_width), inner);
 	mix_sdf(sd_switch_border, color_mix, switch_color);
+	mix_sdf(sd_switch_arrows, color_mix, switch_color);
 	// mix_sdf(sd_sleepers, color_mix, get_border_color(0));
 	
 	// color_mix = visualize_sdf(sd_switch_prio);
