@@ -209,6 +209,17 @@ float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
 	return t;
 }
 
+vec4 visualize_sdf(float sdf) {
+	vec4 result = vec4(1);
+	float dist = sdf;
+	vec3 col = vec3(1.0) - sign(dist)*vec3(0.1,0.4,0.7);
+	col *= 1.0 - exp(-2.0*abs(dist));
+	col *= 0.8 + 0.2*cos(128.0*abs(dist));
+	col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.015,abs(dist)) );
+	result.rgb = col;
+	return result;
+}
+
 float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, out float t) {
 	
 	float scene = 20.0;
@@ -313,11 +324,15 @@ vec4 cell_composite(vec2 position) {
 				float track_t;
 				if ((state & STATE_CONNECTED) > 0) {
 					float sd_base_this = track_connection(position, from_slot, to_slot, turn, track_t);
-					float sd_sleepers_this = sd_base_this - track_width;
-					if (mod(track_t*10.0 + 0.5, 2.0)>1.0) {
-						sd_sleepers_this = 1.0;
+					float sd_sleepers_this = sd_base_this - track_width*0.95;
+					float sleeper_sign = 1.0;
+					if (to_slot<2) {
+						sleeper_sign = -1.0;
 					}
-					if (track_t<0.0) {
+					float substract = (abs(mod(track_t*20.0 - TIME*sleeper_sign + sleeper_sign*sd_base_this*10.0, 2.0) - 1.0)-0.5)/30.0;
+					sd_sleepers_this = max(sd_sleepers_this, -substract);
+					// sd_sleepers_this = max(sd_sleepers_this, -track_t);
+					if (track_t < 0.0) {
 						sd_sleepers_this = 1.0;
 					}
 					sd_sleepers = min(sd_sleepers, sd_sleepers_this);
@@ -327,10 +342,13 @@ vec4 cell_composite(vec2 position) {
 		}
 	}
 	float outer = sd_base - track_width;
-	// mix_sdf(outer, color_mix, get_border_color(0));
+	mix_sdf(outer, color_mix, get_border_color(0));
 	float inner = sd_base - inner_track_width;
-	//mix_sdf(inner, color_mix, get_inner_color(0));
+	mix_sdf(inner, color_mix, get_inner_color(0));
 	mix_sdf(sd_sleepers, color_mix, get_border_color(0));
+	
+	// color_mix = visualize_sdf(sd_sleepers);
+	
 	return color_mix;
 }
 
