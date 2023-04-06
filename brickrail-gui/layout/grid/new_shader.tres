@@ -292,7 +292,10 @@ vec4 cell_composite(vec2 position) {
 	float sd_block = 1.0;
 	float sd_block_decor = 1.0;
 	float sd_arrows = 1.0;
+	float sd_border = 1.0;
 	float sd_sleepers = 1.0;
+	float sd_switch_prio = 1.0;
+	float sd_switch = 1.0;
 
 	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
 	
@@ -324,24 +327,31 @@ vec4 cell_composite(vec2 position) {
 				float track_t;
 				if ((state & STATE_CONNECTED) > 0) {
 					float sd_base_this = track_connection(position, from_slot, to_slot, turn, track_t);
+					float sd_border_this = max(sd_base_this - track_width, -sd_base_this + inner_track_width);
 					float sd_sleepers_this = sd_base_this - track_width*0.95;
 					float sleeper_sign = 1.0;
 					if (to_slot<2) {
 						sleeper_sign = -1.0;
 					}
-					float num = 6.0;
-					float pointiness = 2.0;
-					float thickness = 0.3;
+					float num = 3.0;
+					float pointiness = 1.0;
+					float thickness = 0.5;
 					float segment = 1.0/num;
-					float tscale = 2.0;
-					float substract = (abs(mod(track_t - tscale*TIME*sleeper_sign/num + sleeper_sign*sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment);
+					float tscale = 0.0;
+					float substract = (abs(mod(track_t - tscale*TIME*sleeper_sign/num + sleeper_sign*sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
 					sd_sleepers_this = max(sd_sleepers_this, -substract);
 					// sd_sleepers_this = max(sd_sleepers_this, -track_t);
-					if (track_t < 0.0) {
-						sd_sleepers_this = 1.0;
-					}
-					sd_sleepers = min(sd_sleepers, sd_sleepers_this);
 					sd_base = min(sd_base, sd_base_this);
+					if (track_t>0.0) {
+						sd_sleepers = min(sd_sleepers, sd_sleepers_this);
+						sd_border = min(sd_border, sd_border_this);
+						if ((state & STATE_SWITCH) > 0) {
+							sd_switch = min(sd_switch, sd_base_this);
+						}
+						if ((state & STATE_SWITCH_PRIORITY) > 0) {
+							sd_switch_prio = min(sd_switch_prio, sd_base_this);
+						}
+					}
 				}
 			}
 		}
@@ -350,9 +360,12 @@ vec4 cell_composite(vec2 position) {
 	mix_sdf(outer, color_mix, get_border_color(0));
 	float inner = sd_base - inner_track_width;
 	mix_sdf(inner, color_mix, get_inner_color(0));
-	mix_sdf(sd_sleepers, color_mix, get_border_color(0));
+	// float sd_switch = max(sd_border, -sd_switch_prio + inner_track_width);
+	float sd_switch_border = max(max(sd_switch-track_width, - sd_switch + inner_track_width), inner);
+	mix_sdf(sd_switch_border, color_mix, switch_color);
+	// mix_sdf(sd_sleepers, color_mix, get_border_color(0));
 	
-	// color_mix = visualize_sdf(sd_sleepers);
+	// color_mix = visualize_sdf(sd_switch_prio);
 	
 	return color_mix;
 }

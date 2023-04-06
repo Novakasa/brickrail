@@ -30,5 +30,5 @@ shader_param/has_switch = true
 shader_param/has_block = true
 shader_param/state_left = Transform( 128, 0, 0, 128, 1, 0, 0, 0, 1, 0, 0, 0 )
 shader_param/state_right = Transform( 0, 0, 128, 128, 1, 0, 0, 0, 1, 0, 0, 0 )
-shader_param/state_center = Transform( 128, 0, 128, 128.531, 0, 129, 128.077, 128.087, 1, 0, 0, 0 )
+shader_param/state_center = Transform( 128, 0, 640, 640.531, 0, 129, 640.077, 128.087, 1, 0, 0, 0 )
 shader_param/state_none = Transform( 0, 128, 0, 8, 1, 0, 0, 0, 0, 128, 0, 0 )
