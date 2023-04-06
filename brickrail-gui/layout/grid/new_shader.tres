@@ -329,12 +329,12 @@ vec4 cell_composite(vec2 position) {
 					if (to_slot<2) {
 						sleeper_sign = -1.0;
 					}
-					float num = 2.0;
-					float pointiness = .5;
-					float len = 20.0;
+					float num = 6.0;
+					float pointiness = 2.0;
 					float thickness = 0.3;
 					float segment = 1.0/num;
-					float substract = (abs(mod(track_t - 1.0*TIME*sleeper_sign + sleeper_sign*sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment);
+					float tscale = 2.0;
+					float substract = (abs(mod(track_t - tscale*TIME*sleeper_sign/num + sleeper_sign*sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment);
 					sd_sleepers_this = max(sd_sleepers_this, -substract);
 					// sd_sleepers_this = max(sd_sleepers_this, -track_t);
 					if (track_t < 0.0) {
