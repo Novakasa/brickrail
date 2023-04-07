@@ -5,12 +5,12 @@ var scroll_period = 1.0
 
 func _ready():
 	ready()
+	$Error/ErrorLabel.text = ""
 
 func ready():
 	$StatusLabel.text = "ready"
 	$ProgressScrollbar.visible=false
 	GuiApi.status_gui = self
-	$Error/ErrorLabel.text = ""
 
 func process(message):
 	$StatusLabel.text = message

@@ -8,16 +8,17 @@ var running = false
 var communicator: BLECommunicator
 var responsiveness = false
 var busy = false
+var status = "disconnected"
 
 signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
 signal name_changed(p_name, p_new_name)
-signal connected
-signal disconnected
+signal connected()
+signal disconnected()
 signal connect_error()
-signal program_started
-signal program_stopped
-signal program_error(message)
+signal program_started()
+signal program_stopped()
+signal program_error()
 signal responsiveness_changed(value)
 signal removing(name)
 signal state_changed()
@@ -40,45 +41,44 @@ func _on_data_received(key, data):
 	if key == "connected":
 		connected=true
 		busy=false
-		GuiApi.status_ready()
+		status = "connected"
 		emit_signal("connected")
 		emit_signal("state_changed")
 		return
 	if key == "disconnected":
 		connected=false
 		busy=false
+		status = "disconnected"
 		set_responsiveness(false)
-		GuiApi.status_ready()
 		emit_signal("disconnected")
 		emit_signal("state_changed")
 		return
 	if key == "connect_error":
 		connected=false
 		busy=false
+		status = "disconnected"
 		GuiApi.show_error("Connection error!")
-		GuiApi.status_ready()
 		emit_signal("connect_error")
 		emit_signal("state_changed")
 		return
 	if key == "program_started":
 		running=true
 		busy=false
+		status = "running"
 		set_responsiveness(true)
-		GuiApi.status_ready()
 		emit_signal("program_started")
 		emit_signal("state_changed")
 		return
 	if key == "program_stopped":
 		running=false
 		busy=false
+		status = "connected"
 		set_responsiveness(false)
-		GuiApi.status_ready()
 		emit_signal("program_stopped")
 		emit_signal("state_changed")
 		return
 	if key == "program_error":
 		GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
-		GuiApi.status_ready()
 		emit_signal("program_error", data)
 		return
 	if key == "runtime_data":
@@ -93,30 +93,30 @@ func send_command(command, args, return_id=null):
 
 func connect_hub():
 	assert(not connected)
-	GuiApi.status_process("Connecting hub "+name+"...")
 	send_command("connect", [])
 	busy=true
+	status = "connecting"
 	emit_signal("state_changed")
 
 func disconnect_hub():
 	assert(connected)
-	GuiApi.status_process("Disconnecting hub "+name+"...")
 	send_command("disconnect", [])
 	busy=true
+	status = "disconnecting"
 	emit_signal("state_changed")
 
 func run_program():
 	assert(connected and not running)
 	send_command("run", [])
+	status = "starting program"
 	busy=true
-	GuiApi.status_process("Hub "+name+" starting program...")
 	emit_signal("state_changed")
 
 func stop_program():
 	assert(connected and running)
-	GuiApi.status_process("Hub "+name+" stopping program...")
 	send_command("stop_program", [])
 	set_responsiveness(false)
+	status = "stopping program"
 	busy=true
 	running = false
 	emit_signal("state_changed")

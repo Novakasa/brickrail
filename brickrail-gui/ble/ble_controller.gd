@@ -17,7 +17,7 @@ func add_hub(hub):
 	hub.connect("ble_command", self, "_on_hub_command")
 	hub.connect("name_changed", self, "_on_hub_name_changed")
 	hub.connect("removing", self, "_on_hub_removing")
-	hub.connect("state_changed", self, "_on_hub_state_changed")
+	hub.connect("state_changed", self, "_on_hub_state_changed", [hub])
 
 func _on_hub_name_changed(hubname, new_hubname):
 	rename_hub(hubname, new_hubname)
@@ -26,10 +26,17 @@ func _on_hub_removing(hubname):
 	send_command(null, "remove_hub", [hubname], null)
 	hubs.erase(hubname)
 
-func _on_hub_state_changed():
+func _on_hub_state_changed(hub):
 	if not are_hubs_ready() and LayoutInfo.control_devices:
 		LayoutInfo.emergency_stop()
-	hub_control_enabled = not is_busy()
+	var status = get_hub_status()
+	if len(status)>0:
+		var hubname = status.keys()[0]
+		GuiApi.status_process("["+hubname+"] "+status[hubname]+"...")
+	else:
+		GuiApi.status_ready()
+	
+	hub_control_enabled = len(status) == 0
 	emit_signal("hubs_state_changed")
 
 func are_hubs_ready():
@@ -38,11 +45,12 @@ func are_hubs_ready():
 			return false
 	return true
 
-func is_busy():
+func get_hub_status():
+	var status = {}
 	for hub in hubs.values():
 		if hub.busy:
-			return true
-	return false
+			status[hub.name] = hub.status
+	return status
 
 func rename_hub(p_name, p_new_name):
 	var hub = hubs[p_name]
