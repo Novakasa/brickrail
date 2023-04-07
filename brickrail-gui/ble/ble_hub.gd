@@ -79,6 +79,8 @@ func _on_data_received(key, data):
 		return
 	if key == "program_error":
 		GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
+		if "Unexpected Marker" in data:
+			LayoutInfo.emergency_stop()
 		emit_signal("program_error", data)
 		return
 	if key == "runtime_data":
