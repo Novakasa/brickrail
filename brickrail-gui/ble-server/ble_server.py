@@ -94,9 +94,16 @@ class BLEServer:
             await wait_for_connected()
             await wait_for_disconnected()
 
-if __name__ == "__main__":
+project = None
+
+async def main():
+    global project
     print("running ble server")
     print(f"cwd: {os.getcwd()}")
     project = BLEProject()
     server = BLEServer()
-    asyncio.run(server.serve())
+    await server.serve()
+
+if __name__ == "__main__":
+    
+    asyncio.run(main())

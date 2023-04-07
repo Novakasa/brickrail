@@ -14,7 +14,7 @@ func _ready():
 	# OS.execute("cmd", ["start cmd /K"], false)
 	process = BLEProcess.new()
 	add_child(process)
-	process.start_process()
+	yield(process.start_process(), "completed")
 
 	_client.connect("connection_closed", self, "_closed")
 	_client.connect("connection_error", self, "_closed")
