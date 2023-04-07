@@ -3,7 +3,7 @@ import asyncio
 from random import randint
 import time
 
-from rx.subject import Subject
+from reactivex.subject import Subject
 
 from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
