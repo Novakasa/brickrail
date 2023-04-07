@@ -198,7 +198,7 @@ vec4 get_arrow_color(int state) {
 float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
 	float sdf_change = fwidth(sdf)*0.5;
 	if (abs(sdf_change)>.01) {
-		sdf_change = 0.0;
+		// sdf_change = 0.0;
 	}
 	float t = smoothstep(sdf_change, -sdf_change, sdf);
 	// t = 0.0;
@@ -296,6 +296,8 @@ vec4 cell_composite(vec2 position) {
 	float sd_sleepers = 1.0;
 	float sd_switch_arrows = 1.0;
 	float sd_switch = 1.0;
+	int composite_track_state = 0;
+	int composite_block_state = 0;
 
 	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
 	
@@ -328,6 +330,15 @@ vec4 cell_composite(vec2 position) {
 				if ((state & STATE_CONNECTED) > 0) {
 					float sd_base_this = track_connection(position, from_slot, to_slot, turn, track_t);
 					float sd_border_this = max(sd_base_this - track_width, -sd_base_this + inner_track_width);
+					
+					if ((state & STATE_BLOCK) > 0) {
+						float sd_block_this = sd_base_this - block_width;
+						if (sd_block_this < 0.0) {
+							composite_block_state |= state;
+						}
+						sd_block = min(sd_block, sd_block_this);
+					}
+					
 					float sd_sleepers_this = sd_base_this - track_width*0.95;
 					float sleeper_sign = 1.0;
 					if (to_slot<2) {
@@ -353,14 +364,18 @@ vec4 cell_composite(vec2 position) {
 							sd_switch_arrows = min(sd_switch_arrows, arrow);
 						}
 					}
+					if (sd_base_this < track_width) {
+						composite_track_state |= state;
+					}
 				}
 			}
 		}
 	}
+	mix_sdf(sd_block, color_mix, get_block_color(composite_block_state));
 	float outer = sd_base - track_width;
-	mix_sdf(outer, color_mix, get_border_color(0));
+	mix_sdf(outer, color_mix, get_border_color(composite_track_state));
 	float inner = sd_base - inner_track_width;
-	mix_sdf(inner, color_mix, get_inner_color(0));
+	mix_sdf(inner, color_mix, get_inner_color(composite_track_state));
 	// float sd_switch = max(sd_border, -sd_switch_prio + inner_track_width);
 	float sd_switch_border = max(max(sd_switch-track_width, - sd_switch + inner_track_width), inner);
 	mix_sdf(sd_switch_border, color_mix, switch_color);
