@@ -402,7 +402,7 @@ void fragment() {
 	vec2 position = UV;
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
 	if (border_dist<grid_width*0.5) {
-		color_mix = grid_color;
+		// color_mix = grid_color;
 	}
 	
 	int block_state;

@@ -26,7 +26,7 @@ func _on_hub_removing(hubname):
 	send_command(null, "remove_hub", [hubname], null)
 	hubs.erase(hubname)
 
-func _on_hub_state_changed(hub):
+func _on_hub_state_changed(_hub):
 	if not are_hubs_ready() and LayoutInfo.control_devices:
 		LayoutInfo.emergency_stop()
 	var status = get_hub_status()

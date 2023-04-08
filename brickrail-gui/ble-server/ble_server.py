@@ -98,8 +98,8 @@ project = None
 
 async def main():
     global project
-    print("running ble server")
     print(f"cwd: {os.getcwd()}")
+    print(f"script: {__file__}")
     project = BLEProject()
     server = BLEServer()
     await server.serve()

@@ -6,11 +6,26 @@ var process_pid
 func start_process():
 	yield(get_tree(), "idle_frame")
 	print("starting python server process")
-	if OS.get_name() == "windows":
+	var dir = Directory.new()
+	var _err = dir.open("../")
+	var dist_exists = dir.dir_exists("dist")
+	
+	if dist_exists:
+		print("python server dist found!")
+	else:
+		print("using python environment in ble-server/.env/")
+	
+	if OS.get_name() == "Windows":
 		process_pid = OS.execute("CMD.exe", ["/K", "ble-server\\.env\\python.exe", "ble-server/ble_server.py"], false, [], false, true)
 	else:
-		process_pid = OS.execute("gnome-terminal", ['--', 'bash', '-c', './ble-server/.env/bin/python ble-server/ble_server.py'], false)
-		yield(get_tree().create_timer(0.5), "timeout")
+		var process_command
+		if not dist_exists:
+			process_command = './ble-server/.env/bin/python ble-server/ble_server.py'
+		else:
+			process_command = '../dist/ble_server && read line'
+			process_command = '../dist/ble_server/ble_server && read line'
+		process_pid = OS.execute("gnome-terminal", ['--', 'bash', '-c', process_command], false)
+		yield(get_tree().create_timer(1.5), "timeout")
 	# bash", "-c", "./ble-server/.env/bin/python", "ble-server/ble_server.py"], false, [], false, true)
 	prints("pid:", process_pid)
 

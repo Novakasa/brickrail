@@ -1,0 +1,3 @@
+pybricksdev
+websockets
+pyinstaller
