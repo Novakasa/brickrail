@@ -227,12 +227,12 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 	float scene = 20.0;
 	vec2 from_pos = SLOT_POSITIONS[from_slot];
 	vec2 to_pos = SLOT_POSITIONS[to_slot];
-	vec2 tangent = to_pos-from_pos;
-	float angle = atan(tangent.y, tangent.x);
+	vec2 delta = to_pos-from_pos;
+	float angle = atan(delta.y, delta.x);
 	vec2 normal = vec2(cos(angle+0.5*PI), sin(angle+0.5*PI));
 	
 	vec2 aligned = to_pos - SLOT_POSITIONS[(to_slot+2)%4];
-	float this_angle = atan(tangent.y, tangent.x);
+	float this_angle = atan(delta.y, delta.x);
 	float aligned_angle = mod(this_angle - atan(aligned.y, aligned.x) + PI, 2.0*PI) - PI;
 	int track_alignment = int(sign(aligned_angle));
 	int curve_index = turn_index-track_alignment;
@@ -254,12 +254,12 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		float center_angle = this_angle + 0.5*PI*float(sign(curve_index));
 		float straight_length = 0.1464466094; //(0.5 - 0.25*sqrt(2.0));
 		float start_t = 0.0;
-		vec2 center = from_pos + tangent*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
-		if (dot(tangent,aligned) > 0.99) {
-			center += tangent*0.1464466094; //*0.25*(2.0-sqrt(2.0));
-			float straight = segment(position, from_pos+tangent*0.5, to_pos-tangent*0.35355339059); //*0.25*sqrt(2.0)
+		vec2 center = from_pos + delta*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
+		if (dot(delta,aligned) > 0.99) {
+			center += delta*0.1464466094; //*0.25*(2.0-sqrt(2.0));
+			float straight = segment(position, from_pos+delta*0.5, to_pos-delta*0.35355339059); //*0.25*sqrt(2.0)
 			scene = min(scene, straight);
-			t = dot(position-from_pos-tangent*0.5, tangent);
+			t = dot(position-from_pos-delta*0.5, delta);
 			start_t = straight_length;
 		}
 		vec2 r = position - center;
@@ -267,15 +267,15 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		float arcpos = pos_angle/delta_angle;
 		t = arcpos*(1.0-straight_length) + start_t;
 		if (arcpos<0.0) {
-			t = dot(position-from_pos-tangent*0.5, tangent);
+			t = dot(position-from_pos-delta*0.5, delta);
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle);
 		scene = min(scene, connection);
 	}
 	else if (curve_index == 0) {
-		float straight = segment(position, from_pos+tangent*0.5, to_pos+tangent);
+		float straight = segment(position, from_pos+delta*0.5, to_pos+delta);
 		scene = min(scene, straight);
-		t = dot(position-(from_pos+tangent*0.5), tangent)/pow(length(tangent),2.0);
+		t = dot(position-(from_pos+delta*0.5), delta)/pow(length(delta),2.0);
 	}
 	
 	return scene;
@@ -332,6 +332,30 @@ vec4 cell_composite(vec2 position) {
 				int turn = flag-1;
 				int state = turn_state[flag];
 				
+				if ((state & STATE_ARROW) > 0) {
+					vec2 arrowdims = vec2(1.5,0.9);
+					float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*arrowdims);
+					float rhomb2 = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*vec2(0.3,1.0)*arrowdims);
+					float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
+					float sd_arrow_this = max(rhomb, -rhomb2);
+					sd_arrow_this = max(sd_arrow_this, -mask);
+					sd_arrows = min(sd_arrows, sd_arrow_this);
+				}
+				
+				if ((state & (STATE_BLOCK_PLUS | STATE_BLOCK_MINUS)) > 0) {
+					float size = (block_width-track_width)*0.5;
+					float swidth = 0.3*size;
+					for (int s=-1; s<3; s+=2) {
+						vec2 sign_pos = mid_pos + float(s)*normal*(track_width + 0.5*(block_width-track_width));
+						float decor = line_rect(position, sign_pos-size*tangent, sign_pos+size*tangent, swidth);
+						if ((state & STATE_BLOCK_PLUS) > 0) {
+							float vbar = line_rect(position, sign_pos-size*normal, sign_pos+size*normal, swidth);
+							decor = min(decor, vbar);
+						}
+						sd_block_decor = min(sd_block_decor, decor);
+					}
+				}
+				
 				if (flag == 3) {
 					if ((state & STATE_CONNECTED) > 0) {
 						vec2 end_pos = mid_pos + (stopper_delta)*tangent;
@@ -351,7 +375,7 @@ vec4 cell_composite(vec2 position) {
 							float sd_portal = circle(position - portal_pos, track_width*1.5);
 							sd_outer = min(sd_outer, sd_portal);
 						}
-					continue;
+						continue;
 					}
 				}
 				
@@ -366,6 +390,7 @@ vec4 cell_composite(vec2 position) {
 							composite_block_state |= state;
 						}
 						sd_block = min(sd_block, sd_block_this);
+						
 					}
 					
 					float sd_sleepers_this = sd_base_this - inner_track_width*0.8;
@@ -401,16 +426,16 @@ vec4 cell_composite(vec2 position) {
 		}
 	}
 	mix_sdf(sd_block, color_mix, get_block_color(composite_block_state));
+	mix_sdf(sd_block_decor, color_mix, vec4(0.0,0.0,0.0,1.0));
 	mix_sdf(sd_outer, color_mix, get_border_color(composite_track_state));
 	mix_sdf(sd_inner, color_mix, get_inner_color(composite_track_state));
-	// float sd_switch = max(sd_border, -sd_switch_prio + inner_track_width);
-	// mix_sdf(sd_sleepers, color_mix, mark_color);
-	// float sd_switch_border = min(max(sd_switch-track_width, - sd_switch + inner_track_width), sd_inner);
+
 	float switch_markings = max(sd_switch_border, sd_inner);
 	mix_sdf(switch_markings, color_mix, switch_color);
 	mix_sdf(sd_switch_arrows, color_mix, switch_color);
+	mix_sdf(sd_arrows, color_mix, arrow_color);
 	
-	// color_mix = visualize_sdf(sd_sleepers);
+	//color_mix = visualize_sdf(sd_block_decor);
 	
 	return color_mix;
 }

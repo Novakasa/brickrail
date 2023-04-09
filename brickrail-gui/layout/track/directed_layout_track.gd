@@ -561,6 +561,4 @@ func get_shader_state(turn):
 		state |= STATE_ARROW
 	if get_opposite().hover:
 		state |= STATE_HOVER
-	# if drawing_highlight:
-	# 	state |= STATE_SELECTED TODO
 	return state
