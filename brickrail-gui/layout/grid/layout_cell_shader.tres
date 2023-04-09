@@ -324,7 +324,6 @@ float tracks(vec2 position, int turn_type, int track_type, out int state) {
 					scene = min(scene, connection);
 				}
 			}
-	
 		}
 	}
 	

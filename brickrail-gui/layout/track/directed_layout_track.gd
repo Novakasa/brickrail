@@ -520,6 +520,7 @@ func get_shader_state(turn):
 			state |= STATE_STOPPER
 		if has_portal():
 			state |= STATE_PORTAL
+			state |= STATE_CONNECTED
 	if turn != "none" and turn in connections:
 		var opposite_switch = get_opposite_switch(turn)
 		var opposite_turn = get_opposite().get_turn()
@@ -560,6 +561,4 @@ func get_shader_state(turn):
 		state |= STATE_ARROW
 	if get_opposite().hover:
 		state |= STATE_HOVER
-	# if drawing_highlight:
-	# 	state |= STATE_SELECTED TODO
 	return state

@@ -19,7 +19,7 @@ var drawing_highlight = false
 
 var _redraw=false
 
-var track_material = preload("res://layout/grid/layout_cell_shader.tres")
+var track_material = preload("res://layout/grid/layout_cell_shader2.tres")
 
 signal track_selected(cell, orientation)
 signal removing(cell)

@@ -1,0 +1,445 @@
+[gd_resource type="Shader" format=2]
+
+[resource]
+code = "shader_type canvas_item;
+
+uniform vec4 background: hint_color;
+uniform vec4 background_hover: hint_color;
+uniform vec4 background_drawing_highlight: hint_color;
+uniform vec4 track_base: hint_color;
+uniform vec4 track_inner: hint_color;
+uniform vec4 arrow_color: hint_color;
+uniform vec4 occupied_color: hint_color;
+uniform vec4 mark_color: hint_color;
+uniform vec4 switch_color: hint_color;
+uniform vec4 grid_color: hint_color;
+uniform vec4 selected_color: hint_color;
+uniform vec4 block_color: hint_color;
+
+uniform bool cell_hover;
+uniform bool cell_drawing_highlight;
+uniform float grid_width;
+uniform float track_width;
+uniform float inner_track_width;
+uniform float stopper_delta;
+uniform float stopper_size;
+uniform float stopper_width;
+uniform float block_width;
+
+uniform bool contours;
+uniform bool has_switch;
+uniform bool has_block;
+
+uniform mat4 state_left;
+uniform mat4 state_right;
+uniform mat4 state_center;
+uniform mat4 state_none;
+
+const int STATE_SELECTED = 1;
+const int STATE_HOVER = 2;
+const int STATE_LOCKED = 4;
+const int STATE_BLOCK_OCCUPIED = 16;
+const int STATE_BLOCK = 8;
+const int STATE_BLOCK_HOVER = 32;
+const int STATE_BLOCK_SELECTED = 64;
+const int STATE_BLOCK_PLUS = 2048;
+const int STATE_BLOCK_MINUS = 4096;
+const int STATE_CONNECTED = 128;
+const int STATE_SWITCH = 256;
+const int STATE_SWITCH_PRIORITY = 512;
+const int STATE_ARROW = 1024;
+const int STATE_MARK = 8192;
+const int STATE_PORTAL = 16384;
+const int STATE_STOPPER = 32768;
+const int STATE_HIGHLIGHT = 65536;
+
+const float PI = 3.14159265358979323846;
+
+const int TRACK_LINE = 0;
+const int TRACK_FULL = 1;
+const int TRACK_BORDER = 2;
+const int TRACK_ARROW = 3;
+const int TRACK_BLOCK = 4;
+const int TRACK_BLOCK_PLUS = 5;
+const int TRACK_BLOCK_MINUS = 6;
+const int TRACK_STOPPER = 7;
+const int TRACK_PORTAL = 8;
+
+const int TURN_BASE = 0;
+const int TURN_SWITCH_ALL = 1;
+const int TURN_SWITCH_PRIORITY = 2;
+const int TURN_BLOCK = 3;
+
+
+float circle(vec2 position, float radius) {
+    return length(position) - radius;
+}
+
+float rectangle(vec2 position, vec2 size) {
+    vec2 component_distance = abs(position) - size;
+    float outside_distance = length(max(component_distance, 0.0));
+    float inside_distance = min(max(component_distance.x, component_distance.y), 0.0);
+    return outside_distance + inside_distance;
+	// return component_distance.x;
+}
+
+vec2 rotate(vec2 position, float rotation) {
+    float angle = rotation;
+    float sine = sin(angle);
+	float cosine = cos(angle);
+    return vec2(cosine * position.x + sine * position.y, cosine * position.y - sine * position.x);
+}
+
+float ndot(vec2 a, vec2 b) {
+	return a.x*b.x - a.y*b.y;
+}
+
+float rhombus(vec2 position, vec2 origin, float angle, vec2 b) {
+	vec2 p = position - origin;
+	
+	p = rotate(p, angle);
+
+	vec2 q = abs(p);
+    float h = clamp( (-2.0*ndot(q,b) + ndot(b,b) )/dot(b,b), -1.0, 1.0 );
+    float d = length( q - 0.5*b*vec2(1.0-h,1.0+h) );
+    d *= sign( q.x*b.y + q.y*b.x - b.x*b.y );
+    
+	return d;
+}
+
+float arc( vec2 p, float aperture, float orientation, float ra)
+{
+	vec2 scb = vec2(sin(aperture), cos(aperture));
+	vec2 sca = vec2(sin(orientation), cos(orientation));
+    p *= mat2(vec2(sca.x,sca.y), vec2(-sca.y,sca.x));
+    p.x = abs(p.x);
+    float k = (scb.y*p.x>scb.x*p.y) ? dot(p.xy,scb) : length(p);
+    return sqrt( max(0.0, dot(p,p) + ra*ra - 2.0*ra*k ) );
+}
+
+float track_arc( vec2 position, vec2 center, float radius, float start_angle, float delta_angle) {
+	float aperture = abs(delta_angle*0.5);
+	float orientation = (-start_angle - delta_angle*0.5) + PI;
+	return arc(position - center, aperture, orientation, radius);
+}
+
+float segment( vec2 p, vec2 a, vec2 b )
+{
+    vec2 pa = p-a, ba = b-a;
+    float h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+    return length( pa - ba*h );
+}
+
+float line_rect(vec2 position, vec2 from, vec2 to, float width) {
+	vec2 delta = to-from;
+	vec2 rect_pos = position;
+	rect_pos = rect_pos - 0.5*(from+to);
+	float angle = atan(delta.y, delta.x);
+	rect_pos = rotate(rect_pos, angle);
+	float rect = rectangle(rect_pos,vec2(length(delta)*0.5, width));
+	return rect;
+}
+
+vec4 get_background_color() {
+	if (cell_hover) {
+		return background_hover;
+	}
+	if (cell_drawing_highlight) {
+		return background_drawing_highlight;
+	}
+	return background;
+}
+
+vec4 get_inner_color(int state) {
+	vec4 color;
+	color = track_inner;
+	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
+		color = occupied_color;
+	}
+	if ((state & STATE_MARK) == STATE_MARK) {
+		color = mark_color;
+	}
+	if ((state & STATE_LOCKED) == STATE_LOCKED) {
+		color = occupied_color;
+	}
+	if ((state & STATE_SELECTED) == STATE_SELECTED) {
+		color = selected_color;
+	}
+	if ((state & STATE_HOVER)== STATE_HOVER) {
+		color *= 2.0;
+	}
+	else if ((state & STATE_HIGHLIGHT) == STATE_HIGHLIGHT) {
+		color *= 1.5;
+	}
+	return color;
+}
+
+vec4 get_block_color(int state) {
+	vec4 color = block_color;
+	if ((state & STATE_BLOCK_SELECTED)==STATE_BLOCK_SELECTED) {
+		color = selected_color;
+	}
+	if ((state & STATE_BLOCK_HOVER)==STATE_BLOCK_HOVER) {
+		color *= 1.5;
+	}
+	return color;
+}
+
+vec4 get_border_color(int state) {
+	vec4 color = track_base;
+	return color;
+}
+
+vec4 get_arrow_color(int state) {
+	vec4 color = arrow_color;
+	return color;
+}
+
+float mix_sdf(float sdf, inout vec4 base_color, vec4 color_sdf) {
+	float sdf_change = fwidth(sdf)*0.5;
+	if (abs(sdf_change)>.01) {
+		// sdf_change = 0.0;
+	}
+	float t = smoothstep(sdf_change, -sdf_change, sdf);
+	// t = 0.0;
+	// if (sdf<0.0) {
+	// 	t = 1.0;
+	// }
+	base_color = mix(base_color, color_sdf, t);
+	return t;
+}
+
+vec4 visualize_sdf(float sdf) {
+	vec4 result = vec4(1);
+	float dist = sdf;
+	vec3 col = vec3(1.0) - sign(dist)*vec3(0.1,0.4,0.7);
+	col *= 1.0 - exp(-2.0*abs(dist));
+	col *= 0.8 + 0.2*cos(128.0*abs(dist));
+	col = mix( col, vec3(1.0), 1.0-smoothstep(0.0,0.015,abs(dist)) );
+	result.rgb = col;
+	return result;
+}
+
+const vec2 SLOT_POSITIONS[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
+
+float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, out float t) {
+	
+	float scene = 20.0;
+	vec2 from_pos = SLOT_POSITIONS[from_slot];
+	vec2 to_pos = SLOT_POSITIONS[to_slot];
+	vec2 delta = to_pos-from_pos;
+	float angle = atan(delta.y, delta.x);
+	vec2 normal = vec2(cos(angle+0.5*PI), sin(angle+0.5*PI));
+	
+	vec2 aligned = to_pos - SLOT_POSITIONS[(to_slot+2)%4];
+	float this_angle = atan(delta.y, delta.x);
+	float aligned_angle = mod(this_angle - atan(aligned.y, aligned.x) + PI, 2.0*PI) - PI;
+	int track_alignment = int(sign(aligned_angle));
+	int curve_index = turn_index-track_alignment;
+	float start_angle = this_angle - 0.5*PI*float(sign(curve_index));
+	float delta_angle = float(curve_index)*PI/4.0;
+
+	if (abs(curve_index)==2) {
+		float radius = 0.35355339059; // 0.25*sqrt(2.0);
+		vec2 center = from_pos + aligned*0.5;
+		float connection = track_arc(position, center, radius, start_angle, delta_angle);
+		scene = min(scene, connection);
+		vec2 r = position - center;
+		float pos_angle = mod(atan(r.y, r.x) - start_angle + PI, 2.0*PI) - PI;
+		t = pos_angle/delta_angle;
+	}
+	else if (abs(curve_index)==1) {
+		float radius = 0.85355339059; //0.5 + 0.25*sqrt(2.0)
+		float arclen = radius*delta_angle;
+		float center_angle = this_angle + 0.5*PI*float(sign(curve_index));
+		float straight_length = 0.1464466094; //(0.5 - 0.25*sqrt(2.0));
+		float start_t = 0.0;
+		vec2 center = from_pos + delta*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
+		if (dot(delta,aligned) > 0.99) {
+			center += delta*0.1464466094; //*0.25*(2.0-sqrt(2.0));
+			float straight = segment(position, from_pos+delta*0.5, to_pos-delta*0.35355339059); //*0.25*sqrt(2.0)
+			scene = min(scene, straight);
+			t = dot(position-from_pos-delta*0.5, delta);
+			start_t = straight_length;
+		}
+		vec2 r = position - center;
+		float pos_angle = mod(atan(r.y, r.x) - start_angle + PI, 2.0*PI) - PI;
+		float arcpos = pos_angle/delta_angle;
+		t = arcpos*(1.0-straight_length) + start_t;
+		if (arcpos<0.0) {
+			t = dot(position-from_pos-delta*0.5, delta);
+		}
+		float connection = track_arc(position, center, radius, start_angle, delta_angle);
+		scene = min(scene, connection);
+	}
+	else if (curve_index == 0) {
+		float straight = segment(position, from_pos+delta*0.5, to_pos+delta);
+		scene = min(scene, straight);
+		t = dot(position-(from_pos+delta*0.5), delta)/pow(length(delta),2.0);
+	}
+	
+	return scene;
+	
+}
+
+vec4 cell_composite(vec2 position) {
+	
+	vec4 color_mix = get_background_color();
+	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
+	if (border_dist<grid_width*0.5) {
+		//color_mix = grid_color;
+	}
+	
+	float sd_outer = 1.0;
+	float sd_inner = 1.0;
+	float sd_block = 1.0;
+	float sd_block_decor = 1.0;
+	float sd_arrows = 1.0;
+	float sd_border = 1.0;
+	float sd_sleepers = 1.0;
+	float sd_switch_arrows = 1.0;
+	float sd_switch_border = 1.0;
+	int composite_track_state = 0;
+	int composite_block_state = 0;
+
+	vec4 basis[4] = {vec4(1.0, 0.0, 0.0, 0.0), vec4(0.0, 1.0, 0.0, 0.0), vec4(0.0, 0.0, 1.0, 0.0), vec4(0.0, 0.0, 0.0, 1.0)};
+	
+	for (int from_slot=0; from_slot<4; from_slot++) {
+		vec4 from_vec = basis[from_slot];
+		for (int to_slot2=0; to_slot2<3; to_slot2++) {
+			vec4 to_vec = basis[to_slot2];
+			
+			int to_slot = to_slot2;
+			if (from_slot == to_slot2) {
+				to_slot = 3;
+			}
+			
+			int turn_state[4];
+			turn_state[0] = int(dot(to_vec, state_left*from_vec));
+			turn_state[1] = int(dot(to_vec, state_center*from_vec));
+			turn_state[2] = int(dot(to_vec, state_right*from_vec));
+			turn_state[3] = int(dot(to_vec, state_none*from_vec));
+			
+			vec2 from_pos = SLOT_POSITIONS[from_slot];
+			vec2 to_pos = SLOT_POSITIONS[to_slot];
+			vec2 mid_pos = 0.5*(to_pos+from_pos);
+			vec2 delta = to_pos-from_pos;
+			vec2 tangent = normalize(delta);
+			float angle = atan(tangent.y, tangent.x);
+			vec2 normal = vec2(cos(angle+0.5*PI), sin(angle+0.5*PI));
+			
+			for (int flag=0; flag<4; flag++) {
+				int turn = flag-1;
+				int state = turn_state[flag];
+				
+				if ((state & STATE_ARROW) > 0) {
+					vec2 arrowdims = vec2(1.5,0.9);
+					float rhomb = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*arrowdims);
+					float rhomb2 = rhombus(position, 0.5*(from_pos+to_pos), angle, inner_track_width*vec2(0.3,1.0)*arrowdims);
+					float mask = line_rect(position, from_pos, 0.5*(from_pos+to_pos), 1.0);
+					float sd_arrow_this = max(rhomb, -rhomb2);
+					sd_arrow_this = max(sd_arrow_this, -mask);
+					sd_arrows = min(sd_arrows, sd_arrow_this);
+				}
+				
+				if ((state & (STATE_BLOCK_PLUS | STATE_BLOCK_MINUS)) > 0) {
+					float size = (block_width-track_width)*0.5;
+					float swidth = 0.3*size;
+					for (int s=-1; s<3; s+=2) {
+						vec2 sign_pos = mid_pos + float(s)*normal*(track_width + 0.5*(block_width-track_width));
+						float decor = line_rect(position, sign_pos-size*tangent, sign_pos+size*tangent, swidth);
+						if ((state & STATE_BLOCK_PLUS) > 0) {
+							float vbar = line_rect(position, sign_pos-size*normal, sign_pos+size*normal, swidth);
+							decor = min(decor, vbar);
+						}
+						sd_block_decor = min(sd_block_decor, decor);
+					}
+				}
+				
+				if (flag == 3) {
+					if ((state & STATE_CONNECTED) > 0) {
+						vec2 end_pos = mid_pos + (stopper_delta)*tangent;
+						float straight = segment(position, mid_pos, end_pos);
+						sd_outer = min(sd_outer, straight-track_width);
+						sd_inner = min(sd_inner, straight-inner_track_width);
+						
+						if ((state & STATE_STOPPER) > 0) {
+							vec2 stopper_pos = mid_pos+tangent*(stopper_delta+track_width-stopper_width);
+							vec2 aux = normal*track_width*stopper_size;
+							float sd_stopper = segment(position, stopper_pos-aux, stopper_pos+aux);
+							sd_outer = min(sd_outer, sd_stopper-stopper_width);
+						}
+						
+						if ((state & STATE_PORTAL) > 0) {
+							vec2 portal_pos = mid_pos+tangent*(stopper_delta);
+							float sd_portal = circle(position - portal_pos, track_width*1.5);
+							sd_outer = min(sd_outer, sd_portal);
+						}
+						continue;
+					}
+				}
+				
+				float track_t;
+				if ((state & STATE_CONNECTED) > 0) {
+					float sd_base_this = track_connection(position, from_slot, to_slot, turn, track_t);
+					float sd_border_this = max(sd_base_this - track_width, -sd_base_this + inner_track_width);
+					
+					if ((state & STATE_BLOCK) > 0) {
+						float sd_block_this = sd_base_this - block_width;
+						if (sd_block_this < 0.0) {
+							composite_block_state |= state;
+						}
+						sd_block = min(sd_block, sd_block_this);
+						
+					}
+					
+					float sd_sleepers_this = sd_base_this - inner_track_width*0.8;
+					float sleeper_sign = 1.0;
+					if (to_slot<2) {
+						sleeper_sign = -1.0;
+					}
+					float num = 3.0;
+					float pointiness = 1.0;
+					float thickness = 0.5;
+					float segment = 1.0/num;
+					float tscale = 1.0;
+					float substract = (abs(mod(track_t - tscale*TIME*sleeper_sign/num + sleeper_sign*sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
+					sd_sleepers_this = max(sd_sleepers_this, -substract );
+					sd_sleepers_this = max(sd_sleepers_this, -track_t);
+					// sd_sleepers_this = max(sd_sleepers_this, -track_t);
+					sd_outer = min(sd_outer, sd_base_this - track_width);
+					sd_inner = min(sd_inner, sd_base_this - inner_track_width);
+					sd_sleepers = min(sd_sleepers, sd_sleepers_this);
+					sd_border = min(sd_border, sd_border_this);
+					if ((state & STATE_SWITCH) > 0) {
+						sd_switch_border = min(sd_switch_border, max(sd_border_this, -track_t));
+					}
+					if ((state & STATE_SWITCH_PRIORITY) > 0) {
+						float arrow = sd_base_this + max(abs(0.12-border_dist*1.3), 0.09) - track_width;
+						sd_switch_arrows = min(sd_switch_arrows, arrow);
+					}
+					if (sd_base_this < track_width) {
+						composite_track_state |= state;
+					}
+				}
+			}
+		}
+	}
+	mix_sdf(sd_block, color_mix, get_block_color(composite_block_state));
+	mix_sdf(sd_block_decor, color_mix, vec4(0.0,0.0,0.0,1.0));
+	mix_sdf(sd_outer, color_mix, get_border_color(composite_track_state));
+	mix_sdf(sd_inner, color_mix, get_inner_color(composite_track_state));
+
+	float switch_markings = max(sd_switch_border, sd_inner);
+	mix_sdf(switch_markings, color_mix, switch_color);
+	mix_sdf(sd_switch_arrows, color_mix, switch_color);
+	mix_sdf(sd_arrows, color_mix, arrow_color);
+	
+	//color_mix = visualize_sdf(sd_block_decor);
+	
+	return color_mix;
+}
+
+void fragment() {
+	COLOR = cell_composite(UV);
+}"
