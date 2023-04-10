@@ -176,7 +176,7 @@ func set_track_attributes(key, value, direction="<>", operation="set"):
 		if ">" in direction:
 			track0.set_track_connection_attribute(track1, key, value, operation)
 		if "<" in direction:
-			track1.get_opposite().set_track_connection_attribute(track0, key, value, operation)
+			track1.get_opposite().set_track_connection_attribute(track0.get_opposite(), key, value, operation)
 		track0 = track1
 	
 	if "<" in direction:
