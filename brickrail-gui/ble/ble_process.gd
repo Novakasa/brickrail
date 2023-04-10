@@ -13,7 +13,7 @@ func start_process():
 	if dist_exists:
 		print("python server dist found!")
 	else:
-		print("using python environment in ble-server/.env/")
+		print("using python environment in ble-server/.env/ if it exists")
 	
 	if OS.get_name() == "Windows":
 		process_pid = OS.execute("CMD.exe", ["/K", "ble-server\\.env\\python.exe", "ble-server/ble_server.py"], false, [], false, true)
@@ -23,7 +23,7 @@ func start_process():
 			process_command = './ble-server/.env/bin/python ble-server/ble_server.py'
 		else:
 			process_command = '../dist/ble_server && read line'
-			process_command = '../dist/ble_server/ble_server && read line'
+			process_command = 'chmod +x ../dist/ble_server/mpy_cross_v6/mpy-cross && chmod +x ../dist/ble_server/ble_server && ../dist/ble_server/ble_server && read line'
 		process_pid = OS.execute("gnome-terminal", ['--', 'bash', '-c', process_command], false)
 		yield(get_tree().create_timer(1.5), "timeout")
 	# bash", "-c", "./ble-server/.env/bin/python", "ble-server/ble_server.py"], false, [], false, true)
