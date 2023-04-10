@@ -3,10 +3,10 @@ extends Reference
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
-const STATE_LOCKED = 4
-const STATE_BLOCK = 8
-const STATE_BLOCK_OCCUPIED = 16
-const STATE_BLOCK_HOVER = 32
+const STATE_LOCKED_P = 4
+const STATE_LOCKED_N = 8
+const STATE_MARK_N = 16
+const STATE_MARK_P = 32
 const STATE_BLOCK_SELECTED = 64
 const STATE_BLOCK_PLUS = 2048
 const STATE_BLOCK_MINUS = 4096
@@ -14,10 +14,12 @@ const STATE_CONNECTED = 128
 const STATE_SWITCH = 256
 const STATE_SWITCH_PRIORITY = 512
 const STATE_ARROW = 1024
-const STATE_MARK = 8192
 const STATE_PORTAL = 16384
 const STATE_STOPPER = 32768
 const STATE_HIGHLIGHT = 65536
+const STATE_BLOCK = 65536*2
+const STATE_BLOCK_OCCUPIED = 65636*4
+const STATE_BLOCK_HOVER = 8192
 
 var next_slot
 var prev_slot
@@ -42,8 +44,11 @@ var default_meta = {"selected": false,
 					"hover": false,
 					"arrow": 0,
 					"locked": null,
+					"locked+": 0,
+					"locked-": 0,
+					"mark+": 0,
+					"mark-": 0,
 					"block": null,
-					"mark": 0,
 					"highlight": 0}
 var hover = false
 
@@ -249,6 +254,7 @@ func set_connection_attribute(turn, key, value, operation):
 	if operation=="set":
 		metadata[turn][key] = value
 	elif operation=="increment":
+		assert(key in metadata[turn])
 		metadata[turn][key] += value
 	else:
 		push_error("invalid operation"+operation)
@@ -552,10 +558,14 @@ func get_shader_state(turn):
 		state |= STATE_HIGHLIGHT
 	if metadata[turn]["arrow"]>0:
 		state |= STATE_ARROW
-	if metadata[turn]["locked"]!=null:
-		state |= STATE_LOCKED
-	if metadata[turn]["mark"]>0:
-		state |= STATE_MARK
+	if metadata[turn]["locked+"]>0:
+		state |= STATE_LOCKED_P
+	if metadata[turn]["locked-"]>0:
+		state |= STATE_LOCKED_N
+	if metadata[turn]["mark+"]>0:
+		state |= STATE_MARK_P
+	if metadata[turn]["mark-"]>0:
+		state |= STATE_MARK_N
 	if hover:
 		state |= STATE_HOVER
 		state |= STATE_ARROW

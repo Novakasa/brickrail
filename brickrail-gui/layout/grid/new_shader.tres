@@ -37,10 +37,10 @@ uniform mat4 state_none;
 
 const int STATE_SELECTED = 1;
 const int STATE_HOVER = 2;
-const int STATE_LOCKED = 4;
-const int STATE_BLOCK_OCCUPIED = 16;
-const int STATE_BLOCK = 8;
-const int STATE_BLOCK_HOVER = 32;
+const int STATE_LOCKED_P = 4;
+const int STATE_LOCKED_N = 8;
+const int STATE_MARK_N = 16;
+const int STATE_MARK_P = 32;
 const int STATE_BLOCK_SELECTED = 64;
 const int STATE_BLOCK_PLUS = 2048;
 const int STATE_BLOCK_MINUS = 4096;
@@ -48,10 +48,12 @@ const int STATE_CONNECTED = 128;
 const int STATE_SWITCH = 256;
 const int STATE_SWITCH_PRIORITY = 512;
 const int STATE_ARROW = 1024;
-const int STATE_MARK = 8192;
 const int STATE_PORTAL = 16384;
 const int STATE_STOPPER = 32768;
 const int STATE_HIGHLIGHT = 65536;
+const int STATE_BLOCK = 65536*2;
+const int STATE_BLOCK_OCCUPIED = 65636*4;
+const int STATE_BLOCK_HOVER = 8192;
 
 const float PI = 3.14159265358979323846;
 
@@ -156,11 +158,11 @@ vec4 get_inner_color(int state) {
 	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
 		color = occupied_color;
 	}
-	if ((state & STATE_MARK) == STATE_MARK) {
-		color = mark_color;
+	if ((state & (STATE_MARK_P + STATE_MARK_N)) > 0) {
+		// color = mark_color;
 	}
-	if ((state & STATE_LOCKED) == STATE_LOCKED) {
-		color = occupied_color;
+	if ((state & (STATE_LOCKED_P + STATE_LOCKED_N)) > 0) {
+		// color = occupied_color;
 	}
 	if ((state & STATE_SELECTED) == STATE_SELECTED) {
 		color = selected_color;
@@ -299,6 +301,8 @@ vec4 cell_composite(vec2 position) {
 	float sd_sleepers = 1.0;
 	float sd_switch_arrows = 1.0;
 	float sd_switch_border = 1.0;
+	float sd_mark = 1.0;
+	float sd_locked = 1.0;
 	int composite_track_state = 0;
 	int composite_block_state = 0;
 
@@ -393,23 +397,31 @@ vec4 cell_composite(vec2 position) {
 						
 					}
 					
-					float sd_sleepers_this = sd_base_this - inner_track_width*0.8;
-					float sleeper_sign = 1.0;
-					if (to_slot<2) {
-						sleeper_sign = -1.0;
-					}
+					float sd_sleepers_raw = max(sd_base_this - inner_track_width*0.8, -track_t);
+
 					float num = 3.0;
 					float pointiness = 1.0;
 					float thickness = 0.5;
 					float segment = 1.0/num;
 					float tscale = 1.0;
-					float substract = (abs(mod(track_t - tscale*TIME*sleeper_sign/num + sleeper_sign*sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
-					sd_sleepers_this = max(sd_sleepers_this, -substract );
-					sd_sleepers_this = max(sd_sleepers_this, -track_t);
-					// sd_sleepers_this = max(sd_sleepers_this, -track_t);
+					float substract_p = (abs(mod(track_t - tscale*TIME/num + sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
+					float substract_n = (abs(mod(track_t + tscale*TIME/num - sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
+					
+					if ((state & STATE_MARK_N) > 0) {
+						sd_mark = min(sd_mark, max(sd_sleepers_raw, -substract_n));
+					}
+					if ((state & STATE_MARK_P) > 0) {
+						sd_mark= min(sd_mark, max(sd_sleepers_raw, -substract_p));
+					}
+					if ((state & STATE_LOCKED_N) > 0) {
+						sd_locked = min(sd_locked, max(sd_sleepers_raw, -substract_n));
+					}
+					if ((state & STATE_LOCKED_P) > 0) {
+						sd_locked= min(sd_locked, max(sd_sleepers_raw, -substract_p));
+					}
+					
 					sd_outer = min(sd_outer, sd_base_this - track_width);
 					sd_inner = min(sd_inner, sd_base_this - inner_track_width);
-					sd_sleepers = min(sd_sleepers, sd_sleepers_this);
 					sd_border = min(sd_border, sd_border_this);
 					if ((state & STATE_SWITCH) > 0) {
 						sd_switch_border = min(sd_switch_border, max(sd_border_this, -track_t));
@@ -429,13 +441,15 @@ vec4 cell_composite(vec2 position) {
 	mix_sdf(sd_block_decor, color_mix, vec4(0.0,0.0,0.0,1.0));
 	mix_sdf(sd_outer, color_mix, get_border_color(composite_track_state));
 	mix_sdf(sd_inner, color_mix, get_inner_color(composite_track_state));
+	mix_sdf(sd_mark, color_mix, mark_color);
+	mix_sdf(sd_locked, color_mix, occupied_color);
 
 	float switch_markings = max(sd_switch_border, sd_inner);
 	mix_sdf(switch_markings, color_mix, switch_color);
 	mix_sdf(sd_switch_arrows, color_mix, switch_color);
 	mix_sdf(sd_arrows, color_mix, arrow_color);
 	
-	//color_mix = visualize_sdf(sd_block_decor);
+	// color_mix = visualize_sdf(sd_locked_p);
 	
 	return color_mix;
 }

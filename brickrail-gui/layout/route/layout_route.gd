@@ -201,14 +201,16 @@ func lock_and_switch_next():
 	var index = leg_index+1
 	while index<len(legs):
 		var leg = legs[index]
-		leg.lock_and_switch(trainname)
+		if not leg.locked:
+			leg.lock_and_switch(trainname)
 		if not is_leg_greedy(index):
 			break
 		index += 1
 
 func advance_attributes():
-	legs[leg_index-1].set_attributes("arrow", -1, ">", "increment")
-	legs[leg_index-1].set_attributes("mark", -1, "<>", "increment")
+	# legs[leg_index-1].set_attributes("arrow", -1, ">", "increment")
+	legs[leg_index-1].set_attributes("mark+", -1, ">", "increment")
+	legs[leg_index-1].set_attributes("mark-", -1, "<", "increment")
 	if highlighted:
 		legs[leg_index-1].set_attributes("highlight", -1, "<>", "increment")
 
@@ -216,8 +218,9 @@ func set_all_attributes():
 	for i in range(len(legs)):
 		if i<leg_index:
 			continue
-		legs[i].set_attributes("arrow", 1, ">", "increment")
-		legs[i].set_attributes("mark", 1, "<>", "increment")
+		# legs[i].set_attributes("arrow", 1, ">", "increment")
+		legs[i].set_attributes("mark+", 1, ">", "increment")
+		legs[i].set_attributes("mark-", 1, "<", "increment")
 		if highlighted:
 			legs[i].set_attributes("highlight", 1, "<>", "increment")
 
@@ -225,8 +228,9 @@ func unset_all_attributes():
 	for i in range(len(legs)):
 		if i<leg_index:
 			continue
-		legs[i].set_attributes("arrow", -1, ">", "increment")
-		legs[i].set_attributes("mark", -1, "<>", "increment")
+		# legs[i].set_attributes("arrow", -1, ">", "increment")
+		legs[i].set_attributes("mark+", -1, ">", "increment")
+		legs[i].set_attributes("mark-", -1, "<", "increment")
 		if highlighted:
 			legs[i].set_attributes("highlight", -1, "<>", "increment")
 

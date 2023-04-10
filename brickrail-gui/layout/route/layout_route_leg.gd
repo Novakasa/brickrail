@@ -120,13 +120,19 @@ func set_switches():
 		last_track = dirtrack
 
 func lock_tracks(trainname):
+	assert(not locked)
 	var lock_trains = get_lock_trains()
 	assert(lock_trains==[trainname]) # only start block should be occupied (by this train)
 	get_full_section().set_track_attributes("locked", trainname, "<>")
+	get_full_section().set_track_attributes("locked+", 1, ">", "increment")
+	get_full_section().set_track_attributes("locked-", 1, "<", "increment")
 	locked = true
 
 func unlock_tracks():
+	assert(locked)
 	get_full_section().set_track_attributes("locked", null, "<>")
+	get_full_section().set_track_attributes("locked+", -1, ">", "increment")
+	get_full_section().set_track_attributes("locked-", -1, "<", "increment")
 	locked = false
 
 func set_attributes(key, value, direction="<>", operation="set"):
