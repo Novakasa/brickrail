@@ -16,10 +16,18 @@ func start_process():
 		print("using python environment in ble-server/.env/ if it exists")
 	
 	if OS.get_name() == "Windows":
-		process_pid = OS.execute("CMD.exe", ["/K", "ble-server\\.env\\python.exe", "ble-server/ble_server.py"], false, [], false, true)
+		var process_command
+		if not dist_exists:
+			# .env is a conda environment
+			process_command = ".\\ble-server\\.env\\python.exe ble-server/ble_server.py"
+		else:
+			process_command = "..\\dist\\ble_server\\ble_server.exe"
+		
+		process_pid = OS.execute("CMD.exe", ["/K", process_command], false, [], false, true)
 	else:
 		var process_command
 		if not dist_exists:
+			# .env is a venv
 			process_command = './ble-server/.env/bin/python ble-server/ble_server.py'
 		else:
 			process_command = '../dist/ble_server && read line'
