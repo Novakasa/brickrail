@@ -7,7 +7,7 @@ func start_process():
 	yield(get_tree(), "idle_frame")
 	print("starting python server process")
 	var dir = Directory.new()
-	var _err = dir.open("../")
+	var _err = dir.open(".")
 	var dist_exists = dir.dir_exists("dist")
 	
 	if dist_exists:
@@ -21,7 +21,7 @@ func start_process():
 			# .env is a conda environment
 			process_command = ".\\ble-server\\.env\\python.exe ble-server/ble_server.py"
 		else:
-			process_command = "..\\dist\\ble_server\\ble_server.exe"
+			process_command = ".\\dist\\ble_server\\ble_server.exe"
 		
 		process_pid = OS.execute("CMD.exe", ["/K", process_command], false, [], false, true)
 	else:
@@ -30,7 +30,7 @@ func start_process():
 			# .env is a venv
 			process_command = './ble-server/.env/bin/python ble-server/ble_server.py'
 		else:
-			process_command = '../dist/ble_server && read line'
+			process_command = './dist/ble_server && read line'
 			process_command = 'chmod +x ../dist/ble_server/mpy_cross_v6/mpy-cross && chmod +x ../dist/ble_server/ble_server && ../dist/ble_server/ble_server && read line'
 		process_pid = OS.execute("gnome-terminal", ['--', 'bash', '-c', process_command], false)
 		yield(get_tree().create_timer(1.5), "timeout")

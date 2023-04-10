@@ -10,3 +10,4 @@ brickrail-gui/ble-server/.env/
 build/
 firmware/
 dist/
+brickrail-gui/dist/

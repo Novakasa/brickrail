@@ -2,8 +2,10 @@
 import asyncio
 from random import randint
 import time
+from pathlib import Path
 
 from reactivex.subject import Subject
+
 
 from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
@@ -251,7 +253,7 @@ class BLEHub:
     
     async def run(self, program=None, wait=False):
         if program is None:
-            program = f"ble-server/hub_programs/{self.program_name}.py"
+            program = str(Path(__file__).parent / "hub_programs" / f"{self.program_name}.py")
 
         async def run_coroutine():
             self.program_stopped.clear()
