@@ -73,8 +73,12 @@ func set_occupied(p_occupied, p_train=null):
 	# section.set_track_attributes("block", blockname)
 	if occupied:
 		section.set_track_attributes("locked", train.trainname, "<>")
+		section.set_track_attributes("locked+", 1, ">", "increment")
+		section.set_track_attributes("locked-", 1, "<", "increment")
 	else:
 		section.set_track_attributes("locked", null, "<>")
+		section.set_track_attributes("locked+", -1, ">", "increment")
+		section.set_track_attributes("locked-", -1, "<", "increment")
 
 func get_all_routes(from_facing, fixed_facing, trainname):
 	return nodes[from_facing].calculate_routes(fixed_facing, trainname)

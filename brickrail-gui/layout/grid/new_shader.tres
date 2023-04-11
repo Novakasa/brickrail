@@ -156,7 +156,7 @@ vec4 get_inner_color(int state) {
 	vec4 color;
 	color = track_inner;
 	if ((state & STATE_BLOCK_OCCUPIED) == STATE_BLOCK_OCCUPIED) {
-		color = occupied_color;
+		// color = occupied_color;
 	}
 	if ((state & STATE_SELECTED) > 0) {
 		color = selected_color;
@@ -408,11 +408,29 @@ vec4 cell_composite(vec2 position) {
 
 				float num = 3.0;
 				float pointiness = 1.0;
-				float thickness = 0.5;
+				float thickness = 0.1;
 				float segment = 1.0/num;
-				float tscale = 1.0;
-				float substract_p = (abs(mod(track_t - tscale*TIME/num + sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
-				float substract_n = (abs(mod(track_t + tscale*TIME/num - sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
+				float tscale_p = 0.0;
+				float tscale_n = 0.0;
+				float phase = 0.38;
+				
+				if ((state & (STATE_LOCKED_N))>0) {
+					tscale_n = 1.0;
+				}
+				if ((state & (STATE_LOCKED_P))>0) {
+					tscale_p = 1.0;
+				}
+				//if ((state & (STATE_LOCKED_P | STATE_LOCKED_N)) == (STATE_LOCKED_P | STATE_LOCKED_N)) {
+					//tscale_p = 0.0;
+					//tscale_n = 0.0;
+				//}
+				if ((state & STATE_BLOCK_OCCUPIED) > 0) {
+					tscale_p = 0.0;
+					tscale_n = 0.0;
+				}
+				
+				float substract_p = (abs(mod(track_t - phase - tscale_p*TIME/num + sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
+				float substract_n = (abs(mod(track_t + phase + tscale_n*TIME/num - sd_base_this*pointiness, segment) - 0.5*segment) - (1.0-thickness)*0.5*segment)/pointiness;
 				
 				if ((state & STATE_MARK_N) > 0) {
 					sd_mark = min(sd_mark, max(sd_sleepers_raw, -substract_n));
@@ -436,7 +454,7 @@ vec4 cell_composite(vec2 position) {
 				}
 				if ((state & STATE_SWITCH_PRIORITY) > 0) {
 					// float arrow = sd_base_this + max(abs(0.12-border_dist*1.3), 0.09) - track_width;
-					float arrow = sd_base_this + 0.5*max((abs(track_s-border_s+0.12)-0.12), -1.2*inner_track_width);
+					float arrow = sd_base_this + max(1.0*(abs(track_s-border_s+0.12)-0.12), -0.6*inner_track_width);
 					sd_switch_arrows = min(sd_switch_arrows, arrow);
 				}
 				if (sd_base_this < track_width) {
