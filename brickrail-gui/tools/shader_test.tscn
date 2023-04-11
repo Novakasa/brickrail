@@ -2,13 +2,14 @@
 
 [ext_resource path="res://layout/grid/layout_cell_shader.tres" type="Material" id=1]
 [ext_resource path="res://tools/shader_test.gd" type="Script" id=2]
-[ext_resource path="res://icon.png" type="Texture" id=3]
+[ext_resource path="res://icon3.png" type="Texture" id=3]
 [ext_resource path="res://layout/train/wagon_shader.tres" type="Material" id=4]
 [ext_resource path="res://layout/grid/layout_cell_shader2.tres" type="Material" id=5]
 
 [node name="Node2D" type="Node2D"]
 
 [node name="Node2D" type="Node2D" parent="."]
+visible = false
 material = ExtResource( 1 )
 position = Vector2( 0, 2 )
 script = ExtResource( 2 )
@@ -16,8 +17,8 @@ size = Vector2( 200, 200 )
 
 [node name="Sprite" type="Sprite" parent="."]
 material = ExtResource( 4 )
-position = Vector2( 420, 129 )
-scale = Vector2( 2, 2 )
+position = Vector2( 365, 93 )
+scale = Vector2( 0.12, 0.12 )
 texture = ExtResource( 3 )
 
 [node name="Node2D2" type="Node2D" parent="."]

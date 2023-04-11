@@ -262,6 +262,8 @@ func set_connection_attribute(turn, key, value, operation):
 
 func set_track_connection_attribute(dirtrack, key, value, operation):
 	var turn = connections.keys()[connections.values().find(dirtrack)]
+	if has_portal():
+		turn = "none"
 	set_connection_attribute(turn, key, value, operation)
 
 func get_switch():
