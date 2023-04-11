@@ -1,0 +1,11 @@
+[gd_resource type="DynamicFont" load_steps=2 format=2]
+
+[ext_resource path="res://aestro-theme/RobotoCondensed-Regular.ttf" type="DynamicFontData" id=1]
+
+[resource]
+resource_local_to_scene = true
+outline_color = Color( 0.145098, 0.145098, 0.145098, 1 )
+use_mipmaps = true
+use_filter = true
+extra_spacing_space = 1
+font_data = ExtResource( 1 )
