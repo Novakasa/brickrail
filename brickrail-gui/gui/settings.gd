@@ -18,10 +18,13 @@ signal colors_changed()
 func _ready():
 	print("settings ready")
 	read_configfile()
+	VisualServer.set_default_clear_color(colors["background"])
 
 func set_color(cname, color):
 	colors[cname] = color
 	emit_signal("colors_changed")
+	if cname == "background":
+		VisualServer.set_default_clear_color(color)
 
 func set_render_mode(mode):
 	render_mode = mode

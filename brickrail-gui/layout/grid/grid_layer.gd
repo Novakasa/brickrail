@@ -11,6 +11,10 @@ func _ready():
 	var _err
 	_err = connect("size_changed", self, "update")
 	_err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	_err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+
+func _on_settings_colors_changed():
+	update()
 
 func _on_layout_mode_changed(_mode):
 	update()
