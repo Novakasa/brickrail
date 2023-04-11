@@ -8,7 +8,7 @@ a = Analysis(
     ['brickrail-gui\\ble-server\\ble_server.py'],
     pathex=[],
     binaries=[('brickrail-gui/ble-server/.env/Lib/site-packages/mpy_cross_v6/mpy-cross.exe', 'mpy_cross_v6/')],
-    datas=[('brickrail-gui/ble-server/hub_programs/smart_train.py', 'hub_programs/'), ('brickrail-gui/ble-server/hub_programs/layout_controller.py', 'hub_programs/')],
+    datas=[('brickrail-gui/ble-server/hub_programs/', 'hub_programs/')],
     hiddenimports=[],
     hookspath=[],
     hooksconfig={},
