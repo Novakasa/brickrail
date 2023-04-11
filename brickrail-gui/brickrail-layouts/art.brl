@@ -8,8 +8,6 @@
 		]
 	},
 	"layout": {
-		"nx": 20,
-		"ny": 20,
 		"tracks": [
 			{
 				"l_idx": 0,
@@ -52,7 +50,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -84,7 +83,8 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -116,7 +116,8 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -148,7 +149,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -168,10 +170,12 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -229,7 +233,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -261,7 +266,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -280,7 +286,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -299,7 +306,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -370,7 +378,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -415,7 +424,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -447,7 +457,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -466,7 +477,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -511,7 +523,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -531,10 +544,12 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -580,10 +595,12 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -706,7 +723,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -816,7 +834,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -835,7 +854,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -854,7 +874,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -900,10 +921,12 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -923,10 +946,12 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -945,7 +970,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -980,10 +1006,12 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1015,7 +1043,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1054,13 +1083,14 @@
 						"right"
 					],
 					"W": [
-						"left",
-						"right"
+						"right",
+						"left"
 					]
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1118,7 +1148,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1137,7 +1168,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1170,10 +1202,12 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1219,7 +1253,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1330,7 +1365,8 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1362,7 +1398,8 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1381,7 +1418,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1414,10 +1452,12 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1436,7 +1476,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1456,10 +1497,12 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					},
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1472,7 +1515,7 @@
 						"center"
 					],
 					"E": [
-
+						"left"
 					]
 				}
 			},
@@ -1491,7 +1534,8 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1557,6 +1601,19 @@
 					],
 					"E": [
 						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 3,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"right"
 					]
 				}
 			},
@@ -1576,8 +1633,22 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"left"
+					]
 				}
 			},
 			{
@@ -1609,6 +1680,26 @@
 			{
 				"l_idx": 0,
 				"x_idx": 8,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"right",
+						"center"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
 				"y_idx": 6,
 				"connections": {
 					"N": [
@@ -1621,8 +1712,48 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 6,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 8,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 7,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"right"
+					]
 				}
 			},
 			{
@@ -1666,7 +1797,8 @@
 				},
 				"switches": {
 					"E": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1685,8 +1817,22 @@
 				},
 				"switches": {
 					"W": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 3,
+				"connections": {
+					"S": [
+						"left"
+					],
+					"W": [
+						"left"
+					]
 				}
 			},
 			{
@@ -1717,7 +1863,28 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"E": [
+						"center",
+						"right"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1736,7 +1903,8 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1751,6 +1919,65 @@
 					"E": [
 						"center"
 					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 5,
+				"connections": {
+					"S": [
+						"right"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 5,
+				"connections": {
+					"S": [
+						"right"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 5,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"left",
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"switches": {
+					"N": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
 				}
 			},
 			{
@@ -1820,8 +2047,42 @@
 				},
 				"switches": {
 					"N": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 4,
+				"connections": {
+					"E": [
+						"left",
+						"right"
+					],
+					"W": [
+						"right"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 4,
+				"connections": {
+					"S": [
+						"left"
+					],
+					"W": [
+						"right"
+					]
 				}
 			},
 			{
@@ -1833,7 +2094,28 @@
 						"left"
 					],
 					"W": [
-						"right"
+						"right",
+						"left",
+						"center"
+					]
+				},
+				"switches": {
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"E": [
+						"left"
 					]
 				}
 			},
@@ -1852,7 +2134,8 @@
 				},
 				"switches": {
 					"S": {
-
+						"motor1_inverted": false,
+						"motor2_inverted": false
 					}
 				}
 			},
@@ -1878,8 +2161,15 @@
 						"left"
 					],
 					"S": [
-						"center"
+						"center",
+						"right"
 					]
+				},
+				"switches": {
+					"S": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
 				}
 			},
 			{
@@ -1898,7 +2188,7 @@
 			{
 				"l_idx": 0,
 				"x_idx": 11,
-				"y_idx": 5,
+				"y_idx": 4,
 				"connections": {
 					"N": [
 						"center"
@@ -1906,6 +2196,44 @@
 					"W": [
 						"center"
 					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 11,
+				"y_idx": 4,
+				"connections": {
+					"S": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 11,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center",
+						"left"
+					],
+					"W": [
+						"center",
+						"right"
+					]
+				},
+				"switches": {
+					"N": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					},
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
 				}
 			}
 		],
