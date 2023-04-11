@@ -218,7 +218,7 @@ vec4 visualize_sdf(float sdf) {
 
 const vec2 SLOT_POSITIONS[4] = {vec2(0.5, 0.0), vec2(1.0, 0.5), vec2(0.5, 1.0), vec2(0.0, 0.5)};
 
-float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, out float t, out float border_t) {
+float track_connection(vec2 position, int from_slot, int to_slot, int turn_index, out float t, out float border_t, out float s, out float border_s) {
 	float scene = 20.0;
 	vec2 from_pos = SLOT_POSITIONS[from_slot];
 	vec2 to_pos = SLOT_POSITIONS[to_slot];
@@ -243,7 +243,9 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		float straight = segment(position, from_pos+delta*0.5, end_pos);
 		scene = min(scene, straight);
 		t = dot(position-(from_pos+delta*0.5), delta)/pow(length(delta),2.0);
+		s = dot(position-from_pos-delta*0.5, normalize(delta));
 		border_t = 0.5;
+		border_s = 0.5*length(delta);
 	}
 
 	if (abs(curve_index)==2) {
@@ -254,7 +256,9 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		vec2 r = position - center;
 		float pos_angle = mod(atan(r.y, r.x) - start_angle + PI, 2.0*PI) - PI;
 		t = pos_angle/delta_angle;
+		s = abs(pos_angle*radius);
 		border_t = 0.5;
+		border_s = radius*0.25*PI;
 	}
 	else if (abs(curve_index)==1) {
 		float radius = 0.85355339059; //0.5 + 0.25*sqrt(2.0)
@@ -265,20 +269,24 @@ float track_connection(vec2 position, int from_slot, int to_slot, int turn_index
 		vec2 center = from_pos + delta*0.5 + vec2(cos(center_angle), sin(center_angle))*radius;
 		float border_angle = asin((0.5-straight_length)/radius);
 		border_t = 1.0 - ((border_angle/abs(delta_angle))*(1.0-straight_length) + straight_length);
+		border_s = (abs(delta_angle) - border_angle)*radius;
 		if (dot(delta,aligned) > 0.99) {
 			center += delta*straight_length;
 			float straight = segment(position, from_pos+delta*0.5, to_pos-delta*0.35355339059); //*0.25*sqrt(2.0)
 			scene = min(scene, straight);
 			start_t = straight_length;
 			border_t = 1.0-border_t;
+			border_s = radius*abs(delta_angle) + straight_length - border_s;
 		}
 		vec2 r = position - center;
 		float pos_angle = mod(atan(r.y, r.x) - start_angle + PI, 2.0*PI) - PI;
 		float arcpos = pos_angle/delta_angle;
 		
 		t = arcpos*(1.0-straight_length) + start_t;
+		s = abs(pos_angle*radius) + start_t;
 		if (arcpos<0.0) {
 			t = dot(position-from_pos-delta*0.5, delta);
+			s = dot(position-from_pos-delta*0.5, normalize(delta));
 		}
 		float connection = track_arc(position, center, radius, start_angle, delta_angle);
 		scene = min(scene, connection);
@@ -346,7 +354,9 @@ vec4 cell_composite(vec2 position) {
 				
 				float track_t;
 				float border_t;
-				float sd_base_this = track_connection(position, from_slot, to_slot, turn, track_t, border_t);
+				float track_s;
+				float border_s;
+				float sd_base_this = track_connection(position, from_slot, to_slot, turn, track_t, border_t, track_s, border_s);
 				float sd_border_this = max(sd_base_this - track_width, -sd_base_this + inner_track_width);
 				
 				if ((state & STATE_ARROW) > 0) {
@@ -426,7 +436,7 @@ vec4 cell_composite(vec2 position) {
 				}
 				if ((state & STATE_SWITCH_PRIORITY) > 0) {
 					// float arrow = sd_base_this + max(abs(0.12-border_dist*1.3), 0.09) - track_width;
-					float arrow = sd_base_this + 0.5*max((abs(track_t-border_t+0.15)-0.15), -1.4*inner_track_width);
+					float arrow = sd_base_this + 0.5*max((abs(track_s-border_s+0.12)-0.12), -1.2*inner_track_width);
 					sd_switch_arrows = min(sd_switch_arrows, arrow);
 				}
 				if (sd_base_this < track_width) {
