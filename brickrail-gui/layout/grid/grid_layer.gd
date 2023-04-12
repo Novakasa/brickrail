@@ -58,7 +58,6 @@ func has_point(point):
 	return bounds.grow(LayoutInfo.spacing*0.0).has_point(point)
 
 func _draw():
-	print("drawing grid")
 	if LayoutInfo.layout_mode == "control":
 		return
 	var spacing = LayoutInfo.spacing

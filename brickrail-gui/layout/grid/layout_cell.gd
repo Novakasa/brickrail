@@ -354,5 +354,6 @@ func set_shader_param(key, value):
 	# $RenderCacheViewport.update_worlds()
 
 func _draw():
+	pass
 	# for debugging
-	draw_circle(Vector2(0.5,0.5)*LayoutInfo.spacing, LayoutInfo.spacing*0.1, Color.black)
+	# draw_circle(Vector2(0.5,0.5)*LayoutInfo.spacing, LayoutInfo.spacing*0.1, Color.black)
