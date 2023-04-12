@@ -195,7 +195,8 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 			if train.process_mouse_button(event, mouse_world):
 				return true
 	
-	LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell)
+	if LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell):
+		return true
 	
 	# If we release the button outside of the grid, disable the hold modes.
 	if not event.pressed:
@@ -207,3 +208,6 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 				LayoutInfo.stop_draw_track()
 			if LayoutInfo.drag_train:
 				LayoutInfo.stop_drag_train()
+	else:
+		if event.button_index == BUTTON_LEFT:
+			LayoutInfo.unselect()

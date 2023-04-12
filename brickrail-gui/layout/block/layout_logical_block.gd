@@ -129,6 +129,7 @@ func process_mouse_button(event, _pos):
 		if event.pressed:
 			if not selected:
 				select()
+				return true
 	if event.button_index == BUTTON_RIGHT:
 		if not event.pressed:
 			if LayoutInfo.drag_train:
@@ -136,13 +137,21 @@ func process_mouse_button(event, _pos):
 				var end_facing = LayoutInfo.drag_virtual_train.facing
 				if LayoutInfo.layout_mode == "control":
 					var target = nodes[end_facing].id
-					if not LayoutInfo.control_enabled:
-						return
-					train_obj.find_route(target)
+					if LayoutInfo.control_enabled:
+						train_obj.find_route(target)
+						LayoutInfo.stop_drag_train()
+						return true
 				else:
+					if (occupied) and train != train_obj:
+						return false
+					if get_opposite_block().occupied and get_opposite_block().train != train_obj:
+						return false
 					if end_facing != train_obj.facing:
 						train_obj.flip_facing()
 					train_obj.set_current_block(self)
+					LayoutInfo.stop_drag_train()
+					return true
+	return false
 
 func hover(_pos):
 	_hover = true

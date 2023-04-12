@@ -167,13 +167,14 @@ func process_mouse_button(event, pos):
 	
 	var obj = get_obj_at(normalized_pos)
 	if obj != null:
-		obj.process_mouse_button(event, normalized_pos)
-		return
+		if obj.process_mouse_button(event, normalized_pos):
+			return true
 	if event.button_index == BUTTON_RIGHT:
 		if event.pressed:
 			if LayoutInfo.layout_mode == "edit":
 				LayoutInfo.init_draw_track(self)
-				return
+				return true
+	return false
 
 func get_obj_at(normalized_pos):
 	var closest_dist = LayoutInfo.spacing+1

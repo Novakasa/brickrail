@@ -464,8 +464,8 @@ func stop_hover():
 func process_mouse_button(event, pos):
 	var switch = get_switch_at(pos)
 	if switch != null:
-		switch.process_mouse_button(event, pos)
-		return
+		if switch.process_mouse_button(event, pos):
+			return true
 
 	if event.button_index == BUTTON_LEFT and event.pressed:
 		if LayoutInfo.layout_mode == "edit":
@@ -473,11 +473,13 @@ func process_mouse_button(event, pos):
 				LayoutInfo.init_drag_select(self, slot0)
 			else:
 				LayoutInfo.init_drag_select(self, slot1)
+			return true
 		if LayoutInfo.layout_mode == "portal":
 			if (pos0-pos).length()<(pos1-pos).length():
 				LayoutInfo.set_portal_target(directed_tracks[slot0])
 			else:
 				LayoutInfo.set_portal_target(directed_tracks[slot1])
+			return true
 		
 		if LayoutInfo.layout_mode == "prior_sensor":
 			if (pos0-pos).length()<(pos1-pos).length():
@@ -486,12 +488,14 @@ func process_mouse_button(event, pos):
 			else:
 				LayoutInfo.set_layout_mode("edit")
 				LayoutInfo.selection.add_prior_sensor_dirtrack(directed_tracks[slot1])
+			return true
 
 	if event.button_index == BUTTON_RIGHT and event.pressed:
 		
 		if LayoutInfo.layout_mode == "edit":
 			LayoutInfo.init_connected_draw_track(self)
-		
+			return true
+	return false
 
 func get_tangent_to(slot):
 	if slot == slot1:

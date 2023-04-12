@@ -166,10 +166,13 @@ func process_mouse_button(event, _pos):
 		if event.button_index == BUTTON_RIGHT:
 			if LayoutInfo.layout_mode == "control" and LayoutInfo.control_enabled:
 				if directed_track.get_locked() != null:
-					return
+					return false
 				toggle_switch()
+				return true
 		if event.button_index == BUTTON_LEFT:
 			select()
+			return true
+	return false
 
 func select():
 	LayoutInfo.select(self)
