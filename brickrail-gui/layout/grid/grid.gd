@@ -186,6 +186,8 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 				return
 	
 	if l==null:
+		if event.button_index == BUTTON_LEFT and not event.pressed:
+			LayoutInfo.unselect()
 		return
 	
 	for train in LayoutInfo.trains.values():
