@@ -158,6 +158,14 @@ func stop_hover():
 	if hover_obj != null:
 		hover_obj.stop_hover()
 
+func start_drag_view(event):
+	dragging_view = true
+	dragging_view_reference = event.position
+	dragging_view_camera_reference = $Camera2D.position
+
+func stop_drag_view():
+	dragging_view = false
+
 func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 	if event.button_index == BUTTON_WHEEL_UP:
 		$Camera2D.position += event.position*0.05*$Camera2D.zoom
@@ -171,13 +179,11 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 	
 	if event.button_index == BUTTON_MIDDLE:
 		if event.pressed:
-			dragging_view = true
-			dragging_view_reference = event.position
-			dragging_view_camera_reference = $Camera2D.position
+			start_drag_view(event)
 			return
 		else:
 			if dragging_view:
-				dragging_view = false
+				stop_drag_view()
 				return
 	if event.button_index == BUTTON_LEFT:
 		if event.pressed:
@@ -185,26 +191,23 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 				LayoutInfo.flip_drag_train_facing()
 				return
 	
-	if l==null:
-		if event.button_index == BUTTON_LEFT and not event.pressed:
-			LayoutInfo.unselect()
-		return
-	
-	for train in LayoutInfo.trains.values():
-		if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
-			continue
-		if train.has_point(mouse_world):
-			if train.process_mouse_button(event, mouse_world):
-				return true
-	
-	if LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell):
-		return true
-	
-	# If we release the button outside of the grid, disable the hold modes.
+	if l != null:
+		for train in LayoutInfo.trains.values():
+			if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
+				continue
+			if train.has_point(mouse_world):
+				if train.process_mouse_button(event, mouse_world):
+					return true
+		
+		if LayoutInfo.get_cell(l, i, j).process_mouse_button(event, mpos_cell):
+			return true
+
 	if not event.pressed:
 		if event.button_index == BUTTON_LEFT:
 			if LayoutInfo.drag_select:
 				LayoutInfo.stop_drag_select()
+			if dragging_view:
+				stop_drag_view()
 		if event.button_index == BUTTON_RIGHT:
 			if LayoutInfo.drawing_track:
 				LayoutInfo.stop_draw_track()
@@ -213,3 +216,5 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 	else:
 		if event.button_index == BUTTON_LEFT:
 			LayoutInfo.unselect()
+			start_drag_view(event)
+		
