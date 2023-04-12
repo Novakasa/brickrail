@@ -300,8 +300,8 @@ vec4 cell_composite(vec2 position) {
 	
 	vec4 color_mix = get_background_color();
 	float border_dist = min(position.x, min(position.y, min(1.0-position.x, 1.0-position.y)));
-	if (border_dist<grid_width*0.5) {
-		//color_mix = grid_color;
+	if (border_dist<0.05 && (cell_hover || cell_drawing_highlight)) {
+		color_mix = grid_color;
 	}
 	
 	float sd_outer = 1.0;
