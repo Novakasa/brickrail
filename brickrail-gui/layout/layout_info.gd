@@ -360,6 +360,8 @@ func _unhandled_input(event):
 						dirtrack.remove()
 				
 				if selection is LayoutLogicalBlock:
+					if selection.occupied or selection.get_opposite_block().occupied:
+						return
 					blocks[selection.blockname].remove()
 				
 				if selection is LayoutTrain:
