@@ -9,60 +9,61 @@ margin_bottom = 40.0
 script = ExtResource( 1 )
 
 [node name="Label" type="Label" parent="."]
-margin_right = 129.0
+margin_right = 109.0
 margin_bottom = 14.0
-text = "LayoutTrain"
+text = "Train"
 
 [node name="FixedFacingCheckbox" type="CheckBox" parent="."]
 margin_top = 18.0
-margin_right = 129.0
+margin_right = 109.0
 margin_bottom = 42.0
 hint_tooltip = "If turned off, the train will never drive backwards."
-text = "Fixed facing"
+text = "Only forward"
 
 [node name="SensorAdvanceCheckbox" type="CheckBox" parent="."]
+visible = false
 margin_top = 46.0
 margin_right = 129.0
 margin_bottom = 70.0
 text = "manual sensors"
 
 [node name="BLETrainContainer" type="VBoxContainer" parent="."]
-margin_top = 74.0
-margin_right = 129.0
-margin_bottom = 112.0
+margin_top = 46.0
+margin_right = 109.0
+margin_bottom = 84.0
 
 [node name="Label" type="Label" parent="BLETrainContainer"]
-margin_right = 129.0
+margin_right = 109.0
 margin_bottom = 14.0
-text = "BLE Train"
+text = "Train hub"
 
 [node name="BLETrainSelector" type="OptionButton" parent="BLETrainContainer"]
 margin_top = 18.0
-margin_right = 129.0
+margin_right = 109.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
 
 [node name="ColorLabel" type="Label" parent="."]
-margin_top = 116.0
-margin_right = 129.0
-margin_bottom = 130.0
+margin_top = 88.0
+margin_right = 109.0
+margin_bottom = 102.0
 text = "Color"
 
 [node name="ColorButton" type="ColorPickerButton" parent="."]
-margin_top = 134.0
-margin_right = 129.0
-margin_bottom = 154.0
+margin_top = 106.0
+margin_right = 109.0
+margin_bottom = 126.0
 
 [node name="WagonLabel" type="Label" parent="."]
-margin_top = 158.0
-margin_right = 129.0
-margin_bottom = 172.0
+margin_top = 130.0
+margin_right = 109.0
+margin_bottom = 144.0
 text = "Wagons"
 
 [node name="WagonEdit" type="SpinBox" parent="."]
-margin_top = 176.0
-margin_right = 129.0
-margin_bottom = 200.0
+margin_top = 148.0
+margin_right = 109.0
+margin_bottom = 172.0
 min_value = 1.0
 max_value = 16.0
 value = 4.0

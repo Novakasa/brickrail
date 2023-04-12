@@ -8,9 +8,6 @@ margin_top = 18.0
 margin_right = 493.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="PortLabel" type="Label" parent="."]
 margin_top = 3.0

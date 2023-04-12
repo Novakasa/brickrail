@@ -7,9 +7,6 @@
 margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 1 )
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Label" type="Label" parent="."]
 margin_right = 156.0
@@ -38,7 +35,7 @@ text = "one way"
 margin_top = 94.0
 margin_right = 156.0
 margin_bottom = 114.0
-text = "add portal to..."
+text = "Add portal to..."
 
 [node name="SensorPanel" type="PanelContainer" parent="."]
 margin_top = 118.0

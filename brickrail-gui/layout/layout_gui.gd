@@ -1,12 +1,13 @@
 extends HSplitContainer
 
-export(NodePath) var input_control_button
-export(NodePath) var input_select_button
-export(NodePath) var input_draw_button
-
 export(NodePath) var inspector_container
 export(NodePath) var layer_container
 export(NodePath) var layer_index_edit
+export(NodePath) var edit_tab_path
+export(NodePath) var control_tab_path
+
+var edit_tab
+var control_tab
 
 func _ready():
 	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
@@ -28,22 +29,25 @@ func _ready():
 	$SaveConfirm.add_action_button("no save", "Discard")
 	$SaveConfirm.add_action_button("save", "Save")
 	$SaveConfirm.add_action_button("save as", "Save as...")
+	
+	edit_tab = get_node(edit_tab_path)
+	control_tab = get_node(control_tab_path)
 
 func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
-	$LayoutSplit/LayoutModeTabs/edit/LayoutNew.disabled = new_layout_disabled
-	$LayoutSplit/LayoutModeTabs/edit/LayoutOpen.disabled = new_layout_disabled
+	edit_tab.get_node("LayoutNew").disabled = new_layout_disabled
+	edit_tab.get_node("LayoutOpen").disabled = new_layout_disabled
 
 func _on_layout_random_targets_set(set):
-	$LayoutSplit/LayoutModeTabs/run/AutoTarget.pressed = set
+	control_tab.get_node("AutoTarget").pressed = set
 
 func _on_layout_trains_running(running):
 	if running:
 		$LayoutSplit/LayoutModeTabs.set_tab_disabled(0, true)
-		$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.disabled = true
+		control_tab.get_node("ControlDevicesToggle").disabled = true
 	else:
 		$LayoutSplit/LayoutModeTabs.set_tab_disabled(0, false)
-		$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.disabled = false
+		control_tab.get_node("ControlDevicesToggle").disabled = false
 
 func _on_layers_changed():
 	var layers = get_node(layer_container)
@@ -185,20 +189,20 @@ func _on_control_devices_toggled(button_pressed):
 	else:
 		LayoutInfo.control_enabled = false
 		LayoutInfo.set_random_targets(false)
-		$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.disabled = true
-		$LayoutSplit/LayoutModeTabs/run/AutoTarget.disabled = true
+		control_tab.get_node("ControlDevicesToggle").disabled = true
+		control_tab.get_node("AutoTarget").disabled = true
 		var result = yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
 		if Devices.get_ble_controller().are_hubs_ready() and result=="success":
 			LayoutInfo.set_control_devices(true)
 		else:
-			$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.pressed = false
-		$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.disabled = false
+			control_tab.get_node("ControlDevicesToggle").pressed = false
+		control_tab.get_node("ControlDevicesToggle").disabled = false
 		LayoutInfo.control_enabled = true
-		$LayoutSplit/LayoutModeTabs/run/AutoTarget.disabled = false
+		control_tab.get_node("AutoTarget").disabled = false
 
 func _on_layout_control_devices_changed(control_devices):
-	$LayoutSplit/LayoutModeTabs/run/ControlDevicesToggle.pressed = control_devices
-	$LayoutSplit/LayoutModeTabs/run/EmergencyStopButton.disabled = not control_devices
+	control_tab.get_node("ControlDevicesToggle").pressed = control_devices
+	control_tab.get_node("EmergencyStopButton").disabled = not control_devices
 
 func _on_AutoTarget_toggled(button_pressed):
 	LayoutInfo.set_random_targets(button_pressed)

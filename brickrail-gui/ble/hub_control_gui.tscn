@@ -13,34 +13,34 @@ run_button = NodePath("run_button")
 scan_button = NodePath("scan_button")
 
 [node name="connect_button" type="Button" parent="."]
-margin_right = 63.0
+margin_right = 64.0
 margin_bottom = 20.0
-text = "connect"
+text = "Connect"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="run_button" type="Button" parent="."]
-margin_left = 67.0
-margin_right = 100.0
+margin_left = 68.0
+margin_right = 161.0
 margin_bottom = 20.0
 disabled = true
-text = "run"
+text = "Run program"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Control" type="Control" parent="."]
-margin_left = 104.0
-margin_right = 192.0
+margin_left = 165.0
+margin_right = 165.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="scan_button" type="Button" parent="."]
-margin_left = 196.0
-margin_right = 237.0
+margin_left = 169.0
+margin_right = 259.0
 margin_bottom = 20.0
-text = "scan"
+text = "Scan for hub"
 
 [connection signal="pressed" from="connect_button" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="run_button" to="." method="_on_run_button_pressed"]

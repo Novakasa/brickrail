@@ -21,7 +21,7 @@ __meta__ = {
 [node name="Label" type="Label" parent="VBoxContainer"]
 margin_right = 118.0
 margin_bottom = 14.0
-text = "Switch Motor:"
+text = "Switch motor:"
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
 margin_top = 18.0

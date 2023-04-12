@@ -10,7 +10,7 @@ script = ExtResource( 1 )
 [node name="Label" type="Label" parent="."]
 margin_right = 118.0
 margin_bottom = 14.0
-text = "LayoutBlock"
+text = "Logical block"
 
 [node name="AddTrain" type="Button" parent="."]
 margin_top = 18.0
@@ -70,14 +70,14 @@ margin_top = 66.0
 margin_right = 118.0
 margin_bottom = 90.0
 pressed = true
-text = "can stop"
+text = "Can stop"
 
 [node name="CanFlipCheckBox" type="CheckBox" parent="."]
 margin_top = 94.0
 margin_right = 118.0
 margin_bottom = 118.0
 pressed = true
-text = "can reverse"
+text = "Can reverse"
 
 [connection signal="pressed" from="AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="AddPriorSensorButton" to="." method="_on_AddPriorSensorButton_pressed"]
