@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=2]
+[gd_scene load_steps=11 format=2]
 
 [ext_resource path="res://layout/layout.tscn" type="PackedScene" id=1]
 [ext_resource path="res://gui/status_bar.gd" type="Script" id=2]
@@ -9,6 +9,7 @@
 [ext_resource path="res://aestro-theme/aestro.tres" type="Theme" id=7]
 [ext_resource path="res://tools/AsyncWindow.tscn" type="PackedScene" id=8]
 [ext_resource path="res://tools/async_file_dalog.gd" type="Script" id=9]
+[ext_resource path="res://tools/selector.gd" type="Script" id=10]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
@@ -121,13 +122,13 @@ margin_bottom = 31.0
 size_flags_horizontal = 3
 
 [node name="AddLayoutControllerButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer"]
-margin_right = 485.0
+margin_right = 213.0
 margin_bottom = 27.0
 text = "add layout controller"
 
 [node name="controllers" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer"]
 margin_top = 31.0
-margin_right = 485.0
+margin_right = 213.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -138,23 +139,23 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
 margin_top = 34.0
-margin_right = -265.0
-margin_bottom = -411.0
+margin_right = -5.0
+margin_bottom = -5.0
 script = ExtResource( 4 )
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
-margin_right = 225.0
-margin_bottom = 27.0
+margin_right = 213.0
+margin_bottom = 89.0
 columns = 2
 
 [node name="RenderModeLabel" type="Label" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
-margin_right = 101.0
+margin_right = 95.0
 margin_bottom = 27.0
 text = "Render mode"
 
 [node name="RenderModeOption" type="OptionButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
-margin_left = 105.0
-margin_right = 225.0
+margin_left = 99.0
+margin_right = 213.0
 margin_bottom = 27.0
 text = "cached (fast)"
 items = [ "dynamic (slow)", null, false, 0, null, "cached (fast)", null, false, 1, null ]
@@ -163,36 +164,65 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="BackgroundColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
+[node name="PresetLabel" type="Label" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
 margin_top = 31.0
-margin_right = 225.0
+margin_right = 95.0
 margin_bottom = 58.0
+text = "Color preset"
+
+[node name="PresetSelector" type="OptionButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
+margin_left = 99.0
+margin_top = 31.0
+margin_right = 213.0
+margin_bottom = 58.0
+script = ExtResource( 10 )
+has_none = false
+
+[node name="PresetAddButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
+margin_top = 62.0
+margin_right = 95.0
+margin_bottom = 89.0
+text = "add"
+
+[node name="PresetRemoveButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
+margin_left = 99.0
+margin_top = 62.0
+margin_right = 213.0
+margin_bottom = 89.0
+text = "remove"
+
+[node name="BackgroundColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
+margin_top = 93.0
+margin_right = 213.0
+margin_bottom = 120.0
 size_flags_horizontal = 3
 
 [node name="SurfaceColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
-margin_top = 62.0
-margin_right = 225.0
-margin_bottom = 89.0
-
-[node name="PrimaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
-margin_top = 93.0
-margin_right = 225.0
-margin_bottom = 120.0
-
-[node name="SecondaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 124.0
-margin_right = 225.0
+margin_right = 213.0
 margin_bottom = 151.0
 
-[node name="TertiaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
+[node name="PrimaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 155.0
-margin_right = 225.0
+margin_right = 213.0
 margin_bottom = 182.0
 
-[node name="WhiteColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
+[node name="SecondaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 186.0
-margin_right = 225.0
+margin_right = 213.0
 margin_bottom = 213.0
+
+[node name="TertiaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
+margin_top = 217.0
+margin_right = 213.0
+margin_bottom = 244.0
+
+[node name="WhiteColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
+margin_top = 248.0
+margin_right = 213.0
+margin_bottom = 275.0
+
+[node name="PresetNameDialog" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" instance=ExtResource( 8 )]
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer2/HSplitContainer"]
 margin_left = 231.0
@@ -465,6 +495,9 @@ text = "clear"
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/trains/VBoxContainer/AddTrainButton" to="." method="_on_AddTrainButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/controllers/VBoxContainer/AddLayoutControllerButton" to="." method="_on_AddLayoutControllerButton_pressed"]
 [connection signal="item_selected" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/RenderModeOption" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_RenderModeOption_item_selected"]
+[connection signal="meta_selected" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/PresetSelector" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PresetSelector_meta_selected"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/PresetAddButton" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PresetAddButton_pressed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/PresetRemoveButton" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PresetRemoveButton_pressed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/BackgroundColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_BackgroundColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/SurfaceColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_SurfaceColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/PrimaryColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PrimaryColor_color_changed"]

@@ -124,6 +124,7 @@ func _on_visibility_changed():
 func _on_settings_colors_changed():
 	body_color = Settings.colors["secondary"]*1.5
 	selected_color = Settings.colors["tertiary"]
+	update_wagon_visuals()
 
 func has_point(pos):
 	for wagon in wagons:

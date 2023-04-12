@@ -4,7 +4,7 @@ extends Node
 var render_mode = "dynamic"
 onready var layout_path = ProjectSettings.globalize_path("user://")
 
-var colors = {
+var default_colors = {
 	"background": Color("161614"),
 	"surface": Color("292929"),
 	"primary": Color("E0A72E"),
@@ -12,19 +12,52 @@ var colors = {
 	"tertiary": Color("91140F"),
 	"white": Color("EEEEEE")}
 
+var presets = {}
+var default_presets = []
+
+var color_preset = "custom"
+var colors = {}
+
 signal render_mode_changed(mode)
 signal colors_changed()
+signal color_presets_changed()
 
 func _ready():
-	print("settings ready")
+	colors = default_colors
+	presets["default"] = default_colors.duplicate()
+	presets["custom"] = default_colors.duplicate()
+	default_presets = presets.keys()
 	read_configfile()
+	var _err = connect("colors_changed", self, "update_clear_color")
+	update_clear_color()
+	
+func update_clear_color():
 	VisualServer.set_default_clear_color(colors["background"])
 
 func set_color(cname, color):
+	if color_preset != "custom":
+		presets["custom"] = colors.duplicate()
+		set_color_preset("custom")
 	colors[cname] = color
 	emit_signal("colors_changed")
-	if cname == "background":
-		VisualServer.set_default_clear_color(color)
+
+func set_color_preset(presetname):
+	assert(presetname in presets)
+	color_preset = presetname
+	colors = presets[color_preset]
+	emit_signal("color_presets_changed")
+	emit_signal("colors_changed")
+
+func add_color_preset(presetname):
+	presets[presetname] = colors.duplicate()
+	set_color_preset(presetname)
+
+func remove_color_preset(presetname):
+	assert(presetname in presets)
+	if presetname == color_preset:
+		set_color_preset("custom")
+	presets.erase(presetname)
+	emit_signal("color_presets_changed")
 
 func set_render_mode(mode):
 	render_mode = mode
@@ -35,6 +68,16 @@ func save_configfile():
 	data["colors"] = {}
 	for colorname in colors:
 		data.colors[colorname] = colors[colorname].to_html()
+	
+	data["presets"] = {}
+	for presetname in presets:
+		if presetname == "default":
+			continue
+		data.presets[presetname] = {}
+		for colorname in presets[presetname]:
+			data.presets[presetname][colorname] = presets[presetname][colorname].to_html()
+	
+	data["color_preset"] = color_preset
 	data["render_mode"] = render_mode
 	data["layout_path"] = layout_path
 	var jsonstr = JSON.print(data, "\t")
@@ -63,6 +106,17 @@ func read_configfile():
 	render_mode = data.render_mode
 	if "layout_path" in data:
 		layout_path = data.layout_path
+	
+	if "presets" in data:
+		for presetname in data.presets:
+			presets[presetname] = {}
+			if presetname == "default":
+				continue
+			for colorname in data.presets[presetname]:
+				presets[presetname][colorname] = Color(data.presets[presetname][colorname])
+	
+	if "color_preset" in data:
+		color_preset = data.color_preset
 	
 	emit_signal("render_mode_changed")
 	emit_signal("colors_changed")
