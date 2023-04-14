@@ -4,13 +4,21 @@ extends Node
 var render_mode = "dynamic"
 onready var layout_path = ProjectSettings.globalize_path("user://")
 
-var default_colors = {
+var classic_colors = {
 	"background": Color("161614"),
 	"surface": Color("292929"),
 	"primary": Color("E0A72E"),
 	"secondary": Color("5C942E"),
 	"tertiary": Color("91140F"),
 	"white": Color("EEEEEE")}
+
+var bubblegum_colors = {
+	"background": Color("ff152022"),
+	"surface": Color("ff0f1213"),
+	"primary": Color("ff3ab8ba"),
+	"secondary": Color("ffba56ec"),
+	"tertiary": Color("ff954dff"),
+	"white": Color("ffeeeeee")}
 
 var presets = {}
 var default_presets = []
@@ -23,9 +31,10 @@ signal colors_changed()
 signal color_presets_changed()
 
 func _ready():
-	colors = default_colors
-	presets["default"] = default_colors.duplicate()
-	presets["custom"] = default_colors.duplicate()
+	colors = bubblegum_colors.duplicate()
+	presets["bubblegum"] = bubblegum_colors.duplicate()
+	presets["classic"] = classic_colors.duplicate()
+	presets["custom"] = bubblegum_colors.duplicate()
 	default_presets = presets.keys()
 	read_configfile()
 	var _err = connect("colors_changed", self, "update_clear_color")
@@ -44,7 +53,7 @@ func set_color(cname, color):
 func set_color_preset(presetname):
 	assert(presetname in presets)
 	color_preset = presetname
-	colors = presets[color_preset]
+	colors = presets[color_preset].duplicate()
 	emit_signal("color_presets_changed")
 	emit_signal("colors_changed")
 
@@ -54,6 +63,7 @@ func add_color_preset(presetname):
 
 func remove_color_preset(presetname):
 	assert(presetname in presets)
+	assert(not presetname in default_presets)
 	if presetname == color_preset:
 		set_color_preset("custom")
 	presets.erase(presetname)
@@ -71,8 +81,6 @@ func save_configfile():
 	
 	data["presets"] = {}
 	for presetname in presets:
-		if presetname == "default":
-			continue
 		data.presets[presetname] = {}
 		for colorname in presets[presetname]:
 			data.presets[presetname][colorname] = presets[presetname][colorname].to_html()
@@ -110,8 +118,6 @@ func read_configfile():
 	if "presets" in data:
 		for presetname in data.presets:
 			presets[presetname] = {}
-			if presetname == "default":
-				continue
 			for colorname in data.presets[presetname]:
 				presets[presetname][colorname] = Color(data.presets[presetname][colorname])
 	
