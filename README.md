@@ -6,7 +6,7 @@ This project contains microphython programs running on the LEGO hardware, a pyth
 Communication between GUI and python server is done through websockets.
 As of now, trains detect their location via a Boost Color and Distance Sensor pointed dowwards onto the track. Colored markers signal the bounds of block sections.
 
-![GUI screenshot](screenshot2.PNG)
+![GUI screenshot](screenshot3.PNG)
 
 [Here](https://www.youtube.com/watch?v=cBF-G4d4vw8)'s a video of brickrail in action with a multi-layered layout.
 
