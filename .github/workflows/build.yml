@@ -81,7 +81,7 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: windows
+          name: brickrail-windows
           path: build/windows
 
   export-linux:
@@ -110,5 +110,5 @@ jobs:
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
-          name: linux
+          name: brickrail-linux
           path: build/linux
