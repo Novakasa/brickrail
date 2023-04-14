@@ -8,29 +8,23 @@ func start_process():
 	print("starting python server process")
 	var dir = Directory.new()
 	var _err = dir.open(".")
-	var dist_exists = dir.dir_exists("ble-server-portable")
-	
-	if dist_exists:
-		print("python server dist found!")
-	else:
-		print("using python environment in ble-server/.env/ if it exists")
 	
 	if OS.get_name() == "Windows":
 		var process_command
-		if not dist_exists:
-			# .env is a conda environment
-			process_command = "../.env/bin/python.exe ble-server/ble_server.py"
+		if OS.has_feature("standalone"):
+			process_command = ".\\ble-server-windows\\ble_server.exe"
 		else:
-			process_command = "./ble-server-portable/ble_server.exe"
+			# .env is a conda environment
+			process_command = "..\\.env\\python.exe ../ble-server/ble_server.py"
 		
 		process_pid = OS.execute("CMD.exe", ["/K", process_command], false, [], false, true)
 	else:
 		var process_command
-		if not dist_exists:
+		if OS.has_feature("standalone"):
+			process_command = "chmod +x ./ble-server-linux/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-linux/ble_server && ./ble-server-linux/ble_server"
+		else:
 			# .env is a conda environment
 			process_command = "../.env/bin/python ../ble-server/ble_server.py"
-		else:
-			process_command = "chmod +x ./ble-server-portable/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-portable/ble_server && ./ble-server-portable/ble_server"
 		process_pid = OS.execute("gnome-terminal", ["--", "bash", "-c", process_command], false)
 
 	yield(get_tree().create_timer(1.5), "timeout")
