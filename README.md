@@ -10,4 +10,4 @@ As of now, trains detect their location via a Boost Color and Distance Sensor po
 
 [Here](https://www.youtube.com/watch?v=cBF-G4d4vw8)'s a video of brickrail in action with a multi-layered layout.
 
-Head to the https://github.com/Novakasa/brickrail/wiki to learn more about how to run brickrail with your LEGO train layout.
+Head to the [Wiki](https://github.com/Novakasa/brickrail/wiki) to learn more about how to run brickrail with your LEGO train layout.
