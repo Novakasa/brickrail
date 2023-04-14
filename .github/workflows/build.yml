@@ -31,6 +31,7 @@ jobs:
         with:
           name: ble-server-linux
           path: dist/ble-server-linux
+          retention-days: 0
 
   ble-server-windows:
 
@@ -54,6 +55,7 @@ jobs:
         with:
           name: ble-server-windows
           path: dist/ble-server-windows
+          retention-days: 0
 
   export-windows:
     name: GUI Windows Export
