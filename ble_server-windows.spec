@@ -3,11 +3,15 @@
 
 block_cipher = None
 
+import sys
+from pathlib import Path
+site_packages = Path(next(p for p in sys.path if 'site-packages' in p))
+binaries = [(str(site_packages / "mpy_cross_v6/mpy-cross.exe"), "mpy_cross_v6/")]
 
 a = Analysis(
-    ['ble-server\\ble_server.py'],
+    ['ble-server/ble_server.py'],
     pathex=[],
-    binaries=[('ble-server/.env/Lib/site-packages/mpy_cross_v6/mpy-cross.exe', 'mpy_cross_v6/')],
+    binaries=binaries,
     datas=[('ble-server/hub_programs/', 'hub_programs/')],
     hiddenimports=[],
     hookspath=[],
@@ -46,5 +50,5 @@ coll = COLLECT(
     strip=False,
     upx=True,
     upx_exclude=[],
-    name='ble-server-portable',
+    name='ble-server-windows',
 )
