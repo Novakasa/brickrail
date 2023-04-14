@@ -1,0 +1,790 @@
+{
+	"devices": {
+		"trains": [
+
+		],
+		"controllers": [
+
+		]
+	},
+	"layout": {
+		"tracks": [
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 2,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 0,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": -1,
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": -1,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": -1,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 1,
+				"y_idx": -2,
+				"connections": {
+					"S": [
+						"center",
+						"right"
+					],
+					"E": [
+						"center"
+					]
+				},
+				"switches": {
+					"S": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center",
+						"left",
+						"right"
+					],
+					"W": [
+						"center",
+						"right",
+						"left"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					},
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"center",
+						"left",
+						"right"
+					],
+					"S": [
+						"center",
+						"right",
+						"left"
+					]
+				},
+				"switches": {
+					"N": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					},
+					"S": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": -2,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": -2,
+				"connections": {
+					"E": [
+						"right",
+						"center"
+					],
+					"W": [
+						"left"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": -1,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": -1,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": -1,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 2,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 2,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 0,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 0,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 0,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 0,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 0,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 0,
+				"y_idx": -1,
+				"connections": {
+					"S": [
+						"center",
+						"right"
+					],
+					"E": [
+						"center",
+						"left"
+					]
+				},
+				"switches": {
+					"S": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					},
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 0,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": -2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left",
+						"center"
+					]
+				},
+				"switches": {
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": -2,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": -1,
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": -1,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 1,
+				"connections": {
+					"S": [
+						"right"
+					],
+					"E": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 3,
+				"y_idx": 2,
+				"connections": {
+					"N": [
+						"center",
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+					"N": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 0,
+				"connections": {
+					"S": [
+						"right"
+					],
+					"E": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": -2,
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": -1,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 4,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"center",
+						"right"
+					],
+					"W": [
+						"center",
+						"left"
+					]
+				},
+				"switches": {
+					"N": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					},
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 5,
+				"y_idx": 0,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center",
+						"left"
+					]
+				},
+				"switches": {
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 5,
+				"y_idx": -1,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": 5,
+				"y_idx": -2,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": -1,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": -1,
+				"y_idx": 0,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center",
+						"left"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 1,
+				"x_idx": -1,
+				"y_idx": 2,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			}
+		],
+		"blocks": [
+
+		],
+		"trains": [
+
+		]
+	}
+}

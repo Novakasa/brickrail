@@ -450,7 +450,7 @@ vec4 cell_composite(vec2 position) {
 					sd_border = min(sd_border, sd_border_this);
 				}
 				if ((state & STATE_SWITCH) > 0) {
-					sd_switch_border = min(sd_switch_border, max(sd_border_this, -track_t));
+					sd_switch_border = min(sd_switch_border, max(sd_border_this, -track_t+track_width));
 				}
 				if ((state & STATE_SWITCH_PRIORITY) > 0) {
 					// float arrow = sd_base_this + max(abs(0.12-border_dist*1.3), 0.09) - track_width;
