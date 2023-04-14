@@ -9,7 +9,7 @@ var connected = false
 
 signal message_received(message)
 
-func _ready():
+func setup():
 	
 	# OS.execute("cmd", ["start cmd /K"], false)
 	process = BLEProcess.new()
@@ -26,6 +26,8 @@ func _ready():
 		print("Unable to connect")
 		set_process(false)
 
+	yield(_client, "connection_established")
+
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
 	set_process(false)
@@ -37,6 +39,9 @@ func _connected(proto = ""):
 	connected=true
 
 func send_message(message):
+	if not connected:
+		yield(_client, "connection_established")
+	yield(get_tree(), "idle_frame")
 	_client.get_peer(1).put_packet(message.to_utf8())
 
 func _on_data():

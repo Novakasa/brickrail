@@ -27,12 +27,13 @@ func start_process():
 	else:
 		var process_command
 		if not dist_exists:
-			# .env is a venv
+			# .env is a conda environment
 			process_command = "../.env/bin/python ../ble-server/ble_server.py"
 		else:
-			process_command = "chmod +x ./ble-server-portable/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-portable/ble_server && ./ble-server-portable/ble_server && read line"
+			process_command = "chmod +x ./ble-server-portable/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-portable/ble_server && ./ble-server-portable/ble_server"
 		process_pid = OS.execute("gnome-terminal", ["--", "bash", "-c", process_command], false)
-		yield(get_tree().create_timer(1.5), "timeout")
+
+	yield(get_tree().create_timer(1.5), "timeout")
 
 	prints("pid:", process_pid)
 

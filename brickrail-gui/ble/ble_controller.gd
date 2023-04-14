@@ -2,7 +2,7 @@ class_name BLEController
 extends Node
 
 var hubs = {}
-var hub_control_enabled = true
+var hub_control_enabled = false
 
 signal data_received(key, data)
 signal hubs_state_changed()
@@ -10,6 +10,11 @@ signal device_name_discovered(p_name)
 
 func _ready():
 	var _err = $BLECommunicator.connect("message_received", self, "_on_message_received")
+	yield(get_tree(),"idle_frame")
+	emit_signal("hubs_state_changed") # make gui disable connect buttons etc
+	yield($BLECommunicator.setup(), "completed")
+	hub_control_enabled = true
+	emit_signal("hubs_state_changed") # now buttons can be enabled
 
 func add_hub(hub):
 	send_command(null, "add_hub", [hub.name, hub.program], null)
