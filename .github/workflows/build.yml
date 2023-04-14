@@ -77,9 +77,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ble-server-windows
-      - name: Move ble-server into build folder
-        run: |
-          mv ble-server-linux build/linux/ble-server-linux
+          path: build/linux/ble-server-linux
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
@@ -108,9 +106,7 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ble-server-linux
-      - name: Move ble-server into build folder
-        run: |
-          mv ble-server-linux build/linux/ble-server-linux
+          path: build/linux/ble-server-linux
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
