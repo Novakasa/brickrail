@@ -19,23 +19,21 @@ func start_process():
 		var process_command
 		if not dist_exists:
 			# .env is a conda environment
-			process_command = ".\\ble-server\\.env\\python.exe ble-server/ble_server.py"
+			process_command = "../.env/bin/python.exe ble-server/ble_server.py"
 		else:
-			process_command = ".\\ble-server-portable\\ble_server.exe"
+			process_command = "./ble-server-portable/ble_server.exe"
 		
 		process_pid = OS.execute("CMD.exe", ["/K", process_command], false, [], false, true)
 	else:
 		var process_command
 		if not dist_exists:
 			# .env is a venv
-			process_command = './ble-server/.env/bin/python ble-server/ble_server.py'
+			process_command = "../.env/bin/python ../ble-server/ble_server.py"
 		else:
-			# process_command = './dist/ble_server && read line'
-			process_command = 'chmod +x ./ble-server-portable/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-portable/ble_server && ./ble-server-portable/ble_server && read line'
-			# process_command = "./ble-server-portable/ble_server && read line"
-		process_pid = OS.execute("gnome-terminal", ['--', 'bash', '-c', process_command], false)
+			process_command = "chmod +x ./ble-server-portable/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-portable/ble_server && ./ble-server-portable/ble_server && read line"
+		process_pid = OS.execute("gnome-terminal", ["--", "bash", "-c", process_command], false)
 		yield(get_tree().create_timer(1.5), "timeout")
-	# bash", "-c", "./ble-server/.env/bin/python", "ble-server/ble_server.py"], false, [], false, true)
+
 	prints("pid:", process_pid)
 
 func kill():

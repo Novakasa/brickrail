@@ -5,10 +5,10 @@ block_cipher = None
 
 
 a = Analysis(
-    ['brickrail-gui/ble-server/ble_server.py'],
+    ['ble-server/ble_server.py'],
     pathex=[],
-    binaries=[('brickrail-gui/ble-server/.env/lib/python3.9/site-packages/mpy_cross_v6/mpy-cross', 'mpy_cross_v6/')],
-    datas=[('brickrail-gui/ble-server/hub_programs/', 'hub_programs/')],
+    binaries=[('.env/lib/python3.10/site-packages/mpy_cross_v6/mpy-cross', 'mpy_cross_v6/')],
+    datas=[('ble-server/hub_programs/', 'hub_programs/')],
     hiddenimports=['dbus_fast._private.marshaller', 'dbus_fast._private.constants', 'dbus_fast._private.address'],
     hookspath=[],
     hooksconfig={},

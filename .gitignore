@@ -6,7 +6,9 @@ addons/pythonscript
 brickrail-gui/addons/pythonscript
 .ipynb_checkpoints/auto-train-calibrate-checkpoint.ipynb
 brickrail-gui/ble-server/.env/
+ble-server/.env
 .envs/
+.env/
 build/
 firmware/
 dist/

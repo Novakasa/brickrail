@@ -79,7 +79,6 @@ tab_align = 0
 use_hidden_tabs_for_min_size = true
 
 [node name="Trains" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -135,6 +134,7 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Settings" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -250,7 +250,6 @@ tab_align = 0
 use_hidden_tabs_for_min_size = true
 
 [node name="Edit layout" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -288,6 +287,7 @@ margin_right = 201.0
 margin_bottom = 27.0
 
 [node name="Run trains" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
