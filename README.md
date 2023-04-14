@@ -6,12 +6,8 @@ This project contains microphython programs running on the LEGO hardware, a pyth
 Communication between GUI and python server is done through websockets.
 As of now, trains detect their location via a Boost Color and Distance Sensor pointed dowwards onto the track. Colored markers signal the bounds of block sections.
 
-[Here](https://www.youtube.com/watch?v=G22M5xvRr54)'s a video of an old version in action.
-
 ![GUI screenshot](screenshot2.PNG)
 
-# How to run
-Download the Godot Engine binary from the [official website](https://godotengine.org/download). Open the project `brickrail-gui/project.godot`, hit F5.
-The gui is looking for a python environment with the installed packages `pybricksdev` and `websockets` in ble-server/.env to start the ble-server, which is not currently included in the repo, but will be in releases once they are available.
+[Here](https://www.youtube.com/watch?v=cBF-G4d4vw8)'s a video of brickrail in action with a multi-layered layout.
 
-Instructions for setup of your switches and calibration of the color sensors are coming in the future, as the process is not finalized yet.
+Head to the https://github.com/Novakasa/brickrail/wiki to learn more about how to run brickrail with your LEGO train layout.
