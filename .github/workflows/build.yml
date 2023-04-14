@@ -3,24 +3,20 @@ name: Python package
 on: [push]
 
 jobs:
-  build:
+  ble-server-linux:
 
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        python-version: ["3.10"]
 
     steps:
       - uses: actions/checkout@v3
-      - name: Set up Python ${{ matrix.python-version }}
+      - name: Set up Python 3.10}
         uses: actions/setup-python@v4
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.10"
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install ruff pytest
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+          pip install -r requirements.txt
       - name: run pyinstaller
         run: |
           pyinstaller ble_server-linux.spec
@@ -29,3 +25,26 @@ jobs:
         with:
           name: ble-server-linux
           path: dist/ble-server-linux
+
+  ble-server-windows:
+
+    runs-on: windows-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: run pyinstaller
+        run: |
+          pyinstaller ble_server-windows.spec
+      - name: upload dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: ble-server-windows
+          path: dist/ble-server-windows
