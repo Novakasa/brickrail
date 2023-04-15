@@ -140,9 +140,13 @@ jobs:
         with:
           name: brickrail-linux
           path: brickrail-linux
+      - name: zip builds
+        run: |
+          zip -r brickrail-windows.zip brickrail-windows
+          zip -r brickrail-linux.zip brickrail-linux
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
           files: |
-            brickrail-windows
-            brickrail-linux
+            brickrail-windows.zip
+            brickrail-linux.zip
