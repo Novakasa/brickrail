@@ -10,6 +10,5 @@ ble-server/.env
 .envs/
 .env/
 build/
-firmware/
 dist/
 brickrail-gui/dist/
