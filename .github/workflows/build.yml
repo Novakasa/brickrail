@@ -117,6 +117,8 @@ jobs:
         run: |
           mkdir -v -p build/linux/firmware
           cp firmware/* build/linux/firmware
+      - name: add linux executable permission
+        run: chmod +x build/linux/Brickrail.x86_64
       - name: Upload Artifact
         uses: actions/upload-artifact@v1
         with:
@@ -142,6 +144,8 @@ jobs:
           path: brickrail-linux
       - name: Get tag
         run: echo "GITHUB_TAG=${GITHUB_REF#*refs/tags/}" >> $GITHUB_ENV
+      - name: add linux executable permission
+        run: chmod +x brickrail-linux/Brickrail.x86_64
       - name: zip builds
         run: |
           zip -r brickrail-windows-${{ env.GITHUB_TAG }}.zip brickrail-windows
