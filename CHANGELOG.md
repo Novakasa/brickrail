@@ -5,11 +5,14 @@
 
 ## [Unreleased]
 
+## [v1.0.0-alpha.2] - 2023-04-15
+
 ### Fixed
 - Fix TechnicHub dependency in LayoutController hub program (https://github.com/Novakasa/brickrail/issues/108).
 
-## [1.0.0a1] - 2023-04-15
+## [v1.0.0-alpha.1] - 2023-04-15
 
 <!-- diff links for headers -->
-[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...HEAD
-[1.0.0a1]: https://github.com/Novakasa/brickrail/tree/v1.0.0-alpha.1
+[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.2...HEAD
+[v1.0.0-alpha.2]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
+[v1.0.0-alpha.1]: https://github.com/Novakasa/brickrail/tree/v1.0.0-alpha.1
