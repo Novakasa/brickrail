@@ -3,8 +3,7 @@ from micropython import const
 from uselect import poll
 from usys import stdin
 
-from pybricks.hubs import TechnicHub
-from pybricks.pupdevices import DCMotor, Motor
+from pybricks.pupdevices import DCMotor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 
@@ -18,10 +17,23 @@ _SWITCH_COMMAND_SWITCH = const(0)
 
 _DATA_SWITCH_CONFIRM  = const(0)
 
+def get_port(index):
+    try: # Primehub
+        return [Port.A, Port.B, Port.C, Port.D, Port.E, Port.F][index]
+    except AttributeError:
+        pass
+
+    try: # Technichub
+        return [Port.A, Port.B, Port.C, Port.D][index]
+    except AttributeError:
+        pass
+
+    # Cityhub
+    return [Port.A, Port.B][index]
+
 class Switch:
     def __init__(self, port, pulse_duration = 600):
-        pb_port = [Port.A, Port.B, Port.C, Port.D][port]
-        self.motor = DCMotor(pb_port)
+        self.motor = DCMotor(get_port(port))
         self.position = _SWITCH_POS_NONE
         self.port = port
         self.pulse_duration = pulse_duration
@@ -54,7 +66,6 @@ class Switch:
 class Controller:
 
     def __init__(self):
-        self.hub = TechnicHub()
         self.devices = {}
     
     def assign_switch(self, data):

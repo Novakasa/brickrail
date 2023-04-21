@@ -5,6 +5,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- Fix TechnicHub dependency in LayoutController hub program (https://github.com/Novakasa/brickrail/issues/108).
+
 ## [1.0.0a1] - 2023-04-15
 
 <!-- diff links for headers -->
