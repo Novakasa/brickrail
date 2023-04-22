@@ -144,15 +144,23 @@ class BLEHub:
         data = bytes[1:-1] #strip out_id and checksum
 
         if out_id == _OUT_ID_SYS:
-            assert len(data) == 1
             sys_code = data[0]
             if sys_code == _SYS_CODE_READY:
                 self.hub_ready.set()
             if sys_code == _SYS_CODE_STOP:
                 self.hub_ready.clear()
             if sys_code == _SYS_CODE_ALIVE:
+                if not self.hub_ready.is_set():
+                    self.hub_ready.set()
+                
                 # print(f"{self.name} is alive!")
-                pass
+                if len(data)>1:
+                    voltage = (data[1] << 8) + data[2]
+                    current = (data[3] << 8) + data[4]
+                    print(f"voltage: {voltage} mV")
+                    print(f"current: {current} mA")
+
+                    self.to_out_queue("battery", {"voltage": voltage, "current": current})
         
         if out_id == _OUT_ID_DATA:
             # print("got data:", [byte for byte in data])
@@ -252,6 +260,8 @@ class BLEHub:
         self.to_out_queue("disconnected", None)
     
     async def run(self, program=None, wait=False):
+        if not Path(program).exists():
+            program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
         if program is None:
             program = str(Path(__file__).parent / "hub_programs" / f"{self.program_name}.py")
 

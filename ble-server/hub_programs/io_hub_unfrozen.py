@@ -4,6 +4,8 @@ from usys import stdout, stdin
 import uselect
 import urandom
 
+
+from pybricks.hubs import ThisHub
 from pybricks.tools import wait, StopWatch
 
 # disable keyboard interrupt character
@@ -57,6 +59,7 @@ class IOHub:
         self.device_attrs = {}
         self.last_output = None
         self.output_queue = []
+        self.hub = ThisHub()
 
         for attr in dir(device):
             if attr[0] == "_":
@@ -89,8 +92,15 @@ class IOHub:
     def emit_data(self, data):
         self.emit_msg(bytes([_OUT_ID_DATA]) + data)
     
-    def emit_sys_code(self, code):
-        self.emit_msg(bytes([_OUT_ID_SYS, code]))
+    def emit_sys_code(self, code, data=bytes()):
+        self.emit_msg(bytes([_OUT_ID_SYS, code]) + data)
+    
+    def send_alive_data(self):
+        voltage = self.hub.battery.voltage()
+        current = self.hub.battery.current()
+        # print(f"voltage: {voltage} mV")
+        # print(f"current: {current} mA")
+        self.emit_sys_code(_SYS_CODE_ALIVE, bytes([voltage >> 8, voltage & 0xFF, current >> 8, current & 0xFF]))
     
     def emit_ack(self, success):
         if success:
@@ -175,8 +185,8 @@ class IOHub:
         self.alive_watch.resume()
         last_time = loop_watch.time()
         self.running = True
-        self.emit_sys_code(_SYS_CODE_READY)
         alive_data = bytes([_OUT_ID_SYS, _SYS_CODE_ALIVE])
+        self.send_alive_data()
 
         while self.running:
             if self.poll.poll(int(1000*max_delta)):
@@ -192,7 +202,7 @@ class IOHub:
                 if self.last_output[1:3] == alive_data:
                     self.running = False
             if self.alive_watch.time() > 5000:
-                self.emit_sys_code(_SYS_CODE_ALIVE)
+                self.send_alive_data()
                 self.alive_watch.reset()
             t = loop_watch.time()
             delta = (t-last_time)/1000
