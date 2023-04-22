@@ -27,10 +27,36 @@ margin_right = 129.0
 margin_bottom = 70.0
 text = "manual sensors"
 
-[node name="BLETrainContainer" type="VBoxContainer" parent="."]
+[node name="ColorLabel" type="Label" parent="."]
 margin_top = 46.0
 margin_right = 109.0
+margin_bottom = 60.0
+text = "Color"
+
+[node name="ColorButton" type="ColorPickerButton" parent="."]
+margin_top = 64.0
+margin_right = 109.0
 margin_bottom = 84.0
+
+[node name="WagonLabel" type="Label" parent="."]
+margin_top = 88.0
+margin_right = 109.0
+margin_bottom = 102.0
+text = "Wagons"
+
+[node name="WagonEdit" type="SpinBox" parent="."]
+margin_top = 106.0
+margin_right = 109.0
+margin_bottom = 130.0
+min_value = 1.0
+max_value = 16.0
+value = 4.0
+rounded = true
+
+[node name="BLETrainContainer" type="VBoxContainer" parent="."]
+margin_top = 134.0
+margin_right = 109.0
+margin_bottom = 172.0
 
 [node name="Label" type="Label" parent="BLETrainContainer"]
 margin_right = 109.0
@@ -43,34 +69,8 @@ margin_right = 109.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
 
-[node name="ColorLabel" type="Label" parent="."]
-margin_top = 88.0
-margin_right = 109.0
-margin_bottom = 102.0
-text = "Color"
-
-[node name="ColorButton" type="ColorPickerButton" parent="."]
-margin_top = 106.0
-margin_right = 109.0
-margin_bottom = 126.0
-
-[node name="WagonLabel" type="Label" parent="."]
-margin_top = 130.0
-margin_right = 109.0
-margin_bottom = 144.0
-text = "Wagons"
-
-[node name="WagonEdit" type="SpinBox" parent="."]
-margin_top = 148.0
-margin_right = 109.0
-margin_bottom = 172.0
-min_value = 1.0
-max_value = 16.0
-value = 4.0
-rounded = true
-
 [connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
 [connection signal="toggled" from="SensorAdvanceCheckbox" to="." method="_on_SensorAdvanceCheckbox_toggled"]
-[connection signal="meta_selected" from="BLETrainContainer/BLETrainSelector" to="." method="_on_BLETrainSelector_meta_selected"]
 [connection signal="color_changed" from="ColorButton" to="." method="_on_ColorButton_color_changed"]
 [connection signal="value_changed" from="WagonEdit" to="." method="_on_WagonEdit_value_changed"]
+[connection signal="meta_selected" from="BLETrainContainer/BLETrainSelector" to="." method="_on_BLETrainSelector_meta_selected"]
