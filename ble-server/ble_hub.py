@@ -259,10 +259,10 @@ class BLEHub:
         self.to_out_queue("disconnected", None)
     
     async def run(self, program=None, wait=False):
-        if not Path(program).exists():
-            program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
         if program is None:
             program = str(Path(__file__).parent / "hub_programs" / f"{self.program_name}.py")
+        if not Path(program).exists():
+            program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
 
         async def run_coroutine():
             self.program_stopped.clear()
