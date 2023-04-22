@@ -6,7 +6,6 @@ from pathlib import Path
 
 from reactivex.subject import Subject
 
-
 from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
 

@@ -1,4 +1,4 @@
-[gd_scene load_steps=11 format=2]
+[gd_scene load_steps=12 format=2]
 
 [ext_resource path="res://layout/layout.tscn" type="PackedScene" id=1]
 [ext_resource path="res://gui/status_bar.gd" type="Script" id=2]
@@ -10,6 +10,7 @@
 [ext_resource path="res://tools/AsyncWindow.tscn" type="PackedScene" id=8]
 [ext_resource path="res://tools/async_file_dalog.gd" type="Script" id=9]
 [ext_resource path="res://tools/selector.gd" type="Script" id=10]
+[ext_resource path="res://gui/version_label.gd" type="Script" id=11]
 
 [node name="Main" type="Control"]
 anchor_right = 1.0
@@ -464,15 +465,15 @@ margin_bottom = 720.0
 script = ExtResource( 2 )
 
 [node name="StatusLabel" type="Label" parent="VBoxContainer2/StatusGUI"]
-margin_right = 486.0
+margin_right = 456.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "status message"
 
 [node name="ProgressScrollbar" type="HScrollBar" parent="VBoxContainer2/StatusGUI"]
-margin_left = 490.0
+margin_left = 460.0
 margin_top = 6.0
-margin_right = 790.0
+margin_right = 760.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 300, 0 )
 size_flags_vertical = 4
@@ -481,23 +482,30 @@ page = 15.0
 value = 55.668
 
 [node name="Error" type="HBoxContainer" parent="VBoxContainer2/StatusGUI"]
-margin_left = 794.0
-margin_right = 1280.0
+margin_left = 764.0
+margin_right = 1221.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 
 [node name="ErrorLabel" type="Label" parent="VBoxContainer2/StatusGUI/Error"]
-margin_right = 400.0
+margin_right = 371.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "test"
 
 [node name="ClearErrorButton" type="Button" parent="VBoxContainer2/StatusGUI/Error"]
-margin_left = 404.0
-margin_right = 486.0
+margin_left = 375.0
+margin_right = 457.0
 margin_bottom = 27.0
 text = "Clear error"
+
+[node name="VersionLabel" type="Label" parent="VBoxContainer2/StatusGUI"]
+margin_left = 1225.0
+margin_right = 1280.0
+margin_bottom = 27.0
+text = "version"
+script = ExtResource( 11 )
 
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/ConnectAllButton" to="." method="_on_ConnectAllButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton" to="." method="_on_DisconnectAllButton_pressed"]

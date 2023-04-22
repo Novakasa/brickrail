@@ -212,6 +212,10 @@ window/energy_saving/keep_screen_on=false
 
 singletons=[  ]
 
+[global]
+
+version="1.0.0-alpha.3-dev"
+
 [network]
 
 limits/debugger_stdout/max_warnings_per_second=200
