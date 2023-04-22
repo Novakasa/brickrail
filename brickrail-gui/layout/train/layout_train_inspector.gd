@@ -6,7 +6,7 @@ func _enter_tree():
 	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
-	var edit_exclusive_nodes = [$FixedFacingCheckbox, $BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton]
+	var edit_exclusive_nodes = [$BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton]
 	
 	for node in edit_exclusive_nodes:
 		node.visible = (mode != "control")

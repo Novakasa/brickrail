@@ -6,11 +6,17 @@
 ## [Unreleased]
 
 ### Fixed
+
 - Disable Godot HiDPI setting, since we currently don't react to user OS-level DPI scaling (https://github.com/Novakasa/brickrail/discussions/107#discussioncomment-5689736).
+
+### Changed
+
+- Allow enabling/disabling "only forward" setting for trains in "Control layout" mode.
 
 ## [v1.0.0-alpha.2] - 2023-04-21
 
 ### Fixed
+
 - Fix TechnicHub dependency in LayoutController hub program (https://github.com/Novakasa/brickrail/issues/108).
 
 ## [v1.0.0-alpha.1] - 2023-04-15
