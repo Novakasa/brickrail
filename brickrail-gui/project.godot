@@ -206,7 +206,6 @@ Await="*res://tools/await.gd"
 
 window/size/width=1280
 window/size/height=720
-window/dpi/allow_hidpi=true
 window/energy_saving/keep_screen_on=false
 
 [gdnative]

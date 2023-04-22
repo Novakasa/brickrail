@@ -1,9 +1,12 @@
 <!-- Refer to https://keepachangelog.com/en/1.0.0/ for guidance. -->
-<!-- stolen from pybricks-micropython repository -->
+<!-- template stolen from pybricks-micropython repository -->
 
 # Changelog
 
 ## [Unreleased]
+
+### Fixed
+- Disable Godot HiDPI setting, since we currently don't react to user OS-level DPI scaling (https://github.com/Novakasa/brickrail/discussions/107#discussioncomment-5689736).
 
 ## [v1.0.0-alpha.2] - 2023-04-21
 
