@@ -161,7 +161,7 @@ class Route:
     def advance_sensor(self, color):
         next_color = self.get_current_leg().get_next_color()
         if next_color != color and next_color != _COLOR_NONE:
-            print(f"Unexpected Marker Error! {next_color}!= {color}")
+            print(f"Unexpected Marker Error! [expected != measured] {next_color} != {color}")
             return 0
         self.last_key = self.get_current_leg().get_next_key()
         self.last_speed = self.get_current_leg().get_next_speed()
