@@ -17,7 +17,7 @@ text = "Train"
 margin_top = 18.0
 margin_right = 109.0
 margin_bottom = 42.0
-hint_tooltip = "If turned off, the train will never drive backwards."
+hint_tooltip = "If turned on, the train will never drive backwards."
 text = "Only forward"
 
 [node name="SensorAdvanceCheckbox" type="CheckBox" parent="."]
