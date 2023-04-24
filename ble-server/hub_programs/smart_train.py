@@ -60,12 +60,13 @@ class TrainSensor:
         self.marker_hue = 0
         
         self.last_color = None
+        self.chroma_threshold = 3500
     
     def update(self, delta):
         self.last_color = self.sensor.hsv()
         h, s, v = self.last_color.h, self.last_color.s, self.last_color.v
         h = (h-20)%360
-        if s*v>3500:
+        if s*v>self.chroma_threshold:
             self.marker_samples += 1
             self.marker_hue += h
             return

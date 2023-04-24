@@ -6,6 +6,7 @@ var name
 var hub
 var route : LayoutRoute
 var heading = 1
+var motor_inverted = false
 
 signal name_changed(old_name, new_name)
 signal removing(p_name)
@@ -34,7 +35,8 @@ func serialize():
 	return struct
 
 func _on_hub_program_started():
-	pass
+	if motor_inverted:
+		hub.rpc("execute_behavior", [128]) # flip heading only for hub
 
 func set_route(p_route):
 	if route != null:
@@ -98,3 +100,8 @@ func flip_heading():
 func safe_remove_coroutine():
 	yield(hub.safe_remove_coroutine(), "completed")
 	emit_signal("removing", name)
+
+func set_motor_inverted(val):
+	if hub.running and val != motor_inverted:
+		hub.rpc("execute_behavior", [128])
+	motor_inverted = val

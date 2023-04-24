@@ -6,7 +6,7 @@ func _enter_tree():
 	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
-	var edit_exclusive_nodes = [$BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton]
+	var edit_exclusive_nodes = [$BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton, $InvertMotorCheckbox]
 	
 	for node in edit_exclusive_nodes:
 		node.visible = (mode != "control")
@@ -22,13 +22,20 @@ func set_train(obj):
 	var _err = Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
+	if train.ble_train == null:
+		$InvertMotorCheckbox.disabled=true
+	else:
+		$InvertMotorCheckbox.disabled=false
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func select_ble_train(ble_train):
 	if ble_train == null:
 		$BLETrainContainer/BLETrainSelector.select_meta(null)
+		$InvertMotorCheckbox.disabled=true
 	else:
 		$BLETrainContainer/BLETrainSelector.select_meta(ble_train.name)
+		$InvertMotorCheckbox.disabled=false
+		$InvertMotorCheckbox.pressed = ble_train.motor_inverted
 
 func _on_train_ble_train_changed():
 	select_ble_train(train.ble_train)
@@ -57,3 +64,7 @@ func _on_ColorButton_color_changed(color):
 
 func _on_WagonEdit_value_changed(value):
 	train.virtual_train.set_num_wagons(int(value))
+
+func _on_InvertMotorCheckbox_toggled(button_pressed):
+	LayoutInfo.set_layout_changed(true)
+	train.ble_train.set_motor_inverted(button_pressed)
