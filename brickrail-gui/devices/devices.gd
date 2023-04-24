@@ -102,3 +102,6 @@ func clear_coroutine():
 
 func get_ble_controller() -> BLEController:
 	return $BLEController as BLEController
+
+func get_ble_communicator() -> BLECommunicator:
+	return $BLEController/BLECommunicator as BLECommunicator

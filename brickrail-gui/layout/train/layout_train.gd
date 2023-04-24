@@ -127,7 +127,7 @@ func update_control_ble_train():
 			ble_train.flip_heading()
 	else:
 		virtual_train.allow_sensor_advance=true
-		if ble_train != null and ble_train.hub.running:
+		if ble_train != null and ble_train.hub.running and Devices.get_ble_communicator().connected:
 			ble_train.stop()
 			ble_train.download_route(null)
 

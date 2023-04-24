@@ -27,6 +27,20 @@ signal state_changed()
 func _init(p_name, p_program):
 	name = p_name
 	program = p_program
+	communicator = Devices.get_ble_controller().get_node("BLECommunicator")
+	var _err = communicator.connect("status_changed", self, "_on_ble_communicator_status_changed")
+
+func _on_ble_communicator_status_changed():
+	if not communicator.connected:
+		connected = false
+		busy = false
+		status = "disconnected"
+		responsiveness = false
+		running = false
+		emit_signal("responsiveness_changed", "responsiveness")
+		emit_signal("state_changed")
+
+	#TODO: if process is started only now, add hub to ble server state!!!
 
 func set_responsiveness(val):
 	responsiveness = val
@@ -58,7 +72,7 @@ func _on_data_received(key, data):
 		connected=false
 		busy=false
 		status = "disconnected"
-		GuiApi.show_error("Connection error!")
+		GuiApi.show_error("["+name+"] Connection error!")
 		emit_signal("connect_error")
 		emit_signal("state_changed")
 		return

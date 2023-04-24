@@ -10,11 +10,19 @@ signal device_name_discovered(p_name)
 
 func _ready():
 	var _err = $BLECommunicator.connect("message_received", self, "_on_message_received")
-	yield(get_tree(),"idle_frame")
+	_err = $BLECommunicator.connect("status_changed", self, "_on_hub_state_changed")
+	yield(get_tree(), "idle_frame")
 	emit_signal("hubs_state_changed") # make gui disable connect buttons etc
-	yield($BLECommunicator.setup(), "completed")
-	hub_control_enabled = true
-	emit_signal("hubs_state_changed") # now buttons can be enabled
+	_on_hub_state_changed(null)
+	
+	yield(setup_process_and_sync_hubs(), "completed")
+
+func setup_process_and_sync_hubs():
+	
+	yield($BLECommunicator.start_and_connect_to_process(), "completed")
+	for hubname in hubs:
+		var hub = hubs[hubname]
+		send_command(null, "add_hub", [hubname, hub.program], null)
 
 func add_hub(hub):
 	send_command(null, "add_hub", [hub.name, hub.program], null)
@@ -31,20 +39,32 @@ func _on_hub_removing(hubname):
 	send_command(null, "remove_hub", [hubname], null)
 	hubs.erase(hubname)
 
-func _on_hub_state_changed(_hub):
-	if not are_hubs_ready() and LayoutInfo.control_devices:
-		LayoutInfo.emergency_stop()
-	var status = get_hub_status()
-	if len(status)>0:
-		var hubname = status.keys()[0]
-		GuiApi.status_process("["+hubname+"] "+status[hubname]+"...")
+func _on_hub_state_changed(_hub=null):
+	if $BLECommunicator.connected:
+		if not are_hubs_ready() and LayoutInfo.control_devices:
+			LayoutInfo.emergency_stop()
+		var status = get_hub_status()
+		if len(status)>0:
+			var hubname = status.keys()[0]
+			GuiApi.status_process("["+hubname+"] "+status[hubname]+"...")
+		else:
+			GuiApi.status_ready("[BLE Server] connected")
+		
+		hub_control_enabled = (len(status) == 0)
 	else:
-		GuiApi.status_ready()
-	
-	hub_control_enabled = len(status) == 0
+		if LayoutInfo.control_devices:
+			LayoutInfo.set_control_devices(false)
+			LayoutInfo.stop_all_trains()
+		if $BLECommunicator.busy:
+			GuiApi.status_process("[BLE Server] "+$BLECommunicator.status+"...")
+		else:
+			GuiApi.status_ready("[BLE Server] disconnected")
+		hub_control_enabled = false
 	emit_signal("hubs_state_changed")
 
 func are_hubs_ready():
+	if not $BLECommunicator.connected:
+		return false
 	for hub in hubs.values():
 		if not hub.running:
 			return false

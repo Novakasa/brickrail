@@ -5,6 +5,9 @@ export(NodePath) var train_controller_container
 export(NodePath) var layout_controller_container
 export(NodePath) var connect_all_button
 export(NodePath) var disconnect_all_button
+export(NodePath) var connect_ble_server_button
+export(NodePath) var add_train_hub_button
+export(NodePath) var add_controller_hub_button
 
 onready var TrainControllerGUI = preload("res://devices/train/train_control_gui.tscn")
 onready var LayoutControllerGUI = preload("res://devices/layout_controller/layout_controller_gui.tscn")
@@ -19,6 +22,11 @@ func _on_hubs_state_changed():
 	var enabled = Devices.get_ble_controller().hub_control_enabled
 	get_node(connect_all_button).disabled = not enabled
 	get_node(disconnect_all_button).disabled = not enabled
+	
+	var communicator = Devices.get_ble_controller().get_node("BLECommunicator")
+	get_node(connect_ble_server_button).disabled = communicator.busy or communicator.connected
+	get_node(add_train_hub_button).disabled = communicator.busy or (not communicator.connected)
+	get_node(add_controller_hub_button).disabled = communicator.busy or (not communicator.connected)
 
 func _on_devices_train_added(p_name):
 	var train_controller_gui = TrainControllerGUI.instance()
@@ -45,3 +53,6 @@ func _on_ConnectAllButton_pressed():
 
 func _on_DisconnectAllButton_pressed():
 	yield(Devices.get_ble_controller().disconnect_all_coroutine(), "completed")
+
+func _on_ConnectBLEServerButton_pressed():
+	yield(Devices.get_ble_controller().setup_process_and_sync_hubs(), "completed")

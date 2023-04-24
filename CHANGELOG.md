@@ -9,6 +9,7 @@
 
 - Added ability to invert train motor polarity (https://github.com/Novakasa/brickrail/issues/112)
 - Added layout changed label in status bar to highlight unsaved changes (and for debugging)
+- Added robustness for crashed BLEServer, new button to manually start it again and display more errors related to BLEServer connection (https://github.com/Novakasa/brickrail/issues/51)
 
 ### Fixed
 

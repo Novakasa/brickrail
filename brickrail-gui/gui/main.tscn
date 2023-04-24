@@ -25,6 +25,9 @@ train_controller_container = NodePath("VBoxContainer2/HSplitContainer/VBoxContai
 layout_controller_container = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Controllers/VBoxContainer/controllers")
 connect_all_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/ConnectAllButton")
 disconnect_all_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton")
+connect_ble_server_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/ConnectBLEServerButton")
+add_train_hub_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Trains/VBoxContainer/AddTrainButton")
+add_controller_hub_button = NodePath("VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Controllers/VBoxContainer/AddLayoutControllerButton")
 
 [node name="Panel" type="Panel" parent="."]
 anchor_right = 1.0
@@ -73,7 +76,7 @@ text = "Disconnect hubs"
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer"]
 margin_top = 31.0
 margin_right = 240.0
-margin_bottom = 689.0
+margin_bottom = 658.0
 mouse_filter = 1
 size_flags_vertical = 3
 tab_align = 0
@@ -225,6 +228,12 @@ margin_right = 230.0
 margin_bottom = 275.0
 
 [node name="PresetNameDialog" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" instance=ExtResource( 8 )]
+
+[node name="ConnectBLEServerButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer"]
+margin_top = 662.0
+margin_right = 240.0
+margin_bottom = 689.0
+text = "Connect BLE Server"
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer2/HSplitContainer"]
 margin_left = 248.0
@@ -527,6 +536,7 @@ script = ExtResource( 11 )
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/SecondaryColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_SecondaryColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/TertiaryColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_TertiaryColor_color_changed"]
 [connection signal="color_changed" from="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings/WhiteColor" to="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_WhiteColor_color_changed"]
+[connection signal="pressed" from="VBoxContainer2/HSplitContainer/VBoxContainer/ConnectBLEServerButton" to="." method="_on_ConnectBLEServerButton_pressed"]
 [connection signal="tab_changed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutModeTabs_tab_changed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/Edit layout/LayoutNew" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutNew_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/Edit layout/LayoutSave" to="VBoxContainer2/HSplitContainer/LayoutGui" method="_on_LayoutSave_pressed"]

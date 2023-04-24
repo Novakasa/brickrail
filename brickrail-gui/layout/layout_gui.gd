@@ -37,6 +37,7 @@ func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
 	edit_tab.get_node("LayoutNew").disabled = new_layout_disabled
 	edit_tab.get_node("LayoutOpen").disabled = new_layout_disabled
+	control_tab.get_node("ControlDevicesToggle").disabled = new_layout_disabled
 
 func _on_layout_random_targets_set(set):
 	control_tab.get_node("AutoTarget").pressed = set
@@ -187,17 +188,17 @@ func _on_control_devices_toggled(button_pressed):
 		# TODO cleanup ble device state (stop everything?)
 		LayoutInfo.set_control_devices(true)
 	else:
-		LayoutInfo.control_enabled = false
 		LayoutInfo.set_random_targets(false)
 		control_tab.get_node("ControlDevicesToggle").disabled = true
 		control_tab.get_node("AutoTarget").disabled = true
+		
 		var result = yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
+		
 		if Devices.get_ble_controller().are_hubs_ready() and result=="success":
 			LayoutInfo.set_control_devices(true)
 		else:
 			control_tab.get_node("ControlDevicesToggle").pressed = false
 		control_tab.get_node("ControlDevicesToggle").disabled = false
-		LayoutInfo.control_enabled = true
 		control_tab.get_node("AutoTarget").disabled = false
 
 func _on_layout_control_devices_changed(control_devices):

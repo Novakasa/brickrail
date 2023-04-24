@@ -616,9 +616,10 @@ func stop_all_trains():
 
 func emergency_stop():
 	set_control_devices(false)
-	for ble_train in Devices.trains.values():
-		if ble_train.hub.running:
-			ble_train.stop()
+	if Devices.get_ble_controller().get_node("BLECommunicator").connected:
+		for ble_train in Devices.trains.values():
+			if ble_train.hub.running:
+				ble_train.stop()
 	stop_all_trains()
 
 func get_neighbour_slot(slot):
