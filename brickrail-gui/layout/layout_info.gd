@@ -69,8 +69,10 @@ signal cell_added(cell)
 signal trains_running(running)
 
 func set_layout_changed(value):
+	yield(get_tree(), "idle_frame")
 	layout_changed = value
 	# prints("layout changed", value)
+	GuiApi.status_gui.get_node("LayoutChangedLabel").visible=value
 
 func get_cell(l, i, j):
 	assert(l in cells)

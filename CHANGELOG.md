@@ -8,6 +8,7 @@
 ### Added
 
 - Added ability to invert train motor polarity (https://github.com/Novakasa/brickrail/issues/112)
+- Added layout changed label in status bar to highlight unsaved changes (and for debugging)
 
 ### Fixed
 

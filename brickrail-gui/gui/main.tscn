@@ -465,15 +465,15 @@ margin_bottom = 720.0
 script = ExtResource( 2 )
 
 [node name="StatusLabel" type="Label" parent="VBoxContainer2/StatusGUI"]
-margin_right = 456.0
+margin_right = 392.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "status message"
 
 [node name="ProgressScrollbar" type="HScrollBar" parent="VBoxContainer2/StatusGUI"]
-margin_left = 460.0
+margin_left = 396.0
 margin_top = 6.0
-margin_right = 760.0
+margin_right = 696.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 300, 0 )
 size_flags_vertical = 4
@@ -482,23 +482,29 @@ page = 15.0
 value = 55.668
 
 [node name="Error" type="HBoxContainer" parent="VBoxContainer2/StatusGUI"]
-margin_left = 764.0
-margin_right = 1221.0
+margin_left = 700.0
+margin_right = 1092.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 
 [node name="ErrorLabel" type="Label" parent="VBoxContainer2/StatusGUI/Error"]
-margin_right = 371.0
+margin_right = 306.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 custom_colors/font_color = Color( 1, 0, 0, 1 )
 text = "test"
 
 [node name="ClearErrorButton" type="Button" parent="VBoxContainer2/StatusGUI/Error"]
-margin_left = 375.0
-margin_right = 457.0
+margin_left = 310.0
+margin_right = 392.0
 margin_bottom = 27.0
 text = "Clear error"
+
+[node name="LayoutChangedLabel" type="Label" parent="VBoxContainer2/StatusGUI"]
+margin_left = 1096.0
+margin_right = 1221.0
+margin_bottom = 27.0
+text = "unsaved changes!"
 
 [node name="VersionLabel" type="Label" parent="VBoxContainer2/StatusGUI"]
 margin_left = 1225.0
