@@ -8,10 +8,9 @@ var process
 var connected = false
 
 signal message_received(message)
+signal connected()
 
 func setup():
-	
-	# OS.execute("cmd", ["start cmd /K"], false)
 	process = BLEProcess.new()
 	add_child(process)
 	yield(process.start_process(), "completed")
@@ -25,18 +24,26 @@ func setup():
 	if err != OK:
 		print("Unable to connect")
 		set_process(false)
-
-	yield(_client, "connection_established")
+		GuiApi.show_error("Unable to initialize connection to BLE Server python process!")
+	
+	var timer = get_tree().create_timer(5.0)
+	var result = yield(Await.first_signal_objs([timer, self], ["timeout", "connected"]), "completed")
+	print(result)
+	if result == timer:
+		GuiApi.show_error("Timeout trying to connect to BLE Server python process!")
+	# yield(_client, "connection_established")
 
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
-	set_process(false)
+	if not was_clean:
+		GuiApi.show_error("Disconnected from BLE Server python process (uncleanly)!")
 	connected=false
 
 func _connected(proto = ""):
 	print("Connected with protocol: ", proto)
 	# send_command(null, "hub_demo", [], null)
 	connected=true
+	emit_signal("connected")
 
 func send_message(message):
 	if not connected:
@@ -56,4 +63,5 @@ func clean_exit_coroutine():
 	print("waiting for connection to ble-server closed")
 	yield(_client, "connection_closed")
 	print("closed!")
+	yield(get_tree().create_timer(1.0), "timeout")
 	process.kill()
