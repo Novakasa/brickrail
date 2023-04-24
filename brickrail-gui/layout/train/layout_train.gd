@@ -369,6 +369,11 @@ func set_facing(p_facing):
 	facing = p_facing
 	virtual_train.set_facing(facing)
 
+func set_fixed_facing(p_fixed_facing):
+	if fixed_facing != p_fixed_facing:
+		LayoutInfo.set_layout_changed(true)
+		fixed_facing = p_fixed_facing
+
 func remove():
 	unselect()
 	virtual_train.set_process(false)

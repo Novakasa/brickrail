@@ -50,8 +50,7 @@ func _on_train_unselected():
 	queue_free()
 
 func _on_FixedFacingCheckbox_toggled(button_pressed):
-	train.fixed_facing = button_pressed
-	LayoutInfo.set_layout_changed(true)
+	train.set_fixed_facing(button_pressed)
 
 func _on_BLETrainSelector_meta_selected(meta):
 	train.set_ble_train(meta)
