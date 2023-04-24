@@ -18,7 +18,8 @@ signal disconnected()
 signal connect_error()
 signal program_started()
 signal program_stopped()
-signal program_error()
+signal program_error(data)
+signal program_start_error()
 signal responsiveness_changed(value)
 signal removing(name)
 signal state_changed()
@@ -82,6 +83,7 @@ func _on_data_received(key, data):
 		if "Unexpected Marker" in data:
 			LayoutInfo.emergency_stop()
 		emit_signal("program_error", data)
+		emit_signal("program_start_error")
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", data)
@@ -152,7 +154,7 @@ func disconnect_coroutine():
 
 func run_program_coroutine():
 	run_program()
-	var first_signal = yield(Await.first_signal(self, ["program_started", "program_error"]), "completed")
+	var first_signal = yield(Await.first_signal(self, ["program_started", "program_start_error"]), "completed")
 	if first_signal == "program_error":
 		return "error"
 	return "success"
