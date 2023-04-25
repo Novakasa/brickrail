@@ -13,6 +13,7 @@
 
 ### Fixed
 
+- Fixed phantom prior sensors reappearing despite deleted after loading brickrail layouts (https://github.com/Novakasa/brickrail/issues/117)
 - Disable Godot HiDPI setting, since we currently don't react to user OS-level DPI scaling (https://github.com/Novakasa/brickrail/discussions/107#discussioncomment-5689736).
 - Fixed false unsaved changes prompt when train had been selected
 - Fixed "control devices" enabled despite error while starting hub program
