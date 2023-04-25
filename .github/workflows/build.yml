@@ -59,9 +59,34 @@ jobs:
           path: dist/ble-server-windows
           retention-days: 1
   
+  ble-server-macos:
+
+    runs-on: macos-latest
+
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python 3.10
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+          cache: 'pip'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: run pyinstaller
+        run: |
+          pyinstaller ble_server-macos.spec
+      - name: upload dist
+        uses: actions/upload-artifact@v3
+        with:
+          name: ble-server-macos
+          path: dist/ble-server-macos
+          retention-days: 1
+
   build-app:
     name: Build godot app and package with ble server
-    needs: [ble-server-windows, ble-server-linux]
+    needs: [ble-server-windows, ble-server-linux, ble-server-macos]
     runs-on: ubuntu-latest
     container:
       image: barichello/godot-ci:3.5
@@ -82,6 +107,11 @@ jobs:
           mkdir -v -p build/linux
           cd $PROJECT_PATH
           godot -v --export "Linux/X11" ../build/linux/$EXPORT_NAME.x86_64
+      - name: Mac Build
+        run: |
+          mkdir -v -p build/macos
+          cd $PROJECT_PATH
+          godot -v --export "Mac OSX" ../build/macos/$EXPORT_NAME.app
       - name: Download windows ble-server artifact
         uses: actions/download-artifact@v3
         with:
@@ -92,6 +122,11 @@ jobs:
         with:
           name: ble-server-linux
           path: build/linux/ble-server-linux
+      - name: Download macos ble-server artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ble-server-macos
+          path: build/macos/ble-server-macos
       - name: Copy firmware and LICENSE into build folders
         run: |
           mkdir -v -p build/windows/firmware
@@ -100,6 +135,9 @@ jobs:
           mkdir -v -p build/linux/firmware
           cp firmware/* build/linux/firmware
           cp LICENSE build/linux/LICENSE
+          mkdir -v -p build/macos/firmware
+          cp firmware/* build/macos/firmware
+          cp LICENSE build/macos/LICENSE
       - name: Upload windows Artifact
         uses: actions/upload-artifact@v1
         with:
@@ -110,6 +148,11 @@ jobs:
         with:
           name: brickrail-linux
           path: build/linux
+      - name: Upload macos Artifact
+        uses: actions/upload-artifact@v1
+        with:
+          name: brickrail-macos
+          path: build/macos
 
   release:
     name: Upload release
