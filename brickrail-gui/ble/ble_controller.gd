@@ -25,7 +25,8 @@ func setup_process_and_sync_hubs():
 		send_command(null, "add_hub", [hubname, hub.program], null)
 
 func add_hub(hub):
-	send_command(null, "add_hub", [hub.name, hub.program], null)
+	if $BLECommunicator.connected:
+		send_command(null, "add_hub", [hub.name, hub.program], null)
 	hubs[hub.name] = hub
 	hub.connect("ble_command", self, "_on_hub_command")
 	hub.connect("name_changed", self, "_on_hub_name_changed")
@@ -36,7 +37,8 @@ func _on_hub_name_changed(hubname, new_hubname):
 	rename_hub(hubname, new_hubname)
 
 func _on_hub_removing(hubname):
-	send_command(null, "remove_hub", [hubname], null)
+	if $BLECommunicator.connected:
+		send_command(null, "remove_hub", [hubname], null)
 	hubs.erase(hubname)
 
 func _on_hub_state_changed(_hub=null):
@@ -81,7 +83,8 @@ func rename_hub(p_name, p_new_name):
 	var hub = hubs[p_name]
 	hubs.erase(p_name)
 	hubs[p_new_name] = hub
-	send_command(null, "rename_hub", [p_name, p_new_name], null)
+	if $BLECommunicator.connected:
+		send_command(null, "rename_hub", [p_name, p_new_name], null)
 
 func _on_message_received(message):
 	var obj = JSON.parse(message).result
@@ -97,10 +100,12 @@ func _on_message_received(message):
 	emit_signal("data_received", key, obj.data)
 
 func send_command(hub, funcname, args, return_key):
+	assert($BLECommunicator.connected)
 	var command = BLECommand.new(hub, funcname, args, return_key)
 	$BLECommunicator.send_message(command.to_json())
 
 func _on_hub_command(hub, command, args, return_key):
+	assert($BLECommunicator.connected)
 	send_command(hub, command, args, return_key)
 
 func clean_exit_coroutine():

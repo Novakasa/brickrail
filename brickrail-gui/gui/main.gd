@@ -25,8 +25,8 @@ func _on_hubs_state_changed():
 	
 	var communicator = Devices.get_ble_controller().get_node("BLECommunicator")
 	get_node(connect_ble_server_button).disabled = communicator.busy or communicator.connected
-	get_node(add_train_hub_button).disabled = communicator.busy or (not communicator.connected)
-	get_node(add_controller_hub_button).disabled = communicator.busy or (not communicator.connected)
+	# get_node(add_train_hub_button).disabled = communicator.busy or (not communicator.connected)
+	# get_node(add_controller_hub_button).disabled = communicator.busy or (not communicator.connected)
 
 func _on_devices_train_added(p_name):
 	var train_controller_gui = TrainControllerGUI.instance()

@@ -35,8 +35,8 @@ func _ready():
 
 func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
-	edit_tab.get_node("LayoutNew").disabled = new_layout_disabled
-	edit_tab.get_node("LayoutOpen").disabled = new_layout_disabled
+	# edit_tab.get_node("LayoutNew").disabled = new_layout_disabled
+	# edit_tab.get_node("LayoutOpen").disabled = new_layout_disabled
 	control_tab.get_node("ControlDevicesToggle").disabled = new_layout_disabled
 
 func _on_layout_random_targets_set(set):
