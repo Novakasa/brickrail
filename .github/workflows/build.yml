@@ -111,7 +111,8 @@ jobs:
         run: |
           mkdir -v -p build/macos
           cd $PROJECT_PATH
-          godot -v --export "Mac OSX" ../build/macos/$EXPORT_NAME.app
+          godot -v --export "Mac OSX" ../build/macos/$EXPORT_NAME.zip
+          unzip ../build/macos/$EXPORT_NAME.zip ../build/macos
       - name: Download windows ble-server artifact
         uses: actions/download-artifact@v3
         with:
