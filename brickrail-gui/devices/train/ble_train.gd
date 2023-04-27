@@ -6,11 +6,29 @@ var name
 var hub
 var route : LayoutRoute
 var heading = 1
+
 var motor_inverted = false
 
 signal name_changed(old_name, new_name)
 signal removing(p_name)
 signal sensor_advance()
+
+const STORAGE_CHROMA_THRESHOLD   = 0
+const STORAGE_MOTOR_ACC          = 1
+const STORAGE_MOTOR_DEC          = 2
+const STORAGE_MOTOR_FAST_SPEED   = 3
+const STORAGE_MOTOR_SLOW_SPEED   = 4
+const STORAGE_MOTOR_CRUISE_SPEED = 5
+
+var storage_labels = [
+	"Sensor chroma threshold",
+	"Acceleration [DC/s]",
+	"Deceleration [DC/s]",
+	"Fast speed [DC]",
+	"Slow speed [DC]",
+	"Cruise speed [DC]"]
+
+var max_limits = [10000, 10000, 10000, 100, 100, 100]
 
 const DATA_ROUTE_COMPLETE = 1
 const DATA_LEG_ADVANCE    = 2
@@ -28,10 +46,18 @@ func _init(p_name):
 	hub.connect("runtime_data_received", self, "_on_runtime_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("name_changed", self, "_on_hub_name_changed")
+	
+	hub.store_value(STORAGE_CHROMA_THRESHOLD, 3500)
+	hub.store_value(STORAGE_MOTOR_ACC, 40)
+	hub.store_value(STORAGE_MOTOR_DEC, 90)
+	hub.store_value(STORAGE_MOTOR_SLOW_SPEED, 40)
+	hub.store_value(STORAGE_MOTOR_CRUISE_SPEED, 75)
+	hub.store_value(STORAGE_MOTOR_FAST_SPEED, 100)
 
 func serialize():
 	var struct = {}
 	struct["name"] = name
+	struct["storage"] = hub.storage
 	return struct
 
 func _on_hub_program_started():

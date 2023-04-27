@@ -27,6 +27,29 @@ func set_train(obj):
 	else:
 		$InvertMotorCheckbox.disabled=false
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
+	
+	update_storage_controls()
+
+func update_storage_controls():
+	for child in $Storage.get_children():
+		$Storage.remove_child(child)
+		child.queue_free()
+	if train.ble_train == null:
+		return
+	var labels = train.ble_train.storage_labels
+	var max_limits = train.ble_train.max_limits
+	for i in range(len(labels)):
+		var label = Label.new()
+		label.text = labels[i]
+		var edit = SpinBox.new()
+		var _err = edit.connect("value_changed", self, "_on_storage_val_edited", [i])
+		edit.max_value = max_limits[i]
+		edit.value = train.ble_train.hub.storage[i]
+		$Storage.add_child(label)
+		$Storage.add_child(edit)
+
+func _on_storage_val_edited(value, index):
+	train.ble_train.hub.store_value(index, value)
 
 func select_ble_train(ble_train):
 	if ble_train == null:
@@ -36,6 +59,7 @@ func select_ble_train(ble_train):
 		$BLETrainContainer/BLETrainSelector.select_meta(ble_train.name)
 		$InvertMotorCheckbox.disabled=false
 		$InvertMotorCheckbox.pressed = ble_train.motor_inverted
+	update_storage_controls()
 
 func _on_train_ble_train_changed():
 	select_ble_train(train.ble_train)

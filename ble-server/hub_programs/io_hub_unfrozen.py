@@ -16,7 +16,7 @@ _IN_ID_END     = const(10) #ASCII line feed
 _IN_ID_MSG_ACK = const(6)  #ASCII ack
 _IN_ID_RPC     = const(17) #ASCII device control 1
 _IN_ID_SYS     = const(18) #ASCII device control 2
-# _IN_ID_SIGNAL  = const(19) #ASCII device control 3
+_IN_ID_STORE   = const(19) #ASCII device control 3
 _IN_ID_MSG_ERR = const(21) #ASCII nak
 
 # _IN_IDS = [_IN_ID_START, _IN_ID_END, _IN_ID_MSG_ACK, _IN_ID_RPC, _IN_ID_SYS, _IN_ID_SIGNAL, _IN_ID_MSG_ERR]
@@ -32,8 +32,9 @@ _OUT_ID_MSG_ERR = const(21) #ASCII nak
 _SYS_CODE_STOP = const(0)
 _SYS_CODE_READY = const(1)
 _SYS_CODE_ALIVE = const(2)
+_SYS_CODE_VERSION = const(3)
 
-# _CHUNK_LENGTH = const(80)
+VERSION = b"1.1.0"
 
 def xor_checksum(data):
     checksum = 0xFF
@@ -60,6 +61,7 @@ class IOHub:
         self.last_output = None
         self.output_queue = []
         self.hub = ThisHub()
+        self.storage = {}
 
         for attr in dir(device):
             if attr[0] == "_":
@@ -157,6 +159,16 @@ class IOHub:
             else:
                 _result = func()
             return
+        
+        if in_id == _IN_ID_STORE:
+            address = msg[0]
+            _type = msg[1]
+            data = msg[2:]
+            value = 0
+            for i, byte in enumerate(data):
+                value += byte << 8*(len(data)-1-i)
+            self.storage[address] = value
+            return
 
         assert(False)
 
@@ -186,7 +198,7 @@ class IOHub:
         last_time = loop_watch.time()
         self.running = True
         alive_data = bytes([_OUT_ID_SYS, _SYS_CODE_ALIVE])
-        self.send_alive_data()
+        self.emit_sys_code(_SYS_CODE_VERSION, VERSION)
 
         while self.running:
             if self.poll.poll(int(1000*max_delta)):

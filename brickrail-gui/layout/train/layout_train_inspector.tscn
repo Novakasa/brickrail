@@ -75,6 +75,12 @@ margin_right = 109.0
 margin_bottom = 200.0
 text = "invert motor"
 
+[node name="Storage" type="GridContainer" parent="."]
+margin_top = 204.0
+margin_right = 109.0
+margin_bottom = 204.0
+columns = 2
+
 [connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
 [connection signal="toggled" from="SensorAdvanceCheckbox" to="." method="_on_SensorAdvanceCheckbox_toggled"]
 [connection signal="color_changed" from="ColorButton" to="." method="_on_ColorButton_color_changed"]

@@ -7,6 +7,7 @@
 
 ### Added
 
+- Added configurable motor and sensor parameters to Trains (https://github.com/Novakasa/brickrail/issues/116, https://github.com/Novakasa/brickrail/issues/85)
 - Added battery voltage display for hubs (requires new firmware) (https://github.com/Novakasa/brickrail/issues/111)
 - Added ability to invert train motor polarity (https://github.com/Novakasa/brickrail/issues/112)
 - Added layout changed label in status bar to highlight unsaved changes (and for debugging)

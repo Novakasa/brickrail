@@ -387,13 +387,14 @@ split_offset = 348
 margin_right = 318.0
 margin_bottom = 387.0
 
-[node name="Inspector" type="Control" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/TabContainer"]
+[node name="Inspector" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/TabContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
 margin_top = 34.0
 margin_right = -5.0
 margin_bottom = -5.0
+scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer"]
 margin_top = 395.0

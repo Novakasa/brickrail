@@ -2,7 +2,15 @@
 	"devices": {
 		"trains": [
 			{
-				"name": "city-blue"
+				"name": "city-blue",
+				"storage": {
+					"0": 3500,
+					"1": 50,
+					"2": 90,
+					"4": 40,
+					"5": 75,
+					"3": 100
+				}
 			}
 		],
 		"controllers": [

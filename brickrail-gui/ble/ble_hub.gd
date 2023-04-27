@@ -12,6 +12,7 @@ var status = "disconnected"
 var battery_voltage = -1.0
 var battery_current = -1.0
 
+var storage = {}
 
 signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
@@ -87,6 +88,7 @@ func _on_data_received(key, data):
 		set_responsiveness(true)
 		emit_signal("program_started")
 		emit_signal("state_changed")
+		send_storage()
 		return
 	if key == "program_stopped":
 		running=false
@@ -113,6 +115,10 @@ func _on_data_received(key, data):
 		return
 		
 	prints("ble hub unrecognized data key:", key)
+
+func send_storage():
+	for i in storage:
+		store_value(i, storage[i])
 
 func send_command(command, args, return_id=null):
 	# communicator.send_command(name, command, args, return_id)
@@ -150,6 +156,11 @@ func stop_program():
 
 func rpc(funcname, args):
 	send_command("rpc", [funcname, args])
+
+func store_value(address, value):
+	storage[address] = value
+	if running:
+		send_command("store_value", [address, value])
 
 func remove():
 	assert(not connected)

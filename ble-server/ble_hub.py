@@ -16,7 +16,7 @@ _IN_ID_END     = 10 #ASCII line feed
 _IN_ID_MSG_ACK = 6  #ASCII ack
 _IN_ID_RPC     = 17 #ASCII device control 1
 _IN_ID_SYS     = 18 #ASCII device control 2
-# _IN_ID_SIGNAL  = 19 #ASCII device control 3
+_IN_ID_STORE   = 19 #ASCII device control 3
 _IN_ID_MSG_ERR = 21 #ASCII nak
 
 _OUT_ID_START   = 2  #ASCII start of text
@@ -30,6 +30,7 @@ _OUT_ID_MSG_ERR = 21 #ASCII nak
 _SYS_CODE_STOP  = 0
 _SYS_CODE_READY = 1
 _SYS_CODE_ALIVE = 2
+_SYS_CODE_VERSION = 3
 
 _CHUNK_LENGTH = 80
 
@@ -66,6 +67,7 @@ class BLEHub:
         self.msg_ack = asyncio.Queue()
         self.line_buffer = bytearray()
         self.output_buffer = bytearray()
+        self.output_lines = []
         self.msg_len = None
         self.output_byte_arrived = asyncio.Event()
         self.output_byte_time = time.time()
@@ -96,6 +98,7 @@ class BLEHub:
                         pass
                     else:
                         print("[IOHub]", line)
+                        self.output_lines.append(line)
                         self.output_buffer = bytearray()
                         self.msg_len = None
                         if "ERROR" in line.upper() or "EXCEPTION" in line.upper():
@@ -145,13 +148,14 @@ class BLEHub:
         if out_id == _OUT_ID_SYS:
             sys_code = data[0]
             if sys_code == _SYS_CODE_READY:
+                self.io_hub_version = "1.0.0"
+                self.hub_ready.set()
+            if sys_code == _SYS_CODE_VERSION:
+                self.io_hub_version = data[1:].decode()
                 self.hub_ready.set()
             if sys_code == _SYS_CODE_STOP:
                 self.hub_ready.clear()
             if sys_code == _SYS_CODE_ALIVE:
-                if not self.hub_ready.is_set():
-                    self.hub_ready.set()
-                
                 # print(f"{self.name} is alive!")
                 if len(data)>1:
                     voltage = (data[1] << 8) + data[2]
@@ -180,6 +184,17 @@ class BLEHub:
         if not isinstance(args, bytes):
             args = bytes(args)
         msg = bytes([_IN_ID_RPC]) + funcname_hash + args
+        await self.send_safe(msg)
+    
+    async def store_value(self, address, value):
+        assert self.io_hub_version!="1.0.0"
+        shifted = value
+        data = []
+        while shifted > 0:
+            data.insert(0, shifted & 0xFF)
+            shifted >>= 8
+        # print("deconstructed value:", data)
+        msg = bytes([_IN_ID_STORE, address, 0] + data)
         await self.send_safe(msg)
     
     async def send_ack(self, success):
@@ -252,7 +267,7 @@ class BLEHub:
     
     async def disconnect(self):
         try:
-            await asyncio.wait_for(self.hub.disconnect(), 10.0)
+            await asyncio.wait_for(self.hub.disconnect(), 20.0)
         except asyncio.TimeoutError:
             print("disconnect timeout")
             await asyncio.sleep(1.0)
@@ -299,6 +314,7 @@ class BLEHub:
                 await asyncio.sleep(0.05)
         
         run_task = asyncio.create_task(run_coroutine())
+
         output_task = asyncio.create_task(output_loop())
         input_task = asyncio.create_task(input_loop())
         timeout_task = asyncio.create_task(timeout_loop())
@@ -310,7 +326,9 @@ class BLEHub:
             self.to_out_queue("program_error", "program_start_timeout")
             return
 
+        self.to_out_queue("io_hub_version", self.io_hub_version)
         self.to_out_queue("program_started", None)
+        print("io_hub_version:", self.io_hub_version)
 
         if not wait:
             return

@@ -37,10 +37,12 @@ _BEHAVIOR_FLIP_SLOW   = const(5)
 _INTENTION_STOP = const(0)
 _INTENTION_PASS = const(1)
 
-_MOTOR_ACC          = const(40)
-_MOTOR_DEC          = const(90)
-_MOTOR_CRUISE_SPEED = const(75)
-_MOTOR_SLOW_SPEED   = const(40)
+_CONFIG_CHROMA_THRESHOLD   = const(0)
+_CONFIG_MOTOR_ACC          = const(1)
+_CONFIG_MOTOR_DEC          = const(2)
+_CONFIG_MOTOR_FAST_SPEED   = const(3)
+_CONFIG_MOTOR_SLOW_SPEED   = const(4)
+_CONFIG_MOTOR_CRUISE_SPEED = const(5)
 
 _DATA_STATE_CHANGED  = const(0)
 _DATA_ROUTE_COMPLETE = const(1)
@@ -188,8 +190,11 @@ async def main():
     print(dev)
     await train.connect(dev)
     try:
-        await train.run("brickrail-gui/ble-server/hub_programs/smart_train.py")
-
+        await train.run("smart_train")
+        await train.store_value(_CONFIG_MOTOR_CRUISE_SPEED, 75)
+        await train.store_value(_CONFIG_MOTOR_FAST_SPEED, 100)
+        await train.store_value(_CONFIG_MOTOR_ACC, 1000)
+        await train.store_value(_CONFIG_MOTOR_DEC, 1000)
         with train.data_subject.subscribe(on_data):
             # await test_route_loops_gradient(train)
             await test_simple_speed(train)

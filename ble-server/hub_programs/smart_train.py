@@ -3,7 +3,7 @@ from micropython import const
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port
 
-from io_hub import IOHub
+from io_hub_unfrozen import IOHub, VERSION
 
 _COLOR_YELLOW = const(0)
 _COLOR_BLUE   = const(1)
@@ -31,24 +31,17 @@ _BEHAVIOR_FLAG_FLIP  = const(128)
 _INTENTION_STOP = const(0)
 _INTENTION_PASS = const(1)
 
-_MOTOR_ACC          = const(40)
-_MOTOR_DEC          = const(90)
-_MOTOR_FAST_SPEED   = const(100)
-_MOTOR_CRUISE_SPEED = const(75)
-_MOTOR_SLOW_SPEED   = const(40)
-
 _DATA_ROUTE_COMPLETE = const(1)
 _DATA_LEG_ADVANCE    = const(2)
 _DATA_SENSOR_ADVANCE = const(3)
 
-def sensor_speed_to_motor_speed(sensor_speed):
-    if sensor_speed == _SENSOR_SPEED_CRUISE:
-        return _MOTOR_CRUISE_SPEED
-    if sensor_speed == _SENSOR_SPEED_FAST:
-        return _MOTOR_FAST_SPEED
-    if sensor_speed == _SENSOR_SPEED_SLOW:
-        return _MOTOR_SLOW_SPEED
-    assert False, sensor_speed
+_CONFIG_CHROMA_THRESHOLD   = const(0)
+_CONFIG_MOTOR_ACC          = const(1)
+_CONFIG_MOTOR_DEC          = const(2)
+_CONFIG_MOTOR_FAST_SPEED   = const(3)
+_CONFIG_MOTOR_SLOW_SPEED   = const(4)
+_CONFIG_MOTOR_CRUISE_SPEED = const(5)
+
 
 class TrainSensor:
 
@@ -59,14 +52,13 @@ class TrainSensor:
         self.marker_samples = 0
         self.marker_hue = 0
         
-        self.last_color = None
-        self.chroma_threshold = 3500
+        self.last_hsv = None
     
     def update(self, delta):
-        self.last_color = self.sensor.hsv()
-        h, s, v = self.last_color.h, self.last_color.s, self.last_color.v
+        self.last_hsv = self.sensor.hsv()
+        h, s, v = self.last_hsv.h, self.last_hsv.s, self.last_hsv.v
         h = (h-20)%360
-        if s*v>self.chroma_threshold:
+        if s*v>io_hub.storage[_CONFIG_CHROMA_THRESHOLD]:
             self.marker_samples += 1
             self.marker_hue += h
             return
@@ -106,11 +98,11 @@ class TrainMotor:
 
         if self.speed*self.direction>=0:
             if abs(self.speed)<self.target_speed:
-                self.speed = min(abs(self.speed)+delta*_MOTOR_ACC, self.target_speed)*self.direction
+                self.speed = min(abs(self.speed)+delta*io_hub.storage[_CONFIG_MOTOR_ACC], self.target_speed)*self.direction
             if abs(self.speed)>self.target_speed:
-                self.speed = max(abs(self.speed)-delta*_MOTOR_DEC, self.target_speed)*self.direction
+                self.speed = max(abs(self.speed)-delta*io_hub.storage[_CONFIG_MOTOR_DEC], self.target_speed)*self.direction
         else:
-            self.speed += delta*_MOTOR_DEC*self.direction
+            self.speed += delta*io_hub.storage[_CONFIG_MOTOR_DEC]*self.direction
         
         self.motor.dc(self.speed)
 
@@ -249,7 +241,7 @@ class Train:
         if behavior & _BEHAVIOR_FLAG_FLIP:
             self.motor.flip_direction()
         if behavior & _BEHAVIOR_FLAG_SPEED:
-            self.motor.set_target(sensor_speed_to_motor_speed(behavior & 0x0F))
+            self.motor.set_target(io_hub.storage[2+(behavior & 0x0F)])
     
     def new_route(self):
         self.route = Route()
@@ -269,7 +261,15 @@ class Train:
 
         self.motor.update(delta)
 
+assert VERSION != b"1.0.0"
 train = Train()
 io_hub = IOHub(train)
+
+io_hub.storage[_CONFIG_CHROMA_THRESHOLD] = 3500
+io_hub.storage[_CONFIG_MOTOR_ACC] = 40
+io_hub.storage[_CONFIG_MOTOR_DEC] = 90
+io_hub.storage[_CONFIG_MOTOR_SLOW_SPEED] = 40
+io_hub.storage[_CONFIG_MOTOR_CRUISE_SPEED] = 75
+io_hub.storage[_CONFIG_MOTOR_FAST_SPEED] = 100
 
 io_hub.run_loop()
