@@ -10,6 +10,10 @@ func setup(p_hub):
 	hub = p_hub
 	var _err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
 	_on_hubs_state_changed()
+	_err = hub.connect("battery_changed", self, "_on_hub_battery_changed")
+
+func _on_hub_battery_changed():
+	$BatteryLabel.text = ("%.2f" % hub.battery_voltage) + "V"
 
 func _on_hubs_state_changed():
 	var controller = Devices.get_ble_controller()

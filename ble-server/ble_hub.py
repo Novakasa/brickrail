@@ -156,8 +156,8 @@ class BLEHub:
                 if len(data)>1:
                     voltage = (data[1] << 8) + data[2]
                     current = (data[3] << 8) + data[4]
-                    print(f"voltage: {voltage} mV")
-                    print(f"current: {current} mA")
+                    # print(f"voltage: {voltage} mV")
+                    # print(f"current: {current} mA")
 
                     self.to_out_queue("battery", {"voltage": voltage, "current": current})
         

@@ -9,6 +9,9 @@ var communicator: BLECommunicator
 var responsiveness = false
 var busy = false
 var status = "disconnected"
+var battery_voltage = -1.0
+var battery_current = -1.0
+
 
 signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
@@ -23,6 +26,7 @@ signal program_start_error()
 signal responsiveness_changed(value)
 signal removing(name)
 signal state_changed()
+signal battery_changed()
 
 func _init(p_name, p_program):
 	name = p_name
@@ -101,6 +105,11 @@ func _on_data_received(key, data):
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", data)
+		return
+	if key == "battery":
+		battery_current = float(data.current)/1000.0
+		battery_voltage = float(data.voltage)/1000.0
+		emit_signal("battery_changed")
 		return
 		
 	prints("ble hub unrecognized data key:", key)

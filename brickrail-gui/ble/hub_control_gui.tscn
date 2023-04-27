@@ -36,9 +36,15 @@ margin_right = 165.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="scan_button" type="Button" parent="."]
+[node name="BatteryLabel" type="Label" parent="."]
 margin_left = 169.0
-margin_right = 259.0
+margin_top = 3.0
+margin_right = 169.0
+margin_bottom = 17.0
+
+[node name="scan_button" type="Button" parent="."]
+margin_left = 173.0
+margin_right = 263.0
 margin_bottom = 20.0
 text = "Scan for hub"
 
