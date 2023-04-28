@@ -116,6 +116,7 @@ class IOHub:
         self.output_watch.reset()
 
     def handle_input(self):
+        # print("handling input", self.input_buffer)
         in_id = self.input_buffer[0]
 
         if in_id == _IN_ID_MSG_ACK:
@@ -176,8 +177,10 @@ class IOHub:
         if self.msg_len is None:
             self.msg_len = byte
             return
+        # print(byte, self.msg_len, len(self.input_buffer))
         if len(self.input_buffer) >= self.msg_len and byte == _IN_ID_END:
             if len(self.input_buffer) > self.msg_len:
+                # print("buffer len!")
                 self.emit_ack(False)
             else:
                 self.handle_input()
@@ -206,6 +209,7 @@ class IOHub:
                 self.update_input(byte)
                 self.input_watch.reset()
             if self.msg_len is not None and self.input_watch.time() > 200:
+                # print("buffer timeout", self.input_buffer)
                 self.emit_ack(False)
                 self.input_buffer = bytearray()
                 self.msg_len = None

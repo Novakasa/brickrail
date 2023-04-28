@@ -49,7 +49,7 @@ func update_storage_controls():
 		$Storage.add_child(edit)
 
 func _on_storage_val_edited(value, index):
-	train.ble_train.hub.store_value(index, value)
+	train.ble_train.hub.store_value(index, int(value))
 
 func select_ble_train(ble_train):
 	if ble_train == null:

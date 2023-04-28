@@ -63,7 +63,7 @@ class BLEHub:
 
         self.input_lock = asyncio.Lock()
         self.output_queue = asyncio.Queue()
-        self.hub.nus_observable.subscribe(self._on_hub_nus)
+        self.hub.stdout_observable.subscribe(self._on_hub_stdout)
         self.msg_ack = asyncio.Queue()
         self.line_buffer = bytearray()
         self.output_buffer = bytearray()
@@ -109,6 +109,7 @@ class BLEHub:
             if len(self.output_buffer) == self.msg_len:
                 self.output_queue.put_nowait(self.output_buffer)
             else:
+                # print("output buffer len!", self.output_bufferself.output_buffer)
                 asyncio.create_task(self.send_ack(False))
             self.output_buffer = bytearray()
             self.msg_len = None
@@ -116,10 +117,7 @@ class BLEHub:
         
         self.output_buffer += bytes([byte])
     
-    def _on_hub_nus(self, data):
-        # print("nus:", data)
-        if self.hub._downloading_via_nus:
-            return
+    def _on_hub_stdout(self, data):
         
         for byte in data:
             self.add_to_output_buffer(byte)
@@ -139,8 +137,8 @@ class BLEHub:
         checksum = bytes[-1]
         output_checksum = xor_checksum(bytes[:-1])
         if not checksum == output_checksum:
+            print(f"received {bytes[:-1]}, checksum mismatch! {checksum} != {output_checksum}", self.output_buffer)
             await self.send_ack(False)
-            print(f"received {bytes[:-1]}, checksum mismatch! {checksum} != {output_checksum}")
             return
         await self.send_ack(True)
         data = bytes[1:-1] #strip out_id and checksum
@@ -188,7 +186,7 @@ class BLEHub:
     
     async def store_value(self, address, value):
         assert self.io_hub_version!="1.0.0"
-        shifted = value
+        shifted = int(value)
         data = []
         while shifted > 0:
             data.insert(0, shifted & 0xFF)
@@ -205,6 +203,7 @@ class BLEHub:
         
     async def send_safe(self, data, unreliable=False, persistent=True):
         assert len(data) <= _CHUNK_LENGTH
+        # print("sending safe:", data)
         checksum = xor_checksum(data)
         ack_result = False
         try_counter = 0
@@ -282,7 +281,7 @@ class BLEHub:
         async def run_coroutine():
             self.program_stopped.clear()
             self.hub_ready.clear()
-            await self.hub.run(program, print_output=False, wait=True)
+            await self.hub.run(program, print_output=False, wait=True, line_handler=False)
             self.program_stopped.set()
             self.to_out_queue("program_stopped", None)
         

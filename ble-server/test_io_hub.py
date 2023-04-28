@@ -26,7 +26,9 @@ async def io_test():
     await test_hub.connect(device)
     try:
         await test_hub.run("test_io", wait=False)
+        print("run started!")
         await asyncio.sleep(1.0)
+        print("first rpc call:")
         await test_hub.rpc("respond", bytearray([1,4,5,253]))
         await asyncio.sleep(1.0)
         await test_hub.rpc("respond", bytearray([1,2,3,4]))

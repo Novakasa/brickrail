@@ -7,7 +7,7 @@ from pybricks.pupdevices import DCMotor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 
-from io_hub import IOHub
+from io_hub_unfrozen import IOHub
 
 _SWITCH_POS_LEFT  = const(0)
 _SWITCH_POS_RIGHT = const(1)
