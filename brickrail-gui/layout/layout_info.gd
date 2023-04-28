@@ -356,6 +356,14 @@ func _unhandled_input(event):
 				if selection is LayoutSection:
 					var dirtracks = Array(selection.tracks)
 					selection.unselect()
+					if len(dirtracks) == 1:
+						var next = dirtracks[0].get_next()
+						if next == null:
+							next = dirtracks[0].get_opposite().get_next()
+						if next != null:
+							drag_selection = LayoutSection.new()
+							drag_selection.select()
+							drag_selection.add_track(next)
 					for dirtrack in dirtracks:
 						if dirtrack.get_block() != null:
 							continue

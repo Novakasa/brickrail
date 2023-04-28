@@ -7,6 +7,7 @@
 
 ### Added
 
+- Automatically select connected track when deleting a single track segment.
 - Current brickrail layout path now displayed in window title
 - Added configurable motor and sensor parameters to Trains (https://github.com/Novakasa/brickrail/issues/116, https://github.com/Novakasa/brickrail/issues/85)
 - Added battery voltage display for hubs (requires new firmware) (https://github.com/Novakasa/brickrail/issues/111)
