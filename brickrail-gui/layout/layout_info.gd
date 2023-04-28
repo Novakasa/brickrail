@@ -572,14 +572,11 @@ func draw_select(draw_cell):
 	var track = drawing_last.create_track(slot0, slot1)
 	if track.get_orientation() in drawing_last.tracks:
 		track = drawing_last.tracks[track.get_orientation()].get_directed_to(slot1)
-		if drag_selection == null:
-			drag_selection = LayoutSection.new()
-			drag_selection.select()
-			drag_selection.connect("unselected", self, "_on_drawing_section_unselected")
-			drag_selection.name="drag_selection"
-			add_child(drag_selection)
-		else:
-			if not drag_selection.can_add_track(track):
+		if not drag_selection.can_add_track(track):
+			if drag_selection.flip().can_add_track(track):
+				drag_selection = drag_selection.flip()
+				drag_selection.select()
+			else:
 				return
 		drag_selection.add_track(track)
 		drawing_last2 = drawing_last

@@ -7,6 +7,7 @@
 
 ### Added
 
+- Make track section select easier by flipping the selection of single track appropriately.
 - Automatically select connected track when deleting a single track segment.
 - Current brickrail layout path now displayed in window title
 - Added configurable motor and sensor parameters to Trains (https://github.com/Novakasa/brickrail/issues/116, https://github.com/Novakasa/brickrail/issues/85)
