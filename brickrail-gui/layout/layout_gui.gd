@@ -32,6 +32,8 @@ func _ready():
 	
 	edit_tab = get_node(edit_tab_path)
 	control_tab = get_node(control_tab_path)
+	
+	OS.set_window_title("Brickrail - New layout")
 
 func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
@@ -139,6 +141,7 @@ func save_layout(path):
 	$SaveLayoutDialog.current_path = path
 	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
+	OS.set_window_title("Brickrail - "+path)
 
 func _on_LayoutOpen_pressed():
 	var saved = yield(check_save_changes_coroutine(), "completed")
@@ -167,6 +170,7 @@ func open_layout(path):
 	$SaveLayoutDialog.current_path = path
 	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
+	OS.set_window_title("Brickrail - "+path)
 
 
 func _on_LayoutNew_pressed():
@@ -177,6 +181,7 @@ func _on_LayoutNew_pressed():
 	LayoutInfo.clear()
 	LayoutInfo.layout_file = null
 	LayoutInfo.set_layout_changed(false)
+	OS.set_window_title("Brickrail - New layout")
 
 
 func _on_control_devices_toggled(button_pressed):
