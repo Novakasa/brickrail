@@ -39,7 +39,8 @@ func load(struct):
 		var _train = add_train(train_data.name)
 		if "storage" in train_data:
 			for key in _train.hub.storage:
-				_train.hub.store_value(int(key), int(train_data.storage[str(key)]))
+				if str(key) in train_data.storage:
+					_train.hub.store_value(int(key), int(train_data.storage[str(key)]))
 		# train.load(train_data)
 	
 	for controller_data in struct.controllers:

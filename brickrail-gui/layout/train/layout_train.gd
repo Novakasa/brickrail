@@ -143,7 +143,6 @@ func serialize():
 		struct["blockindex"] = block.index
 	if ble_train != null:
 		struct["ble_train"] = ble_train.name
-		struct["ble_train_motor_inverted"] = ble_train.motor_inverted
 	return struct
 
 func select():

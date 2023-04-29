@@ -41,6 +41,7 @@ _CONFIG_MOTOR_DEC          = const(2)
 _CONFIG_MOTOR_FAST_SPEED   = const(3)
 _CONFIG_MOTOR_SLOW_SPEED   = const(4)
 _CONFIG_MOTOR_CRUISE_SPEED = const(5)
+_CONFIG_MOTOR_INVERTED     = const(6)
 
 
 class TrainSensor:
@@ -104,7 +105,8 @@ class TrainMotor:
         else:
             self.speed += delta*io_hub.storage[_CONFIG_MOTOR_DEC]*self.direction
         
-        self.motor.dc(self.speed)
+        polarity = (io_hub.storage[_CONFIG_MOTOR_INVERTED]*-2)+1
+        self.motor.dc(self.speed*polarity)
 
 class Route:
     def __init__(self):
@@ -271,5 +273,6 @@ io_hub.storage[_CONFIG_MOTOR_DEC] = 90
 io_hub.storage[_CONFIG_MOTOR_SLOW_SPEED] = 40
 io_hub.storage[_CONFIG_MOTOR_CRUISE_SPEED] = 75
 io_hub.storage[_CONFIG_MOTOR_FAST_SPEED] = 100
+io_hub.storage[_CONFIG_MOTOR_INVERTED] = 0
 
 io_hub.run_loop()

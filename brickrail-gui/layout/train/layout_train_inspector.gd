@@ -6,7 +6,7 @@ func _enter_tree():
 	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
-	var edit_exclusive_nodes = [$BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton, $InvertMotorCheckbox]
+	var edit_exclusive_nodes = [$BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton]
 	
 	for node in edit_exclusive_nodes:
 		node.visible = (mode != "control")
@@ -22,10 +22,6 @@ func set_train(obj):
 	var _err = Devices.connect("trains_changed", self, "_on_devices_trains_changed")
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
-	if train.ble_train == null:
-		$InvertMotorCheckbox.disabled=true
-	else:
-		$InvertMotorCheckbox.disabled=false
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	
 	update_storage_controls()
@@ -38,27 +34,34 @@ func update_storage_controls():
 		return
 	var labels = train.ble_train.storage_labels
 	var max_limits = train.ble_train.max_limits
-	for i in range(len(labels)):
+	var order = [6,1,2,3,4,5,0]
+	for i in order:
 		var label = Label.new()
 		label.text = labels[i]
-		var edit = SpinBox.new()
-		var _err = edit.connect("value_changed", self, "_on_storage_val_edited", [i])
-		edit.max_value = max_limits[i]
-		edit.value = train.ble_train.hub.storage[i]
 		$Storage.add_child(label)
-		$Storage.add_child(edit)
+		if max_limits[i] == -1:
+			var checkbox = CheckBox.new()
+			var _err = checkbox.connect("toggled", self, "_on_storage_val_edited", [i, "bool"])
+			checkbox.pressed = train.ble_train.hub.storage[i] == 1
+			$Storage.add_child(checkbox)
+		else:
+			var edit = SpinBox.new()
+			var _err = edit.connect("value_changed", self, "_on_storage_val_edited", [i, "int"])
+			edit.max_value = max_limits[i]
+			edit.value = train.ble_train.hub.storage[i]
+			$Storage.add_child(edit)
 
-func _on_storage_val_edited(value, index):
-	train.ble_train.hub.store_value(index, int(value))
+func _on_storage_val_edited(value, index, type):
+	if type == "int":
+		train.ble_train.hub.store_value(index, int(value))
+	if type == "bool":
+		train.ble_train.hub.store_value(index, int(value))
 
 func select_ble_train(ble_train):
 	if ble_train == null:
 		$BLETrainContainer/BLETrainSelector.select_meta(null)
-		$InvertMotorCheckbox.disabled=true
 	else:
 		$BLETrainContainer/BLETrainSelector.select_meta(ble_train.name)
-		$InvertMotorCheckbox.disabled=false
-		$InvertMotorCheckbox.pressed = ble_train.motor_inverted
 	update_storage_controls()
 
 func _on_train_ble_train_changed():
@@ -87,7 +90,3 @@ func _on_ColorButton_color_changed(color):
 
 func _on_WagonEdit_value_changed(value):
 	train.virtual_train.set_num_wagons(int(value))
-
-func _on_InvertMotorCheckbox_toggled(button_pressed):
-	LayoutInfo.set_layout_changed(true)
-	train.ble_train.set_motor_inverted(button_pressed)

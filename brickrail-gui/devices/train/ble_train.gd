@@ -7,8 +7,6 @@ var hub
 var route : LayoutRoute
 var heading = 1
 
-var motor_inverted = false
-
 signal name_changed(old_name, new_name)
 signal removing(p_name)
 signal sensor_advance()
@@ -19,6 +17,7 @@ const STORAGE_MOTOR_DEC          = 2
 const STORAGE_MOTOR_FAST_SPEED   = 3
 const STORAGE_MOTOR_SLOW_SPEED   = 4
 const STORAGE_MOTOR_CRUISE_SPEED = 5
+const STORAGE_MOTOR_INVERTED     = 6
 
 var storage_labels = [
 	"Sensor chroma threshold",
@@ -26,9 +25,11 @@ var storage_labels = [
 	"Deceleration [DC/s]",
 	"Fast speed [DC]",
 	"Slow speed [DC]",
-	"Cruise speed [DC]"]
+	"Cruise speed [DC]",
+	"Invert motor"]
 
-var max_limits = [10000, 10000, 10000, 100, 100, 100]
+# -1 for boolean config
+var max_limits = [10000, 10000, 10000, 100, 100, 100, -1]
 
 const DATA_ROUTE_COMPLETE = 1
 const DATA_LEG_ADVANCE    = 2
@@ -53,6 +54,7 @@ func _init(p_name):
 	hub.store_value(STORAGE_MOTOR_SLOW_SPEED, 40)
 	hub.store_value(STORAGE_MOTOR_CRUISE_SPEED, 75)
 	hub.store_value(STORAGE_MOTOR_FAST_SPEED, 100)
+	hub.store_value(STORAGE_MOTOR_INVERTED, 0)
 
 func serialize():
 	var struct = {}
@@ -61,8 +63,7 @@ func serialize():
 	return struct
 
 func _on_hub_program_started():
-	if motor_inverted:
-		hub.rpc("execute_behavior", [128]) # flip heading only for hub
+	pass
 
 func set_route(p_route):
 	if route != null:
@@ -127,8 +128,3 @@ func safe_remove_coroutine():
 	yield(hub.safe_remove_coroutine(), "completed")
 	LayoutInfo.set_layout_changed(true)
 	emit_signal("removing", name)
-
-func set_motor_inverted(val):
-	if hub.running and val != motor_inverted:
-		hub.rpc("execute_behavior", [128])
-	motor_inverted = val

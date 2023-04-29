@@ -231,8 +231,6 @@ func load(struct):
 				train.set_current_block(block)
 			if "ble_train" in train_data:
 				train.set_ble_train(train_data.ble_train)
-				if "ble_train_motor_inverted" in train_data:
-					train.ble_train.set_motor_inverted(train_data.ble_train_motor_inverted)
 			if "color" in train_data:
 				train.virtual_train.set_color(Color(train_data.color))
 			if "num_wagons" in train_data:

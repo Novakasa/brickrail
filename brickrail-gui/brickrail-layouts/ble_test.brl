@@ -5,11 +5,12 @@
 				"name": "city-blue",
 				"storage": {
 					"0": 3500,
-					"1": 50,
+					"1": 40,
 					"2": 90,
 					"4": 40,
 					"5": 75,
-					"3": 100
+					"3": 100,
+					"6": 0
 				}
 			}
 		],
@@ -816,8 +817,7 @@
 				"num_wagons": 4,
 				"blockname": "block2",
 				"blockindex": 0,
-				"ble_train": "city-blue",
-				"ble_train_motor_inverted": false
+				"ble_train": "city-blue"
 			}
 		]
 	}
