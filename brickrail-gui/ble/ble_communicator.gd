@@ -8,6 +8,7 @@ var process
 var connected = false
 var status = "disconnected"
 var busy = false
+var expect_close = false
 
 signal message_received(message)
 signal connected()
@@ -48,6 +49,7 @@ func start_and_connect_to_process():
 func disconnect_and_kill_process():
 	status = "disconnecting"
 	busy = true
+	expect_close = true
 	emit_signal("status_changed")
 	_client.disconnect_from_host()
 	print("waiting for connection to ble-server closed")
@@ -58,8 +60,9 @@ func disconnect_and_kill_process():
 
 func _closed(was_clean = false):
 	print("Closed, clean: ", was_clean)
-	if not was_clean:
-		GuiApi.show_error("Disconnected from BLE Server python process (uncleanly)!")
+	if not expect_close:
+		GuiApi.show_error("Disconnected from BLE Server python process unexpectedly!")
+	expect_close = false
 	connected=false
 	busy = false
 	status = "disconnected"
@@ -70,6 +73,7 @@ func _connected(proto = ""):
 	# send_command(null, "hub_demo", [], null)
 	connected=true
 	busy = false
+	expect_close = false
 	status = "connected"
 	emit_signal("connected")
 	emit_signal("status_changed")
