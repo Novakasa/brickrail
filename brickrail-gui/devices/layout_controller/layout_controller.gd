@@ -80,4 +80,5 @@ func safe_remove_coroutine():
 			continue
 		device.remove()
 	yield(hub.safe_remove_coroutine(), "completed")
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("removing", name)

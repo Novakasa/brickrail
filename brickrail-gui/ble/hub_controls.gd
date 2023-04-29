@@ -1,4 +1,4 @@
-extends HBoxContainer
+extends VBoxContainer
 
 export(NodePath) var connect_button
 export(NodePath) var run_button
@@ -13,7 +13,7 @@ func setup(p_hub):
 	_err = hub.connect("battery_changed", self, "_on_hub_battery_changed")
 
 func _on_hub_battery_changed():
-	$BatteryLabel.text = ("%.2f" % hub.battery_voltage) + "V"
+	$HBoxContainer2/BatteryLabel.text = ("Battery %.2f" % hub.battery_voltage) + "V"
 
 func _on_hubs_state_changed():
 	var controller = Devices.get_ble_controller()

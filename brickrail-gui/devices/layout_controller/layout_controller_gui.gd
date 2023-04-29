@@ -47,3 +47,6 @@ func _on_controller_devices_changed(_p_name):
 
 func get_controller():
 	return Devices.layout_controllers[controller_name]
+
+func _on_RemoveButton_pressed():
+	yield(get_controller().safe_remove_coroutine(), "completed")

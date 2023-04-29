@@ -53,29 +53,29 @@ size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer"]
-margin_right = 240.0
+margin_right = 224.0
 margin_bottom = 689.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer"]
-margin_right = 240.0
+margin_right = 224.0
 margin_bottom = 27.0
 
 [node name="ConnectAllButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer"]
-margin_right = 117.0
+margin_right = 101.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "Connect hubs"
 
 [node name="DisconnectAllButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/HBoxContainer"]
-margin_left = 121.0
-margin_right = 240.0
+margin_left = 105.0
+margin_right = 224.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "Disconnect hubs"
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer"]
 margin_top = 31.0
-margin_right = 240.0
+margin_right = 224.0
 margin_bottom = 658.0
 mouse_filter = 1
 size_flags_vertical = 3
@@ -89,22 +89,21 @@ margin_left = 5.0
 margin_top = 34.0
 margin_right = -5.0
 margin_bottom = -5.0
-size_flags_horizontal = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Trains"]
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 
 [node name="AddTrainButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Trains/VBoxContainer"]
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 27.0
 size_flags_horizontal = 3
 text = "Add train hub"
 
 [node name="trains" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Trains/VBoxContainer"]
 margin_top = 31.0
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -117,11 +116,9 @@ margin_left = 5.0
 margin_top = 34.0
 margin_right = -5.0
 margin_bottom = -5.0
-size_flags_horizontal = 3
-size_flags_vertical = 3
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Controllers"]
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 
@@ -145,7 +142,6 @@ margin_left = 5.0
 margin_top = 34.0
 margin_right = -5.0
 margin_bottom = -5.0
-rect_min_size = Vector2( 230, 0 )
 script = ExtResource( 4 )
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer2/HSplitContainer/VBoxContainer/TabContainer/Settings"]
@@ -231,12 +227,12 @@ margin_bottom = 275.0
 
 [node name="ConnectBLEServerButton" type="Button" parent="VBoxContainer2/HSplitContainer/VBoxContainer"]
 margin_top = 662.0
-margin_right = 240.0
+margin_right = 224.0
 margin_bottom = 689.0
 text = "Connect BLE Server"
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer2/HSplitContainer"]
-margin_left = 248.0
+margin_left = 232.0
 margin_right = 1280.0
 margin_bottom = 689.0
 split_offset = -202
@@ -379,12 +375,12 @@ render_target_update_mode = 3
 
 [node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui"]
 margin_left = 714.0
-margin_right = 1032.0
+margin_right = 1048.0
 margin_bottom = 689.0
 split_offset = 348
 
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer"]
-margin_right = 318.0
+margin_right = 334.0
 margin_bottom = 387.0
 
 [node name="Inspector" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/TabContainer"]
@@ -398,17 +394,17 @@ scroll_horizontal_enabled = false
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer"]
 margin_top = 395.0
-margin_right = 318.0
+margin_right = 334.0
 margin_bottom = 689.0
 
 [node name="Label" type="Label" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
-margin_right = 318.0
+margin_right = 334.0
 margin_bottom = 27.0
 text = "Layers"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
 margin_top = 31.0
-margin_right = 318.0
+margin_right = 334.0
 margin_bottom = 58.0
 
 [node name="add_layer_button" type="Button" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer/HBoxContainer"]
@@ -433,13 +429,13 @@ text = "Remove layer"
 
 [node name="LayerUnfoldCheckbox" type="CheckButton" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
 margin_top = 62.0
-margin_right = 318.0
+margin_right = 334.0
 margin_bottom = 89.0
 text = "Unfolded view"
 
 [node name="LayerContainer" type="ItemList" parent="VBoxContainer2/HSplitContainer/LayoutGui/VSplitContainer/VBoxContainer"]
 margin_top = 93.0
-margin_right = 318.0
+margin_right = 334.0
 margin_bottom = 294.0
 size_flags_vertical = 3
 

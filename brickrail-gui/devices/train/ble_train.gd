@@ -125,6 +125,7 @@ func flip_heading():
 
 func safe_remove_coroutine():
 	yield(hub.safe_remove_coroutine(), "completed")
+	LayoutInfo.set_layout_changed(true)
 	emit_signal("removing", name)
 
 func set_motor_inverted(val):

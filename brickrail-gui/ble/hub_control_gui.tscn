@@ -2,17 +2,42 @@
 
 [ext_resource path="res://ble/hub_controls.gd" type="Script" id=1]
 
-[node name="HubControl" type="HBoxContainer"]
+[node name="HubControl" type="VBoxContainer"]
 margin_top = 24.0
 margin_right = 237.0
 margin_bottom = 44.0
 size_flags_horizontal = 3
 script = ExtResource( 1 )
-connect_button = NodePath("connect_button")
-run_button = NodePath("run_button")
-scan_button = NodePath("scan_button")
+connect_button = NodePath("HBoxContainer/connect_button")
+run_button = NodePath("HBoxContainer/run_button")
+scan_button = NodePath("HBoxContainer2/scan_button")
 
-[node name="connect_button" type="Button" parent="."]
+[node name="HBoxContainer2" type="HBoxContainer" parent="."]
+margin_right = 237.0
+margin_bottom = 20.0
+
+[node name="BatteryLabel" type="Label" parent="HBoxContainer2"]
+margin_top = 3.0
+margin_bottom = 17.0
+
+[node name="Control" type="Control" parent="HBoxContainer2"]
+margin_left = 4.0
+margin_right = 143.0
+margin_bottom = 20.0
+size_flags_horizontal = 3
+
+[node name="scan_button" type="Button" parent="HBoxContainer2"]
+margin_left = 147.0
+margin_right = 237.0
+margin_bottom = 20.0
+text = "Scan for hub"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 24.0
+margin_right = 237.0
+margin_bottom = 44.0
+
+[node name="connect_button" type="Button" parent="HBoxContainer"]
 margin_right = 64.0
 margin_bottom = 20.0
 text = "Connect"
@@ -20,7 +45,7 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="run_button" type="Button" parent="."]
+[node name="run_button" type="Button" parent="HBoxContainer"]
 margin_left = 68.0
 margin_right = 161.0
 margin_bottom = 20.0
@@ -30,24 +55,12 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Control" type="Control" parent="."]
+[node name="Control" type="Control" parent="HBoxContainer"]
 margin_left = 165.0
-margin_right = 165.0
+margin_right = 237.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
-[node name="BatteryLabel" type="Label" parent="."]
-margin_left = 169.0
-margin_top = 3.0
-margin_right = 169.0
-margin_bottom = 17.0
-
-[node name="scan_button" type="Button" parent="."]
-margin_left = 173.0
-margin_right = 263.0
-margin_bottom = 20.0
-text = "Scan for hub"
-
-[connection signal="pressed" from="connect_button" to="." method="_on_connect_button_pressed"]
-[connection signal="pressed" from="run_button" to="." method="_on_run_button_pressed"]
-[connection signal="pressed" from="scan_button" to="." method="_on_scan_button_pressed"]
+[connection signal="pressed" from="HBoxContainer2/scan_button" to="." method="_on_scan_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/connect_button" to="." method="_on_connect_button_pressed"]
+[connection signal="pressed" from="HBoxContainer/run_button" to="." method="_on_run_button_pressed"]

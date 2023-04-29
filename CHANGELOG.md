@@ -7,6 +7,7 @@
 
 ### Added
 
+- Finally added ability to remove hubs from project.
 - Make track section select easier by flipping the selection of single track appropriately.
 - Automatically select connected track when deleting a single track segment.
 - Current brickrail layout path now displayed in window title

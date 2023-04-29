@@ -62,3 +62,6 @@ func _on_change_heading_button_pressed():
 
 func _on_fast_button_pressed():
 	get_train().fast()
+
+func _on_RemoveButton_pressed():
+	yield(train.safe_remove_coroutine(), "completed")
