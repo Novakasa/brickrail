@@ -202,6 +202,7 @@ class IOHub:
         self.running = True
         alive_data = bytes([_OUT_ID_SYS, _SYS_CODE_ALIVE])
         self.emit_sys_code(_SYS_CODE_VERSION, VERSION)
+        self.send_alive_data()
 
         while self.running:
             if self.poll.poll(int(1000*max_delta)):
@@ -217,7 +218,7 @@ class IOHub:
                 self.retry_last_output()
                 if self.last_output[1:3] == alive_data:
                     self.running = False
-            if self.alive_watch.time() > 5000:
+            if self.alive_watch.time() > 20000:
                 self.send_alive_data()
                 self.alive_watch.reset()
             t = loop_watch.time()
