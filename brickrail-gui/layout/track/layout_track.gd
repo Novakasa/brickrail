@@ -329,8 +329,11 @@ func has_connection_at(slot):
 
 func clear_connections():
 	for dirtrack in directed_tracks.values():
-		for turn in dirtrack.connections:
+		# print(dirtrack.connections.keys())
+		for turn in Array(dirtrack.connections.keys()):
+			# print("turn:", turn)
 			var opposite_turn = dirtrack.connections[turn].get_opposite().get_turn_to(dirtrack.get_opposite())
+			# prints("opposite turn:", opposite_turn)
 			dirtrack.connections[turn].get_opposite().disconnect_turn(opposite_turn)
 			dirtrack.disconnect_turn(turn)
 

@@ -69,10 +69,15 @@ margin_right = 109.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
 
-[node name="Storage" type="GridContainer" parent="."]
+[node name="HSeparator" type="HSeparator" parent="."]
 margin_top = 176.0
 margin_right = 109.0
-margin_bottom = 176.0
+margin_bottom = 180.0
+
+[node name="Storage" type="GridContainer" parent="."]
+margin_top = 184.0
+margin_right = 109.0
+margin_bottom = 184.0
 columns = 2
 
 [connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
