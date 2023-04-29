@@ -279,9 +279,7 @@ class BLEHub:
             program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
 
         async def run_coroutine():
-            self.program_stopped.clear()
-            self.hub_ready.clear()
-            await self.hub.run(program, print_output=False, wait=True, line_handler=False)
+            await self.hub._wait_for_user_program_stop()
             self.program_stopped.set()
             self.to_out_queue("program_stopped", None)
         
@@ -312,14 +310,16 @@ class BLEHub:
                     await self.send_ack(False)
                 await asyncio.sleep(0.05)
         
+        self.program_stopped.clear()
+        self.hub_ready.clear()
+        await self.hub.run(program, print_output=False, wait=False, line_handler=False)
         run_task = asyncio.create_task(run_coroutine())
-
         output_task = asyncio.create_task(output_loop())
         input_task = asyncio.create_task(input_loop())
         timeout_task = asyncio.create_task(timeout_loop())
 
         try:
-            await asyncio.wait_for(self.hub_ready.wait(), timeout=30.0)
+            await asyncio.wait_for(self.hub_ready.wait(), timeout=3.0)
         except asyncio.TimeoutError:
             print(f"hub '{self.name}' wait for hub_ready timed out!!")
             self.to_out_queue("program_error", "program_start_timeout")

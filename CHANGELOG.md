@@ -19,6 +19,7 @@
 
 ### Fixed
 
+- Fixed requirement for program start timeout being very long by instead starting the timer after program was downloaded
 - Fixed some track connections not disconnected properly when deleting track.
 - Fixed phantom prior sensors reappearing despite deleted after loading brickrail layouts (https://github.com/Novakasa/brickrail/issues/117)
 - Disable Godot HiDPI setting, since we currently don't react to user OS-level DPI scaling (https://github.com/Novakasa/brickrail/discussions/107#discussioncomment-5689736).
