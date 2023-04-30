@@ -49,10 +49,10 @@ func set_layer_positions():
 	var layer_pos = Vector2()
 	for l in LayoutInfo.cells:
 		var layer = get_layer(l)
+		layer_pos.y -= layer.get_size().y+LayoutInfo.spacing*0.56
 		layer.position = Vector2()
 		if LayoutInfo.layers_unfolded:
 			layer.position = layer_pos-layer.get_pos()
-		layer_pos.y += layer.get_size().y+LayoutInfo.spacing*0.5
 	LayoutInfo.emit_signal("layer_positions_changed")
 
 func _on_cell_added(cell):
