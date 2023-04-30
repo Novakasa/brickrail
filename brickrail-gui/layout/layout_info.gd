@@ -13,6 +13,10 @@ var nodes = {}
 var BlockScene = preload("res://layout/block/layout_block.tscn")
 onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
+const CONTROL_OFF = 0
+const CONTROL_SWITCHES = 1
+const CONTROL_ALL = 2
+
 var active_layer = 0
 var layers_unfolded = false
 
@@ -25,7 +29,7 @@ var slot_positions = {"N": Vector2(0.5,0), "S": Vector2(0.5,1), "E": Vector2(1,0
 
 var layout_mode = "edit"
 var selection = null
-var control_devices = false
+var control_devices: int = CONTROL_OFF
 var control_enabled = true
 
 var drawing_track = false
@@ -54,7 +58,7 @@ var layout_changed = false
 
 signal layout_mode_changed(mode)
 signal selected(obj)
-signal control_devices_changed(control_device)
+signal control_devices_changed(control_mode)
 #warning-ignore:unused_signal
 signal blocked_tracks_changed(trainname)
 signal random_targets_set(rand_target)
@@ -329,7 +333,9 @@ func _on_switch_removing(id):
 	switches.erase(id)
 
 func set_control_devices(p_control_devices):
+	print(p_control_devices)
 	control_devices = p_control_devices
+	print(control_devices)
 	emit_signal("control_devices_changed", control_devices)
 
 func set_random_targets(p_random_targets):
@@ -618,7 +624,7 @@ func stop_all_trains():
 			train.cancel_route()
 
 func emergency_stop():
-	set_control_devices(false)
+	set_control_devices(CONTROL_OFF)
 	if Devices.get_ble_controller().get_node("BLECommunicator").connected:
 		for ble_train in Devices.trains.values():
 			if ble_train.hub.running:

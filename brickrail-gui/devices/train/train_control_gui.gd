@@ -22,7 +22,7 @@ func setup(p_train_name):
 	get_node(hub_controls).setup(get_train().hub)
 
 func update_controls_enabled(_dummy=null):
-	set_controls_disabled(LayoutInfo.control_devices or not get_train().hub.responsiveness or not Devices.get_ble_controller().hub_control_enabled)
+	set_controls_disabled(LayoutInfo.control_devices==2 or not get_train().hub.responsiveness or not Devices.get_ble_controller().hub_control_enabled)
 
 func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():

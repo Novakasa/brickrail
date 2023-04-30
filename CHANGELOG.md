@@ -7,6 +7,7 @@
 
 ### Added
 
+- Added Control devices mode for switches only, allowing manual train control (https://github.com/Novakasa/brickrail/issues/77).
 - Move view appropriately when changing "layers unfolded" or changing active Layer.
 - Finally added ability to remove hubs from project.
 - Make track section select easier by flipping the selection of single track appropriately.

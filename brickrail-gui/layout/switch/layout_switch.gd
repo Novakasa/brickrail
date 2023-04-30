@@ -145,7 +145,7 @@ func dev1_to_pos(ble_pos):
 	return "center"
 	
 func switch(pos):
-	if motor1 != null and LayoutInfo.control_devices:
+	if motor1 != null and LayoutInfo.control_devices != LayoutInfo.CONTROL_OFF:
 		if dev1_to_pos(motor1.position) == pos and motor1.position != "unknown":
 			#check only here in case ble switch position is unknown
 			pass

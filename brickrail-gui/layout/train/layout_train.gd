@@ -65,7 +65,7 @@ func update_layer_visibility():
 		modulate = Color.white
 
 func can_control_ble_train():
-	return LayoutInfo.control_devices and ble_train != null and ble_train.hub.running
+	return LayoutInfo.control_devices==2 and ble_train != null and ble_train.hub.running
 
 func set_ble_train(p_trainname):
 	if ble_train != null:
@@ -101,7 +101,7 @@ func _on_ble_train_removing(_name):
 	set_ble_train(null)
 
 func _on_ble_train_sensor_advance(_colorname):
-	if LayoutInfo.control_devices:
+	if can_control_ble_train():
 		virtual_train.manual_sensor_advance()
 
 func _on_ble_train_unexpected_marker(_colorname):

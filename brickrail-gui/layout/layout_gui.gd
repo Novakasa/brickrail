@@ -39,7 +39,7 @@ func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
 	# edit_tab.get_node("LayoutNew").disabled = new_layout_disabled
 	# edit_tab.get_node("LayoutOpen").disabled = new_layout_disabled
-	control_tab.get_node("ControlDevicesToggle").disabled = new_layout_disabled
+	control_tab.get_node("ControlDevicesSelector").disabled = new_layout_disabled
 
 func _on_layout_random_targets_set(set):
 	control_tab.get_node("AutoTarget").pressed = set
@@ -47,10 +47,10 @@ func _on_layout_random_targets_set(set):
 func _on_layout_trains_running(running):
 	if running:
 		$LayoutSplit/LayoutModeTabs.set_tab_disabled(0, true)
-		control_tab.get_node("ControlDevicesToggle").disabled = true
+		control_tab.get_node("ControlDevicesSelector").disabled = true
 	else:
 		$LayoutSplit/LayoutModeTabs.set_tab_disabled(0, false)
-		control_tab.get_node("ControlDevicesToggle").disabled = false
+		control_tab.get_node("ControlDevicesSelector").disabled = false
 
 func _on_layers_changed():
 	var layers = get_node(layer_container)
@@ -184,30 +184,32 @@ func _on_LayoutNew_pressed():
 	OS.set_window_title("Brickrail - New layout")
 
 
-func _on_control_devices_toggled(button_pressed):
-	if not button_pressed:
-		LayoutInfo.set_control_devices(false)
+func _on_ControlDevicesSelector_item_selected(index):
+	if index==0:
+		LayoutInfo.set_control_devices(LayoutInfo.CONTROL_OFF)
 		return
 
 	if Devices.get_ble_controller().are_hubs_ready():
 		# TODO cleanup ble device state (stop everything?)
-		LayoutInfo.set_control_devices(true)
+		LayoutInfo.set_control_devices(index)
 	else:
+		LayoutInfo.control_enabled = false
 		LayoutInfo.set_random_targets(false)
-		control_tab.get_node("ControlDevicesToggle").disabled = true
+		control_tab.get_node("ControlDevicesSelector").disabled = true
 		control_tab.get_node("AutoTarget").disabled = true
 		
 		var result = yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
-		
 		if Devices.get_ble_controller().are_hubs_ready() and result=="success":
-			LayoutInfo.set_control_devices(true)
+			LayoutInfo.set_control_devices(index)
 		else:
-			control_tab.get_node("ControlDevicesToggle").pressed = false
-		control_tab.get_node("ControlDevicesToggle").disabled = false
+			control_tab.get_node("ControlDevicesSelector").select(0)
+			LayoutInfo.set_control_devices(0)
+		control_tab.get_node("ControlDevicesSelector").disabled = false
+		LayoutInfo.control_enabled = true
 		control_tab.get_node("AutoTarget").disabled = false
 
 func _on_layout_control_devices_changed(control_devices):
-	control_tab.get_node("ControlDevicesToggle").pressed = control_devices
+	control_tab.get_node("ControlDevicesSelector").select(control_devices)
 	control_tab.get_node("EmergencyStopButton").disabled = not control_devices
 
 func _on_AutoTarget_toggled(button_pressed):
@@ -245,3 +247,4 @@ func _on_remove_layer_button_pressed():
 
 func _on_LayerUnfoldCheckbox_toggled(button_pressed):
 	LayoutInfo.set_layers_unfolded(button_pressed)
+
