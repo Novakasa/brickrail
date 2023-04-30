@@ -7,6 +7,7 @@
 
 ### Added
 
+- Move view appropriately when changing "layers unfolded" or changing active Layer.
 - Finally added ability to remove hubs from project.
 - Make track section select easier by flipping the selection of single track appropriately.
 - Automatically select connected track when deleting a single track segment.

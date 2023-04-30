@@ -32,10 +32,6 @@ func _on_layer_removed(l):
 
 func get_layer(l):
 	return get_node("layer"+str(l))
-
-func update_layers(_dummy=null):
-	set_layer_visibility()
-	set_layer_positions()
 	
 func set_layer_visibility():
 	for l in LayoutInfo.cells.keys():
@@ -64,12 +60,29 @@ func _ready():
 	var _err = LayoutInfo.connect("cell_added", self, "_on_cell_added")
 	_err = LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
 	_err = LayoutInfo.connect("layer_added", self, "_on_layer_added")
-	_err = LayoutInfo.connect("active_layer_changed", self, "update_layers")
-	_err = LayoutInfo.connect("layers_unfolded_changed", self, "update_layers")
+	_err = LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
+	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layers_unfolded_changed")
 	LayoutInfo.grid = self
 	
 	LayoutInfo.add_layer(0)
 	LayoutInfo.set_layout_changed(false)
+
+func _on_active_layer_changed(l):
+	set_layer_visibility()
+	if l == null:
+		return
+	if LayoutInfo.layers_unfolded:
+		$Camera2D.position = get_layer(l).position + get_layer(l).get_pos() - Vector2(1.0, 1.0)*LayoutInfo.spacing
+
+func _on_layers_unfolded_changed(_dummy=null):
+	var prev_pos = null
+	if LayoutInfo.active_layer != null:
+		prev_pos = get_layer(LayoutInfo.active_layer).position
+	set_layer_positions()
+	set_layer_visibility()
+	if LayoutInfo.active_layer != null and prev_pos != null:
+		var new_pos = get_layer(LayoutInfo.active_layer).position
+		$Camera2D.position += new_pos - prev_pos
 
 func _unhandled_input(event):
 	process_input(event)
