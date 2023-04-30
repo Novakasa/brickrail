@@ -219,9 +219,9 @@ func _on_SpinBox_value_changed(value):
 
 
 func _on_add_layer_button_pressed():
-	var edit = get_node(layer_index_edit)
-	var l = int(edit.value)
-	edit.value = l+1
+	var l = 0
+	while l in LayoutInfo.cells:
+		l += 1
 	LayoutInfo.add_layer(l)
 
 
