@@ -21,7 +21,7 @@ rect_min_size = Vector2( 0, 44 )
 size_flags_horizontal = 3
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="VBoxContainer"]
-margin_right = 172.0
+margin_right = 183.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
@@ -36,23 +36,23 @@ __meta__ = {
 
 [node name="Container" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 75.0
-margin_right = 104.0
+margin_right = 115.0
 margin_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="RemoveButton" type="Button" parent="VBoxContainer/HBoxContainer2"]
-margin_left = 108.0
-margin_right = 172.0
+margin_left = 119.0
+margin_right = 183.0
 margin_bottom = 20.0
 text = "Remove"
 
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 2 )]
-margin_right = 172.0
+margin_right = 183.0
 margin_bottom = 68.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer"]
 margin_top = 72.0
-margin_right = 172.0
+margin_right = 183.0
 margin_bottom = 92.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
@@ -79,23 +79,23 @@ __meta__ = {
 
 [node name="start_button" type="Button" parent="VBoxContainer/HBoxContainer"]
 margin_left = 89.0
-margin_right = 130.0
+margin_right = 141.0
 margin_bottom = 20.0
 rect_min_size = Vector2( 0, 20 )
-text = "Start"
+text = "Cruise"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="fast_button" type="Button" parent="VBoxContainer/HBoxContainer"]
-margin_left = 134.0
-margin_right = 172.0
+margin_left = 145.0
+margin_right = 183.0
 margin_bottom = 20.0
 text = "Fast"
 
 [node name="change_heading_button" type="Button" parent="VBoxContainer"]
 margin_top = 96.0
-margin_right = 172.0
+margin_right = 183.0
 margin_bottom = 116.0
 text = "Turn"
 __meta__ = {
