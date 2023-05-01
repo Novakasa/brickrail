@@ -116,8 +116,6 @@ func remove_layer(l):
 	if active_layer == l:
 		set_active_layer(null)
 	cells.erase(l)
-	prints("removed layer", l)
-	print(cells)
 	
 	set_layout_changed(true)
 	
@@ -333,13 +331,13 @@ func _on_switch_removing(id):
 	switches.erase(id)
 
 func set_control_devices(p_control_devices):
-	print(p_control_devices)
 	control_devices = p_control_devices
-	print(control_devices)
+	Logger.info("[LayoutInfo] control devices changed: %s" % control_devices)
 	emit_signal("control_devices_changed", control_devices)
 
 func set_random_targets(p_random_targets):
 	random_targets = p_random_targets
+	Logger.info("[LayoutInfo] control devices changed: %s" % random_targets)
 	emit_signal("random_targets_set", p_random_targets)
 
 func blocks_depend_on(dirtrack):
@@ -423,6 +421,7 @@ func unselect():
 		selection.unselect()
 
 func select(obj):
+	Logger.info("[LayoutInfo] selecting: %s" % obj)
 	unselect()
 	selection = obj
 	obj.connect("unselected", self, "_on_selection_unselected")
@@ -489,7 +488,6 @@ func init_drag_train(train):
 
 func stop_drag_train():
 	if drag_train:
-		print("stopping drag train")
 		drag_train = false
 		drag_virtual_train.remove()
 		dragged_train = null
@@ -618,12 +616,14 @@ func attempt_portal():
 	portal_target = null
 
 func stop_all_trains():
+	Logger.info("[LayoutInfo] Stopping all trains")
 	set_random_targets(false)
 	for train in trains.values():
 		if train.route != null:
 			train.cancel_route()
 
 func emergency_stop():
+	Logger.info("[LayoutInfo] Emergency stop")
 	set_control_devices(CONTROL_OFF)
 	if Devices.get_ble_controller().get_node("BLECommunicator").connected:
 		for ble_train in Devices.trains.values():

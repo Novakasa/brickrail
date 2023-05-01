@@ -16,6 +16,7 @@ var disabled=false
 var id
 var nodes = {}
 var directed_track
+var logging_module
 
 var SwitchInspector = preload("res://layout/switch/switch_inspector.tscn")
 
@@ -32,6 +33,7 @@ func _init(p_directed_track):
 	switch_positions.sort()
 	slot = directed_track.next_slot
 	id = "switch_"+directed_track.id
+	logging_module = id
 	
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "switch")
@@ -98,7 +100,6 @@ func _on_motor1_removing(_controllername, _port):
 
 func _on_motor1_responsiveness_changed(responsiveness):
 	disabled = not responsiveness
-	prints("switch responsiveness:", responsiveness)
 	emit_signal("position_changed", switch_positions[position_index])
 
 func _on_motor1_position_changed(ble_pos):
@@ -145,13 +146,14 @@ func dev1_to_pos(ble_pos):
 	return "center"
 	
 func switch(pos):
+	Logger.info("[%s] switch to: %s" % [logging_module, pos])
 	if motor1 != null and LayoutInfo.control_devices != LayoutInfo.CONTROL_OFF:
 		if dev1_to_pos(motor1.position) == pos and motor1.position != "unknown":
 			#check only here in case ble switch position is unknown
 			pass
 		var motor_pos = pos_to_dev1(pos)
 		if motor_pos != motor1.position:
-			prints("switching motor1:", motor_pos)
+			Logger.info("[%s] switch motor1 to: %s" % [logging_module, motor_pos])
 			motor1.switch(motor_pos)
 		position_index = switch_positions.find(pos)
 	else:

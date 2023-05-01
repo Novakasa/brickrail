@@ -14,6 +14,8 @@ var battery_current = -1.0
 
 var storage = {}
 
+var logging_module
+
 signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
 signal name_changed(p_name, p_new_name)
@@ -34,6 +36,7 @@ func _init(p_name, p_program):
 	program = p_program
 	communicator = Devices.get_ble_controller().get_node("BLECommunicator")
 	var _err = communicator.connect("status_changed", self, "_on_ble_communicator_status_changed")
+	logging_module = "hub-"+name
 
 func _on_ble_communicator_status_changed():
 	if not communicator.connected:
@@ -57,7 +60,6 @@ func set_name(p_new_name):
 	emit_signal("name_changed", old_name, p_new_name)
 
 func _on_data_received(key, data):
-	prints("hub", name, "received data:", data)
 	if key == "connected":
 		connected=true
 		busy=false
@@ -114,7 +116,7 @@ func _on_data_received(key, data):
 		emit_signal("battery_changed")
 		return
 		
-	prints("ble hub unrecognized data key:", key)
+	Logger.error("[%s] Unrecognized data key: %s data:" % [logging_module, key, data])
 
 func send_storage():
 	for i in storage:

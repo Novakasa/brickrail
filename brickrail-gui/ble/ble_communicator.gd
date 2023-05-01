@@ -9,6 +9,7 @@ var connected = false
 var status = "disconnected"
 var busy = false
 var expect_close = false
+var logging_module = "BLEProcess"
 
 signal message_received(message)
 signal connected()
@@ -33,13 +34,12 @@ func start_and_connect_to_process():
 
 	var err = _client.connect_to_url(websocket_url)
 	if err != OK:
-		print("Unable to connect")
+		Logger.error("[%s] Connect error: '%s'" % [logging_module])
 		set_process(false)
 		GuiApi.show_error("Unable to initialize connection to BLE Server python process!")
 	
 	var timer = get_tree().create_timer(5.0)
 	var result = yield(Await.first_signal_objs([timer, self], ["timeout", "connected"]), "completed")
-	print(result)
 	if result == timer:
 		status = "Not connected to BLE Server"
 		GuiApi.show_error("Timeout trying to connect to BLE Server python process!")
@@ -52,14 +52,14 @@ func disconnect_and_kill_process():
 	expect_close = true
 	emit_signal("status_changed")
 	_client.disconnect_from_host()
-	print("waiting for connection to ble-server closed")
+	Logger.info("[%s] Waiting for connection to ble-server closed" % logging_module)
 	yield(_client, "connection_closed")
-	print("closed!")
+	Logger.info("[%s] closed!" % logging_module)
 	yield(get_tree().create_timer(1.0), "timeout")
 	process.kill()
 
 func _closed(was_clean = false):
-	print("Closed, clean: ", was_clean)
+	Logger.info("[%s] Closed, clean: %s" % [logging_module, was_clean])
 	if not expect_close:
 		GuiApi.show_error("Disconnected from BLE Server python process unexpectedly!")
 	expect_close = false
@@ -69,7 +69,7 @@ func _closed(was_clean = false):
 	emit_signal("status_changed")
 
 func _connected(proto = ""):
-	print("Connected with protocol: ", proto)
+	Logger.info("[%s] Connected with protocol: '%s'" % [logging_module, proto])
 	# send_command(null, "hub_demo", [], null)
 	connected=true
 	busy = false
@@ -82,10 +82,12 @@ func send_message(message):
 	if not connected:
 		yield(_client, "connection_established")
 	yield(get_tree(), "idle_frame")
+	Logger.info("[%s] sending to BLEServer: '%s'" % [logging_module, message])
 	_client.get_peer(1).put_packet(message.to_utf8())
 
 func _on_data():
 	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()
+	Logger.info("[%s] reseived from BLEServer: '%s'" % [logging_module, msg])
 	emit_signal("message_received", msg)
 
 func _process(_delta):

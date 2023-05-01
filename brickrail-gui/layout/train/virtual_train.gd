@@ -76,7 +76,7 @@ func cleanup_seek():
 
 func _init(p_name):
 	trainname = p_name
-	logging_module = "virtual=" + trainname
+	logging_module = "virtual-" + trainname
 	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
 	add_wagons(4)
@@ -146,7 +146,7 @@ func set_route(p_route):
 func advance_route():
 	if seek_forward_timer >= 0.0:
 		cleanup_seek()
-	prints("virtual train advancing!", trainname)
+	Logger.info("[%s] advancing!", logging_module)
 	route.advance()
 	update_next_sensor_info()
 
@@ -163,8 +163,8 @@ func update_next_sensor_distance():
 	if track_pos < 0.0:
 		itertrack = dirtrack
 	var distance = length - track_pos
-	prints("measuring distance to next sensor track:", next_sensor_track.id)
-	prints("starting at:", itertrack.id)
+	Logger.debug("[%s] measuring distance to next sensor track: %s" % [logging_module, next_sensor_track.id])
+	Logger.debug("[%s] starting at: %s" % [logging_module, itertrack.id])
 	var i = 0
 	while itertrack != next_sensor_track:
 		assert(i<1000)
@@ -183,7 +183,6 @@ func manual_sensor_advance():
 	if allow_sensor_advance:
 		return
 	var flips = route.next_sensor_flips()
-	prints("next sensor flips:", flips)
 	if flips:
 		seek_forward_timer = -1.0
 		set_dirtrack(next_sensor_track, true)
@@ -197,23 +196,23 @@ func manual_sensor_advance():
 	pass_sensor(next_sensor_track)
 
 func fast():
-	Logger.verbose("fast()", logging_module)
+	Logger.info("[%s] fast()" % logging_module)
 	set_state("fast")
 
 func cruise():
-	Logger.verbose("cruise()", logging_module)
+	Logger.info("[%s] cruise()" % logging_module)
 	set_state("cruise")
 
 func slow():
-	Logger.verbose("slow()", logging_module)
+	Logger.info("[%s] slow()" % logging_module)
 	set_state("slow")
 
 func stop():
-	Logger.verbose("stop()", logging_module)
+	Logger.info("[%s] stop()" % logging_module)
 	set_state("stopped")
 
 func flip_heading():
-	Logger.verbose("flip_heading()", logging_module)
+	Logger.info("[%s] flip_heading()" % logging_module)
 	var prev_pos = track_pos
 	if turn == null:
 		set_dirtrack(dirtrack.get_opposite())
@@ -278,8 +277,6 @@ func advance_position(delta_pos):
 
 func wrap_dirtrack():
 	while track_pos > length:
-		if not allow_sensor_advance:
-			prints(next_sensor_distance, velocity)
 		track_pos -= length
 		set_dirtrack(dirtrack.get_next(turn))
 		var next_dirtrack = dirtrack.get_next(turn)
@@ -288,20 +285,20 @@ func wrap_dirtrack():
 		if len(opposite_turn_history)>10:
 			opposite_turn_history.pop_back()
 		if dirtrack == seek_forward_dirtrack:
-			print("resetting seek!")
+			Logger.debug("[%s] resetting seek!" % [logging_module])
 			seek_forward_timer = -1.0 # don't make seeking set dirtrack
 		if dirtrack.get_sensor() != null:
 			if allow_sensor_advance:
 				pass_sensor(dirtrack)
 
 func pass_sensor(sensor_dirtrack):
-	prints("virtual train pass sensor", sensor_dirtrack.id, trainname)
+	Logger.info("[%s] pass sensor %s" % [logging_module, sensor_dirtrack.id])
 	route.advance_sensor(sensor_dirtrack)
 	
 	update_next_sensor_info()
 
 func execute_behavior(behavior: String):
-	prints("virtual train executing:", behavior, trainname)
+	Logger.info("[%s] executing behavior: %s" % [logging_module, behavior])
 	var parts = behavior.split("_")
 	assert(len(parts)<=2)
 	if parts[0] == "flip":

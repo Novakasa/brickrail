@@ -13,6 +13,8 @@ var highlighted=false
 
 var passing = true
 
+var logging_module
+
 signal completed()
 signal stopped()
 signal can_advance()
@@ -42,6 +44,7 @@ func setup_legs():
 			if edge.to_node.type=="block":
 				legs.append(LayoutRouteLeg.new(travel_edges))
 				travel_edges = []
+	logging_module = "Route "+get_start_node().id+" -> " + get_target_node().id
 
 func redirect_with_route(route):
 	var from = get_current_leg().get_target_node()
@@ -69,11 +72,12 @@ func recalculate_route(fixed_facing):
 		_on_LayoutInfo_blocked_tracks_changed(trainname)
 
 func set_passing(value):
+	Logger.info("[%s] set passing %s" % [logging_module, passing])
 	passing = value
 	update_intentions()
 
 func get_start_node():
-	return legs[0].get_start_node()
+	return legs[0].get_target_node() # leg 0 is type "start" which has only a target
 
 func get_target_node():
 	return legs[-1].get_target_node()
@@ -98,6 +102,7 @@ func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
 		return
 	update_intentions()
 	if can_advance():
+		Logger.info("[%s] can advance triggered by %s blocked_tracks_changed" % [logging_module, p_trainname])
 		emit_signal("can_advance")
 
 func collect_sensors():
@@ -124,11 +129,13 @@ func set_leg_intention(index, intention):
 	var prev_intention = legs[index].intention
 	legs[index].set_intention(intention)
 	if intention != prev_intention:
+		Logger.info("[%s] leg intention changed from %s to %s" % [logging_module, prev_intention, intention])
 		emit_signal("intention_changed", index, intention)
 		if index == leg_index:
 			_on_current_leg_intention_changed(prev_intention, intention)
 
 func _on_current_leg_intention_changed(old_intention, new_intention):
+	Logger.info("[%s] current leg intention changed from %s to %s" % [logging_module, old_intention, new_intention])
 	if get_current_leg().is_complete():
 		return
 	var prev_key = get_current_leg().get_prev_sensor_key()
@@ -143,6 +150,7 @@ func _on_current_leg_intention_changed(old_intention, new_intention):
 	var old_behavior = get_sensor_behavior(prev_key, prev_speed, old_intention, next_type)
 	var new_behavior = get_sensor_behavior(prev_key, prev_speed, new_intention, next_type)
 	if new_behavior != old_behavior:
+		Logger.info("[%s] behavior changed from %s to %s by intention change" % [logging_module, old_behavior, new_behavior])
 		emit_signal("execute_behavior", new_behavior)
 
 	if get_current_leg().has_entered() and new_intention == "pass":
@@ -198,6 +206,7 @@ func can_lock_leg(index):
 		index += 1
 
 func lock_and_switch_next():
+	Logger.info("[%s] lock and switch next" % [logging_module])
 	var index = leg_index+1
 	while index<len(legs):
 		var leg = legs[index]
@@ -243,6 +252,7 @@ func advance_leg():
 	return null
 
 func advance():
+	Logger.info("[%s] advance()" % [logging_module])
 	var next_leg = get_next_leg()
 	var lock_changed = false
 	if not next_leg.locked:
@@ -254,17 +264,14 @@ func advance():
 	advance_leg()
 	if lock_changed:
 		# delay emitting this signal so another train doesn't trigger us
-		# advancing _again_, whie this function is still running.
+		# advancing _again_, while this function is still running.
 		# Emitting after advance_leg makes can_advance() return false, so there
 		# will be no further calls.
 		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 	var current_leg = get_current_leg()
-	print("next leg")
-	prints("type:", current_leg.get_type())
-	prints("intention:", current_leg.intention)
-	print("sensors:")
+	Logger.info("[%s] current leg - type: %s, intention: %s" % [logging_module, current_leg.get_type(), current_leg.intention])
 	for i in range(len(current_leg.sensor_dirtracks)):
-		prints(i, current_leg.sensor_keys[i], current_leg.sensor_dirtracks[i].id)
+		Logger.debug("[%s] Sensor: %s, %s, %s" % [logging_module, i, current_leg.sensor_keys[i], current_leg.sensor_dirtracks[i].id])
 	
 	var behavior
 	var speed = prev_leg.get_prev_sensor_dirtrack().sensor_speed
@@ -294,6 +301,7 @@ func get_next_key():
 	return get_current_leg().get_next_key()
 
 func advance_sensor(sensor_dirtrack):
+	Logger.info("[%s] advance_sensor: %s" % [logging_module, sensor_dirtrack.id])
 	var current_leg = get_current_leg()
 	assert(sensor_dirtrack == current_leg.get_next_sensor_dirtrack())
 	
@@ -312,13 +320,16 @@ func advance_sensor(sensor_dirtrack):
 	current_leg.advance_sensor()
 	
 	if current_leg.is_complete():
+		Logger.info("[%s] advance_sensor current leg complete!" % [logging_module])
 		if current_leg.intention == "pass":
 			assert(can_advance())
 			advance()
 			return
 		if get_next_leg() == null:
+			Logger.info("[%s] completed!" % [logging_module])
 			emit_signal("completed")
 		else:
+			Logger.info("[%s] stopped!" % [logging_module])
 			emit_signal("stopped")
 	
 	emit_signal("execute_behavior", behavior)

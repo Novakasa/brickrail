@@ -89,7 +89,7 @@ func _on_selected(obj):
 
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
-		print("manual quit!")
+		Logger.info("[LayoutGUI] manual quit requested!")
 		yield(get_tree(), "idle_frame")
 		var saved = yield(check_save_changes_coroutine(), "completed")
 		if saved == "cancelled":
@@ -185,6 +185,7 @@ func _on_LayoutNew_pressed():
 
 
 func _on_ControlDevicesSelector_item_selected(index):
+	Logger.info("[LayoutGUI] control devices selector changed: %s" % index)
 	if index==0:
 		LayoutInfo.set_control_devices(LayoutInfo.CONTROL_OFF)
 		return
@@ -213,6 +214,7 @@ func _on_layout_control_devices_changed(control_devices):
 	control_tab.get_node("EmergencyStopButton").disabled = not control_devices
 
 func _on_AutoTarget_toggled(button_pressed):
+	Logger.info("[LayoutGUI] random targets toggled: %s" % button_pressed)
 	LayoutInfo.set_random_targets(button_pressed)
 
 
@@ -228,6 +230,7 @@ func _on_add_layer_button_pressed():
 
 
 func _on_StopAllButton_pressed():
+	Logger.info("[LayoutGUI] Stop route button pressed")
 	LayoutInfo.stop_all_trains()
 
 func _on_LayoutModeTabs_tab_changed(tab):
@@ -235,6 +238,7 @@ func _on_LayoutModeTabs_tab_changed(tab):
 	LayoutInfo.set_layout_mode(mode)
 
 func _on_EmergencyStopButton_pressed():
+	Logger.info("[LayoutGUI] Emergency stop button pressed")
 	LayoutInfo.emergency_stop()
 
 func _on_remove_layer_button_pressed():

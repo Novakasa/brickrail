@@ -105,8 +105,8 @@ func _on_ble_train_sensor_advance(_colorname):
 		virtual_train.manual_sensor_advance()
 
 func _on_ble_train_unexpected_marker(_colorname):
-	Logger.verbose("ble_train unexpected marker triggered", logging_module)
-	push_error("unexpected marker not aligned with next sensor")
+	Logger.info("[%s] ble_train unexpected marker triggered" % trainname)
+	Logger.error("unexpected marker not aligned with next sensor")
 	ble_train.stop()
 
 func _on_LayoutInfo_control_devices_changed(_control_devices):
@@ -179,7 +179,6 @@ func stop_hover():
 			route.clear_highlight()
 
 func process_mouse_button(event, _mpos):
-	# prints("train:", trainname)
 	if not event.pressed:
 		return false
 	if event.button_index == BUTTON_LEFT:
@@ -217,10 +216,12 @@ func get_all_valid_routes(no_locked=true):
 	return valid_routes
 
 func find_random_route(no_blocked):
+	Logger.info("[%s] finding new random route" % [logging_module])
 	var valid_routes = get_all_valid_routes(no_blocked)
 	var valid_targets = valid_routes.keys()
 	
 	if len(valid_targets) == 0:
+		Logger.info("[%s] couldn't find random route" % [logging_module])
 		return false
 	var random_target = valid_targets[randi()%len(valid_targets)]
 	committed = false
@@ -230,16 +231,16 @@ func find_random_route(no_blocked):
 
 func find_route(p_target, _no_locked=true):
 	if route != null and not is_end_of_leg():
-		push_error("Not at end of leg!")
+		GuiApi.show_error("Not at end of leg!")
 		return
 	if not LayoutInfo.nodes[p_target].obj.can_stop:
-		push_error("Target is not flagged 'can stop'!")
+		GuiApi.show_error("Target is not flagged 'can stop'!")
 		return
 	var _route = get_route_to(p_target, true)
 	if _route == null:
 		_route = get_route_to(p_target, false)
 		if _route == null:
-			push_error("no route to target")
+			GuiApi.show_error("Route impossible or blocked by other train!")
 			return
 	committed = true
 	set_route(_route)
@@ -254,6 +255,7 @@ func try_advancing():
 	_on_route_stopped()
 
 func escape_deadlock():
+	Logger.debug("[%s] escape_deadlock called, blocked_by: %s" % [logging_module, blocked_by])
 	# returns true if no deadlock present or some train found a new route, escaping the deadlock
 	if route == null:
 		return true
@@ -262,6 +264,7 @@ func escape_deadlock():
 	if blocked_by != null:
 		if committed:
 			return false
+		Logger.debug("[%s] escape_deadlock, not commited, new route!" % [logging_module])
 		return find_random_route(true)
 	blocked_by = route.get_blocking_trains()
 	for blocked_trainname in blocked_by:
@@ -273,6 +276,7 @@ func escape_deadlock():
 	blocked_by = null
 	if committed:
 		return false
+	Logger.debug("[%s] escape_deadlock, blocked trains can't relax, not commited, new route!" % [logging_module])
 	return find_random_route(true)
 
 func set_route(p_route):
@@ -301,6 +305,7 @@ func set_route(p_route):
 	emit_signal("route_changed")
 
 func cancel_route():
+	Logger.info("[%s] Cancelling route" % [logging_module])
 	assert(route != null)
 	if is_end_of_leg():
 		set_route(null)
@@ -311,19 +316,22 @@ func cancel_route():
 	set_route(null)
 
 func _on_route_completed():
+	Logger.info("[%s] Route completed" % [logging_module])
 	set_route(null)
 	if LayoutInfo.random_targets:
+		Logger.info("[%s] Starting timer for next route" % [logging_module])
 		yield(get_tree().create_timer(wait_time/LayoutInfo.time_scale), "timeout")
 		if LayoutInfo.random_targets:
 			find_random_route(false)
 
 func _on_route_stopped():
+	Logger.info("[%s] route stopped" % logging_module)
 	if not route.passing:
 		return
-	prints("blocked, committed=", committed)
 	if LayoutInfo.random_targets:
 		yield(get_tree(), "idle_frame")
 		if not escape_deadlock():
+			Logger.error("[%s] Couldn't escape deadlock!" % logging_module)
 			push_error("couldn't escape deadlock! " + trainname)
 
 func _on_route_facing_flipped(p_facing):
@@ -341,7 +349,7 @@ func _on_target_in(target_node):
 
 func set_current_block(p_block, teleport=true):
 	if p_block != null:
-		Logger.verbose("set_current_block("+p_block.id+")", logging_module)
+		Logger.info("[%s] set_current_block(%s)" % [trainname, p_block.id])
 	if block != null:
 		block.set_occupied(false, self)
 	block = p_block
@@ -354,7 +362,7 @@ func set_current_block(p_block, teleport=true):
 		virtual_train.visible=false
 
 func flip_heading():
-	Logger.verbose("flip_heading()", logging_module)
+	Logger.info("[%s] flip_heading()" % trainname)
 	virtual_train.flip_heading()
 	if can_control_ble_train():
 		ble_train.flip_heading()

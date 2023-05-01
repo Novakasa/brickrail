@@ -49,14 +49,8 @@ func copy():
 func flip():
 	var section = get_script().new()
 	for i in range(len(tracks)-1, -1, -1):
-		# print(i)
 		section.add_track(tracks[i].get_opposite())
 	
-	var j = len(tracks)-1
-	for track in tracks:
-		var other = section.tracks[j]
-		printt(track.id, other.id)
-		j-=1
 	assert(section.tracks[0].get_opposite() == tracks[-1])
 	assert(section.tracks[-1].get_opposite() == tracks[0])
 	return section

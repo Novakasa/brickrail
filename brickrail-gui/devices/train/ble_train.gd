@@ -6,6 +6,7 @@ var name
 var hub
 var route : LayoutRoute
 var heading = 1
+var logging_module
 
 signal name_changed(old_name, new_name)
 signal removing(p_name)
@@ -55,6 +56,8 @@ func _init(p_name):
 	hub.store_value(STORAGE_MOTOR_CRUISE_SPEED, 75)
 	hub.store_value(STORAGE_MOTOR_FAST_SPEED, 100)
 	hub.store_value(STORAGE_MOTOR_INVERTED, 0)
+	
+	logging_module = "BLETrain-name"
 
 func serialize():
 	var struct = {}
@@ -96,7 +99,7 @@ func _on_route_intention_changed(leg_index, intention):
 	hub.rpc("set_leg_intention", [leg_index, intention_to_enum[intention]])
 
 func _on_runtime_data_received(data):
-	prints("train received:",data)
+	Logger.info("[%s] received: %s" % [logging_module, data])
 	if data[0] == DATA_SENSOR_ADVANCE:
 		emit_signal("sensor_advance", data)
 

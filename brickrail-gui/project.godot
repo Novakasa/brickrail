@@ -9,6 +9,11 @@
 config_version=4
 
 _global_script_classes=[ {
+"base": "Reference",
+"class": "Appender",
+"language": "GDScript",
+"path": "res://addons/gs_logger/appender.gd"
+}, {
 "base": "FileDialog",
 "class": "AsyncFileDialog",
 "language": "GDScript",
@@ -49,15 +54,35 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://devices/train/ble_train.gd"
 }, {
+"base": "Appender",
+"class": "ConsoleAppender",
+"language": "GDScript",
+"path": "res://addons/gs_logger/appenders/console_appender.gd"
+}, {
 "base": "Reference",
 "class": "DirectedLayoutTrack",
 "language": "GDScript",
 "path": "res://layout/track/directed_layout_track.gd"
 }, {
+"base": "Appender",
+"class": "FileAppender",
+"language": "GDScript",
+"path": "res://addons/gs_logger/appenders/file_appender.gd"
+}, {
 "base": "Node2D",
 "class": "GridLayer",
 "language": "GDScript",
 "path": "res://layout/grid/grid_layer.gd"
+}, {
+"base": "Layout",
+"class": "HtmlLayout",
+"language": "GDScript",
+"path": "res://addons/gs_logger/layouts/html_layout.gd"
+}, {
+"base": "Reference",
+"class": "Layout",
+"language": "GDScript",
+"path": "res://addons/gs_logger/layout.gd"
 }, {
 "base": "Node2D",
 "class": "LayoutBlock",
@@ -134,6 +159,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://layout/train/layout_train.gd"
 }, {
+"base": "Reference",
+"class": "Message",
+"language": "GDScript",
+"path": "res://addons/gs_logger/message.gd"
+}, {
+"base": "Layout",
+"class": "PatternLayout",
+"language": "GDScript",
+"path": "res://addons/gs_logger/layouts/pattern_layout.gd"
+}, {
 "base": "OptionButton",
 "class": "Selector",
 "language": "GDScript",
@@ -143,6 +178,11 @@ _global_script_classes=[ {
 "class": "SwitchMotor",
 "language": "GDScript",
 "path": "res://devices/switch/switch_motor.gd"
+}, {
+"base": "Reference",
+"class": "Utils",
+"language": "GDScript",
+"path": "res://addons/gs_logger/utils.gd"
 }, {
 "base": "Node2D",
 "class": "VirtualTrain",
@@ -155,6 +195,7 @@ _global_script_classes=[ {
 "path": "res://layout/train/virtual_train_wagon.gd"
 } ]
 _global_script_class_icons={
+"Appender": "",
 "AsyncFileDialog": "",
 "AsyncWindow": "",
 "BLECommand": "",
@@ -163,8 +204,12 @@ _global_script_class_icons={
 "BLEHub": "",
 "BLEProcess": "",
 "BLETrain": "",
+"ConsoleAppender": "",
 "DirectedLayoutTrack": "",
+"FileAppender": "",
 "GridLayer": "",
+"HtmlLayout": "",
+"Layout": "",
 "LayoutBlock": "",
 "LayoutCell": "",
 "LayoutController": "",
@@ -180,8 +225,11 @@ _global_script_class_icons={
 "LayoutSwitch": "",
 "LayoutTrack": "",
 "LayoutTrain": "",
+"Message": "",
+"PatternLayout": "",
 "Selector": "",
 "SwitchMotor": "",
+"Utils": "",
 "VirtualTrain": "",
 "VirtualTrainWagon": ""
 }
@@ -198,15 +246,19 @@ LayoutInfo="*res://layout/layout_info.gd"
 Devices="*res://devices/devices.tscn"
 Settings="*res://gui/settings.gd"
 Tools="*res://tools/tools.gd"
-Logger="*res://tools/logger.gd"
 GuiApi="*res://gui/gui_api.gd"
 Await="*res://tools/await.gd"
+Logger="*res://addons/gs_logger/logger.gd"
 
 [display]
 
 window/size/width=1280
 window/size/height=720
 window/energy_saving/keep_screen_on=false
+
+[editor_plugins]
+
+enabled=PoolStringArray( "res://addons/gs_logger/plugin.cfg" )
 
 [gdnative]
 

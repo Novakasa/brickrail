@@ -88,7 +88,6 @@ func rename_hub(p_name, p_new_name):
 
 func _on_message_received(message):
 	var obj = JSON.parse(message).result
-	prints("[BLEController] message parsed obj:", obj)
 	var key = obj.key
 	var hubname = obj.hub
 	if hubname != null:

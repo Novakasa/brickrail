@@ -13,6 +13,8 @@ onready var TrainControllerGUI = preload("res://devices/train/train_control_gui.
 onready var LayoutControllerGUI = preload("res://devices/layout_controller/layout_controller_gui.tscn")
 
 func _ready():
+	Logger.set_logger_format(Logger.LOG_FORMAT_MORE)
+	Logger.set_logger_level(Logger.LOG_LEVEL_INFO)
 	get_tree().set_auto_accept_quit(false)
 	var _err = Devices.connect("train_added", self, "_on_devices_train_added")
 	_err = Devices.connect("layout_controller_added", self, "_on_devices_layout_controller_added")
