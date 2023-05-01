@@ -76,12 +76,12 @@ jobs:
         run: |
           mkdir -v -p build/windows
           cd $PROJECT_PATH
-          godot -v --export "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
+          godot -v --export-debug "Windows Desktop" ../build/windows/$EXPORT_NAME.exe
       - name: Linux Build
         run: |
           mkdir -v -p build/linux
           cd $PROJECT_PATH
-          godot -v --export "Linux/X11" ../build/linux/$EXPORT_NAME.x86_64
+          godot -v --export-debug "Linux/X11" ../build/linux/$EXPORT_NAME.x86_64
       - name: Download windows ble-server artifact
         uses: actions/download-artifact@v3
         with:
