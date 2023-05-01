@@ -268,6 +268,11 @@ singletons=[  ]
 
 version="1.0.0-alpha.3-dev"
 
+[logging]
+
+file_logging/enable_file_logging=true
+file_logging/log_path="user://logs/brickrail.log"
+
 [network]
 
 limits/debugger_stdout/max_warnings_per_second=200
