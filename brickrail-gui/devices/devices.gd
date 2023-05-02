@@ -12,7 +12,7 @@ signal trains_changed()
 signal layout_controllers_changed()
 
 func _ready():
-	marker_colors = {"blue": Color.blue, "red": Color.red}
+	marker_colors = {"yellow": Color.yellow, "blue": Color.blue, "green": Color.green, "red": Color.red}
 
 func _on_data_received(key, data):
 	prints("[project] received data", key, data)
