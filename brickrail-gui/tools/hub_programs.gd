@@ -21,7 +21,10 @@ func _ready():
 	
 	var program_path
 	if OS.has_feature("standalone"):
-		program_path = OS.get_executable_path().get_base_dir()
+		if OS.get_name() == "Windows":
+			program_path = OS.get_executable_path().get_base_dir() + "ble-server-windows/hub_programs"
+		else:
+			program_path = OS.get_executable_path().get_base_dir() + "ble-server-linux/hub_programs"
 	else:
 		program_path = ProjectSettings.globalize_path("res://") + "../ble-server/hub_programs/"
 	print(program_path)
