@@ -5,7 +5,6 @@ var ble_train: BLETrain
 var virtual_train: VirtualTrain
 var route
 var block
-var target_block
 var blocked_by
 var trainname
 var facing: int = 1

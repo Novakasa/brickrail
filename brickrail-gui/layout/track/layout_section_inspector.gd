@@ -54,8 +54,11 @@ func _on_section_track_added(_track):
 func _on_CreateBlock_pressed():
 	if section.get_block_blocked_reason() != null:
 		return
-	var new_name = "block" + str(len(LayoutInfo.blocks))
+	var block_index = 0
+	var new_name = "block" + str(block_index)
 	while new_name in LayoutInfo.blocks:
+		block_index += 1
+		new_name = "block" + str(block_index)
 		new_name = new_name + "_"
 	LayoutInfo.create_block(new_name, section)
 	_on_section_track_added(null)

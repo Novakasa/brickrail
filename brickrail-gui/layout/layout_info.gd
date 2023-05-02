@@ -273,21 +273,32 @@ func create_block(p_name, section):
 	block.set_section(section)
 	grid.get_layer(section.tracks[0].l_idx).add_child(block)
 	block.connect("removing", self, "_on_block_removing")
-	
-	for logical_block in block.logical_blocks:
-		for node in logical_block.nodes.values():
-			nodes[node.id] = node
+	block.connect("name_changed", self, "_on_block_name_changed")
 	
 	set_layout_changed(true)
 	return block
+
+func _on_block_name_changed(old_name, new_name):
+	prints("changing block dict", old_name, new_name)
+	blocks[new_name] = blocks[old_name]
+	blocks.erase(old_name)
 
 func _on_block_removing(p_name):
 	for logical_block in blocks[p_name].logical_blocks:
 		for node in logical_block.nodes.values():
 			nodes.erase(node.id)
 	blocks[p_name].disconnect("removing", self, "_on_block_removing")
+	blocks[p_name].disconnect("name_changed", self, "_on_block_name_changed")
 	blocks.erase(p_name)
 	set_layout_changed(true)
+
+func add_node(p_node):
+	nodes[p_node.id] = p_node
+	p_node.connect("id_changed", self, "_on_node_id_changed")
+
+func _on_node_id_changed(old_id, new_id):
+	nodes[new_id] = nodes[old_id]
+	nodes.erase(old_id)
 
 func create_train(p_name):
 	assert(not p_name in trains)

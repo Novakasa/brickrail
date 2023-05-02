@@ -64,6 +64,11 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://layout/track/directed_layout_track.gd"
 }, {
+"base": "VBoxContainer",
+"class": "EditableLabel",
+"language": "GDScript",
+"path": "res://tools/editable_label.gd"
+}, {
 "base": "Appender",
 "class": "FileAppender",
 "language": "GDScript",
@@ -206,6 +211,7 @@ _global_script_class_icons={
 "BLETrain": "",
 "ConsoleAppender": "",
 "DirectedLayoutTrack": "",
+"EditableLabel": "",
 "FileAppender": "",
 "GridLayer": "",
 "HtmlLayout": "",

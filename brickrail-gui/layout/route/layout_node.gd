@@ -8,11 +8,18 @@ var type
 var facing
 var sensors: LayoutNodeSensors
 
+signal id_changed(old_id, new_id)
+
 func _init(p_obj, p_id, p_facing, p_type):
 	obj = p_obj
 	id = p_id + "_" + ["<", ">"][(p_facing+1)/2]
 	facing = p_facing
 	type = p_type
+
+func set_id(p_id):
+	var old_id = id
+	id = p_id
+	emit_signal("id_changed", old_id, id)
 
 func set_sensors(p_sensors):
 	sensors = p_sensors

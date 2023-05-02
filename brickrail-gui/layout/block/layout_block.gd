@@ -14,6 +14,7 @@ export(Font) var font
 var hover_block = null
 
 signal removing(p_name)
+signal name_changed(prev_name, new_name)
 
 func setup(p_name):
 	blockname = p_name
@@ -23,6 +24,17 @@ func setup(p_name):
 	logical_blocks.append(LayoutLogicalBlock.new(p_name, 1))
 	add_child(logical_blocks[0])
 	add_child(logical_blocks[1])
+
+func set_name(p_name):
+	print("set name")
+	var prev_name = name
+	name = p_name
+	blockname = p_name
+	for logical_block in logical_blocks:
+		logical_block.set_name(blockname)
+	if section != null:
+		section.set_track_attributes("block", blockname)
+	emit_signal("name_changed", prev_name, blockname)
 
 func get_occupied():
 	for logical_block in logical_blocks:

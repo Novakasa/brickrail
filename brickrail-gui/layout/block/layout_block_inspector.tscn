@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=2]
+[gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://layout/block/layout_block_inspector.gd" type="Script" id=1]
+[ext_resource path="res://tools/editable_label.gd" type="Script" id=2]
 
 [node name="LayoutBlockInspector" type="VBoxContainer"]
 margin_right = 40.0
@@ -12,19 +13,34 @@ margin_right = 118.0
 margin_bottom = 14.0
 text = "Logical block"
 
-[node name="AddTrain" type="Button" parent="."]
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_top = 18.0
 margin_right = 118.0
-margin_bottom = 38.0
+margin_bottom = 32.0
+
+[node name="BlocknameEdit" type="VBoxContainer" parent="HBoxContainer"]
+margin_bottom = 14.0
+script = ExtResource( 2 )
+text = "test"
+
+[node name="LogicalBlockLabel" type="Label" parent="HBoxContainer"]
+margin_left = 4.0
+margin_right = 4.0
+margin_bottom = 14.0
+
+[node name="AddTrain" type="Button" parent="."]
+margin_top = 36.0
+margin_right = 118.0
+margin_bottom = 56.0
 text = "Add train"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="AddPriorSensorButton" type="Button" parent="."]
-margin_top = 42.0
+margin_top = 60.0
 margin_right = 118.0
-margin_bottom = 62.0
+margin_bottom = 80.0
 text = "Add prior sensor"
 
 [node name="AddTrainDialog" type="ConfirmationDialog" parent="."]
@@ -66,19 +82,20 @@ __meta__ = {
 }
 
 [node name="CanStopCheckBox" type="CheckBox" parent="."]
-margin_top = 66.0
+margin_top = 84.0
 margin_right = 118.0
-margin_bottom = 90.0
+margin_bottom = 108.0
 pressed = true
 text = "Can stop"
 
 [node name="CanFlipCheckBox" type="CheckBox" parent="."]
-margin_top = 94.0
+margin_top = 112.0
 margin_right = 118.0
-margin_bottom = 118.0
+margin_bottom = 136.0
 pressed = true
 text = "Can reverse"
 
+[connection signal="text_changed" from="HBoxContainer/BlocknameEdit" to="." method="_on_BlocknameEdit_text_changed"]
 [connection signal="pressed" from="AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="AddPriorSensorButton" to="." method="_on_AddPriorSensorButton_pressed"]
 [connection signal="confirmed" from="AddTrainDialog" to="." method="_on_AddTrainDialog_confirmed"]

@@ -21,12 +21,19 @@ signal selected()
 signal unselected()
 
 func _init(p_name, p_index):
-	blockname = p_name
 	index = p_index
+	blockname = p_name
 	id = blockname + "_" + ["+", "-"][index]
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
 		nodes[facing].set_sensors(LayoutNodeSensors.new())
+		LayoutInfo.add_node(nodes[facing])
+
+func set_name(p_name):
+	blockname = p_name
+	id = blockname + "_" + ["+", "-"][index]
+	for facing in [1, -1]:
+		nodes[facing].set_id(id)
 
 func set_section(p_section):
 	if section != null:
@@ -102,6 +109,9 @@ func collect_edges(facing):
 			continue
 		edges.append(LayoutEdge.new(nodes[facing], node_obj.nodes[facing], "travel", next_section))
 	return edges
+
+func get_block():
+	return LayoutInfo.blocks[blockname]
 
 func get_opposite_block():
 	return LayoutInfo.blocks[blockname].logical_blocks[1-index]

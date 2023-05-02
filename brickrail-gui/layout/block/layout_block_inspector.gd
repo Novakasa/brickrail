@@ -17,6 +17,8 @@ func set_block(p_block):
 	block.connect("unselected", self, "_on_block_unselected")
 	$CanStopCheckBox.pressed = block.can_stop
 	$CanFlipCheckBox.pressed = block.can_flip
+	$HBoxContainer/BlocknameEdit.set_text(block.get_block().blockname)
+	$HBoxContainer/LogicalBlockLabel.text = ["+", "-"][block.index]
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func _on_block_unselected():
@@ -44,3 +46,22 @@ func _on_CanStopCheckBox_toggled(button_pressed):
 
 func _on_CanFlipCheckBox_toggled(button_pressed):
 	block.can_flip = button_pressed
+
+
+func _on_BlocknameEdit_text_changed(text):
+	var section = block.get_block().section
+	var train = null
+	var train_index = -1
+	for i in [0,1]:
+		var logical_block = block.get_block().logical_blocks[i]
+		if logical_block.train != null:
+			train = logical_block.train
+			train_index = i
+		
+	var index = block.index
+	block.get_block().remove()
+	var new_block = LayoutInfo.create_block(text, section)
+	block.unselect()
+	new_block.logical_blocks[index].select()
+	if train != null:
+		train.set_current_block(new_block.logical_blocks[train_index])
