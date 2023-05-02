@@ -249,6 +249,7 @@ Tools="*res://tools/tools.gd"
 GuiApi="*res://gui/gui_api.gd"
 Await="*res://tools/await.gd"
 Logger="*res://addons/gs_logger/logger.gd"
+HubPrograms="*res://tools/hub_programs.gd"
 
 [display]
 

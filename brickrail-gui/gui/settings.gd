@@ -26,6 +26,8 @@ var default_presets = []
 var color_preset = "custom"
 var colors = {}
 
+var hub_program_hashes = {}
+
 signal render_mode_changed(mode)
 signal colors_changed()
 signal color_presets_changed()
@@ -88,6 +90,7 @@ func save_configfile():
 	data["color_preset"] = color_preset
 	data["render_mode"] = render_mode
 	data["layout_path"] = layout_path
+	data["hub_program_hashes"] = hub_program_hashes
 	var jsonstr = JSON.print(data, "\t")
 	var configfil = File.new()
 	configfil.open("user://config.json", File.WRITE)
@@ -123,6 +126,9 @@ func read_configfile():
 	
 	if "color_preset" in data:
 		color_preset = data.color_preset
+	
+	if "hub_program_hashes" in data:
+		hub_program_hashes = data.hub_program_hashes.duplicate()
 	
 	emit_signal("render_mode_changed")
 	emit_signal("colors_changed")

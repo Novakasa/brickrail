@@ -31,6 +31,11 @@ signal responsiveness_changed(value)
 signal removing(name)
 signal state_changed()
 signal battery_changed()
+signal skip_download_changed(value)
+
+func set_skip_download(value):
+	skip_download = value
+	emit_signal("skip_download_changed", value)
 
 func _init(p_name, p_program):
 	name = p_name
@@ -38,6 +43,12 @@ func _init(p_name, p_program):
 	communicator = Devices.get_ble_controller().get_node("BLECommunicator")
 	var _err = communicator.connect("status_changed", self, "_on_ble_communicator_status_changed")
 	logging_module = "hub-"+name
+	
+	if name in Settings.hub_program_hashes:
+		print("hash found in settings")
+		if Settings.hub_program_hashes[name] == HubPrograms.hashes[program]:
+			print("hash is the same, setting skip download")
+			set_skip_download(true)
 
 func _on_ble_communicator_status_changed():
 	if not communicator.connected:
@@ -85,6 +96,11 @@ func _on_data_received(key, data):
 		emit_signal("state_changed")
 		return
 	if key == "program_started":
+		
+		if not skip_download:
+			Settings.hub_program_hashes[name] = HubPrograms.hashes[program]
+			set_skip_download(true)
+		
 		running=true
 		busy=false
 		status = "running"
@@ -102,11 +118,17 @@ func _on_data_received(key, data):
 		emit_signal("state_changed")
 		return
 	if key == "program_error":
-		GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
-		if "Unexpected Marker" in data:
-			LayoutInfo.emergency_stop()
-		emit_signal("program_error", data)
-		emit_signal("program_start_error")
+		if status == "starting program":
+			emit_signal("program_start_error")
+			set_skip_download(false)
+			GuiApi.show_error("Hub '"+name+"' Program start Error:" + data)
+		else:
+			if data == "program_start_timeout":
+				return
+			GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
+			if "Unexpected Marker" in data:
+				LayoutInfo.emergency_stop()
+			emit_signal("program_error", data)
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", data)
@@ -192,7 +214,7 @@ func disconnect_coroutine():
 func run_program_coroutine():
 	run_program()
 	var first_signal = yield(Await.first_signal(self, ["program_started", "program_start_error"]), "completed")
-	if first_signal == "program_error":
+	if first_signal == "program_start_error":
 		return "error"
 	return "success"
 

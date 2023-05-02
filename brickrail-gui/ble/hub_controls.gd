@@ -11,7 +11,11 @@ func setup(p_hub):
 	var _err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
 	_on_hubs_state_changed()
 	_err = hub.connect("battery_changed", self, "_on_hub_battery_changed")
+	_err = hub.connect("skip_download_changed", self, "_on_hub_skip_download_changed")
 	$HBoxContainer/DownloadCheckbox.pressed = not hub.skip_download
+
+func _on_hub_skip_download_changed(value):
+	$HBoxContainer/DownloadCheckbox.pressed = not value
 
 func _on_hub_battery_changed():
 	$HBoxContainer2/BatteryLabel.text = ("Battery %.2f" % hub.battery_voltage) + "V"
