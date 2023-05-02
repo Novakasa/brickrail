@@ -7,6 +7,7 @@
 
 ### Added
 
+- Added checkbox "Download" checkbox to hub GUI. Unchecking it skips downloading the program to the hub, assuming that it is stored on the hub (https://github.com/Novakasa/brickrail/issues/92).
 - Added File logging. Logs will be available in user folder.
 - Added Control devices mode for switches only, allowing manual train control (https://github.com/Novakasa/brickrail/issues/77).
 - Move view appropriately when changing "layers unfolded" or changing active Layer.
@@ -15,7 +16,7 @@
 - Automatically select connected track when deleting a single track segment.
 - Current brickrail layout path now displayed in window title.
 - Added configurable motor and sensor parameters to Trains (https://github.com/Novakasa/brickrail/issues/116, https://github.com/Novakasa/brickrail/issues/85).
-- Added battery voltage display for hubs (requires new firmware) (https://github.com/Novakasa/brickrail/issues/111).
+- Added battery voltage display for hubs (https://github.com/Novakasa/brickrail/issues/111).
 - Added ability to invert train motor polarity (https://github.com/Novakasa/brickrail/issues/112).
 - Added layout changed label in status bar to highlight unsaved changes (and for debugging).
 - Added robustness for crashed BLEServer, new button to manually start it again and display more errors related to BLEServer connection (https://github.com/Novakasa/brickrail/issues/51).

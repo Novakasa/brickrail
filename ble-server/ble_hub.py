@@ -272,11 +272,17 @@ class BLEHub:
             await asyncio.sleep(1.0)
         self.to_out_queue("disconnected", None)
     
-    async def run(self, program=None, wait=False):
-        if program is None:
-            program = str(Path(__file__).parent / "hub_programs" / f"{self.program_name}.py")
-        if not Path(program).exists():
-            program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
+    async def brickrail_run(self, skip_download):
+        await self.run(skip_download=skip_download)
+    
+    async def run(self, program=None, wait=False, skip_download=False):
+        if skip_download:
+            program = None
+        else:
+            if program is None:
+                program = str(Path(__file__).parent / "hub_programs" / f"{self.program_name}.py")
+            if not Path(program).exists():
+                program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
 
         async def run_coroutine():
             await self.hub._wait_for_user_program_stop()

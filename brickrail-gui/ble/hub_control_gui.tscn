@@ -35,11 +35,11 @@ text = "Scan for hub"
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
 margin_top = 24.0
 margin_right = 237.0
-margin_bottom = 44.0
+margin_bottom = 48.0
 
 [node name="connect_button" type="Button" parent="HBoxContainer"]
 margin_right = 64.0
-margin_bottom = 20.0
+margin_bottom = 24.0
 text = "Connect"
 __meta__ = {
 "_edit_use_anchors_": false
@@ -47,20 +47,22 @@ __meta__ = {
 
 [node name="run_button" type="Button" parent="HBoxContainer"]
 margin_left = 68.0
-margin_right = 161.0
-margin_bottom = 20.0
+margin_right = 104.0
+margin_bottom = 24.0
 disabled = true
-text = "Run program"
+text = "Run"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
-[node name="Control" type="Control" parent="HBoxContainer"]
-margin_left = 165.0
-margin_right = 237.0
-margin_bottom = 20.0
-size_flags_horizontal = 3
+[node name="DownloadCheckbox" type="CheckBox" parent="HBoxContainer"]
+margin_left = 108.0
+margin_right = 199.0
+margin_bottom = 24.0
+hint_tooltip = "Disable this to skip downloading the program. A hub stores its program until the firmware is updated."
+text = "Download"
 
 [connection signal="pressed" from="HBoxContainer2/scan_button" to="." method="_on_scan_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/connect_button" to="." method="_on_connect_button_pressed"]
 [connection signal="pressed" from="HBoxContainer/run_button" to="." method="_on_run_button_pressed"]
+[connection signal="toggled" from="HBoxContainer/DownloadCheckbox" to="." method="_on_DownloadCheckbox_toggled"]

@@ -11,6 +11,7 @@ func setup(p_hub):
 	var _err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
 	_on_hubs_state_changed()
 	_err = hub.connect("battery_changed", self, "_on_hub_battery_changed")
+	$HBoxContainer/DownloadCheckbox.pressed = not hub.skip_download
 
 func _on_hub_battery_changed():
 	$HBoxContainer2/BatteryLabel.text = ("Battery %.2f" % hub.battery_voltage) + "V"
@@ -57,3 +58,7 @@ func _on_scan_button_pressed():
 		push_error("scanned name is null!")
 		return
 	hub.set_name(new_name)
+
+
+func _on_DownloadCheckbox_toggled(button_pressed):
+	hub.skip_download = not button_pressed

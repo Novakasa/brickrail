@@ -2,6 +2,7 @@ class_name BLEHub
 extends Reference
 
 var program
+var skip_download = false
 var name
 var connected = false
 var running = false
@@ -142,7 +143,7 @@ func disconnect_hub():
 
 func run_program():
 	assert(connected and not running)
-	send_command("run", [])
+	send_command("brickrail_run", [skip_download])
 	status = "starting program"
 	busy=true
 	emit_signal("state_changed")
