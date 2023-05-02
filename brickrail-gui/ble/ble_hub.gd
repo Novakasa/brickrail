@@ -116,7 +116,7 @@ func _on_data_received(key, data):
 		emit_signal("battery_changed")
 		return
 		
-	Logger.error("[%s] Unrecognized data key: %s data:" % [logging_module, key, data])
+	Logger.error("[%s] Unrecognized data key: %s data: %s" % [logging_module, key, data])
 
 func send_storage():
 	for i in storage:
