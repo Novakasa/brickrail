@@ -14,6 +14,12 @@ Trains detect their location via a Color and Distance Sensor pointed down at the
 
 ![GUI screenshot](images/screenshot3.PNG)
 
+## Current state
+
+Brickrail currently is in alpha stage. Users have reported succesfully automating their layouts, but a few more reports are needed to confidently move to a stable release. If you are willing to give Brickrail a go, feel free to share your issues over in [discussions](https://github.com/Novakasa/brickrail/discussions). Reports of success are also greatly appreciated, as well as any usability/quality-of-life improvement requests.
+
+## Links
+
 [Here](https://www.youtube.com/watch?v=cBF-G4d4vw8)'s a video of Brickrail in action with a multi-layered layout.
 
 Head to the [Wiki](https://github.com/Novakasa/brickrail/wiki) to learn more about how to run Brickrail with your LEGO train layout.
