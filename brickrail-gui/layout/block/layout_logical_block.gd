@@ -24,6 +24,7 @@ func _init(p_name, p_index):
 	blockname = p_name
 	index = p_index
 	id = blockname + "_" + ["+", "-"][index]
+	name = id
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
 		nodes[facing].set_sensors(LayoutNodeSensors.new())
@@ -68,6 +69,7 @@ func get_train_spawn_dirtrack(facing):
 	return section.tracks[0]
 
 func set_occupied(p_occupied, p_train=null):
+	prints(name, p_occupied, p_train.trainname)
 	occupied = p_occupied
 	train = p_train
 	# section.set_track_attributes("block", blockname)

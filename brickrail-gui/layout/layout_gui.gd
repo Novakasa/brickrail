@@ -95,6 +95,7 @@ func _notification(what):
 		if saved == "cancelled":
 			return
 		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
+		LayoutInfo.store_train_positions()
 		Settings.save_configfile()
 		get_tree().quit()
 
@@ -152,6 +153,7 @@ func _on_LayoutOpen_pressed():
 		open_layout(result[1])
 
 func open_layout(path):
+	LayoutInfo.store_train_positions()
 	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
 	
@@ -171,12 +173,14 @@ func open_layout(path):
 	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
 	OS.set_window_title("Brickrail - "+path)
+	LayoutInfo.restore_train_positions()
 
 
 func _on_LayoutNew_pressed():
 	var saved = yield(check_save_changes_coroutine(), "completed")
 	if saved == "cancelled":
 		return
+	LayoutInfo.store_train_positions()
 	yield(Devices.clear_coroutine(), "completed")
 	LayoutInfo.clear()
 	LayoutInfo.layout_file = null

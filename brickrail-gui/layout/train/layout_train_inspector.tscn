@@ -8,15 +8,27 @@ margin_right = 40.0
 margin_bottom = 40.0
 script = ExtResource( 1 )
 
+[node name="SetHomeButton" type="Button" parent="."]
+margin_right = 147.0
+margin_bottom = 20.0
+text = "Set position as home"
+
+[node name="GoHomeButton" type="Button" parent="."]
+margin_top = 24.0
+margin_right = 147.0
+margin_bottom = 44.0
+text = "Go home"
+
 [node name="Label" type="Label" parent="."]
-margin_right = 109.0
-margin_bottom = 14.0
+margin_top = 48.0
+margin_right = 147.0
+margin_bottom = 62.0
 text = "Train"
 
 [node name="FixedFacingCheckbox" type="CheckBox" parent="."]
-margin_top = 18.0
-margin_right = 109.0
-margin_bottom = 42.0
+margin_top = 66.0
+margin_right = 147.0
+margin_bottom = 90.0
 hint_tooltip = "If turned on, the train will never drive backwards."
 text = "Only forward"
 
@@ -28,58 +40,60 @@ margin_bottom = 70.0
 text = "manual sensors"
 
 [node name="ColorLabel" type="Label" parent="."]
-margin_top = 46.0
-margin_right = 109.0
-margin_bottom = 60.0
+margin_top = 94.0
+margin_right = 147.0
+margin_bottom = 108.0
 text = "Color"
 
 [node name="ColorButton" type="ColorPickerButton" parent="."]
-margin_top = 64.0
-margin_right = 109.0
-margin_bottom = 84.0
+margin_top = 112.0
+margin_right = 147.0
+margin_bottom = 132.0
 
 [node name="WagonLabel" type="Label" parent="."]
-margin_top = 88.0
-margin_right = 109.0
-margin_bottom = 102.0
+margin_top = 136.0
+margin_right = 147.0
+margin_bottom = 150.0
 text = "Wagons"
 
 [node name="WagonEdit" type="SpinBox" parent="."]
-margin_top = 106.0
-margin_right = 109.0
-margin_bottom = 130.0
+margin_top = 154.0
+margin_right = 147.0
+margin_bottom = 178.0
 min_value = 1.0
 max_value = 16.0
 value = 4.0
 rounded = true
 
 [node name="BLETrainContainer" type="VBoxContainer" parent="."]
-margin_top = 134.0
-margin_right = 109.0
-margin_bottom = 172.0
+margin_top = 182.0
+margin_right = 147.0
+margin_bottom = 220.0
 
 [node name="Label" type="Label" parent="BLETrainContainer"]
-margin_right = 109.0
+margin_right = 147.0
 margin_bottom = 14.0
 text = "Train hub"
 
 [node name="BLETrainSelector" type="OptionButton" parent="BLETrainContainer"]
 margin_top = 18.0
-margin_right = 109.0
+margin_right = 147.0
 margin_bottom = 38.0
 script = ExtResource( 2 )
 
 [node name="HSeparator" type="HSeparator" parent="."]
-margin_top = 176.0
-margin_right = 109.0
-margin_bottom = 180.0
+margin_top = 224.0
+margin_right = 147.0
+margin_bottom = 228.0
 
 [node name="Storage" type="GridContainer" parent="."]
-margin_top = 184.0
-margin_right = 109.0
-margin_bottom = 184.0
+margin_top = 232.0
+margin_right = 147.0
+margin_bottom = 232.0
 columns = 2
 
+[connection signal="pressed" from="SetHomeButton" to="." method="_on_SetHomeButton_pressed"]
+[connection signal="pressed" from="GoHomeButton" to="." method="_on_GoHomeButton_pressed"]
 [connection signal="toggled" from="FixedFacingCheckbox" to="." method="_on_FixedFacingCheckbox_toggled"]
 [connection signal="toggled" from="SensorAdvanceCheckbox" to="." method="_on_SensorAdvanceCheckbox_toggled"]
 [connection signal="color_changed" from="ColorButton" to="." method="_on_ColorButton_color_changed"]

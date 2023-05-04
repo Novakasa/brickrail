@@ -28,6 +28,8 @@ var colors = {}
 
 var hub_program_hashes = {}
 
+var layout_train_positions = {}
+
 signal render_mode_changed(mode)
 signal colors_changed()
 signal color_presets_changed()
@@ -91,6 +93,7 @@ func save_configfile():
 	data["render_mode"] = render_mode
 	data["layout_path"] = layout_path
 	data["hub_program_hashes"] = hub_program_hashes
+	data["layout_train_positions"] = layout_train_positions
 	var jsonstr = JSON.print(data, "\t")
 	var configfil = File.new()
 	configfil.open("user://config.json", File.WRITE)
@@ -129,6 +132,9 @@ func read_configfile():
 	
 	if "hub_program_hashes" in data:
 		hub_program_hashes = data.hub_program_hashes.duplicate()
+	
+	if "layout_train_positions" in data:
+		layout_train_positions = data.layout_train_positions.duplicate()
 	
 	emit_signal("render_mode_changed")
 	emit_signal("colors_changed")

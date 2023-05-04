@@ -90,3 +90,12 @@ func _on_ColorButton_color_changed(color):
 
 func _on_WagonEdit_value_changed(value):
 	train.virtual_train.set_num_wagons(int(value))
+
+func _on_SetHomeButton_pressed():
+	train.set_as_home()
+
+func _on_GoHomeButton_pressed():
+	if LayoutInfo.layout_mode == "control":
+		train.go_home()
+	else:
+		train.reset_to_home_position()

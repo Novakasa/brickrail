@@ -225,18 +225,58 @@ func load(struct):
 	if "trains" in struct:
 		for train_data in struct.trains:
 			var train = create_train(train_data.name)
-			train.set_facing(train_data.facing)
 			if "fixed_facing" in train_data:
 				train.fixed_facing = train_data.fixed_facing
-			if "blockname" in  train_data:
-				var block = blocks[train_data.blockname].logical_blocks[train_data.blockindex]
-				train.set_current_block(block)
+
+			var home_pos_dict = {}
+			home_pos_dict["blockname"] = train_data.blockname
+			home_pos_dict["index"] = train_data.blockindex
+			home_pos_dict["facing"] = int(train_data.facing)
+			train.set_home_position(home_pos_dict)
+			train.reset_to_home_position()
+			
 			if "ble_train" in train_data:
 				train.set_ble_train(train_data.ble_train)
 			if "color" in train_data:
 				train.virtual_train.set_color(Color(train_data.color))
 			if "num_wagons" in train_data:
 				train.virtual_train.set_num_wagons(int(train_data.num_wagons))
+
+func store_train_positions():
+	Logger.info("[LayoutInfo] storing train positions for file %s..." % layout_file)
+	if layout_file == null:
+		return
+	Settings.layout_train_positions[layout_file] = {}
+	for trainname in trains:
+		var train = trains[trainname]
+		var pos_dict = train.get_current_pos_dict()
+		Settings.layout_train_positions[layout_file][trainname] = pos_dict
+		Logger.info("[LayoutInfo] storing position for train %s: %s" % [trainname, pos_dict])
+
+func restore_train_positions():
+	Logger.info("[LayoutInfo] restoring train positions for file %s..." % layout_file)
+	if layout_file == null:
+		return
+	if not layout_file in Settings.layout_train_positions:
+		return
+	
+	# do the move in two passes, since first all trains need to set block==null to
+	# avoid moving to already occupied position
+	for trainname in trains:
+		if not trainname in Settings.layout_train_positions[layout_file]:
+			continue
+		var loc_dict = Settings.layout_train_positions[layout_file][trainname].duplicate()
+		if not loc_dict.blockname in blocks:
+			continue
+		trains[trainname].set_current_block(null)
+	for trainname in trains:
+		if not trainname in Settings.layout_train_positions[layout_file]:
+			continue
+		var loc_dict = Settings.layout_train_positions[layout_file][trainname].duplicate()
+		if not loc_dict.blockname in blocks:
+			continue
+		Logger.info("[LayoutInfo] restoring position for train %s: %s" % [trainname, loc_dict])
+		trains[trainname].reset_to_position(loc_dict)
 
 func get_hover_lock():
 	if drag_select or drawing_track:

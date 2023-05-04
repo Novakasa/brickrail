@@ -25,5 +25,6 @@ func _ready():
 	print(program_path)
 	
 	hashes["smart_train"] = hash_file(program_path + "smart_train.py")
+	Logger.info("[HubPrograms] Program smart_train hash: %s" % [hashes["smart_train"]])
 	hashes["layout_controller"] = hash_file(program_path + "layout_controller.py")
-	print(hashes)
+	Logger.info("[HubPrograms] Program layout_controller hash: %s" % [hashes["layout_controller"]])

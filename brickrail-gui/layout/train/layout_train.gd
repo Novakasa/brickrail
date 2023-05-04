@@ -4,15 +4,14 @@ extends Node2D
 var ble_train: BLETrain
 var virtual_train: VirtualTrain
 var route
+var home_position = {}
 var block
-var target_block
 var blocked_by
 var trainname
 var facing: int = 1
 var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
 var selected=false
 var fixed_facing=false
-var next_sensor_track
 var committed = true
 var logging_module
 var wait_time = 2.0
@@ -24,6 +23,7 @@ signal selected()
 signal unselected()
 signal ble_train_changed()
 signal route_changed()
+signal home_position_changed(home_pos_dict)
 
 func _init(p_name):
 	trainname = p_name
@@ -134,13 +134,13 @@ func update_control_ble_train():
 func serialize():
 	var struct = {}
 	struct["name"] = trainname
-	struct["facing"] = facing
+	struct["facing"] = home_position.facing
 	struct["fixed_facing"] = fixed_facing
 	struct["color"] = virtual_train.color.to_html()
 	struct["num_wagons"] = len(virtual_train.wagons)
 	if block != null:
-		struct["blockname"] = block.blockname
-		struct["blockindex"] = block.index
+		struct["blockname"] = home_position.blockname
+		struct["blockindex"] = home_position.index
 	if ble_train != null:
 		struct["ble_train"] = ble_train.name
 	return struct
@@ -346,6 +346,35 @@ func _on_target_entered(_target_node):
 
 func _on_target_in(target_node):
 	set_current_block(target_node.obj, false)
+
+func get_current_pos_dict():
+	var pos_dict = {}
+	pos_dict["blockname"] = block.blockname
+	pos_dict["index"] = block.index
+	pos_dict["facing"] = facing
+	return pos_dict
+
+func set_as_home():
+	set_home_position(get_current_pos_dict())
+
+func set_home_position(home_pos_dict):
+	home_position = home_pos_dict.duplicate()
+	emit_signal("home_position_changed", home_position)
+	LayoutInfo.set_layout_changed(true)
+
+func reset_to_home_position():
+	reset_to_position(home_position)
+	
+func reset_to_position(pos_dict):
+	var logical_block = LayoutInfo.blocks[pos_dict.blockname].logical_blocks[pos_dict.index]
+	set_facing(pos_dict.facing)
+	set_current_block(logical_block, true)
+
+func go_home():
+	Logger.info("[%s] go_home()" % [logging_module])
+	var logical_block = LayoutInfo.blocks[home_position.blockname].logical_blocks[home_position.index]
+	var node_id = logical_block.nodes[home_position.facing].id
+	find_route(node_id)
 
 func set_current_block(p_block, teleport=true):
 	if p_block != null:
