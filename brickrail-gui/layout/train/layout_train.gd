@@ -50,7 +50,7 @@ func _on_layer_info_changed(_l_idx=null):
 	update_layer_visibility()
 
 func _on_virtual_train_switched_layer(p_l_idx):
-	if selected:
+	if selected and not LayoutInfo.layers_unfolded:
 		LayoutInfo.set_active_layer(p_l_idx)
 	
 	update_layer_visibility()

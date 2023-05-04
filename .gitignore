@@ -12,3 +12,4 @@ ble-server/.env
 build/
 dist/
 brickrail-gui/dist/
+.VSCodeCounter/
