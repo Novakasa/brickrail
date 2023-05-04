@@ -383,8 +383,11 @@ func set_current_block(p_block, teleport=true):
 		block.set_occupied(false, self)
 	block = p_block
 	if block != null:
+		assert(not block.occupied)
 		block.set_occupied(true, self)
 		virtual_train.visible=true
+		if len(home_position) == 0:
+			set_as_home()
 		if teleport:
 			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing), true)
 	else:
