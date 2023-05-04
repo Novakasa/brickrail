@@ -11,7 +11,7 @@ var trainname
 var facing: int = 1
 var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
 var selected=false
-var fixed_facing=false
+var reversing_behavior = "off"
 var committed = true
 var logging_module
 var wait_time = 2.0
@@ -135,7 +135,7 @@ func serialize():
 	var struct = {}
 	struct["name"] = trainname
 	struct["facing"] = home_position.facing
-	struct["fixed_facing"] = fixed_facing
+	struct["reversing_behavior"] = reversing_behavior
 	struct["color"] = virtual_train.color.to_html()
 	struct["num_wagons"] = len(virtual_train.wagons)
 	if block != null:
@@ -195,13 +195,13 @@ func get_route_to(p_target, no_locked=true):
 	var locked_trainname = trainname
 	if not no_locked:
 		locked_trainname = null
-	return block.get_route_to(facing, p_target, fixed_facing, locked_trainname)
+	return block.get_route_to(facing, p_target, reversing_behavior, locked_trainname)
 
-func get_all_valid_routes(no_locked=true):
+func get_all_valid_routes(no_locked=true, target_facing=null):
 	var locked_trainname = trainname
 	if not no_locked:
 		locked_trainname = null
-	var routes = block.get_all_routes(facing, fixed_facing, locked_trainname)
+	var routes = block.get_all_routes(facing, reversing_behavior, locked_trainname)
 	var valid_routes = {}
 	for node_id in routes:
 		if routes[node_id] == null:
@@ -212,12 +212,18 @@ func get_all_valid_routes(no_locked=true):
 			continue
 		if not LayoutInfo.nodes[node_id].obj.can_stop:
 			continue
+		if target_facing != null and target_facing != LayoutInfo.nodes[node_id].facing:
+			continue
 		valid_routes[node_id] = routes[node_id]
 	return valid_routes
 
 func find_random_route(no_blocked):
 	Logger.info("[%s] finding new random route" % [logging_module])
-	var valid_routes = get_all_valid_routes(no_blocked)
+	var target_facing = null
+	if reversing_behavior == "penalty":
+		target_facing = 1
+		
+	var valid_routes = get_all_valid_routes(no_blocked, target_facing)
 	var valid_targets = valid_routes.keys()
 	
 	if len(valid_targets) == 0:
@@ -408,10 +414,10 @@ func set_facing(p_facing):
 	facing = p_facing
 	virtual_train.set_facing(facing)
 
-func set_fixed_facing(p_fixed_facing):
-	if fixed_facing != p_fixed_facing:
+func set_reversing_behavior(p_behavior):
+	if reversing_behavior != p_behavior:
 		LayoutInfo.set_layout_changed(true)
-		fixed_facing = p_fixed_facing
+		reversing_behavior = p_behavior
 
 func remove():
 	unselect()

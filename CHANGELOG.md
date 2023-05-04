@@ -7,6 +7,7 @@
 
 ### Added
 
+- Added "discouraged" reversing behavior. With this option, the train will only reverse when there is no other option. (https://github.com/Novakasa/brickrail/issues/125)
 - Distinguish current train position from "home" position. Current position is saved in settings, home position saved in .brl layout file. (https://github.com/Novakasa/brickrail/issues/78)
 - Added "Download" checkbox to hub GUI. Unchecking it skips downloading the program to the hub, assuming that it is stored on the hub (https://github.com/Novakasa/brickrail/issues/92).
 - Added File logging. Logs will be available in user folder.

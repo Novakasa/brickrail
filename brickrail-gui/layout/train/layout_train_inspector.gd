@@ -15,7 +15,6 @@ func set_train(obj):
 	train = obj
 	train.connect("unselected", self, "_on_train_unselected")
 	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
-	$FixedFacingCheckbox.pressed = train.fixed_facing
 	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance
 	$ColorButton.color = train.virtual_train.color
 	$WagonEdit.value = len(train.virtual_train.wagons)
@@ -23,6 +22,12 @@ func set_train(obj):
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
+	
+	$ReversingBehaviorSelector.set_items(
+		["Disabled", "Discouraged", "Allowed"],
+		["off", "penalty", "on"])
+	
+	$ReversingBehaviorSelector.select_meta(train.reversing_behavior)
 	
 	update_storage_controls()
 
@@ -76,9 +81,6 @@ func update_ble_train_selector():
 func _on_train_unselected():
 	queue_free()
 
-func _on_FixedFacingCheckbox_toggled(button_pressed):
-	train.set_fixed_facing(button_pressed)
-
 func _on_BLETrainSelector_meta_selected(meta):
 	train.set_ble_train(meta)
 
@@ -99,3 +101,6 @@ func _on_GoHomeButton_pressed():
 		train.go_home()
 	else:
 		train.reset_to_home_position()
+
+func _on_ReversingBehaviorSelector_meta_selected(meta):
+	train.set_reversing_behavior(meta)

@@ -82,11 +82,11 @@ func set_occupied(p_occupied, p_train=null):
 		section.set_track_attributes("locked+", -1, ">", "increment")
 		section.set_track_attributes("locked-", -1, "<", "increment")
 
-func get_all_routes(from_facing, fixed_facing, trainname):
-	return nodes[from_facing].calculate_routes(fixed_facing, trainname)
+func get_all_routes(from_facing, reversing_behavior, trainname):
+	return nodes[from_facing].calculate_routes(reversing_behavior, trainname)
 
-func get_route_to(from_facing, node_id, fixed_facing, trainname):
-	return nodes[from_facing].calculate_routes(fixed_facing, trainname)[node_id]
+func get_route_to(from_facing, node_id, reversing_behavior, trainname):
+	return nodes[from_facing].calculate_routes(reversing_behavior, trainname)[node_id]
 
 func collect_edges(facing):
 	var edges = []

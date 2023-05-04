@@ -226,7 +226,12 @@ func load(struct):
 		for train_data in struct.trains:
 			var train = create_train(train_data.name)
 			if "fixed_facing" in train_data:
-				train.fixed_facing = train_data.fixed_facing
+				var behavior = "on"
+				if train_data.fixed_facing:
+					behavior = "off"
+				train.set_reversing_behavior(behavior)
+			if "reversing_behavior" in train_data:
+				train.set_reversing_behavior(train_data.reversing_behavior)
 
 			var home_pos_dict = {}
 			home_pos_dict["blockname"] = train_data.blockname

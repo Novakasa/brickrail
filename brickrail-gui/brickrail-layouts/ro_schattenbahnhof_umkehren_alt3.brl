@@ -2,13 +2,40 @@
 	"devices": {
 		"trains": [
 			{
-				"name": "city-green"
+				"name": "city-green",
+				"storage": {
+					"0": 3500,
+					"1": 40,
+					"2": 90,
+					"4": 40,
+					"5": 75,
+					"3": 100,
+					"6": 0
+				}
 			},
 			{
-				"name": "city-red"
+				"name": "city-red",
+				"storage": {
+					"0": 3500,
+					"1": 40,
+					"2": 90,
+					"4": 40,
+					"5": 75,
+					"3": 100,
+					"6": 0
+				}
 			},
 			{
-				"name": "city-orange"
+				"name": "city-orange",
+				"storage": {
+					"0": 3500,
+					"1": 40,
+					"2": 90,
+					"4": 40,
+					"5": 75,
+					"3": 100,
+					"6": 0
+				}
 			}
 		],
 		"controllers": [
@@ -1922,7 +1949,7 @@
 			{
 				"name": "train1",
 				"facing": 1,
-				"fixed_facing": true,
+				"reversing_behavior": "off",
 				"color": "ff00b007",
 				"num_wagons": 4,
 				"blockname": "block6__",
@@ -1932,7 +1959,7 @@
 			{
 				"name": "train-red",
 				"facing": 1,
-				"fixed_facing": true,
+				"reversing_behavior": "off",
 				"color": "ffff0000",
 				"num_wagons": 5,
 				"blockname": "block5",
@@ -1942,7 +1969,7 @@
 			{
 				"name": "train2",
 				"facing": 1,
-				"fixed_facing": true,
+				"reversing_behavior": "off",
 				"color": "ffff9500",
 				"num_wagons": 5,
 				"blockname": "block7__",

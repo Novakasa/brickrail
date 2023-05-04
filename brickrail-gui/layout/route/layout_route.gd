@@ -64,9 +64,9 @@ func redirect_with_route(route):
 
 	update_intentions()
 
-func recalculate_route(fixed_facing):
+func recalculate_route(reversing_behavior):
 	var target_id = get_target_node().id
-	var new_route = get_current_leg().get_target_node().calculate_routes(fixed_facing, trainname)[target_id]
+	var new_route = get_current_leg().get_target_node().calculate_routes(reversing_behavior, trainname)[target_id]
 	if new_route != null:
 		redirect_with_route(new_route)
 		_on_LayoutInfo_blocked_tracks_changed(trainname)
