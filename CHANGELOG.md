@@ -34,6 +34,7 @@
 
 ### Changed
 
+- Moved away from frozen module in firmware. Brickrail should now be compatible with standard pybricks firmware.
 - Allow enabling/disabling "only forward" setting for trains in "Control layout" mode.
 
 ## [v1.0.0-alpha.2] - 2023-04-21
