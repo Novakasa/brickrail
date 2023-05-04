@@ -121,11 +121,17 @@ func _on_data_received(key, data):
 		if status == "starting program":
 			emit_signal("program_start_error")
 			set_skip_download(false)
-			GuiApi.show_error("Hub '"+name+"' Program start Error:" + data)
+			if "ENODEV" in data:
+				GuiApi.show_error("Hub '"+name+"' missing motor or sensor!")
+			else:
+				GuiApi.show_error("Hub '"+name+"' Program start Error:" + data)
 		else:
 			if data == "program_start_timeout":
 				return
-			GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
+			if "ENODEV" in data:
+				GuiApi.show_error("Hub '"+name+"' missing motor or sensor!")
+			else:
+				GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
 			if "Unexpected Marker" in data:
 				LayoutInfo.emergency_stop()
 			emit_signal("program_error", data)
