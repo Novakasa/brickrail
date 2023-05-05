@@ -267,7 +267,7 @@ singletons=[  ]
 
 [global]
 
-version="1.0.0-alpha.3-dev"
+version="1.0.0-alpha.3"
 
 [logging]
 

@@ -5,11 +5,18 @@
 
 ## [Unreleased]
 
+## [v1.0.0-alpha.3] - 2023-05-05
+
+This release adds a number of usability improvements and quality of life features.
+
+Brickrail now does not rely on specific pybricks firmware anymore and aims to be compatible with the current pybricks beta firmware. It is still recommended to flash the specific version that comes with the Release, since this is the version Brickrail is tested with.
+
 ### Added
 
 - Added "discouraged" reversing behavior. With this option, the train will only reverse when there is no other option. (https://github.com/Novakasa/brickrail/issues/125)
 - Distinguish current train position from "home" position. Current position is saved in settings, home position saved in .brl layout file. (https://github.com/Novakasa/brickrail/issues/78)
 - Added "Download" checkbox to hub GUI. Unchecking it skips downloading the program to the hub, assuming that it is stored on the hub (https://github.com/Novakasa/brickrail/issues/92).
+- Brickrail stores for each hub name the last hub program hash. If it is different, Download checkbox is checked automatically to make hub download the new program.
 - Added File logging. Logs will be available in user folder.
 - Added Control devices mode for switches only, allowing manual train control (https://github.com/Novakasa/brickrail/issues/77).
 - Move view appropriately when changing "layers unfolded" or changing active Layer.
@@ -47,6 +54,7 @@
 ## [v1.0.0-alpha.1] - 2023-04-15
 
 <!-- diff links for headers -->
-[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.2...HEAD
+[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.3...HEAD
+[v1.0.0-alpha.2]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.3
 [v1.0.0-alpha.2]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
 [v1.0.0-alpha.1]: https://github.com/Novakasa/brickrail/tree/v1.0.0-alpha.1
