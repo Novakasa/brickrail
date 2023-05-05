@@ -12,6 +12,8 @@ Communication between GUI and python server is done through websockets.
 
 Trains detect their location via a Color and Distance Sensor pointed down at the track. Colored markers signal the bounds of block sections. Switches are motorized by LEGO motors attached to stationary PoweredUp hubs (Control+ 4 Port hub recommended).
 
+Head to the [Wiki](https://github.com/Novakasa/brickrail/wiki) to learn more!
+
 ![GUI screenshot](images/screenshot3.PNG)
 
 ## Current state
