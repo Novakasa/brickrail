@@ -10,7 +10,7 @@ _COLOR_BLUE   = const(1)
 _COLOR_GREEN  = const(2)
 _COLOR_RED    = const(3)
 _COLOR_NONE   = const(15)
-COLOR_HUES = (31, 199, 113, 339)
+COLOR_HUES = (51, 219, 133, 359)
 
 _SENSOR_KEY_NONE  = const(0)
 _SENSOR_KEY_ENTER = const(1)
@@ -54,22 +54,31 @@ class TrainSensor:
         self.marker_hue = 0
         
         self.last_hsv = None
+        self.valid_colors = bytes()
+    
+    def is_valid_color(self):
+        h, s, v = self.last_hsv.h, self.last_hsv.s, self.last_hsv.v
+        if s*v<io_hub.storage[_CONFIG_CHROMA_THRESHOLD]:
+            return False
+        for color_index in self.valid_colors:
+            valid_hue = COLOR_HUES[color_index]
+            if abs(((h - valid_hue + 180) % 360) - 180) < 30:
+                return True
+        return False
     
     def update(self, delta):
         self.last_hsv = self.sensor.hsv()
-        h, s, v = self.last_hsv.h, self.last_hsv.s, self.last_hsv.v
-        h = (h-20)%360
-        if s*v>io_hub.storage[_CONFIG_CHROMA_THRESHOLD]:
+        if self.is_valid_color():
             self.marker_samples += 1
-            self.marker_hue += h
+            self.marker_hue += self.last_hsv.h
             return
         if self.marker_samples>0:
             if self.marker_samples>2:
                 self.marker_hue//=self.marker_samples
                 found_color = None
-                colorerr = 361
+                colorerr = 181
                 for last_color, chue in enumerate(COLOR_HUES):
-                    err = abs(chue-self.marker_hue)
+                    err = abs(((chue - self.marker_hue + 180) % 360) - 180)
                     if found_color is None or err<colorerr:
                         found_color = last_color
                         colorerr = err
@@ -262,6 +271,9 @@ class Train:
             self.sensor.update(delta)
 
         self.motor.update(delta)
+    
+    def set_valid_colors(self, data):
+        self.sensor.valid_colors = data
 
 assert VERSION != b"1.0.0"
 train = Train()

@@ -400,6 +400,8 @@ func add_sensor(p_sensor):
 func set_sensor(p_sensor):
 	if sensor != null:
 		sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		LayoutInfo.sensors.remove(sensor)
+		LayoutInfo.emit_signal("sensors_changed", self)
 		
 	sensor = p_sensor
 	for dirtrack in directed_tracks.values():
@@ -407,6 +409,8 @@ func set_sensor(p_sensor):
 	
 	if sensor != null:
 		sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		LayoutInfo.sensors.append(sensor)
+		LayoutInfo.emit_signal("sensors_changed")
 	
 	LayoutInfo.set_layout_changed(true)
 	emit_signal("states_changed", get_orientation())

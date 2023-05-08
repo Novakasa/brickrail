@@ -22,6 +22,7 @@ func get_colorname():
 func set_marker_color(p_marker_colorname):
 	marker_color = p_marker_colorname
 	emit_signal("marker_color_changed")
+	LayoutInfo.emit_signal("sensors_changed")
 
 func serialize():
 	var cname = null

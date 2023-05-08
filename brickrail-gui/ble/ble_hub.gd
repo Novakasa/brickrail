@@ -124,16 +124,21 @@ func _on_data_received(key, data):
 			if "ENODEV" in data:
 				GuiApi.show_error("Hub '"+name+"' missing motor or sensor!")
 			else:
-				GuiApi.show_error("Hub '"+name+"' Program start Error:" + data)
+				GuiApi.show_error("Hub '"+name+"' Program start Error: " + data)
 		else:
 			if data == "program_start_timeout":
 				return
-			if "ENODEV" in data:
+			if "Unexpected Marker" in data:
+				var color_names = ["yellow", "blue", "green", "red"]
+				var expected = color_names[int(data[48])]
+				var measured = color_names[int(data[53])]
+				var msg = "Train '%s' unexpected marker: %s != %s [expected != measured]" % [name, expected, measured]
+				GuiApi.show_error(msg)
+				LayoutInfo.emergency_stop()
+			elif "ENODEV" in data:
 				GuiApi.show_error("Hub '"+name+"' missing motor or sensor!")
 			else:
-				GuiApi.show_error("Hub '"+name+"' Program Error:" + data)
-			if "Unexpected Marker" in data:
-				LayoutInfo.emergency_stop()
+				GuiApi.show_error("Hub '"+name+"' Program Error: " + data)
 			emit_signal("program_error", data)
 		return
 	if key == "runtime_data":

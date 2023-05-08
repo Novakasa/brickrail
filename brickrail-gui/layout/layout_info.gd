@@ -8,6 +8,8 @@ var blocks = {}
 var trains = {}
 var switches = {}
 
+var sensors = Array()
+
 var nodes = {}
 
 var BlockScene = preload("res://layout/block/layout_block.tscn")
@@ -71,6 +73,8 @@ signal layers_unfolded_changed(mode)
 signal layer_positions_changed()
 signal cell_added(cell)
 signal trains_running(running)
+#warning-ignore:unused_signal
+signal sensors_changed()
 
 func set_layout_changed(value):
 	yield(get_tree(), "idle_frame")
