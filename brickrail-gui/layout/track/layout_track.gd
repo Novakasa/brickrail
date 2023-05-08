@@ -200,6 +200,8 @@ func get_slot_cell(slot):
 		return LayoutInfo.get_cell(l_idx, x_idx+1, y_idx)
 
 func remove():
+	if sensor != null:
+		remove_sensor()
 	clear_connections()
 	emit_signal("removing", get_orientation())
 	queue_free()
@@ -400,8 +402,8 @@ func add_sensor(p_sensor):
 func set_sensor(p_sensor):
 	if sensor != null:
 		sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
-		LayoutInfo.sensors.remove(sensor)
-		LayoutInfo.emit_signal("sensors_changed", self)
+		LayoutInfo.sensors.erase(sensor)
+		LayoutInfo.emit_signal("sensors_changed")
 		
 	sensor = p_sensor
 	for dirtrack in directed_tracks.values():

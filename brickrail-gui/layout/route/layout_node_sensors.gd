@@ -13,6 +13,9 @@ func set_sensor_dirtrack(key, dirtrack):
 	sensor_dirtracks[key] = dirtrack
 
 func _on_sensor_changed(_slot, key):
+	if sensor_dirtracks[key] == null:
+		# REVISIT for some reason this is called when sensor was removed previously, no idea why
+		return
 	if sensor_dirtracks[key].get_sensor() == null:
 		set_sensor_dirtrack(key, null)
 
