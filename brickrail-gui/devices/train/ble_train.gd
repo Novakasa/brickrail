@@ -69,11 +69,15 @@ func set_valid_colors():
 		var color = sensor.get_colorname()
 		if color == "none":
 			continue
+		if color_name_to_enum[color] in data:
+			continue
 		data.append(color_name_to_enum[color])
 	if len(data) == 0:
 		data = [0, 1, 2, 3]
 		assert(len(data) == len(color_name_to_enum)-1)
 	if len(data) == 1:
+		# REVISIT: if we send data of len 1 it will be passed as an int, so make it len 2
+		# probably should change the argument unpacking in io_hub
 		data.append(data[0])
 	prints("valid colors:", data)
 	if hub.running:
