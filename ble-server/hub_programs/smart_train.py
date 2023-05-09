@@ -50,41 +50,40 @@ class TrainSensor:
         self.sensor = ColorDistanceSensor(Port.B)
         self.marker_exit_callback = marker_exit_callback
 
-        self.marker_samples = 0
-        self.marker_hue = 0
+        self.last_marker_color = None
         
         self.last_hsv = None
-        self.valid_colors = bytes()
+        self.valid_colors = []
     
-    def is_valid_color(self):
+    def get_marker_color(self):
         h, s, v = self.last_hsv.h, self.last_hsv.s, self.last_hsv.v
         if s*v<io_hub.storage[_CONFIG_CHROMA_THRESHOLD]:
-            return False
-        for color_index in self.valid_colors:
-            valid_hue = COLOR_HUES[color_index]
-            if abs(((h - valid_hue + 180) % 360) - 180) < 30:
-                return True
-        return False
+            return None
+        colorerr = 181
+        found_color = None
+        for last_color, chue in enumerate(COLOR_HUES):
+            err = abs(((chue - h + 180) % 360) - 180)
+            if found_color is None or err<colorerr:
+                found_color = last_color
+                colorerr = err
+        if found_color in self.valid_colors:
+            if self.last_marker_color is None:
+                print("hue:", h, "chroma:", s*v)
+            return found_color
+        return None
     
     def update(self, delta):
+
         self.last_hsv = self.sensor.hsv()
-        if self.is_valid_color():
-            self.marker_samples += 1
-            self.marker_hue += self.last_hsv.h
-            return
-        if self.marker_samples>0:
-            if self.marker_samples>2:
-                self.marker_hue//=self.marker_samples
-                found_color = None
-                colorerr = 181
-                for last_color, chue in enumerate(COLOR_HUES):
-                    err = abs(((chue - self.marker_hue + 180) % 360) - 180)
-                    if found_color is None or err<colorerr:
-                        found_color = last_color
-                        colorerr = err
-                self.marker_exit_callback(found_color)
-            self.marker_hue = 0
-            self.marker_samples = 0
+
+        marker_color = self.get_marker_color()
+        if self.last_marker_color is not None:
+            if marker_color is None:
+                self.marker_exit_callback(self.last_marker_color)
+            else:
+                assert marker_color == self.last_marker_color
+
+        self.last_marker_color = marker_color
 
 class TrainMotor:
 
@@ -273,7 +272,7 @@ class Train:
         self.motor.update(delta)
     
     def set_valid_colors(self, data):
-        self.sensor.valid_colors = data
+        self.sensor.valid_colors = list(data)
 
 assert VERSION != b"1.0.0"
 train = Train()

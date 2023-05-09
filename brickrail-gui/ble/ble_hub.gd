@@ -132,7 +132,7 @@ func _on_data_received(key, data):
 				var color_names = ["yellow", "blue", "green", "red"]
 				var expected = color_names[int(data[48])]
 				var measured = color_names[int(data[53])]
-				var msg = "Train '%s' unexpected marker: %s != %s [expected != measured]" % [name, expected, measured]
+				var msg = "Train '%s' unexpected marker: Expected %s, but measured %s!" % [name, expected, measured]
 				GuiApi.show_error(msg)
 				LayoutInfo.emergency_stop()
 			elif "ENODEV" in data:
