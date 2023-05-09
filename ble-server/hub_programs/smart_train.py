@@ -51,6 +51,7 @@ class TrainSensor:
         self.marker_exit_callback = marker_exit_callback
 
         self.last_marker_color = None
+        self.marker_samples = 0
         
         self.last_hsv = None
         self.valid_colors = []
@@ -79,9 +80,14 @@ class TrainSensor:
         marker_color = self.get_marker_color()
         if self.last_marker_color is not None:
             if marker_color is None:
+                print("samples:", self.marker_samples)
                 self.marker_exit_callback(self.last_marker_color)
+                self.marker_samples = 0
             else:
-                assert marker_color == self.last_marker_color
+                self.marker_samples += 1
+                if marker_color != self.last_marker_color:
+                    print("marker color inconsitent:", marker_color, self.last_marker_color)
+                
 
         self.last_marker_color = marker_color
 
