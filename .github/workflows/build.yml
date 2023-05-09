@@ -100,6 +100,13 @@ jobs:
           mkdir -v -p build/linux/firmware
           cp firmware/* build/linux/firmware
           cp LICENSE build/linux/LICENSE
+      - name: Append commit sha to version file
+        if: ${{ !startsWith(github.ref, 'refs/tags/') }}
+        run: echo $(echo ${{ github.sha }} | cut -c1-8) >> version.txt
+      - name: Add version file
+        run: |
+          cp version.txt build/linux/
+          cp version.txt build/windows/
       - name: Upload windows Artifact
         uses: actions/upload-artifact@v1
         with:

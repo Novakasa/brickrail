@@ -48,7 +48,7 @@ func _init(p_name):
 	hub.connect("runtime_data_received", self, "_on_runtime_data_received")
 	hub.connect("program_started", self, "_on_hub_program_started")
 	hub.connect("name_changed", self, "_on_hub_name_changed")
-	LayoutInfo.connect("sensors_changed", self, "_on_sensors_changed")
+	var _err = LayoutInfo.connect("sensors_changed", self, "_on_sensors_changed")
 	
 	hub.store_value(STORAGE_CHROMA_THRESHOLD, 3500)
 	hub.store_value(STORAGE_MOTOR_ACC, 40)
@@ -61,8 +61,7 @@ func _init(p_name):
 	logging_module = "BLETrain-name"
 
 func _on_sensors_changed():
-	if hub.running:
-		set_valid_colors()
+	set_valid_colors()
 
 func set_valid_colors():
 	var data = []
@@ -76,7 +75,9 @@ func set_valid_colors():
 		assert(len(data) == len(color_name_to_enum)-1)
 	if len(data) == 1:
 		data.append(data[0])
-	hub.rpc("set_valid_colors", data)
+	prints("valid colors:", data)
+	if hub.running:
+		hub.rpc("set_valid_colors", data)
 
 func serialize():
 	var struct = {}
