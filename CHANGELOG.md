@@ -5,9 +5,13 @@
 
 ## [Unreleased]
 
-## Added
+### Added
 
 - If any sensor in layout has a color different than None, the train will only react to markers with actually used colors. (https://github.com/Novakasa/brickrail/discussions/127)
+
+### Fixed
+
+- Fixed potential issue where Brickrail would not detect change hub programs on Windows (https://github.com/Novakasa/brickrail/discussions/128).
 
 ## [v1.0.0-alpha.3] - 2023-05-05
 
