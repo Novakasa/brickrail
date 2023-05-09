@@ -20,6 +20,8 @@ func _ready():
 func setup_process_and_sync_hubs():
 	
 	yield($BLECommunicator.start_and_connect_to_process(), "completed")
+	var logfile = ProjectSettings.globalize_path("user://logs/ble-server.log")
+	send_command(null, "start_logfile", [logfile], null)
 	for hubname in hubs:
 		var hub = hubs[hubname]
 		send_command(null, "add_hub", [hubname, hub.program], null)

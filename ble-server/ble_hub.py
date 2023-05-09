@@ -97,7 +97,7 @@ class BLEHub:
                     except UnicodeDecodeError:
                         pass
                     else:
-                        print("[IOHub]", line)
+                        print(f"[IOHub {self.name}]", line)
                         self.output_lines.append(line)
                         self.output_buffer = bytearray()
                         self.msg_len = None
@@ -307,7 +307,7 @@ class BLEHub:
                             continue
                         if sub_data[0]>31 and sub_data[-1] == b"\r"[0]:
                             try:
-                                print("[IOHub]", sub_data[:-1].decode())
+                                print(f"[IOHub {self.name}]", sub_data[:-1].decode())
                             except UnicodeDecodeError:
                                 pass
                     print("output buffer timeout! Sending NAK", self.output_buffer)

@@ -5,11 +5,35 @@ from pybricksdev.ble import find_device
 from ble_hub import BLEHub
 from serial_data import SerialData
 
+import sys
+
 class BLEProject:
 
     def __init__(self):
         self.hubs = {}
         self.out_queue = asyncio.Queue()
+    
+    def start_logfile(self, path):
+
+        # https://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-both-file-and-console-with-scripting/14906787#14906787
+
+        class Logger(object):
+            def __init__(self):
+                self.terminal = sys.stdout
+                with open(path, "w"):
+                    pass
+
+            def write(self, message):
+                with open (path, "a", encoding = 'utf-8') as self.log:
+                    self.log.write(message)
+                self.terminal.write(message)
+
+            def flush(self):
+                #this flush method is needed for python 3 compatibility.
+                #this handles the flush command by doing nothing.
+                #you might want to specify some extra behavior here.
+                pass
+        sys.stdout = Logger() 
     
     def add_hub(self, name, program_name):
         self.hubs[name] = BLEHub(name, program_name, self.out_queue)
