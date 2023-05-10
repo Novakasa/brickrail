@@ -49,6 +49,7 @@ func _on_storage_val_edited(value, index, type):
 		switch_motor.store_value(index, int(value))
 	if type == "bool":
 		switch_motor.store_value(index, int(value))
+	LayoutInfo.set_layout_changed(true)
 
 func select(p_motor):
 	if p_motor == null:

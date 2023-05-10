@@ -61,6 +61,7 @@ func _on_storage_val_edited(value, index, type):
 		train.ble_train.hub.store_value(index, int(value))
 	if type == "bool":
 		train.ble_train.hub.store_value(index, int(value))
+	LayoutInfo.set_layout_changed(true)
 
 func select_ble_train(ble_train):
 	if ble_train == null:

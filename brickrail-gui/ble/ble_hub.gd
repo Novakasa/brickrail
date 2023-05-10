@@ -190,7 +190,6 @@ func store_value(address, value):
 	storage[address] = value
 	if running:
 		send_command("store_value", [address, value])
-	LayoutInfo.set_layout_changed(true)
 
 func remove():
 	assert(not connected)
