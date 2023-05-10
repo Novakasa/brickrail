@@ -17,6 +17,9 @@ _SWITCH_COMMAND_SWITCH = const(0)
 
 _DATA_SWITCH_CONFIRM  = const(0)
 
+_STORAGE_PULSE_DC = const(0)
+_STORAGE_PULSE_DURATION = const(1)
+
 def get_port(index):
     try: # Primehub
         return [Port.A, Port.B, Port.C, Port.D, Port.E, Port.F][index]
@@ -40,20 +43,22 @@ class Switch:
         self.switch_stopwatch = StopWatch()
         self.switching = False
     
+    def get_storage_val(self, i):
+        return io_hub.storage[8+self.port*16 + i]
+    
     def switch(self, position):
         assert not self.switching
         sdir = -1
         if position == _SWITCH_POS_RIGHT:
             sdir = 1
-        print("starting motor with speed", 100*sdir)
-        self.motor.dc(100*sdir)
+        self.motor.dc(self.get_storage_val(_STORAGE_PULSE_DC)*sdir)
         self.switch_stopwatch.reset()
         self.switch_stopwatch.resume()
         self.switching = True
         self.position = position
     
     def update(self, delta):
-        if self.switching and self.switch_stopwatch.time() > self.pulse_duration:
+        if self.switching and self.switch_stopwatch.time() > self.get_storage_val(_STORAGE_PULSE_DURATION):
             self.motor.stop()
             self.switch_stopwatch.pause()
             self.switching = False

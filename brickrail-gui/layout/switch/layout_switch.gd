@@ -53,11 +53,17 @@ func load_struct(struct):
 		var motorstruct = struct.motor1
 		var controller = Devices.layout_controllers[motorstruct.controller]
 		var motor = controller.devices[int(motorstruct.port)]
+		if "storage" in motorstruct:
+			for key in motorstruct.storage:
+				motor.store_value(int(key), motorstruct.storage[key])
 		set_motor1(motor)
 	if "motor2" in struct:
 		var motorstruct = struct.motor2
 		var controller = Devices.layout_controllers[motorstruct.controller]
 		var motor = controller.devices[motorstruct.port]
+		if "storage" in motorstruct:
+			for key in motorstruct.storage:
+				motor.store_value(int(key), motorstruct.storage[key])
 		set_motor2(motor)
 	if "motor1_inverted" in struct:
 		motor1_inverted = struct.motor1_inverted

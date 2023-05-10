@@ -14,9 +14,6 @@ script = ExtResource( 2 )
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 40.0
 margin_bottom = 40.0
-__meta__ = {
-"_edit_use_anchors_": false
-}
 
 [node name="Label" type="Label" parent="VBoxContainer"]
 margin_right = 118.0
@@ -78,6 +75,11 @@ margin_top = 48.0
 margin_right = 118.0
 margin_bottom = 72.0
 text = "On"
+
+[node name="Storage" type="GridContainer" parent="VBoxContainer"]
+margin_top = 94.0
+margin_right = 118.0
+margin_bottom = 94.0
 
 [connection signal="meta_selected" from="VBoxContainer/GridContainer/ControllerOption" to="." method="_on_ControllerOption_meta_selected"]
 [connection signal="meta_selected" from="VBoxContainer/GridContainer/PortOption" to="." method="_on_PortOption_meta_selected"]

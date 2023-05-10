@@ -14,6 +14,16 @@ const DATA_SWITCH_CONFIRM = 0
 
 const SWITCH_COMMAND_SWITCH = 0
 
+const STORAGE_PULSE_DC = 0
+const STORAGE_PULSE_DURATION = 1
+
+var storage_labels = [
+	"Motor pulse speed [DC]",
+	"Motor pulse duration [ms]"]
+
+# -1 for boolean config
+var max_limits = [100, 10000]
+
 signal position_changed(position)
 signal responsiveness_changed(value)
 signal removing(controllername, port)
@@ -24,6 +34,15 @@ func _init(p_hub, p_port, p_controllername):
 	position = "unknown"
 	responsiveness = false
 	controllername = p_controllername
+	
+	store_value(STORAGE_PULSE_DC, 100)
+	store_value(STORAGE_PULSE_DURATION, 600)
+
+func store_value(i, value):
+	hub.store_value(8 + port*16 + i, value)
+
+func get_stored_value(i):
+	return hub.storage[8 + port*16 + i]
 
 func set_hub(p_hub):
 	if hub != null:
@@ -51,6 +70,10 @@ func serialize_reference():
 	var struct = {}
 	struct["controller"] = controllername
 	struct["port"] = port
+	var storage = {}
+	for i in range(len(max_limits)):
+		storage[i] = get_stored_value(i)
+	struct["storage"] = storage
 	return struct
 
 func _on_hub_responsiveness_changed(value):

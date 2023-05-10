@@ -10,6 +10,45 @@ func setup(p_motor, inverted):
 	select(p_motor)
 	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
 	$VBoxContainer/GridContainer/InvertCheckBox.pressed = inverted
+	update_storage_controls()
+
+func update_storage_controls():
+	var storage_node = $VBoxContainer/Storage
+	for child in storage_node.get_children():
+		storage_node.remove_child(child)
+		child.queue_free()
+	if controllername == null:
+		return
+	var controller: LayoutController = Devices.layout_controllers[controllername]
+	if controller.devices[port] == null:
+		return
+	var switch_motor = controller.devices[port]
+	var labels = switch_motor.storage_labels
+	var max_limits = switch_motor.max_limits
+	var order = [0, 1]
+	for i in order:
+		var label = Label.new()
+		label.text = labels[i]
+		storage_node.add_child(label)
+		if max_limits[i] == -1:
+			var checkbox = CheckBox.new()
+			var _err = checkbox.connect("toggled", self, "_on_storage_val_edited", [i, "bool"])
+			checkbox.pressed = switch_motor.get_stored_value(i)
+			storage_node.add_child(checkbox)
+		else:
+			var edit = SpinBox.new()
+			var _err = edit.connect("value_changed", self, "_on_storage_val_edited", [i, "int"])
+			edit.max_value = max_limits[i]
+			edit.value = switch_motor.get_stored_value(i)
+			storage_node.add_child(edit)
+
+func _on_storage_val_edited(value, index, type):
+	var controller: LayoutController = Devices.layout_controllers[controllername]
+	var switch_motor = controller.devices[port]
+	if type == "int":
+		switch_motor.store_value(index, int(value))
+	if type == "bool":
+		switch_motor.store_value(index, int(value))
 
 func select(p_motor):
 	if p_motor == null:

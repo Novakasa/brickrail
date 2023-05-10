@@ -485,7 +485,11 @@
 					"W": {
 						"motor1": {
 							"controller": "blue",
-							"port": 0
+							"port": 0,
+							"storage": {
+								"0": 100,
+								"1": 1000
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
