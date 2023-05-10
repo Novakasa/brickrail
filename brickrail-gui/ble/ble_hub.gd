@@ -128,13 +128,6 @@ func _on_data_received(key, data):
 		else:
 			if data == "program_start_timeout":
 				return
-			if "Unexpected Marker" in data:
-				var color_names = ["yellow", "blue", "green", "red"]
-				var expected = color_names[int(data[48])]
-				var measured = color_names[int(data[53])]
-				var msg = "Train '%s' unexpected marker: Expected %s, but measured %s!" % [name, expected, measured]
-				GuiApi.show_error(msg)
-				LayoutInfo.emergency_stop()
 			elif "ENODEV" in data:
 				GuiApi.show_error("Hub '"+name+"' missing motor or sensor!")
 			else:
@@ -142,7 +135,7 @@ func _on_data_received(key, data):
 			emit_signal("program_error", data)
 		return
 	if key == "runtime_data":
-		emit_signal("runtime_data_received", data)
+		emit_signal("runtime_data_received", PoolIntArray(data)) 
 		return
 	if key == "battery":
 		battery_current = float(data.current)/1000.0

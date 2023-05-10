@@ -1,4 +1,5 @@
 from micropython import const
+from ustruct import pack
 
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port
@@ -31,9 +32,10 @@ _BEHAVIOR_FLAG_FLIP  = const(128)
 _INTENTION_STOP = const(0)
 _INTENTION_PASS = const(1)
 
-_DATA_ROUTE_COMPLETE = const(1)
-_DATA_LEG_ADVANCE    = const(2)
-_DATA_SENSOR_ADVANCE = const(3)
+_DATA_ROUTE_COMPLETE    = const(1)
+_DATA_LEG_ADVANCE       = const(2)
+_DATA_SENSOR_ADVANCE    = const(3)
+_DATA_UNEXPECTED_MARKER = const(4)
 
 _CONFIG_CHROMA_THRESHOLD   = const(0)
 _CONFIG_MOTOR_ACC          = const(1)
@@ -55,6 +57,8 @@ class TrainSensor:
         
         self.last_hsv = None
         self.valid_colors = []
+        self.initial_hue = 0
+        self.initial_chroma = 0
     
     def get_marker_color(self):
         h, s, v = self.last_hsv.h, self.last_hsv.s, self.last_hsv.v
@@ -69,7 +73,8 @@ class TrainSensor:
                 colorerr = err
         if found_color in self.valid_colors:
             if self.last_marker_color is None:
-                print("hue:", h, "chroma:", s*v)
+                self.initial_hue = h
+                self.initial_chroma = s*v
             return found_color
         return None
     
@@ -80,13 +85,12 @@ class TrainSensor:
         marker_color = self.get_marker_color()
         if self.last_marker_color is not None:
             if marker_color is None:
-                print("samples:", self.marker_samples)
                 self.marker_exit_callback(self.last_marker_color)
                 self.marker_samples = 0
             else:
                 self.marker_samples += 1
                 if marker_color != self.last_marker_color:
-                    print("marker color inconsitent:", marker_color, self.last_marker_color)
+                    print("marker color inconsistent:", marker_color, self.last_marker_color)
                 
 
         self.last_marker_color = marker_color
@@ -170,7 +174,9 @@ class Route:
     def advance_sensor(self, color):
         next_color = self.get_current_leg().get_next_color()
         if next_color != color and next_color != _COLOR_NONE:
-            print(f"Unexpected Marker Error! [expected != measured] {next_color} != {color}")
+            # print(next_color, color, train.sensor.initial_chroma, train.sensor.initial_hue, train.sensor.marker_samples)
+            data = pack(">BBBHHH", _DATA_UNEXPECTED_MARKER, next_color, color, train.sensor.initial_chroma, train.sensor.initial_hue, train.sensor.marker_samples)
+            io_hub.emit_data(bytes(data))
             return 0
         self.last_key = self.get_current_leg().get_next_key()
         self.last_speed = self.get_current_leg().get_next_speed()

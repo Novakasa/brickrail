@@ -32,9 +32,10 @@ var storage_labels = [
 # -1 for boolean config
 var max_limits = [10000, 10000, 10000, 100, 100, 100, -1]
 
-const DATA_ROUTE_COMPLETE = 1
-const DATA_LEG_ADVANCE    = 2
-const DATA_SENSOR_ADVANCE = 3
+const DATA_ROUTE_COMPLETE    = 1
+const DATA_LEG_ADVANCE       = 2
+const DATA_SENSOR_ADVANCE    = 3
+const DATA_UNEXPECTED_MARKER = 4
 
 var color_name_to_enum = {"yellow": 0, "blue": 1, "green": 2, "red": 3, "none": 15}
 var leg_type_to_enum = {"travel": 0, "flip": 1, "start": 2}
@@ -126,6 +127,17 @@ func _on_runtime_data_received(data):
 	Logger.info("[%s] received: %s" % [logging_module, data])
 	if data[0] == DATA_SENSOR_ADVANCE:
 		emit_signal("sensor_advance", data)
+	if data[0] == DATA_UNEXPECTED_MARKER:
+		var color_names = ["yellow", "blue", "green", "red"]
+		var expected = color_names[int(data[1])]
+		var measured = color_names[int(data[2])]
+		var chroma = (data[3]<<8) + data[4]
+		var hue = (data[5]<<8) + data[6]
+		var samples = (data[7]<<8) + data[8]
+		Logger.info("[%s] unexpected marker. Chroma: %s Hue: %s samples: %s" % [logging_module, chroma, hue, samples])
+		var msg = "Train '%s' unexpected marker: Expected %s, but measured %s!" % [name, expected, measured]
+		GuiApi.show_error(msg)
+		LayoutInfo.emergency_stop()
 
 func _on_hub_name_changed(_p_old_name, p_new_name):
 	var old_name = name
