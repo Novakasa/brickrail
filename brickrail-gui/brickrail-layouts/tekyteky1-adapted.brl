@@ -1,0 +1,1177 @@
+{
+	"devices": {
+		"trains": [
+			{
+				"name": "city-blue",
+				"storage": {
+					"0": 3500,
+					"1": 40,
+					"2": 90,
+					"4": 40,
+					"5": 55,
+					"3": 100,
+					"6": 0
+				}
+			}
+		],
+		"controllers": [
+
+		]
+	},
+	"layout": {
+		"tracks": [
+			{
+				"l_idx": 0,
+				"x_idx": 7,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 7,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 6,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 6,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 5,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left",
+						"center"
+					]
+				},
+				"switches": {
+					"W": {
+						"motor1_inverted": false,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 5,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 3,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 8,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 7,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"right"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 3,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center",
+						"left"
+					]
+				},
+				"switches": {
+					"W": {
+						"motor1_inverted": true,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 3,
+				"y_idx": 8,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 3,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 3,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 8,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 7,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 1,
+				"y_idx": 8,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 1,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 1,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 2,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 3,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 3,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"center",
+						"right"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"switches": {
+					"N": {
+						"motor1_inverted": true,
+						"motor2_inverted": false
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 8,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 7,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 0,
+				"y_idx": 0,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 8,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"E": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 7,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"left"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
+				"y_idx": 3,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 11,
+				"y_idx": 0,
+				"connections": {
+					"E": [
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 11,
+				"y_idx": 8,
+				"connections": {
+					"E": [
+						"left"
+					],
+					"W": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 0,
+				"connections": {
+					"S": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 1,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 2,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 3,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 4,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "red",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 5,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 6,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": "blue",
+					"speeds": {
+						"N": "cruise",
+						"S": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 7,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"S": [
+						"right"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 12,
+				"y_idx": 8,
+				"connections": {
+					"N": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			}
+		],
+		"blocks": [
+			{
+				"name": "block1",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 12,
+							"y_idx": 4,
+							"next_slot": "S",
+							"orientation": "NS"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 12,
+							"y_idx": 5,
+							"next_slot": "S",
+							"orientation": "NS"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 12,
+							"y_idx": 6,
+							"next_slot": "S",
+							"orientation": "NS"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"name": "block2",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 7,
+							"y_idx": 0,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 8,
+							"y_idx": 0,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 9,
+							"y_idx": 0,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+					"1": {
+						"l_idx": 0,
+						"x_idx": 10,
+						"y_idx": 0,
+						"next_slot": "E",
+						"orientation": "EW"
+					}
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"name": "block3",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 2,
+							"y_idx": 5,
+							"next_slot": "S",
+							"orientation": "NS"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 2,
+							"y_idx": 6,
+							"next_slot": "S",
+							"orientation": "NS"
+						}
+					]
+				},
+				"prior_sensors": {
+					"0": {
+						"l_idx": 0,
+						"x_idx": 2,
+						"y_idx": 4,
+						"next_slot": "N",
+						"orientation": "NS"
+					}
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"name": "block4",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 4,
+							"y_idx": 5,
+							"next_slot": "S",
+							"orientation": "NS"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 4,
+							"y_idx": 6,
+							"next_slot": "S",
+							"orientation": "NS"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 4,
+							"y_idx": 7,
+							"next_slot": "S",
+							"orientation": "NS"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"name": "block4_",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 8,
+							"y_idx": 3,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 7,
+							"y_idx": 3,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 6,
+							"y_idx": 3,
+							"next_slot": "W",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"name": "block5",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 2,
+							"y_idx": 0,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 3,
+							"y_idx": 0,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 4,
+							"y_idx": 0,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				}
+			}
+		],
+		"trains": [
+			{
+				"name": "train1",
+				"facing": 1,
+				"reversing_behavior": "on",
+				"color": "ffcbe419",
+				"num_wagons": 2,
+				"blockname": "block4",
+				"blockindex": 0,
+				"ble_train": "city-blue"
+			}
+		]
+	}
+}
