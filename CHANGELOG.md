@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- Fixed issue where you would click "through" a train if it is selected (https://github.com/Novakasa/brickrail/issues/131).
 - Fixed potential issue where Brickrail would not detect change hub programs on Windows (https://github.com/Novakasa/brickrail/discussions/128).
 
 ## [v1.0.0-alpha.3] - 2023-05-05

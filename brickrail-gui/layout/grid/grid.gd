@@ -206,8 +206,6 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 	
 	if l != null:
 		for train in LayoutInfo.trains.values():
-			if train.virtual_train.l_idx != l and LayoutInfo.layers_unfolded:
-				continue
 			if train.has_point(mouse_world):
 				if train.process_mouse_button(event, mouse_world):
 					return true

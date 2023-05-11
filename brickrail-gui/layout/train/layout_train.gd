@@ -184,7 +184,7 @@ func process_mouse_button(event, _mpos):
 	if event.button_index == BUTTON_LEFT:
 		if not selected:
 			select()
-			return true
+		return true
 	if event.button_index == BUTTON_RIGHT:
 		if LayoutInfo.layout_mode == "control" and not LayoutInfo.control_enabled:
 			return false
