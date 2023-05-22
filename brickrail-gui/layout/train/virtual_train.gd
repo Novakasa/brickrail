@@ -167,7 +167,9 @@ func update_next_sensor_distance():
 	Logger.debug("[%s] starting at: %s" % [logging_module, itertrack.id])
 	var i = 0
 	while itertrack != next_sensor_track:
-		assert(i<1000)
+		if i>1000:
+			GuiApi.show_error("Internal error, can't find next sensor track")
+			assert(false)
 		var next_turn = itertrack.get_next_turn()
 		if next_turn == null:
 			next_sensor_track = null

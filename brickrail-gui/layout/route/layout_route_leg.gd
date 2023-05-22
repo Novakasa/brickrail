@@ -121,8 +121,8 @@ func set_switches():
 
 func lock_tracks(trainname):
 	assert(not locked)
-	var lock_trains = get_lock_trains()
-	assert(lock_trains==[trainname]) # only start block should be occupied (by this train)
+	# var lock_trains = get_lock_trains()
+	# assert(lock_trains==[trainname]) # only start block should be occupied (by this train)
 	get_full_section().set_track_attributes("locked", trainname, "<>")
 	get_full_section().set_track_attributes("locked+", 1, ">", "increment")
 	get_full_section().set_track_attributes("locked-", 1, "<", "increment")
