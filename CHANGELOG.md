@@ -12,6 +12,7 @@
 
 ### Fixed
 
+- Fixed wrong orientation of train wagon hitbox, leading to issues where mouse clicks on trains wouldn't be recognized properly if the train wagon is not at rotation 0.
 - Fixed issue where you would click "through" a train if it is selected (https://github.com/Novakasa/brickrail/issues/131).
 - Fixed potential issue where Brickrail would not detect change hub programs on Windows (https://github.com/Novakasa/brickrail/discussions/128).
 
