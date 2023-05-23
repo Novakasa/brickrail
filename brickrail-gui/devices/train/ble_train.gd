@@ -80,7 +80,6 @@ func set_valid_colors():
 		# REVISIT: if we send data of len 1 it will be passed as an int, so make it len 2
 		# probably should change the argument unpacking in io_hub
 		data.append(data[0])
-	prints("valid colors:", data)
 	if hub.running:
 		hub.rpc("set_valid_colors", data)
 

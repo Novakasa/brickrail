@@ -33,9 +33,7 @@ func setup(p_l_idx, p_x_idx, p_y_idx):
 	position = Vector2(x_idx, y_idx)*LayoutInfo.spacing
 
 func remove():
-	# print("removing cell")
 	emit_signal("removing", self)
-	# print("removing cell2")
 	queue_free()
 	
 func _enter_tree():

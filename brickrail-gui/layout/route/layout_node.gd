@@ -56,8 +56,6 @@ func calculate_routes(reversing_behavior, trainname=null):
 		if mindist == null:
 			break
 		current_id = minid
-		# prints("current id:",current_id)
-		# print(distances)
 
 		var current_node = LayoutInfo.nodes[current_id]
 		unvisited.erase(current_id)

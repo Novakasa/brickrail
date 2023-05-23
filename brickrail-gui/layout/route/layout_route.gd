@@ -269,7 +269,8 @@ func advance():
 		# will be no further calls.
 		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
 	var current_leg = get_current_leg()
-	Logger.info("[%s] current leg - type: %s, intention: %s" % [logging_module, current_leg.get_type(), current_leg.intention])
+	Logger.info("[%s] current leg - index: %s, type: %s, intention: %s" % [logging_module, leg_index, current_leg.get_type(), current_leg.intention])
+	Logger.info("[%s] current leg - %s" % [logging_module, current_leg.id])
 	for i in range(len(current_leg.sensor_dirtracks)):
 		Logger.debug("[%s] Sensor: %s, %s, %s" % [logging_module, i, current_leg.sensor_keys[i], current_leg.sensor_dirtracks[i].id])
 	

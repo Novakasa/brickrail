@@ -45,9 +45,9 @@ func _init(p_name, p_program):
 	logging_module = "hub-"+name
 	
 	if name in Settings.hub_program_hashes:
-		print("hash found in settings")
+		Logger.log("[%s] hash found in settings" % logging_module)
 		if Settings.hub_program_hashes[name] == HubPrograms.hashes[program]:
-			print("hash is the same, setting skip download")
+			Logger.log("[%s] hash is the same, setting skip download" % logging_module)
 			set_skip_download(true)
 
 func _on_ble_communicator_status_changed():

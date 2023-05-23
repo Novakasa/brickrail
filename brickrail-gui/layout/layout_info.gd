@@ -96,7 +96,6 @@ func get_cell(l, i, j):
 	return cells[l][i][j]
 
 func _on_cell_removing(cell):
-	# print("layout info cell removing")
 	cell.disconnect("removing", self, "_on_cell_removing")
 	cells[cell.l_idx][cell.x_idx].erase(cell.y_idx)
 

@@ -69,11 +69,8 @@ func get_train_spawn_dirtrack(facing):
 	return section.tracks[0]
 
 func set_occupied(p_occupied, p_train=null):
-	prints(name, p_occupied, p_train.trainname)
 	occupied = p_occupied
 	train = p_train
-	# section.set_track_attributes("block", blockname)
-	prints(name, "setting occupied:", p_occupied)
 	if occupied:
 		section.set_track_attributes("locked", train.trainname, "<>", "append")
 		section.set_track_attributes("locked+", 1, ">", "increment")

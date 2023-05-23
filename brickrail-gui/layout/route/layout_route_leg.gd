@@ -9,14 +9,17 @@ var current_index = 0
 var intention = "pass"
 var locked = false
 var logging_module
+var id
 
 func _init(p_edges):
 	edges = p_edges
+	id = "Leg-"+get_type() + " "
 	if get_type() == "start":
 		current_index = 1
-		logging_module = "leg-start-"+get_target_node().id
+		id += get_target_node().id
 	else:
-		logging_module = "leg-"+get_start_node().id+"-"+get_target_node().id
+		id += get_start_node().id+" -> "+get_target_node().id
+	logging_module = id
 
 func get_start_node():
 	return edges[0].from_node
