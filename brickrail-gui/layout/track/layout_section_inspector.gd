@@ -22,6 +22,7 @@ func _on_section_unselected():
 func _on_section_track_added(_track):
 	if len(section.tracks) == 1:
 		dirtrack = section.tracks[0]
+		$Label.text = dirtrack.id
 		$CreateBlock.visible=false
 		$OneWayCheckbox.visible=true
 		$OneWayCheckbox.pressed = dirtrack.get_opposite().prohibited
@@ -38,6 +39,7 @@ func _on_section_track_added(_track):
 		else:
 			$AddPortal.visible=false
 	else:
+		$Label.text = section.tracks[0].id + "-" + section.tracks[-1].id
 		$CreateBlock.visible=true
 		$CreateBlock.disabled = false
 		$CreateBlock.hint_tooltip = "create block"
@@ -54,13 +56,14 @@ func _on_section_track_added(_track):
 func _on_CreateBlock_pressed():
 	if section.get_block_blocked_reason() != null:
 		return
-	var new_name = "block" + str(len(LayoutInfo.blocks))
+	var index = 1
+	var new_name = "block" + str(index)
 	while new_name in LayoutInfo.blocks:
-		new_name = new_name + "_"
-	LayoutInfo.create_block(new_name, section)
-	_on_section_track_added(null)
-	# $CreateBlockPopup/VBoxContainer/NameEdit.text = new_name
-	# $CreateBlockPopup.popup_centered()
+		index += 1
+		new_name = "block" + str(index)
+
+	$CreateBlockPopup/VBoxContainer/NameEdit.text = new_name
+	$CreateBlockPopup.popup_centered()
 
 func _on_AddSensor_pressed():
 	$AddSensor.visible=false
@@ -73,6 +76,7 @@ func _on_AddSensor_pressed():
 func _on_BlockOKButton_pressed():
 	var block_name = $CreateBlockPopup/VBoxContainer/NameEdit.text
 	LayoutInfo.create_block(block_name, section)
+	_on_section_track_added(null)
 	$CreateBlockPopup.hide()
 
 func _on_BlockCancelButton_pressed():

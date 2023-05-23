@@ -7,6 +7,8 @@
 
 ### Added
 
+- Reenabled ability to set a name while creating a block.
+- Added name display to inspector for most entities.
 - Added customizable switch motor strength and duration (https://github.com/Novakasa/brickrail/issues/129)
 - If any sensor in layout has a color different than None, the train will only react to markers with actually used colors. (https://github.com/Novakasa/brickrail/discussions/127)
 

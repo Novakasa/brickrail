@@ -14,6 +14,7 @@ func _on_layout_mode_changed(mode):
 
 func set_block(p_block):
 	block = p_block
+	$Label.text = block.id
 	block.connect("unselected", self, "_on_block_unselected")
 	$CanStopCheckBox.pressed = block.can_stop
 	$CanFlipCheckBox.pressed = block.can_flip
@@ -23,9 +24,11 @@ func _on_block_unselected():
 	queue_free()
 
 func _on_AddTrain_pressed():
-	var new_name = "train" + str(len(LayoutInfo.trains))
+	var index = 1
+	var new_name = "train" + str(index)
 	while new_name in LayoutInfo.trains:
-		new_name = new_name + "_"
+		index += 1
+		new_name = "train" + str(index)
 	$AddTrainDialog.popup_centered()
 	$AddTrainDialog/VBoxContainer/GridContainer/TrainNameEdit.text = new_name
 
