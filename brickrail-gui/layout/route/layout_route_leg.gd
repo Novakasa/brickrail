@@ -8,11 +8,15 @@ var sensor_keys = []
 var current_index = 0
 var intention = "pass"
 var locked = false
+var logging_module
 
 func _init(p_edges):
 	edges = p_edges
 	if get_type() == "start":
 		current_index = 1
+		logging_module = "leg-start-"+get_target_node().id
+	else:
+		logging_module = "leg-"+get_start_node().id+"-"+get_target_node().id
 
 func get_start_node():
 	return edges[0].from_node
@@ -122,15 +126,17 @@ func set_switches():
 func lock_tracks(trainname):
 	assert(not locked)
 	var lock_trains = get_lock_trains()
-	assert(lock_trains==[trainname]) # only start block should be occupied (by this train)
-	get_full_section().set_track_attributes("locked", trainname, "<>")
+	assert(lock_trains==[trainname], "lock_trains != [trainname]") # only start block should be occupied (by this train)
+	Logger.info("[%s] locking from %s to %s" % [logging_module, get_full_section().tracks[0].id, get_full_section().tracks[-1].id])
+	get_full_section().set_track_attributes("locked", trainname, "<>", "append")
 	get_full_section().set_track_attributes("locked+", 1, ">", "increment")
 	get_full_section().set_track_attributes("locked-", 1, "<", "increment")
 	locked = true
 
-func unlock_tracks():
+func unlock_tracks(trainname):
 	assert(locked)
-	get_full_section().set_track_attributes("locked", null, "<>")
+	Logger.info("[%s] unlocking from %s to %s" % [logging_module, get_full_section().tracks[0].id, get_full_section().tracks[-1].id])
+	get_full_section().set_track_attributes("locked", trainname, "<>", "erase")
 	get_full_section().set_track_attributes("locked+", -1, ">", "increment")
 	get_full_section().set_track_attributes("locked-", -1, "<", "increment")
 	locked = false
@@ -140,12 +146,6 @@ func set_attributes(key, value, direction="<>", operation="set"):
 
 func get_lock_trains():
 	var locked_trains = []
-	var trainname = get_start_node().obj.get_locked()
-	if trainname != null:
-		locked_trains.append(trainname)
-	trainname = get_target_node().obj.get_locked()
-	if trainname != null and not trainname in locked_trains:
-		locked_trains.append(trainname)
 	for trainname2 in get_full_section().get_locked():
 		if not trainname2 in locked_trains:
 			locked_trains.append(trainname2)

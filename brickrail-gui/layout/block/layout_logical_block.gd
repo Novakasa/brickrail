@@ -73,12 +73,13 @@ func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
 	train = p_train
 	# section.set_track_attributes("block", blockname)
+	prints(name, "setting occupied:", p_occupied)
 	if occupied:
-		section.set_track_attributes("locked", train.trainname, "<>")
+		section.set_track_attributes("locked", train.trainname, "<>", "append")
 		section.set_track_attributes("locked+", 1, ">", "increment")
 		section.set_track_attributes("locked-", 1, "<", "increment")
 	else:
-		section.set_track_attributes("locked", null, "<>")
+		section.set_track_attributes("locked", train.trainname, "<>", "erase")
 		section.set_track_attributes("locked+", -1, ">", "increment")
 		section.set_track_attributes("locked-", -1, "<", "increment")
 

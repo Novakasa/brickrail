@@ -88,7 +88,7 @@ func set_trainname(p_trainname):
 		unset_all_attributes()
 		for leg in legs:
 			if leg.locked:
-				leg.unlock_tracks()
+				leg.unlock_tracks(trainname)
 	trainname = p_trainname
 
 	if trainname != null:
@@ -345,7 +345,7 @@ func update_locks():
 		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":
-		current_leg.unlock_tracks()
+		current_leg.unlock_tracks(trainname)
 		emit_signal("target_in", get_current_leg().get_target_node()) # this should lock the target block
 	
 	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)

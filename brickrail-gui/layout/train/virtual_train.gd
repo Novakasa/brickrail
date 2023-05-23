@@ -167,7 +167,9 @@ func update_next_sensor_distance():
 	Logger.debug("[%s] starting at: %s" % [logging_module, itertrack.id])
 	var i = 0
 	while itertrack != next_sensor_track:
-		assert(i<1000)
+		if i>1000:
+			GuiApi.show_error("Internal error, can't find next sensor track")
+			assert(false, "can't find next sensor track")
 		var next_turn = itertrack.get_next_turn()
 		if next_turn == null:
 			next_sensor_track = null
@@ -179,7 +181,7 @@ func update_next_sensor_distance():
 	next_sensor_distance = distance
 
 func manual_sensor_advance():
-	assert(state != "stopped")
+	assert(state != "stopped", "sensor advance state == 'stopped'")
 	if allow_sensor_advance:
 		return
 	var flips = route.next_sensor_flips()
@@ -265,7 +267,7 @@ func update_velocity(delta):
 
 func advance_position(delta_pos):
 	var prev_pos = track_pos
-	assert(delta_pos>=0.0)
+	assert(delta_pos>=0.0, "delta_pos < 0.0")
 	track_pos += delta_pos
 	next_sensor_distance -= delta_pos
 	wrap_dirtrack()
@@ -300,7 +302,7 @@ func pass_sensor(sensor_dirtrack):
 func execute_behavior(behavior: String):
 	Logger.info("[%s] executing behavior: %s" % [logging_module, behavior])
 	var parts = behavior.split("_")
-	assert(len(parts)<=2)
+	assert(len(parts)<=2, "len(parts) > 2")
 	if parts[0] == "flip":
 		flip_heading()
 	if parts[-1] in ["stop", "slow", "cruise", "fast"]:

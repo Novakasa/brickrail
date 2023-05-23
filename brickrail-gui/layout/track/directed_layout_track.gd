@@ -43,7 +43,7 @@ var metadata = {}
 var default_meta = {"selected": false,
 					"hover": false,
 					"arrow": 0,
-					"locked": null,
+					"locked": [],
 					"locked+": 0,
 					"locked-": 0,
 					"mark+": 0,
@@ -256,6 +256,10 @@ func set_connection_attribute(turn, key, value, operation):
 	elif operation=="increment":
 		assert(key in metadata[turn])
 		metadata[turn][key] += value
+	elif operation == "append":
+		metadata[turn][key].append(value)
+	elif operation == "erase":
+		metadata[turn][key].erase(value)
 	else:
 		push_error("invalid operation"+operation)
 	emit_signal("states_changed", next_slot)
@@ -320,10 +324,10 @@ func get_locked(turn=null):
 			if locked != null:
 				return locked
 		return null
-	var locked_trainname = metadata[turn]["locked"]
-	if locked_trainname != null:
-		return locked_trainname
-	return null
+	var lock_names = metadata[turn]["locked"]
+	if len(lock_names) == 0:
+		return null
+	return lock_names[0]
 
 func set_one_way(one_way):
 	prohibited = false

@@ -390,10 +390,9 @@ func get_switches():
 func get_locked():
 	var locked = []
 	for dirtrack in directed_tracks.values():
-		for data in dirtrack.metadata.values():
-			var val = data["locked"]
-			if val != null and not val in locked:
-				locked.append(val)
+		var val = dirtrack.get_locked()
+		if val != null and not val in locked:
+			locked.append(val)
 	return locked
 
 func add_sensor(p_sensor):
