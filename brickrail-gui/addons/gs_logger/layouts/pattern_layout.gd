@@ -23,7 +23,9 @@ func build(message: Message, format: int):
 		LOG_FORMAT_FULL:
 			return "%s %-8s %-8s %-8d %s" % [Utils.get_formatted_date(OS.get_datetime()), message.category.to_upper(), Utils.get_level_name(message.level), message.line, message.text]
 		LOG_FORMAT_MORE:
-			return "%s %-8s %-8d %s" % [Utils.get_formatted_date(OS.get_datetime()), Utils.get_level_name(message.level), message.line, message.text]
+			var uptime = OS.get_ticks_msec()/1000.0
+			return "%-8s %-8s %s" % [Utils.get_level_name(message.level), uptime, message.text]
+			# return "%s %-8s %-8d %s" % [Utils.get_formatted_date(OS.get_datetime()), Utils.get_level_name(message.level), message.line, message.text]
 		LOG_FORMAT_NONE:
 			return message.text
 		LOG_FORMAT_SIMPLE:
