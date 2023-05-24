@@ -153,7 +153,8 @@ func select():
 		if not route.highlighted:
 			route.set_highlight()
 	emit_signal("selected")
-	LayoutInfo.set_active_layer(virtual_train.l_idx)
+	if not LayoutInfo.layers_unfolded:
+		LayoutInfo.set_active_layer(virtual_train.l_idx)
 
 func unselect():
 	selected=false
