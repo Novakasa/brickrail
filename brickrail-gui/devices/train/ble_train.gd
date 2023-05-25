@@ -135,7 +135,13 @@ func _on_runtime_data_received(data):
 		var samples = (data[7]<<8) + data[8]
 		Logger.info("[%s] unexpected marker. Chroma: %s Hue: %s samples: %s" % [logging_module, chroma, hue, samples])
 		var msg = "Train '%s' unexpected marker: Expected %s, but measured %s!" % [name, expected, measured]
-		GuiApi.show_error(msg)
+		var more_info = msg + "\nChroma: %s Hue: %s samples: %s" % [chroma, hue, samples]
+		more_info +="\n\n Was the physical train position consistent with the virtual train position?"
+		more_info += "\nIs the sensor positioned correctly?"
+		more_info += "\nAre the virtual marker colors and positions consistent with the physical ones?"
+		more_info += "\nIs the track 'brackground' free of any high-chroma (saturated and bright) colors?"
+		more_info += "\nIs the train able to stop quickly enough? Try increasing the deceleration or decreasing the train speeds."
+		GuiApi.show_error(msg, more_info)
 		LayoutInfo.emergency_stop()
 
 func _on_hub_name_changed(_p_old_name, p_new_name):

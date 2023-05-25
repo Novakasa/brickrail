@@ -20,6 +20,14 @@ func _ready():
 	_client.connect("connection_error", self, "_closed")
 	_client.connect("connection_established", self, "_connected")
 	_client.connect("data_received", self, "_on_data")
+	
+	var _err = connect("status_changed", self, "_on_status_changed")
+
+func _on_status_changed():
+	if busy:
+		GuiApi.show_info("[BLE Server] %s..." % status)
+	else:
+		GuiApi.show_info("[BLE Server] %s" % status)
 
 func start_and_connect_to_process():
 	busy = true
@@ -42,7 +50,8 @@ func start_and_connect_to_process():
 	var result = yield(Await.first_signal_objs([timer, self], ["timeout", "connected"]), "completed")
 	if result == timer:
 		status = "Not connected to BLE Server"
-		GuiApi.show_error("Timeout trying to connect to BLE Server python process!")
+		var more_info = "Timeout trying to connect to BLE Server python process.\nThis could mean that the BLEServer executable is not accessible.\n\nDid you extract the Brickrail release properly?\nThe ble-server directory should be in the same folder as the Brickrail-gui executable."
+		GuiApi.show_error("Timeout trying to connect to BLE Server python process!", more_info)
 		busy = false
 		emit_signal("status_changed")
 
@@ -61,7 +70,8 @@ func disconnect_and_kill_process():
 func _closed(was_clean = false):
 	Logger.info("[%s] Closed, clean: %s" % [logging_module, was_clean])
 	if not expect_close:
-		GuiApi.show_error("Disconnected from BLE Server python process unexpectedly!")
+		var more_info = "BLE Server was disconnected for some reason.\nIt could have crashed, or the terminal window was closed.\n\nYou can try restarting the BLE Server by pressing 'Connect BLE Server'\nin the hub panel."
+		GuiApi.show_error("Disconnected from BLE Server python process unexpectedly!", more_info)
 	expect_close = false
 	connected=false
 	busy = false
