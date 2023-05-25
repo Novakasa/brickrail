@@ -46,9 +46,9 @@ func _init(p_name, p_program):
 	logging_module = "hub-"+name
 	
 	if name in Settings.hub_program_hashes:
-		Logger.log("[%s] hash found in settings" % logging_module)
+		Logger.info("[%s] hash found in settings" % logging_module)
 		if Settings.hub_program_hashes[name] == HubPrograms.hashes[program]:
-			Logger.log("[%s] hash is the same, setting skip download" % logging_module)
+			Logger.info("[%s] hash is the same, setting skip download" % logging_module)
 			set_skip_download(true)
 		else:
 			GuiApi.show_info("[%s] Program outdated, program will be redownloaded" % name)
@@ -87,16 +87,16 @@ func _on_data_received(key, data):
 		connected=true
 		busy=false
 		status = "connected"
-		emit_signal("connected")
 		emit_signal("state_changed")
+		emit_signal("connected")
 		return
 	if key == "disconnected":
 		connected=false
 		busy=false
 		status = "disconnected"
 		set_responsiveness(false)
-		emit_signal("disconnected")
 		emit_signal("state_changed")
+		emit_signal("disconnected")
 		return
 	if key == "connect_error":
 		connected=false
@@ -108,8 +108,8 @@ func _on_data_received(key, data):
 		more_info += "\nIs pybricks installed on the hub?"
 		more_info += "\nIs the name consistent with the name given during pybricks installation?"
 		GuiApi.show_error(msg, more_info)
-		emit_signal("connect_error")
 		emit_signal("state_changed")
+		emit_signal("connect_error")
 		return
 	if key == "program_started":
 		
@@ -121,8 +121,8 @@ func _on_data_received(key, data):
 		busy=false
 		status = "running"
 		set_responsiveness(true)
-		emit_signal("program_started")
 		emit_signal("state_changed")
+		emit_signal("program_started")
 		send_storage()
 		return
 	if key == "program_stopped":
@@ -130,8 +130,8 @@ func _on_data_received(key, data):
 		busy=false
 		status = "connected"
 		set_responsiveness(false)
-		emit_signal("program_stopped")
 		emit_signal("state_changed")
+		emit_signal("program_stopped")
 		return
 	if key == "program_error":
 		if status == "starting program":
@@ -159,6 +159,12 @@ func _on_data_received(key, data):
 			else:
 				GuiApi.show_error("Hub '"+name+"' Program Error: " + data)
 			emit_signal("program_error", data)
+		
+		# REVISIT: This may be needed in case the program_stopped notification never arrives?
+		running=false
+		busy=false
+		status = "connected"
+		emit_signal("state_changed")
 		return
 	if key == "runtime_data":
 		emit_signal("runtime_data_received", PoolIntArray(data)) 
@@ -196,9 +202,9 @@ func disconnect_hub():
 func run_program():
 	assert(connected and not running)
 	send_command("brickrail_run", [skip_download])
-	status = "starting program"
+	status = "downloading and starting program"
 	if skip_download:
-		status = "downloading and starting program"
+		status = "starting program"
 	busy=true
 	emit_signal("state_changed")
 
