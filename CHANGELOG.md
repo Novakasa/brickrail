@@ -7,6 +7,7 @@
 
 ### Added
 
+- Added Notifications panel that displays info, warning and error messages chronologically. Messages can contain more info accessed by the `[...]` Button (https://github.com/Novakasa/brickrail/issues/134).
 - Reenabled ability to set a name while creating a block.
 - Added name display to inspector for most entities.
 - Added customizable switch motor strength and duration (https://github.com/Novakasa/brickrail/issues/129)
