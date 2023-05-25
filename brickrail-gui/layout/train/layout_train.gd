@@ -238,7 +238,7 @@ func find_random_route(no_blocked):
 
 func find_route(p_target, _no_locked=true):
 	if route != null and not is_end_of_leg():
-		GuiApi.show_error("Not at end of leg!")
+		GuiApi.show_error("Train is not stopped!")
 		return
 	if not LayoutInfo.nodes[p_target].obj.can_stop:
 		GuiApi.show_error("Target is not flagged 'can stop'!")

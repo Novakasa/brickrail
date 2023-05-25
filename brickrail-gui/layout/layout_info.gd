@@ -664,6 +664,7 @@ func attempt_portal():
 	portal_target = null
 
 func stop_all_trains():
+	GuiApi.show_info("Stopping routes...")
 	Logger.info("[LayoutInfo] Stopping all trains")
 	set_random_targets(false)
 	for train in trains.values():
@@ -672,6 +673,7 @@ func stop_all_trains():
 
 func emergency_stop():
 	Logger.info("[LayoutInfo] Emergency stop")
+	GuiApi.show_warning("Emergency stop!")
 	set_control_devices(CONTROL_OFF)
 	if Devices.get_ble_controller().get_node("BLECommunicator").connected:
 		for ble_train in Devices.trains.values():

@@ -5,7 +5,6 @@ var scroll_period = 1.0
 
 func _ready():
 	GuiApi.status_gui = self
-	$Error/ErrorLabel.text = ""
 
 func ready(message):
 	$StatusLabel.text = message
@@ -15,9 +14,6 @@ func process(message):
 	$StatusLabel.text = message
 	$ProgressScrollbar.visible=true
 	scroll_time = 0.0
-
-func error(message):
-	$Error/ErrorLabel.text = message
 
 func _process(delta):
 	if not $ProgressScrollbar.visible:
@@ -31,6 +27,3 @@ func _process(delta):
 	var bar = $ProgressScrollbar
 	bar.value = lerp(bar.min_value, bar.max_value-bar.page, t)
 
-
-func _on_ClearErrorButton_pressed():
-	$Error/ErrorLabel.text = ""
