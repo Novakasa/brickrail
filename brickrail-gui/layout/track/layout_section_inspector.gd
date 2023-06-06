@@ -38,9 +38,13 @@ func _on_section_track_added(_track):
 			$AddPortal.visible=true
 		else:
 			$AddPortal.visible=false
+		$FacingFilterSelector.visible=true
+		$Label2.visible=true
 		$FacingFilterSelector.set_items(["Only forwards", "Only backwards"], [1, -1])
 		$FacingFilterSelector.select_meta(section.tracks[0].facing_filter)
 	else:
+		$FacingFilterSelector.visible=false
+		$Label2.visible=false
 		$Label.text = section.tracks[0].id + "-" + section.tracks[-1].id
 		$CreateBlock.visible=true
 		$CreateBlock.disabled = false
