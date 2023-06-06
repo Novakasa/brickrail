@@ -53,10 +53,11 @@ size_flags_vertical = 3
 [node name="VSplitContainer" type="VSplitContainer" parent="VBoxContainer2/HSplitContainer"]
 margin_right = 224.0
 margin_bottom = 689.0
+split_offset = 123
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer"]
 margin_right = 224.0
-margin_bottom = 376.0
+margin_bottom = 499.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer"]
 margin_right = 224.0
@@ -78,7 +79,7 @@ text = "Disconnect hubs"
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer"]
 margin_top = 31.0
 margin_right = 224.0
-margin_bottom = 345.0
+margin_bottom = 468.0
 mouse_filter = 1
 size_flags_vertical = 3
 tab_align = 0
@@ -228,13 +229,13 @@ margin_bottom = 275.0
 [node name="PresetNameDialog" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings" instance=ExtResource( 8 )]
 
 [node name="ConnectBLEServerButton" type="Button" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer"]
-margin_top = 349.0
+margin_top = 472.0
 margin_right = 224.0
-margin_bottom = 376.0
+margin_bottom = 499.0
 text = "Connect BLE Server"
 
 [node name="Notifications" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer"]
-margin_top = 384.0
+margin_top = 507.0
 margin_right = 224.0
 margin_bottom = 689.0
 size_flags_horizontal = 3
@@ -248,7 +249,7 @@ window_title = "Info"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/Notifications"]
 margin_right = 224.0
-margin_bottom = 274.0
+margin_bottom = 151.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -257,9 +258,9 @@ margin_right = 224.0
 size_flags_horizontal = 3
 
 [node name="ClearButton" type="Button" parent="VBoxContainer2/HSplitContainer/VSplitContainer/Notifications"]
-margin_top = 278.0
+margin_top = 155.0
 margin_right = 224.0
-margin_bottom = 305.0
+margin_bottom = 182.0
 text = "Clear"
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer2/HSplitContainer"]

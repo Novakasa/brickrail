@@ -97,6 +97,8 @@ func collect_edges(facing):
 		edges.append(LayoutEdge.new(nodes[facing], node_obj.nodes[facing], "travel", null))
 		return edges
 	for next_section in section.get_next_segments():
+		if not facing in next_section.get_allowed_facing_values():
+			continue
 		node_obj = next_section.tracks[-1].get_node_obj()
 		if node_obj == null:
 			continue

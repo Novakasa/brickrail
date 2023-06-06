@@ -131,10 +131,11 @@ func serialize(reference=false):
 				sensor_speeds[slot] = directed_tracks[slot].sensor_speed
 			result["sensor"]["speeds"] = sensor_speeds
 		
+		result["facing_filter"] = {}
 		for slot in directed_tracks:
 			if directed_tracks[slot].prohibited:
 				result["prohibited_slot"] = slot
-				break
+			result.facing_filter[slot] = directed_tracks[slot].facing_filter
 	else:
 		result["orientation"] = get_orientation()
 	return result

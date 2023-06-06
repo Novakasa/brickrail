@@ -27,6 +27,7 @@ var next_pos
 var prev_pos
 var id
 var prohibited
+var facing_filter
 var sensor
 var sensor_speed = "cruise"
 
@@ -70,6 +71,7 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	next_pos = LayoutInfo.slot_positions[next_slot]
 	prev_pos = LayoutInfo.slot_positions[prev_slot]
 	prohibited=false
+	facing_filter = null
 	sensor=null
 	
 	metadata = {"none": default_meta.duplicate()}

@@ -209,6 +209,8 @@ func collect_edges(facing):
 			continue
 		var next_section = LayoutSection.new()
 		next_section.collect_segment(track)
+		if not facing in next_section.get_allowed_facing_values():
+			continue
 		node_obj = next_section.tracks[-1].get_node_obj()
 		if node_obj == null:
 			continue

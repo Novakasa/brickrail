@@ -38,6 +38,8 @@ func _on_section_track_added(_track):
 			$AddPortal.visible=true
 		else:
 			$AddPortal.visible=false
+		$FacingFilterSelector.set_items(["Only forwards", "Only backwards"], [1, -1])
+		$FacingFilterSelector.select_meta(section.tracks[0].facing_filter)
 	else:
 		$Label.text = section.tracks[0].id + "-" + section.tracks[-1].id
 		$CreateBlock.visible=true
@@ -120,15 +122,16 @@ func _on_SpeedSelect_meta_selected(meta):
 func _on_RemoveSensor_pressed():
 	dirtrack.remove_sensor()
 
-
 func _on_MarkerSelect_item_selected(_index):
 	dirtrack.get_sensor().set_marker_color(get_selected_colorname())
-
 
 func _on_OneWayCheckbox_toggled(button_pressed):
 	section.tracks[0].set_one_way(button_pressed)
 
-
 func _on_AddPortal_pressed():
 	LayoutInfo.set_portal_dirtrack(dirtrack)
 	LayoutInfo.set_layout_mode("portal")
+
+func _on_FacingFilterSelector_meta_selected(meta):
+	LayoutInfo.set_layout_changed(true)
+	section.tracks[0].facing_filter = meta

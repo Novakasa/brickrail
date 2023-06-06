@@ -247,3 +247,13 @@ func get_block_blocked_reason():
 	if not has_connections():
 		return "Can't create block on sections with no connections"
 	return null
+
+func get_allowed_facing_values():
+	var allowed_vals = [1, -1]
+	for track in tracks:
+		if track.facing_filter != null:
+			if track.facing_filter in allowed_vals:
+				allowed_vals = [track.facing_filter]
+			else:
+				allowed_vals = []
+	return allowed_vals

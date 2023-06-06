@@ -31,16 +31,29 @@ margin_right = 156.0
 margin_bottom = 90.0
 text = "one way"
 
-[node name="AddPortal" type="Button" parent="."]
+[node name="Label2" type="Label" parent="."]
 margin_top = 94.0
 margin_right = 156.0
-margin_bottom = 114.0
+margin_bottom = 108.0
+text = "Limit orientation"
+
+[node name="FacingFilterSelector" type="OptionButton" parent="."]
+margin_top = 112.0
+margin_right = 156.0
+margin_bottom = 132.0
+script = ExtResource( 2 )
+none_label = "Off"
+
+[node name="AddPortal" type="Button" parent="."]
+margin_top = 136.0
+margin_right = 156.0
+margin_bottom = 156.0
 text = "Add portal to..."
 
 [node name="SensorPanel" type="PanelContainer" parent="."]
-margin_top = 118.0
+margin_top = 160.0
 margin_right = 156.0
-margin_bottom = 254.0
+margin_bottom = 296.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -162,6 +175,7 @@ text = "OK"
 [connection signal="pressed" from="CreateBlock" to="." method="_on_CreateBlock_pressed"]
 [connection signal="pressed" from="AddSensor" to="." method="_on_AddSensor_pressed"]
 [connection signal="toggled" from="OneWayCheckbox" to="." method="_on_OneWayCheckbox_toggled"]
+[connection signal="meta_selected" from="FacingFilterSelector" to="." method="_on_FacingFilterSelector_meta_selected"]
 [connection signal="pressed" from="AddPortal" to="." method="_on_AddPortal_pressed"]
 [connection signal="pressed" from="SensorPanel/SensorInspector/RemoveSensor" to="." method="_on_RemoveSensor_pressed"]
 [connection signal="item_selected" from="SensorPanel/SensorInspector/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
