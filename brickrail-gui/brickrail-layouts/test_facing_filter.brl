@@ -20,10 +20,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -37,10 +33,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -61,10 +53,6 @@
 						"E": "cruise",
 						"W": "cruise"
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -85,10 +73,6 @@
 						"E": "cruise",
 						"W": "cruise"
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -102,10 +86,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -119,10 +99,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -144,10 +120,6 @@
 						"motor1_inverted": false,
 						"motor2_inverted": false
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -168,10 +140,6 @@
 						"motor1_inverted": false,
 						"motor2_inverted": false
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -185,10 +153,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -202,10 +166,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"S": null,
-					"W": null
 				}
 			},
 			{
@@ -219,10 +179,6 @@
 					"E": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"S": null,
-					"E": null
 				}
 			},
 			{
@@ -236,10 +192,6 @@
 					"E": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"E": null
 				}
 			},
 			{
@@ -253,10 +205,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -270,10 +218,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"W": null
 				}
 			},
 			{
@@ -287,10 +231,6 @@
 					"E": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"E": null
 				}
 			},
 			{
@@ -311,10 +251,6 @@
 						"motor1_inverted": false,
 						"motor2_inverted": false
 					}
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -335,10 +271,6 @@
 						"motor1_inverted": false,
 						"motor2_inverted": false
 					}
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -355,7 +287,7 @@
 				},
 				"facing_filter": {
 					"N": 1,
-					"S": null
+					"S": -1
 				}
 			},
 			{
@@ -376,10 +308,6 @@
 						"N": "cruise",
 						"S": "cruise"
 					}
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -393,10 +321,6 @@
 					"S": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -417,10 +341,6 @@
 						"N": "cruise",
 						"S": "cruise"
 					}
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -434,10 +354,6 @@
 					"S": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -458,10 +374,6 @@
 						"motor1_inverted": false,
 						"motor2_inverted": false
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -482,10 +394,6 @@
 						"motor1_inverted": false,
 						"motor2_inverted": false
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -499,10 +407,6 @@
 					"E": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"E": null
 				}
 			},
 			{
@@ -516,10 +420,6 @@
 					"S": [
 						"left"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -533,10 +433,6 @@
 					"S": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -550,10 +446,6 @@
 					"E": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"S": null,
-					"E": null
 				}
 			},
 			{
@@ -574,10 +466,6 @@
 						"E": "cruise",
 						"W": "cruise"
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -598,10 +486,6 @@
 						"E": "cruise",
 						"W": "cruise"
 					}
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -615,10 +499,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -632,10 +512,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"E": null,
-					"W": null
 				}
 			},
 			{
@@ -649,10 +525,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"S": null,
-					"W": null
 				}
 			},
 			{
@@ -666,10 +538,6 @@
 					"S": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -683,10 +551,6 @@
 					"S": [
 						"right"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"S": null
 				}
 			},
 			{
@@ -700,10 +564,6 @@
 					"W": [
 						"center"
 					]
-				},
-				"facing_filter": {
-					"N": null,
-					"W": null
 				}
 			}
 		],

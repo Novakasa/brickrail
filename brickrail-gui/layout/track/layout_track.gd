@@ -135,7 +135,10 @@ func serialize(reference=false):
 		for slot in directed_tracks:
 			if directed_tracks[slot].prohibited:
 				result["prohibited_slot"] = slot
-			result.facing_filter[slot] = directed_tracks[slot].facing_filter
+			if directed_tracks[slot].facing_filter != null:
+				result.facing_filter[slot] = directed_tracks[slot].facing_filter
+		if len(result.facing_filter) == 0:
+			result.erase("facing_filter")
 	else:
 		result["orientation"] = get_orientation()
 	return result
