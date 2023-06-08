@@ -18,6 +18,8 @@ func set_block(p_block):
 	block.connect("unselected", self, "_on_block_unselected")
 	$CanStopCheckBox.pressed = block.can_stop
 	$CanFlipCheckBox.pressed = block.can_flip
+	$RandomTargetCheckBox.pressed = block.random_target
+	$HBoxContainer/WaitTimeEdit.value = block.wait_time
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func _on_block_unselected():
@@ -42,8 +44,17 @@ func _on_AddPriorSensorButton_pressed():
 
 
 func _on_CanStopCheckBox_toggled(button_pressed):
+	if block.can_stop != button_pressed:
+		LayoutInfo.set_layout_changed(true)
 	block.can_stop = button_pressed
 
-
 func _on_CanFlipCheckBox_toggled(button_pressed):
+	if block.can_flip != button_pressed:
+		LayoutInfo.set_layout_changed(true)
 	block.can_flip = button_pressed
+
+func _on_RandomTargetCheckBox_toggled(button_pressed):
+	block.set_random_target(button_pressed)
+
+func _on_WaitTimeEdit_value_changed(value):
+	block.set_wait_time(value)

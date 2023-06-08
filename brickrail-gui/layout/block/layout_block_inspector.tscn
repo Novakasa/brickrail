@@ -8,13 +8,13 @@ margin_bottom = 40.0
 script = ExtResource( 1 )
 
 [node name="Label" type="Label" parent="."]
-margin_right = 118.0
+margin_right = 160.0
 margin_bottom = 14.0
 text = "Logical block"
 
 [node name="AddTrain" type="Button" parent="."]
 margin_top = 18.0
-margin_right = 118.0
+margin_right = 160.0
 margin_bottom = 38.0
 text = "Add train"
 __meta__ = {
@@ -23,7 +23,7 @@ __meta__ = {
 
 [node name="AddPriorSensorButton" type="Button" parent="."]
 margin_top = 42.0
-margin_right = 118.0
+margin_right = 160.0
 margin_bottom = 62.0
 text = "Add prior sensor"
 
@@ -67,20 +67,45 @@ __meta__ = {
 
 [node name="CanStopCheckBox" type="CheckBox" parent="."]
 margin_top = 66.0
-margin_right = 118.0
+margin_right = 160.0
 margin_bottom = 90.0
 pressed = true
 text = "Can stop"
 
 [node name="CanFlipCheckBox" type="CheckBox" parent="."]
 margin_top = 94.0
-margin_right = 118.0
+margin_right = 160.0
 margin_bottom = 118.0
 pressed = true
 text = "Can reverse"
+
+[node name="RandomTargetCheckBox" type="CheckBox" parent="."]
+margin_top = 122.0
+margin_right = 160.0
+margin_bottom = 146.0
+text = "Random target"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 150.0
+margin_right = 160.0
+margin_bottom = 174.0
+
+[node name="Label" type="Label" parent="HBoxContainer"]
+margin_top = 5.0
+margin_right = 82.0
+margin_bottom = 19.0
+text = "Wait time [s]"
+
+[node name="WaitTimeEdit" type="SpinBox" parent="HBoxContainer"]
+margin_left = 86.0
+margin_right = 160.0
+margin_bottom = 24.0
+max_value = 100000.0
 
 [connection signal="pressed" from="AddTrain" to="." method="_on_AddTrain_pressed"]
 [connection signal="pressed" from="AddPriorSensorButton" to="." method="_on_AddPriorSensorButton_pressed"]
 [connection signal="confirmed" from="AddTrainDialog" to="." method="_on_AddTrainDialog_confirmed"]
 [connection signal="toggled" from="CanStopCheckBox" to="." method="_on_CanStopCheckBox_toggled"]
 [connection signal="toggled" from="CanFlipCheckBox" to="." method="_on_CanFlipCheckBox_toggled"]
+[connection signal="toggled" from="RandomTargetCheckBox" to="." method="_on_RandomTargetCheckBox_toggled"]
+[connection signal="value_changed" from="HBoxContainer/WaitTimeEdit" to="." method="_on_WaitTimeEdit_value_changed"]

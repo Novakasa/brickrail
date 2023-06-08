@@ -27,8 +27,9 @@ func set_train(obj):
 	$ReversingBehaviorSelector.set_items(
 		["Disabled", "Discouraged", "Allowed"],
 		["off", "penalty", "on"])
-	
 	$ReversingBehaviorSelector.select_meta(train.reversing_behavior)
+	
+	$RandomTargetsCheckBox.pressed = train.random_targets
 	
 	update_storage_controls()
 
@@ -106,3 +107,6 @@ func _on_GoHomeButton_pressed():
 
 func _on_ReversingBehaviorSelector_meta_selected(meta):
 	train.set_reversing_behavior(meta)
+
+func _on_RandomTargetsCheckBox_toggled(button_pressed):
+	train.set_random_targets(button_pressed)

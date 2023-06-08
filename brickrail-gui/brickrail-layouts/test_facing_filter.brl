@@ -605,6 +605,14 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
@@ -644,6 +652,14 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
@@ -683,6 +699,14 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": false
+				},
+				"wait_time": {
+					"0": 20,
+					"1": 4
 				}
 			}
 		],
@@ -693,6 +717,7 @@
 				"reversing_behavior": "on",
 				"color": "ff000000",
 				"num_wagons": 4,
+				"random_targets": true,
 				"blockname": "block2",
 				"blockindex": 1
 			}

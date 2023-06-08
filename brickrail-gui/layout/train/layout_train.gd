@@ -14,7 +14,7 @@ var selected=false
 var reversing_behavior = "off"
 var committed = true
 var logging_module
-var wait_time = 2.0
+var random_targets = true
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
@@ -41,9 +41,9 @@ func _init(p_name):
 	update_layer_visibility()
 
 func _enter_tree():
-	if LayoutInfo.random_targets:
-		yield(get_tree().create_timer(wait_time/LayoutInfo.time_scale), "timeout")
-		if LayoutInfo.random_targets:
+	if LayoutInfo.random_targets and random_targets:
+		yield(get_tree().create_timer(block.wait_time/LayoutInfo.time_scale), "timeout")
+		if LayoutInfo.random_targets and random_targets:
 			find_random_route(false)
 
 func _on_layer_info_changed(_l_idx=null):
@@ -115,8 +115,8 @@ func _on_LayoutInfo_control_devices_changed(_control_devices):
 func is_end_of_leg():
 	return route.get_current_leg().is_complete()
 
-func _on_LayoutInfo_random_targets_set(random_targets):
-	if random_targets and route==null:
+func _on_LayoutInfo_random_targets_set(_random_targets):
+	if LayoutInfo.random_targets and route==null and random_targets:
 		find_random_route(false)
 
 func update_control_ble_train():
@@ -138,6 +138,7 @@ func serialize():
 	struct["reversing_behavior"] = reversing_behavior
 	struct["color"] = virtual_train.color.to_html()
 	struct["num_wagons"] = len(virtual_train.wagons)
+	struct["random_targets"] = random_targets
 	if block != null:
 		struct["blockname"] = home_position.blockname
 		struct["blockindex"] = home_position.index
@@ -214,6 +215,8 @@ func get_all_valid_routes(no_locked=true, target_facing=null):
 		if not LayoutInfo.nodes[node_id].obj.can_stop:
 			continue
 		if target_facing != null and target_facing != LayoutInfo.nodes[node_id].facing:
+			continue
+		if not LayoutInfo.nodes[node_id].obj.random_target:
 			continue
 		valid_routes[node_id] = routes[node_id]
 	return valid_routes
@@ -325,17 +328,17 @@ func cancel_route():
 func _on_route_completed():
 	Logger.info("[%s] Route completed" % [logging_module])
 	set_route(null)
-	if LayoutInfo.random_targets:
+	if LayoutInfo.random_targets and random_targets:
 		Logger.info("[%s] Starting timer for next route" % [logging_module])
-		yield(get_tree().create_timer(wait_time/LayoutInfo.time_scale), "timeout")
-		if LayoutInfo.random_targets:
+		yield(get_tree().create_timer(block.wait_time/LayoutInfo.time_scale), "timeout")
+		if LayoutInfo.random_targets and random_targets:
 			find_random_route(false)
 
 func _on_route_stopped():
 	Logger.info("[%s] route stopped" % logging_module)
 	if not route.passing:
 		return
-	if LayoutInfo.random_targets:
+	if LayoutInfo.random_targets and random_targets:
 		yield(get_tree(), "idle_frame")
 		if not escape_deadlock():
 			Logger.error("[%s] Couldn't escape deadlock!" % logging_module)
@@ -433,6 +436,12 @@ func get_inspector():
 	var inspector = TrainInspector.instance()
 	inspector.set_train(self)
 	return inspector
+
+func set_random_targets(value):
+	if value != random_targets:
+		LayoutInfo.set_layout_changed(true)
+	random_targets = value
+	_on_LayoutInfo_random_targets_set(LayoutInfo.random_targets)
 
 func _unhandled_input(event):
 	if event is InputEventKey:

@@ -77,6 +77,7 @@ signal trains_running(running)
 signal sensors_changed()
 
 func set_layout_changed(value):
+	pass
 	yield(get_tree(), "idle_frame")
 	layout_changed = value
 	# prints("layout changed", value)
@@ -227,6 +228,12 @@ func load(struct):
 			if "can_flip" in block_data:
 				for index in block_data.can_flip:
 					block.logical_blocks[int(index)].can_flip = block_data.can_flip[index]
+			if "random_target" in block_data:
+				for index in block_data.random_target:
+					block.logical_blocks[int(index)].set_random_target(block_data.random_target[index])
+			if "wait_time" in block_data:
+				for index in block_data.wait_time:
+					block.logical_blocks[int(index)].set_wait_time(block_data.wait_time[index])
 	
 	if "trains" in struct:
 		for train_data in struct.trains:
@@ -238,6 +245,8 @@ func load(struct):
 				train.set_reversing_behavior(behavior)
 			if "reversing_behavior" in train_data:
 				train.set_reversing_behavior(train_data.reversing_behavior)
+			if "random_targets" in train_data:
+				train.set_random_targets(train_data.random_targets)
 
 			var home_pos_dict = {}
 			home_pos_dict["blockname"] = train_data.blockname

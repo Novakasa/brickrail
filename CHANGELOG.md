@@ -7,6 +7,8 @@
 
 ### Added
 
+- Added "Random target" and "Wait time" setting for logical blocks (https://github.com/Novakasa/brickrail/issues/86).
+- Added "Random targets" setting for individual trains (https://github.com/Novakasa/brickrail/issues/86).
 - Added orientation filter to individual tracks. This makes it possible to restrict trains to only use certain routes in a set forwards/backwards orientation (https://github.com/Novakasa/brickrail/issues/138).
 - Added Notifications panel that displays info, warning and error messages chronologically. Messages can contain more info accessed by the `[...]` Button (https://github.com/Novakasa/brickrail/issues/134).
 - Reenabled ability to set a name while creating a block.
