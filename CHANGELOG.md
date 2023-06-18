@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+## [v1.0.0-alpha.4] - 2023-06-18
+
 ### Added
 
 - Added "Random target" and "Wait time" setting for logical blocks (https://github.com/Novakasa/brickrail/issues/86).
@@ -73,6 +75,7 @@ Brickrail now does not rely on specific pybricks firmware anymore and aims to be
 
 <!-- diff links for headers -->
 [Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.3...HEAD
-[v1.0.0-alpha.2]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.3
+[v1.0.0-alpha.4]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.4
+[v1.0.0-alpha.3]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.3
 [v1.0.0-alpha.2]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
 [v1.0.0-alpha.1]: https://github.com/Novakasa/brickrail/tree/v1.0.0-alpha.1
