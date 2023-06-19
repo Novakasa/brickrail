@@ -222,7 +222,11 @@
 					"S": {
 						"motor1": {
 							"controller": "city-yellow",
-							"port": 3
+							"port": 3,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -337,7 +341,11 @@
 					"W": {
 						"motor1": {
 							"controller": "city-yellow",
-							"port": 2
+							"port": 2,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": true,
 						"motor2_inverted": false
@@ -848,7 +856,11 @@
 					"W": {
 						"motor1": {
 							"controller": "technic-red",
-							"port": 0
+							"port": 0,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -950,7 +962,11 @@
 					"N": {
 						"motor1": {
 							"controller": "technic-red",
-							"port": 3
+							"port": 3,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -974,7 +990,11 @@
 					"S": {
 						"motor1": {
 							"controller": "technic-red",
-							"port": 2
+							"port": 2,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -1011,7 +1031,11 @@
 					"W": {
 						"motor1": {
 							"controller": "technic-red",
-							"port": 1
+							"port": 1,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -1096,7 +1120,11 @@
 					"N": {
 						"motor1": {
 							"controller": "city-yellow",
-							"port": 0
+							"port": 0,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -1133,7 +1161,11 @@
 					"S": {
 						"motor1": {
 							"controller": "city-yellow",
-							"port": 1
+							"port": 1,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -1324,7 +1356,11 @@
 					"E": {
 						"motor1": {
 							"controller": "city-lime",
-							"port": 1
+							"port": 1,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -1348,7 +1384,11 @@
 					"E": {
 						"motor1": {
 							"controller": "city-lime",
-							"port": 0
+							"port": 0,
+							"storage": {
+								"0": 100,
+								"1": 600
+							}
 						},
 						"motor1_inverted": false,
 						"motor2_inverted": false
@@ -1599,6 +1639,7 @@
 		"blocks": [
 			{
 				"name": "block0",
+				"block_name": "unten-verteiler",
 				"section": {
 					"tracks": [
 						{
@@ -1641,10 +1682,19 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block6_",
+				"block_name": "oben-hinten",
 				"section": {
 					"tracks": [
 						{
@@ -1687,10 +1737,19 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block7_",
+				"block_name": "oben-vorne",
 				"section": {
 					"tracks": [
 						{
@@ -1733,10 +1792,19 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block6",
+				"block_name": "rampe-hinten",
 				"section": {
 					"tracks": [
 						{
@@ -1779,10 +1847,19 @@
 				"can_flip": {
 					"0": false,
 					"1": false
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block7",
+				"block_name": "rampe-vorne",
 				"section": {
 					"tracks": [
 						{
@@ -1825,10 +1902,19 @@
 				"can_flip": {
 					"0": false,
 					"1": false
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block5",
+				"block_name": "unten3",
 				"section": {
 					"tracks": [
 						{
@@ -1864,10 +1950,19 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block6__",
+				"block_name": "unten2",
 				"section": {
 					"tracks": [
 						{
@@ -1903,10 +1998,19 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
 				"name": "block7__",
+				"block_name": "unten1",
 				"section": {
 					"tracks": [
 						{
@@ -1942,37 +2046,51 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			}
 		],
 		"trains": [
 			{
+				"train_name": "cargo",
 				"name": "train1",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ff00b007",
 				"num_wagons": 4,
-				"blockname": "block6__",
+				"random_targets": true,
+				"block_id": "block6__",
 				"blockindex": 0,
 				"ble_train": "city-green"
 			},
 			{
+				"train_name": "ice",
 				"name": "train-red",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ffff0000",
 				"num_wagons": 5,
-				"blockname": "block5",
+				"random_targets": true,
+				"block_id": "block5",
 				"blockindex": 0,
 				"ble_train": "city-red"
 			},
 			{
+				"train_name": "euro",
 				"name": "train2",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ffff9500",
 				"num_wagons": 5,
-				"blockname": "block7__",
+				"random_targets": true,
+				"block_id": "block7__",
 				"blockindex": 0,
 				"ble_train": "city-orange"
 			}
