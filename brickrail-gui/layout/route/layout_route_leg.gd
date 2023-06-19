@@ -109,8 +109,8 @@ func get_full_section():
 		full_section = get_section(true)
 	return full_section
 
-func lock_and_switch(trainname):
-	lock_tracks(trainname)
+func lock_and_switch(train_id):
+	lock_tracks(train_id)
 	set_switches()
 
 func set_switches():
@@ -126,20 +126,20 @@ func set_switches():
 			backward_switch.switch(last_track.get_opposite().get_turn())
 		last_track = dirtrack
 
-func lock_tracks(trainname):
+func lock_tracks(train_id):
 	assert(not locked)
 	var lock_trains = get_lock_trains()
-	assert(lock_trains==[trainname], "lock_trains != [trainname]") # only start block should be occupied (by this train)
+	assert(lock_trains==[train_id], "lock_trains != [train_id]") # only start block should be occupied (by this train)
 	Logger.info("[%s] locking from %s to %s" % [logging_module, get_full_section().tracks[0].id, get_full_section().tracks[-1].id])
-	get_full_section().set_track_attributes("locked", trainname, "<>", "append")
+	get_full_section().set_track_attributes("locked", train_id, "<>", "append")
 	get_full_section().set_track_attributes("locked+", 1, ">", "increment")
 	get_full_section().set_track_attributes("locked-", 1, "<", "increment")
 	locked = true
 
-func unlock_tracks(trainname):
+func unlock_tracks(train_id):
 	assert(locked)
 	Logger.info("[%s] unlocking from %s to %s" % [logging_module, get_full_section().tracks[0].id, get_full_section().tracks[-1].id])
-	get_full_section().set_track_attributes("locked", trainname, "<>", "erase")
+	get_full_section().set_track_attributes("locked", train_id, "<>", "erase")
 	get_full_section().set_track_attributes("locked+", -1, ">", "increment")
 	get_full_section().set_track_attributes("locked-", -1, "<", "increment")
 	locked = false
@@ -149,13 +149,13 @@ func set_attributes(key, value, direction="<>", operation="set"):
 
 func get_lock_trains():
 	var locked_trains = []
-	for trainname2 in get_full_section().get_locked():
-		if not trainname2 in locked_trains:
-			locked_trains.append(trainname2)
+	for train_id2 in get_full_section().get_locked():
+		if not train_id2 in locked_trains:
+			locked_trains.append(train_id2)
 	return locked_trains
 
-func can_lock(trainname):
+func can_lock(train_id):
 	var leg_locked = get_lock_trains()
-	if len(leg_locked)>0 and leg_locked != [trainname]:
+	if len(leg_locked)>0 and leg_locked != [train_id]:
 		return false
 	return true

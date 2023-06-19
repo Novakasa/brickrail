@@ -22,7 +22,7 @@ var fast_velocity = 5.0
 var cruise_velocity = 3.0
 var slow_velocity = 1.0
 
-var trainname
+var train_id
 var logging_module
 
 var route: LayoutRoute = null
@@ -75,8 +75,8 @@ func cleanup_seek():
 	seek_forward_timer = -1.0
 
 func _init(p_name):
-	trainname = p_name
-	logging_module = "virtual-" + trainname
+	train_id = p_name
+	logging_module = "virtual-" + train_id
 	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
 	add_wagons(4)
@@ -101,7 +101,7 @@ func add_wagons(num_wagons):
 
 func set_num_wagons(num_wagons):
 	add_wagons(num_wagons)
-	if trainname != "drag-train":
+	if train_id != "drag-train":
 		LayoutInfo.set_layout_changed(true)
 	update_wagon_visuals()
 
@@ -109,7 +109,7 @@ func set_color(p_color):
 	color = p_color
 	for wagon in wagons:
 		wagon.set_color(color)
-	if trainname != "drag-train":
+	if train_id != "drag-train":
 		LayoutInfo.set_layout_changed(true)
 
 func remove():

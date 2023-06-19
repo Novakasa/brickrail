@@ -56,7 +56,7 @@ margin_right = 42.0
 margin_bottom = 19.0
 text = "Name:"
 
-[node name="TrainNameEdit" type="LineEdit" parent="AddTrainDialog/VBoxContainer/GridContainer"]
+[node name="train_idEdit" type="LineEdit" parent="AddTrainDialog/VBoxContainer/GridContainer"]
 margin_left = 46.0
 margin_right = 184.0
 margin_bottom = 24.0

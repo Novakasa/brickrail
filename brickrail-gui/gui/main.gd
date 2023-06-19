@@ -42,8 +42,8 @@ func _on_devices_layout_controller_added(p_name):
 
 func _on_AddTrainButton_pressed():
 	var trainnum = len(Devices.trains)
-	var trainname = "train"+str(trainnum)
-	Devices.add_train(trainname)
+	var train_id = "train"+str(trainnum)
+	Devices.add_train(train_id)
 
 func _on_AddLayoutControllerButton_pressed():
 	var controllernum = len(Devices.layout_controllers)

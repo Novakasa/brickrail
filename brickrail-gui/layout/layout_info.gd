@@ -62,7 +62,7 @@ signal layout_mode_changed(mode)
 signal selected(obj)
 signal control_devices_changed(control_mode)
 #warning-ignore:unused_signal
-signal blocked_tracks_changed(trainname)
+signal blocked_tracks_changed(train_id)
 signal random_targets_set(rand_target)
 signal layers_changed()
 signal layer_added(l)
@@ -247,9 +247,12 @@ func load(struct):
 				train.set_reversing_behavior(train_data.reversing_behavior)
 			if "random_targets" in train_data:
 				train.set_random_targets(train_data.random_targets)
+			
+			if "blockname" in train_data:
+				train_data["block_id"] = train_data["blockname"]
 
 			var home_pos_dict = {}
-			home_pos_dict["blockname"] = train_data.blockname
+			home_pos_dict["block_id"] = train_data.block_id
 			home_pos_dict["index"] = train_data.blockindex
 			home_pos_dict["facing"] = int(train_data.facing)
 			train.set_home_position(home_pos_dict)
@@ -267,11 +270,11 @@ func store_train_positions():
 	if layout_file == null:
 		return
 	Settings.layout_train_positions[layout_file] = {}
-	for trainname in trains:
-		var train = trains[trainname]
+	for train_id in trains:
+		var train = trains[train_id]
 		var pos_dict = train.get_current_pos_dict()
-		Settings.layout_train_positions[layout_file][trainname] = pos_dict
-		Logger.info("[LayoutInfo] storing position for train %s: %s" % [trainname, pos_dict])
+		Settings.layout_train_positions[layout_file][train_id] = pos_dict
+		Logger.info("[LayoutInfo] storing position for train %s: %s" % [train_id, pos_dict])
 
 func restore_train_positions():
 	Logger.info("[LayoutInfo] restoring train positions for file %s..." % layout_file)
@@ -282,21 +285,25 @@ func restore_train_positions():
 	
 	# do the move in two passes, since first all trains need to set block==null to
 	# avoid moving to already occupied position
-	for trainname in trains:
-		if not trainname in Settings.layout_train_positions[layout_file]:
+	for train_id in trains:
+		if not train_id in Settings.layout_train_positions[layout_file]:
 			continue
-		var loc_dict = Settings.layout_train_positions[layout_file][trainname].duplicate()
-		if not loc_dict.blockname in blocks:
+		var loc_dict = Settings.layout_train_positions[layout_file][train_id].duplicate()
+		if "blockname" in loc_dict:
+			loc_dict["block_id"] = loc_dict["blockname"]
+		if not loc_dict.block_id in blocks:
 			continue
-		trains[trainname].set_current_block(null)
-	for trainname in trains:
-		if not trainname in Settings.layout_train_positions[layout_file]:
+		trains[train_id].set_current_block(null)
+	for train_id in trains:
+		if not train_id in Settings.layout_train_positions[layout_file]:
 			continue
-		var loc_dict = Settings.layout_train_positions[layout_file][trainname].duplicate()
-		if not loc_dict.blockname in blocks:
+		var loc_dict = Settings.layout_train_positions[layout_file][train_id].duplicate()
+		if "blockname" in loc_dict:
+			loc_dict["block_id"] = loc_dict["blockname"]
+		if not loc_dict.block_id in blocks:
 			continue
-		Logger.info("[LayoutInfo] restoring position for train %s: %s" % [trainname, loc_dict])
-		trains[trainname].reset_to_position(loc_dict)
+		Logger.info("[LayoutInfo] restoring position for train %s: %s" % [train_id, loc_dict])
+		trains[train_id].reset_to_position(loc_dict)
 
 func get_hover_lock():
 	if drag_select or drawing_track:
@@ -436,7 +443,7 @@ func _unhandled_input(event):
 				if selection is LayoutLogicalBlock:
 					if selection.occupied or selection.get_opposite_block().occupied:
 						return
-					blocks[selection.blockname].remove()
+					blocks[selection.block_id].remove()
 				
 				if selection is LayoutTrain:
 					selection.remove()

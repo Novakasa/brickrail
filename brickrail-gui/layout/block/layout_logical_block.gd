@@ -1,7 +1,7 @@
 class_name LayoutLogicalBlock
 extends Node
 
-var blockname
+var block_id
 var id
 var section
 var occupied: bool
@@ -18,14 +18,14 @@ var wait_time = 4.0
 var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.tscn")
 
 #warning-ignore:unused_signal
-signal removing(blockname)
+signal removing(block_id)
 signal selected()
 signal unselected()
 
 func _init(p_name, p_index):
-	blockname = p_name
+	block_id = p_name
 	index = p_index
-	id = blockname + "_" + ["+", "-"][index]
+	id = block_id + "_" + ["+", "-"][index]
 	name = id
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
@@ -84,19 +84,19 @@ func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
 	train = p_train
 	if occupied:
-		section.set_track_attributes("locked", train.trainname, "<>", "append")
+		section.set_track_attributes("locked", train.train_id, "<>", "append")
 		section.set_track_attributes("locked+", 1, ">", "increment")
 		section.set_track_attributes("locked-", 1, "<", "increment")
 	else:
-		section.set_track_attributes("locked", train.trainname, "<>", "erase")
+		section.set_track_attributes("locked", train.train_id, "<>", "erase")
 		section.set_track_attributes("locked+", -1, ">", "increment")
 		section.set_track_attributes("locked-", -1, "<", "increment")
 
-func get_all_routes(from_facing, reversing_behavior, trainname):
-	return nodes[from_facing].calculate_routes(reversing_behavior, trainname)
+func get_all_routes(from_facing, reversing_behavior, train_id):
+	return nodes[from_facing].calculate_routes(reversing_behavior, train_id)
 
-func get_route_to(from_facing, node_id, reversing_behavior, trainname):
-	return nodes[from_facing].calculate_routes(reversing_behavior, trainname)[node_id]
+func get_route_to(from_facing, node_id, reversing_behavior, train_id):
+	return nodes[from_facing].calculate_routes(reversing_behavior, train_id)[node_id]
 
 func collect_edges(facing):
 	var edges = []
@@ -118,7 +118,7 @@ func collect_edges(facing):
 	return edges
 
 func get_opposite_block():
-	return LayoutInfo.blocks[blockname].logical_blocks[1-index]
+	return LayoutInfo.blocks[block_id].logical_blocks[1-index]
 
 func get_train():
 	if not occupied:
@@ -131,7 +131,7 @@ func get_locked():
 		locked_train = get_opposite_block().get_train()
 	if locked_train == null:
 		return null
-	return locked_train.trainname
+	return locked_train.train_id
 
 func get_inspector():
 	var inspector = LayoutBlockInspector.instance()
@@ -169,7 +169,7 @@ func process_mouse_button(event, _pos):
 
 func hover(_pos):
 	_hover = true
-	section.set_track_attributes("block", blockname)
+	section.set_track_attributes("block", block_id)
 	
 	if LayoutInfo.drag_train:
 		set_drag_virtual_train()
@@ -184,7 +184,7 @@ func set_drag_virtual_train():
 
 func stop_hover():
 	_hover = false
-	section.set_track_attributes("block", blockname)
+	section.set_track_attributes("block", block_id)
 
 	if LayoutInfo.drag_train:
 		LayoutInfo.drag_virtual_train.visible=false
@@ -193,10 +193,10 @@ func stop_hover():
 func select():
 	selected=true
 	LayoutInfo.select(self)
-	section.set_track_attributes("block", blockname)
+	section.set_track_attributes("block", block_id)
 	emit_signal("selected")
 
 func unselect():
 	selected=false
-	section.set_track_attributes("block", blockname)
+	section.set_track_attributes("block", block_id)
 	emit_signal("unselected")

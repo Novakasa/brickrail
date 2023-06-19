@@ -34,7 +34,7 @@ func is_smaller_null(val1, val2):
 		return false
 	return val1<val2
 
-func calculate_routes(reversing_behavior, trainname=null):
+func calculate_routes(reversing_behavior, train_id=null):
 	#dijkstra algorithm
 	
 	var distances = {}
@@ -64,9 +64,9 @@ func calculate_routes(reversing_behavior, trainname=null):
 		for neighbour_id in current_node.edges:
 			var edge = current_node.edges[neighbour_id]
 
-			if trainname != null:
+			if train_id != null:
 				var edge_locked = edge.get_locked()
-				if len(edge_locked)>0 and edge_locked != [trainname]:
+				if len(edge_locked)>0 and edge_locked != [train_id]:
 					continue
 
 			var new_dist = distances[current_id] + edge.weight

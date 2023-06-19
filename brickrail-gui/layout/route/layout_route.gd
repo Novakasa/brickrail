@@ -8,7 +8,7 @@ var legs: Array = []
 var length = 0.0
 var leg_index = 0
 
-var trainname = null
+var train_id = null
 var highlighted=false
 
 var passing = true
@@ -66,10 +66,10 @@ func redirect_with_route(route):
 
 func recalculate_route(reversing_behavior):
 	var target_id = get_target_node().id
-	var new_route = get_current_leg().get_target_node().calculate_routes(reversing_behavior, trainname)[target_id]
+	var new_route = get_current_leg().get_target_node().calculate_routes(reversing_behavior, train_id)[target_id]
 	if new_route != null:
 		redirect_with_route(new_route)
-		_on_LayoutInfo_blocked_tracks_changed(trainname)
+		_on_LayoutInfo_blocked_tracks_changed(train_id)
 
 func set_passing(value):
 	Logger.info("[%s] set passing %s" % [logging_module, passing])
@@ -82,27 +82,27 @@ func get_start_node():
 func get_target_node():
 	return legs[-1].get_target_node()
 
-func set_trainname(p_trainname):
-	if trainname != null:
+func set_train_id(p_train_id):
+	if train_id != null:
 		LayoutInfo.disconnect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 		unset_all_attributes()
 		for leg in legs:
 			if leg.locked:
-				leg.unlock_tracks(trainname)
-	trainname = p_trainname
+				leg.unlock_tracks(train_id)
+	train_id = p_train_id
 
-	if trainname != null:
+	if train_id != null:
 		collect_sensors()
 		update_intentions()
 		var _err = LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
 		set_all_attributes()
 
-func _on_LayoutInfo_blocked_tracks_changed(p_trainname):
-	if p_trainname == trainname:
+func _on_LayoutInfo_blocked_tracks_changed(p_train_id):
+	if p_train_id == train_id:
 		return
 	update_intentions()
 	if can_advance():
-		Logger.info("[%s] can advance triggered by %s blocked_tracks_changed" % [logging_module, p_trainname])
+		Logger.info("[%s] can advance triggered by %s blocked_tracks_changed" % [logging_module, p_train_id])
 		emit_signal("can_advance")
 
 func collect_sensors():
@@ -172,7 +172,7 @@ func get_blocking_trains():
 	while index<len(legs):
 		var leg = legs[index]
 		for blocking_train in leg.get_lock_trains():
-			if blocking_train == trainname:
+			if blocking_train == train_id:
 				continue
 			if blocking_train in blocking_trains:
 				continue
@@ -199,7 +199,7 @@ func is_train_blocked():
 func can_lock_leg(index):
 	while index<len(legs):
 		var leg = legs[index]
-		if not leg.can_lock(trainname):
+		if not leg.can_lock(train_id):
 			return false
 		if not is_leg_greedy(index):
 			return true
@@ -211,7 +211,7 @@ func lock_and_switch_next():
 	while index<len(legs):
 		var leg = legs[index]
 		if not leg.locked:
-			leg.lock_and_switch(trainname)
+			leg.lock_and_switch(train_id)
 		if not is_leg_greedy(index):
 			break
 		index += 1
@@ -267,7 +267,7 @@ func advance():
 		# advancing _again_, while this function is still running.
 		# Emitting after advance_leg makes can_advance() return false, so there
 		# will be no further calls.
-		LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
+		LayoutInfo.emit_signal("blocked_tracks_changed", train_id)
 	var current_leg = get_current_leg()
 	Logger.info("[%s] current leg - index: %s, type: %s, intention: %s" % [logging_module, leg_index, current_leg.get_type(), current_leg.intention])
 	Logger.info("[%s] current leg - %s" % [logging_module, current_leg.id])
@@ -346,10 +346,10 @@ func update_locks():
 		emit_signal("target_entered", get_current_leg().get_target_node())
 	
 	if key == "in":
-		current_leg.unlock_tracks(trainname)
+		current_leg.unlock_tracks(train_id)
 		emit_signal("target_in", get_current_leg().get_target_node()) # this should lock the target block
 	
-	LayoutInfo.emit_signal("blocked_tracks_changed", trainname)
+	LayoutInfo.emit_signal("blocked_tracks_changed", train_id)
 
 func get_next_sensor_behavior():
 	var intention = get_current_leg().intention

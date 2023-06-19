@@ -7,7 +7,7 @@ var route
 var home_position = {}
 var block
 var blocked_by
-var trainname
+var train_id
 var facing: int = 1
 var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
 var selected=false
@@ -26,10 +26,10 @@ signal route_changed()
 signal home_position_changed(home_pos_dict)
 
 func _init(p_name):
-	trainname = p_name
-	logging_module = trainname
-	name = "train_"+trainname
-	virtual_train = VirtualTrain.new(trainname)
+	train_id = p_name
+	logging_module = train_id
+	name = "train_"+train_id
+	virtual_train = VirtualTrain.new(train_id)
 	add_child(virtual_train)
 	virtual_train.visible=false
 	var _err = virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
@@ -67,15 +67,15 @@ func update_layer_visibility():
 func can_control_ble_train():
 	return LayoutInfo.control_devices==2 and ble_train != null and ble_train.hub.running
 
-func set_ble_train(p_trainname):
+func set_ble_train(p_train_id):
 	if ble_train != null:
 		ble_train.disconnect("sensor_advance", self, "_on_ble_train_sensor_advance")
 		ble_train.disconnect("removing", self, "_on_ble_train_removing")
-	if p_trainname == null:
+	if p_train_id == null:
 		ble_train = null
 		emit_signal("ble_train_changed")
 		return
-	ble_train = Devices.trains[p_trainname]
+	ble_train = Devices.trains[p_train_id]
 	var _err = ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
 	_err = ble_train.connect("removing", self, "_on_ble_train_removing")
 	LayoutInfo.set_layout_changed(true)
@@ -105,7 +105,7 @@ func _on_ble_train_sensor_advance(_colorname):
 		virtual_train.manual_sensor_advance()
 
 func _on_ble_train_unexpected_marker(_colorname):
-	Logger.info("[%s] ble_train unexpected marker triggered" % trainname)
+	Logger.info("[%s] ble_train unexpected marker triggered" % train_id)
 	Logger.error("unexpected marker not aligned with next sensor")
 	ble_train.stop()
 
@@ -133,14 +133,14 @@ func update_control_ble_train():
 
 func serialize():
 	var struct = {}
-	struct["name"] = trainname
+	struct["name"] = train_id
 	struct["facing"] = home_position.facing
 	struct["reversing_behavior"] = reversing_behavior
 	struct["color"] = virtual_train.color.to_html()
 	struct["num_wagons"] = len(virtual_train.wagons)
 	struct["random_targets"] = random_targets
 	if block != null:
-		struct["blockname"] = home_position.blockname
+		struct["block_id"] = home_position.block_id
 		struct["blockindex"] = home_position.index
 	if ble_train != null:
 		struct["ble_train"] = ble_train.name
@@ -194,23 +194,23 @@ func process_mouse_button(event, _mpos):
 		return true
 
 func get_route_to(p_target, no_locked=true):
-	var locked_trainname = trainname
+	var locked_train_id = train_id
 	if not no_locked:
-		locked_trainname = null
-	return block.get_route_to(facing, p_target, reversing_behavior, locked_trainname)
+		locked_train_id = null
+	return block.get_route_to(facing, p_target, reversing_behavior, locked_train_id)
 
 func get_all_valid_routes(no_locked=true, target_facing=null):
-	var locked_trainname = trainname
+	var locked_train_id = train_id
 	if not no_locked:
-		locked_trainname = null
-	var routes = block.get_all_routes(facing, reversing_behavior, locked_trainname)
+		locked_train_id = null
+	var routes = block.get_all_routes(facing, reversing_behavior, locked_train_id)
 	var valid_routes = {}
 	for node_id in routes:
 		if routes[node_id] == null:
 			continue
 		if LayoutInfo.nodes[node_id].type!="block":
 			continue
-		if LayoutInfo.nodes[node_id].obj.blockname==block.blockname:
+		if LayoutInfo.nodes[node_id].obj.block_id==block.block_id:
 			continue
 		if not LayoutInfo.nodes[node_id].obj.can_stop:
 			continue
@@ -277,8 +277,8 @@ func escape_deadlock():
 		Logger.debug("[%s] escape_deadlock, not commited, new route!" % [logging_module])
 		return find_random_route(true)
 	blocked_by = route.get_blocking_trains()
-	for blocked_trainname in blocked_by:
-		var train = LayoutInfo.trains[blocked_trainname]
+	for blocked_train_id in blocked_by:
+		var train = LayoutInfo.trains[blocked_train_id]
 		if train.escape_deadlock():
 			blocked_by = null
 			return true
@@ -297,7 +297,7 @@ func set_route(p_route):
 		route.disconnect("stopped", self, "_on_route_stopped")
 		route.disconnect("can_advance", self, "_on_route_can_advance")
 		route.disconnect("facing_flipped", self, "_on_route_facing_flipped")
-		route.set_trainname(null)
+		route.set_train_id(null)
 	route = p_route
 	if route != null:
 		route.connect("target_entered", self, "_on_target_entered")
@@ -306,7 +306,7 @@ func set_route(p_route):
 		route.connect("stopped", self, "_on_route_stopped")
 		route.connect("can_advance", self, "_on_route_can_advance")
 		route.connect("facing_flipped", self, "_on_route_facing_flipped")
-		route.set_trainname(trainname)
+		route.set_train_id(train_id)
 		if can_control_ble_train():
 			ble_train.set_route(route)
 		virtual_train.set_route(route)
@@ -342,7 +342,7 @@ func _on_route_stopped():
 		yield(get_tree(), "idle_frame")
 		if not escape_deadlock():
 			Logger.error("[%s] Couldn't escape deadlock!" % logging_module)
-			push_error("couldn't escape deadlock! " + trainname)
+			push_error("couldn't escape deadlock! " + train_id)
 
 func _on_route_facing_flipped(p_facing):
 	assert(p_facing != facing)
@@ -359,7 +359,7 @@ func _on_target_in(target_node):
 
 func get_current_pos_dict():
 	var pos_dict = {}
-	pos_dict["blockname"] = block.blockname
+	pos_dict["block_id"] = block.block_id
 	pos_dict["index"] = block.index
 	pos_dict["facing"] = facing
 	return pos_dict
@@ -376,19 +376,19 @@ func reset_to_home_position():
 	reset_to_position(home_position)
 	
 func reset_to_position(pos_dict):
-	var logical_block = LayoutInfo.blocks[pos_dict.blockname].logical_blocks[pos_dict.index]
+	var logical_block = LayoutInfo.blocks[pos_dict.block_id].logical_blocks[pos_dict.index]
 	set_facing(pos_dict.facing)
 	set_current_block(logical_block, true)
 
 func go_home():
 	Logger.info("[%s] go_home()" % [logging_module])
-	var logical_block = LayoutInfo.blocks[home_position.blockname].logical_blocks[home_position.index]
+	var logical_block = LayoutInfo.blocks[home_position.block_id].logical_blocks[home_position.index]
 	var node_id = logical_block.nodes[home_position.facing].id
 	find_route(node_id)
 
 func set_current_block(p_block, teleport=true):
 	if p_block != null:
-		Logger.info("[%s] set_current_block(%s)" % [trainname, p_block.id])
+		Logger.info("[%s] set_current_block(%s)" % [train_id, p_block.id])
 	if block != null:
 		block.set_occupied(false, self)
 	block = p_block
@@ -404,7 +404,7 @@ func set_current_block(p_block, teleport=true):
 		virtual_train.visible=false
 
 func flip_heading():
-	Logger.info("[%s] flip_heading()" % trainname)
+	Logger.info("[%s] flip_heading()" % train_id)
 	virtual_train.flip_heading()
 	if can_control_ble_train():
 		ble_train.flip_heading()
@@ -429,7 +429,7 @@ func remove():
 	virtual_train.remove()
 	set_route(null)
 	set_current_block(null)
-	emit_signal("removing", trainname)
+	emit_signal("removing", train_id)
 	queue_free()
 
 func get_inspector():

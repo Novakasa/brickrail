@@ -13,7 +13,7 @@ func _on_layout_mode_changed(mode):
 
 func set_train(obj):
 	train = obj
-	$Label.text = train.trainname
+	$Label.text = train.train_id
 	train.connect("unselected", self, "_on_train_unselected")
 	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
 	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance

@@ -5,7 +5,7 @@ extends Node2D
 
 var size = Vector2(0.5, 0.25)
 var section = null
-var blockname
+var block_id
 var hover = false
 var selected = false
 var logical_blocks = []
@@ -16,8 +16,8 @@ var hover_block = null
 signal removing(p_name)
 
 func setup(p_name):
-	blockname = p_name
-	name = blockname
+	block_id = p_name
+	name = block_id
 	
 	logical_blocks.append(LayoutLogicalBlock.new(p_name, 0))
 	logical_blocks.append(LayoutLogicalBlock.new(p_name, 1))
@@ -44,7 +44,7 @@ func set_section(p_section):
 	
 	logical_blocks[0].set_section(p_section)
 	logical_blocks[1].set_section(p_section.flip())
-	p_section.set_track_attributes("block", blockname)
+	p_section.set_track_attributes("block", block_id)
 	section = p_section
 	
 	#warning-ignore:integer_division
@@ -56,7 +56,7 @@ func set_section(p_section):
 	while tangent.angle()<-PI/2:
 		tangent = tangent.rotated(PI)
 	
-	$scaler/Label.set_text(blockname)
+	$scaler/Label.set_text(block_id)
 	size = $scaler.scale*$scaler/Label.rect_size
 	
 	position = track.get_position() + LayoutInfo.spacing*track.get_center()
@@ -74,7 +74,7 @@ func depends_on(dirtrack):
 
 func serialize():
 	var result = {}
-	result["name"] = blockname
+	result["name"] = block_id
 	if section != null:
 		result["section"] = section.serialize()
 	var sensors = {}
@@ -103,9 +103,9 @@ func remove():
 		if logical_block.selected:
 			logical_block.unselect()
 	section.set_track_attributes("block", null)
-	emit_signal("removing", blockname)
+	emit_signal("removing", block_id)
 	for logical_block in logical_blocks:
-		logical_block.emit_signal("removing", blockname)
+		logical_block.emit_signal("removing", block_id)
 	queue_free()
 
 func _draw():

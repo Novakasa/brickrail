@@ -32,11 +32,11 @@ func _on_AddTrain_pressed():
 		index += 1
 		new_name = "train" + str(index)
 	$AddTrainDialog.popup_centered()
-	$AddTrainDialog/VBoxContainer/GridContainer/TrainNameEdit.text = new_name
+	$AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.text = new_name
 
 func _on_AddTrainDialog_confirmed():
-	var trainname = $AddTrainDialog/VBoxContainer/GridContainer/TrainNameEdit.get_text()
-	var train: LayoutTrain = LayoutInfo.create_train(trainname)
+	var train_id = $AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.get_text()
+	var train: LayoutTrain = LayoutInfo.create_train(train_id)
 	train.set_current_block(block)
 
 func _on_AddPriorSensorButton_pressed():

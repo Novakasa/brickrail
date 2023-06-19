@@ -6,7 +6,7 @@ var switches = {}
 var marker_colors = {}
 
 signal data_received(key,data)
-signal train_added(trainname)
+signal train_added(train_id)
 signal layout_controller_added(p_name)
 signal trains_changed()
 signal layout_controllers_changed()
