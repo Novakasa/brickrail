@@ -13,7 +13,7 @@ func _on_layout_mode_changed(mode):
 
 func set_train(obj):
 	train = obj
-	$Label.text = train.train_id
+	$EditableLabel.set_text(train.get_name())
 	train.connect("unselected", self, "_on_train_unselected")
 	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
 	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance
@@ -110,3 +110,6 @@ func _on_ReversingBehaviorSelector_meta_selected(meta):
 
 func _on_RandomTargetsCheckBox_toggled(button_pressed):
 	train.set_random_targets(button_pressed)
+
+func _on_EditableLabel_text_changed(text):
+	train.set_name(text)

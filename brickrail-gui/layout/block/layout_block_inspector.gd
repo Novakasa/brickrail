@@ -14,7 +14,8 @@ func _on_layout_mode_changed(mode):
 
 func set_block(p_block):
 	block = p_block
-	$Label.text = block.id
+	$EditableLabel.set_text(LayoutInfo.blocks[block.block_id].get_name())
+	$EditableLabel.set_display_text(block.get_name())
 	block.connect("unselected", self, "_on_block_unselected")
 	$CanStopCheckBox.pressed = block.can_stop
 	$CanFlipCheckBox.pressed = block.can_flip
@@ -31,8 +32,11 @@ func _on_AddTrain_pressed():
 	while new_name in LayoutInfo.trains:
 		index += 1
 		new_name = "train" + str(index)
-	$AddTrainDialog.popup_centered()
-	$AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.text = new_name
+	var train: LayoutTrain = LayoutInfo.create_train(new_name)
+	train.set_current_block(block)
+	
+	# $AddTrainDialog.popup_centered()
+	# $AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.text = new_name
 
 func _on_AddTrainDialog_confirmed():
 	var train_id = $AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.get_text()
@@ -58,3 +62,8 @@ func _on_RandomTargetCheckBox_toggled(button_pressed):
 
 func _on_WaitTimeEdit_value_changed(value):
 	block.set_wait_time(value)
+
+func _on_EditableLabel_text_changed(text):
+	LayoutInfo.blocks[block.block_id].set_name(text)
+	$EditableLabel.set_display_text(block.get_name())
+	

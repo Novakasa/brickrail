@@ -67,9 +67,12 @@ func _on_CreateBlock_pressed():
 	while new_name in LayoutInfo.blocks:
 		index += 1
 		new_name = "block" + str(index)
+	
+	LayoutInfo.create_block(new_name, section)
+	_on_section_track_added(null)
 
-	$CreateBlockPopup/VBoxContainer/NameEdit.text = new_name
-	$CreateBlockPopup.popup_centered()
+	# $CreateBlockPopup/VBoxContainer/NameEdit.text = new_name
+	# $CreateBlockPopup.popup_centered()
 
 func _on_AddSensor_pressed():
 	$AddSensor.visible=false

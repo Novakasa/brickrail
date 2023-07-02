@@ -8,6 +8,7 @@ var home_position = {}
 var block
 var blocked_by
 var train_id
+var train_name
 var facing: int = 1
 var VirtualTrainScene = load("res://layout/train/virtual_train.tscn")
 var selected=false
@@ -18,17 +19,18 @@ var random_targets = true
 
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
-signal removing(p_name)
+signal removing(p_train_id)
 signal selected()
 signal unselected()
 signal ble_train_changed()
 signal route_changed()
 signal home_position_changed(home_pos_dict)
 
-func _init(p_name):
-	train_id = p_name
+func _init(p_train_id):
+	train_id = p_train_id
 	logging_module = train_id
 	name = "train_"+train_id
+	train_name = train_id
 	virtual_train = VirtualTrain.new(train_id)
 	add_child(virtual_train)
 	virtual_train.visible=false
@@ -39,6 +41,15 @@ func _init(p_name):
 	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layer_info_changed")
 	blocked_by = null
 	update_layer_visibility()
+
+func set_name(p_name):
+	var old_name = train_name
+	train_name = p_name
+	if p_name != old_name:
+		LayoutInfo.set_layout_changed(true)
+
+func get_name():
+	return train_name
 
 func _enter_tree():
 	if LayoutInfo.random_targets and random_targets:
@@ -133,6 +144,7 @@ func update_control_ble_train():
 
 func serialize():
 	var struct = {}
+	struct["train_name"] = train_name
 	struct["name"] = train_id
 	struct["facing"] = home_position.facing
 	struct["reversing_behavior"] = reversing_behavior

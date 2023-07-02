@@ -30,6 +30,12 @@ func _init(p_name, p_index):
 	for facing in [1, -1]:
 		nodes[facing] = LayoutNode.new(self, id, facing, "block")
 		nodes[facing].set_sensors(LayoutNodeSensors.new())
+	
+func get_name():
+	return LayoutInfo.blocks[block_id].get_name() + ["+", "-"][index]
+
+func set_name(p_name):
+	LayoutInfo.blocks[block_id].set_name(p_name)
 
 func set_section(p_section):
 	if section != null:

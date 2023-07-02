@@ -6,6 +6,7 @@ extends Node2D
 var size = Vector2(0.5, 0.25)
 var section = null
 var block_id
+var block_name
 var hover = false
 var selected = false
 var logical_blocks = []
@@ -13,16 +14,26 @@ export(Color) var color
 export(Font) var font
 var hover_block = null
 
-signal removing(p_name)
+signal removing(p_block_id)
 
-func setup(p_name):
-	block_id = p_name
+func setup(p_block_id):
+	block_id = p_block_id
+	block_name = p_block_id
 	name = block_id
 	
-	logical_blocks.append(LayoutLogicalBlock.new(p_name, 0))
-	logical_blocks.append(LayoutLogicalBlock.new(p_name, 1))
+	logical_blocks.append(LayoutLogicalBlock.new(p_block_id, 0))
+	logical_blocks.append(LayoutLogicalBlock.new(p_block_id, 1))
 	add_child(logical_blocks[0])
 	add_child(logical_blocks[1])
+
+func get_name():
+	return block_name
+
+func set_name(p_name):
+	var old_name = block_name
+	block_name = p_name
+	if old_name != block_name:
+		LayoutInfo.set_layout_changed(true)
 
 func get_occupied():
 	for logical_block in logical_blocks:
@@ -75,6 +86,7 @@ func depends_on(dirtrack):
 func serialize():
 	var result = {}
 	result["name"] = block_id
+	result["block_name"] = block_name
 	if section != null:
 		result["section"] = section.serialize()
 	var sensors = {}

@@ -218,6 +218,8 @@ func load(struct):
 			var section = LayoutSection.new()
 			section.load(block_data.section)
 			var block = create_block(block_data.name, section)
+			if "block_name" in block_data:
+				block.set_name(block_data.block_name)
 			if "prior_sensors" in block_data:
 				for index in block_data.prior_sensors:
 					var prior_sensor_dirtrack = get_dirtrack_from_struct(block_data.prior_sensors[index])
@@ -238,6 +240,8 @@ func load(struct):
 	if "trains" in struct:
 		for train_data in struct.trains:
 			var train = create_train(train_data.name)
+			if "train_name" in train_data:
+				train.set_name(train_data.train_name)
 			if "fixed_facing" in train_data:
 				var behavior = "on"
 				if train_data.fixed_facing:
