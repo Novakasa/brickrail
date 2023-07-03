@@ -1,7 +1,7 @@
 [gd_scene load_steps=3 format=2]
 
 [ext_resource path="res://tools/selector.gd" type="Script" id=1]
-[ext_resource path="res://layout/switch/switch_inspector_motor_settings.gd" type="Script" id=2]
+[ext_resource path="res://layout/layout_devices/port_selector.gd" type="Script" id=2]
 
 [node name="SwitchInspectorMotorSettings" type="Panel"]
 margin_top = 18.0

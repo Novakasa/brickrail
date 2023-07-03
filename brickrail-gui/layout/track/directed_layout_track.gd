@@ -85,6 +85,9 @@ func serialize(_reference=false):
 	result["orientation"] = get_orientation()
 	return result
 
+func get_track():
+	return LayoutInfo.get_cell(l_idx, x_idx, y_idx).tracks[get_orientation()]
+
 func _on_connected_track_switch_changed(_switch):
 	emit_signal("states_changed", next_slot)
 

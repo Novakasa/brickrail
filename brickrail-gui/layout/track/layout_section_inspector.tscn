@@ -25,35 +25,41 @@ margin_right = 156.0
 margin_bottom = 62.0
 text = "Add sensor"
 
-[node name="OneWayCheckbox" type="CheckBox" parent="."]
+[node name="AddPortal" type="Button" parent="."]
 margin_top = 66.0
 margin_right = 156.0
-margin_bottom = 90.0
+margin_bottom = 86.0
+text = "Add portal to..."
+
+[node name="AddCrossing" type="Button" parent="."]
+margin_top = 90.0
+margin_right = 156.0
+margin_bottom = 110.0
+text = "Add level crossing"
+
+[node name="OneWayCheckbox" type="CheckBox" parent="."]
+margin_top = 114.0
+margin_right = 156.0
+margin_bottom = 138.0
 text = "one way"
 
 [node name="Label2" type="Label" parent="."]
-margin_top = 94.0
+margin_top = 142.0
 margin_right = 156.0
-margin_bottom = 108.0
+margin_bottom = 156.0
 text = "Limit orientation"
 
 [node name="FacingFilterSelector" type="OptionButton" parent="."]
-margin_top = 112.0
+margin_top = 160.0
 margin_right = 156.0
-margin_bottom = 132.0
+margin_bottom = 180.0
 script = ExtResource( 2 )
 none_label = "Off"
 
-[node name="AddPortal" type="Button" parent="."]
-margin_top = 136.0
-margin_right = 156.0
-margin_bottom = 156.0
-text = "Add portal to..."
-
 [node name="SensorPanel" type="PanelContainer" parent="."]
-margin_top = 160.0
+margin_top = 184.0
 margin_right = 156.0
-margin_bottom = 296.0
+margin_bottom = 320.0
 __meta__ = {
 "_edit_use_anchors_": false
 }
@@ -174,9 +180,10 @@ text = "OK"
 
 [connection signal="pressed" from="CreateBlock" to="." method="_on_CreateBlock_pressed"]
 [connection signal="pressed" from="AddSensor" to="." method="_on_AddSensor_pressed"]
+[connection signal="pressed" from="AddPortal" to="." method="_on_AddPortal_pressed"]
+[connection signal="pressed" from="AddCrossing" to="." method="_on_AddCrossing_pressed"]
 [connection signal="toggled" from="OneWayCheckbox" to="." method="_on_OneWayCheckbox_toggled"]
 [connection signal="meta_selected" from="FacingFilterSelector" to="." method="_on_FacingFilterSelector_meta_selected"]
-[connection signal="pressed" from="AddPortal" to="." method="_on_AddPortal_pressed"]
 [connection signal="pressed" from="SensorPanel/SensorInspector/RemoveSensor" to="." method="_on_RemoveSensor_pressed"]
 [connection signal="item_selected" from="SensorPanel/SensorInspector/MarkerSelect" to="." method="_on_MarkerSelect_item_selected"]
 [connection signal="meta_selected" from="SensorPanel/SensorInspector/SpeedSelect" to="." method="_on_SpeedSelect_meta_selected"]

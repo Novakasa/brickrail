@@ -40,7 +40,8 @@ __meta__ = {
 
 [node name="Control" type="Control" parent="VBoxContainer/HBoxContainer2"]
 margin_left = 153.0
-margin_right = 153.0
+margin_right = 1212.0
+margin_bottom = 20.0
 size_flags_horizontal = 3
 __meta__ = {
 "_edit_use_anchors_": false
@@ -54,11 +55,12 @@ text = "Remove"
 
 [node name="HubControl" parent="VBoxContainer" instance=ExtResource( 1 )]
 margin_right = 1280.0
+margin_bottom = 72.0
 
 [node name="PortSelectorContainer" type="VBoxContainer" parent="VBoxContainer"]
-margin_top = 48.0
+margin_top = 76.0
 margin_right = 1280.0
-margin_bottom = 62.0
+margin_bottom = 90.0
 __meta__ = {
 "_edit_use_anchors_": false
 }

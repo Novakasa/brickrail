@@ -23,6 +23,7 @@ var storage_labels = [
 
 # -1 for boolean config
 var max_limits = [100, 10000]
+var storage_gui_order = [1, 0]
 
 signal position_changed(position)
 signal responsiveness_changed(value)

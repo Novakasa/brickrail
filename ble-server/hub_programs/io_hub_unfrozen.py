@@ -8,6 +8,7 @@ import urandom
 
 from pybricks.hubs import ThisHub
 from pybricks.tools import wait, StopWatch
+from pybricks.parameters import Color
 
 # disable keyboard interrupt character
 micropython.kbd_intr(-1)
@@ -211,6 +212,8 @@ class IOHub:
         alive_data = bytes([_OUT_ID_SYS, _SYS_CODE_ALIVE])
         self.emit_sys_code(_SYS_CODE_VERSION, VERSION)
         self.send_alive_data()
+
+        self.hub.light.on(Color.GREEN)
 
         while self.running:
             if self.poll.poll(int(1000*max_delta)):

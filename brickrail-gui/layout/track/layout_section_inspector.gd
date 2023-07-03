@@ -21,6 +21,7 @@ func _on_section_unselected():
 
 func _on_section_track_added(_track):
 	if len(section.tracks) == 1:
+		var track = section.tracks[-1].get_track()
 		dirtrack = section.tracks[0]
 		$Label.text = dirtrack.id
 		$CreateBlock.visible=false
@@ -42,6 +43,13 @@ func _on_section_track_added(_track):
 		$Label2.visible=true
 		$FacingFilterSelector.set_items(["Only forwards", "Only backwards"], [1, -1])
 		$FacingFilterSelector.select_meta(section.tracks[0].facing_filter)
+		
+		if track.crossing != null:
+			var inspector = CrossingInspector.new(track.crossing)
+			add_child(inspector)
+			$AddCrossing.visible=false
+		else:
+			$AddCrossing.visible=true
 	else:
 		$FacingFilterSelector.visible=false
 		$Label2.visible=false
@@ -57,6 +65,7 @@ func _on_section_track_added(_track):
 		$SensorPanel.visible=false
 		$OneWayCheckbox.visible=false
 		$AddPortal.visible=false
+		$AddCrossing.visible=false
 
 
 func _on_CreateBlock_pressed():
@@ -142,3 +151,7 @@ func _on_AddPortal_pressed():
 func _on_FacingFilterSelector_meta_selected(meta):
 	LayoutInfo.set_layout_changed(true)
 	section.tracks[0].facing_filter = meta
+
+func _on_AddCrossing_pressed():
+	section.tracks[0].get_track().add_crossing()
+	_on_section_track_added(null)

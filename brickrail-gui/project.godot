@@ -59,6 +59,16 @@ _global_script_classes=[ {
 "language": "GDScript",
 "path": "res://addons/gs_logger/appenders/console_appender.gd"
 }, {
+"base": "VBoxContainer",
+"class": "CrossingInspector",
+"language": "GDScript",
+"path": "res://layout/layout_devices/crossing_inspector.gd"
+}, {
+"base": "Reference",
+"class": "CrossingMotor",
+"language": "GDScript",
+"path": "res://devices/layout_devices/crossing_motor.gd"
+}, {
 "base": "Reference",
 "class": "DirectedLayoutTrack",
 "language": "GDScript",
@@ -103,6 +113,11 @@ _global_script_classes=[ {
 "class": "LayoutController",
 "language": "GDScript",
 "path": "res://devices/layout_controller/layout_controller.gd"
+}, {
+"base": "Node2D",
+"class": "LayoutCrossing",
+"language": "GDScript",
+"path": "res://layout/layout_devices/layout_crossing.gd"
 }, {
 "base": "Reference",
 "class": "LayoutEdge",
@@ -182,7 +197,7 @@ _global_script_classes=[ {
 "base": "Reference",
 "class": "SwitchMotor",
 "language": "GDScript",
-"path": "res://devices/switch/switch_motor.gd"
+"path": "res://devices/layout_devices/switch_motor.gd"
 }, {
 "base": "Reference",
 "class": "Utils",
@@ -210,6 +225,8 @@ _global_script_class_icons={
 "BLEProcess": "",
 "BLETrain": "",
 "ConsoleAppender": "",
+"CrossingInspector": "",
+"CrossingMotor": "",
 "DirectedLayoutTrack": "",
 "EditableLabel": "",
 "FileAppender": "",
@@ -219,6 +236,7 @@ _global_script_class_icons={
 "LayoutBlock": "",
 "LayoutCell": "",
 "LayoutController": "",
+"LayoutCrossing": "",
 "LayoutEdge": "",
 "LayoutLogicalBlock": "",
 "LayoutNode": "",

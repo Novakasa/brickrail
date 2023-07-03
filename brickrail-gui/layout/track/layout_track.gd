@@ -33,6 +33,7 @@ var drawing_highlight=false
 
 var directed_tracks = {}
 var sensor = null
+var crossing = null
 
 var states_changed_emitted = false
 
@@ -399,6 +400,18 @@ func get_locked():
 			locked.append(val)
 	return locked
 
+func add_crossing():
+	assert(crossing==null)
+	crossing = LayoutCrossing.new()
+	crossing.position = get_center()*LayoutInfo.spacing
+	crossing.rotation = get_tangent().angle()
+	add_child(crossing)
+
+func remove_crossing():
+	assert(crossing!=null)
+	crossing.remove()
+	crossing = null
+
 func add_sensor(p_sensor):
 	set_sensor(p_sensor)
 
@@ -507,6 +520,10 @@ func process_mouse_button(event, pos):
 		if LayoutInfo.layout_mode == "edit":
 			LayoutInfo.init_connected_draw_track(self)
 			return true
+		if LayoutInfo.layout_mode == "control":
+			if crossing != null:
+				crossing.toggle_pos()
+				return true
 	return false
 
 func get_tangent_to(slot):

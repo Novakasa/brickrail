@@ -15,12 +15,17 @@ _SWITCH_POS_LEFT  = const(0)
 _SWITCH_POS_RIGHT = const(1)
 _SWITCH_POS_NONE  = const(2)
 
+_CROSSING_POS_DOWN  = const(2)
+_CROSSING_POS_UP = const(1)
+
 _SWITCH_COMMAND_SWITCH = const(0)
+_CROSSING_COMMAND_SET_POS = const(8)
 
 _DATA_SWITCH_CONFIRM  = const(0)
 
 _STORAGE_PULSE_DC = const(0)
 _STORAGE_PULSE_DURATION = const(1)
+_STORAGE_PULSE_POLARITY = const(2)
 
 def get_port(index):
     try: # Primehub
@@ -35,6 +40,36 @@ def get_port(index):
 
     # Cityhub
     return [Port.A, Port.B][index]
+
+class Crossing:
+    def __init__(self, port):
+        self. motor = DCMotor(get_port(port))
+        self.position = _CROSSING_POS_UP
+        self.port = port
+        self.stopwatch = StopWatch()
+    
+    def get_storage_val(self, i):
+        return io_hub.storage[8+self.port*16 + i]
+    
+    def set_pos(self, position):
+        sdir = -1
+        if position == _CROSSING_POS_UP:
+            sdir = 1
+        if self.get_storage_val(_STORAGE_PULSE_POLARITY) == 1:
+            sdir *= -1
+        self.motor.dc(self.get_storage_val(_STORAGE_PULSE_DC)*sdir)
+        self.stopwatch.reset()
+        self.stopwatch.resume()
+        self.position = position
+    
+    def update(self, delta):
+        if self.stopwatch.time() > self.get_storage_val(_STORAGE_PULSE_DURATION):
+            self.motor.stop()
+            self.stopwatch.pause()
+    
+    def execute(self, data):
+        if data[0] == _CROSSING_COMMAND_SET_POS:
+            self.set_pos(data[1])
 
 class Switch:
     def __init__(self, port, pulse_duration = 600):
@@ -79,6 +114,11 @@ class Controller:
         port = data[0]
         switch = Switch(port)
         self.devices[port] = switch
+    
+    def assign_crossing(self, data):
+        port = data[0]
+        crossing = Crossing(port)
+        self.devices[port] = crossing
         
     def update(self, delta):
         for device in self.devices.values():
@@ -86,7 +126,10 @@ class Controller:
     
     def device_execute(self, data):
         if not data[0] in self.devices:
-            self.assign_switch([data[0]])
+            if data[1] < 8:
+                self.assign_switch([data[0]])
+            else:
+                self.assign_crossing([data[1]])
         self.devices[data[0]].execute(data[1:])
 
 controller = Controller()

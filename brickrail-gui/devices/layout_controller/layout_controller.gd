@@ -41,6 +41,8 @@ func set_device(port, type):
 	var device
 	if type == "switch_motor":
 		device = SwitchMotor.new(hub, port, name)
+	elif type == "crossing_motor":
+		device = CrossingMotor.new(hub, port, name)
 	elif type == null:
 		if devices[port] != null:
 			devices[port].remove()
