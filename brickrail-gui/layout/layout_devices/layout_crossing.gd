@@ -22,9 +22,9 @@ func toggle_pos():
 
 func set_pos(p_pos):
 	if motor1 != null and LayoutInfo.control_devices != LayoutInfo.CONTROL_OFF:
-		motor1.set_pos(p_pos)
+		motor1.set_position(p_pos)
 	if motor2 != null and LayoutInfo.control_devices != LayoutInfo.CONTROL_OFF:
-		motor2.set_pos(p_pos)
+		motor2.set_position(p_pos)
 	pos = p_pos
 	update()
 

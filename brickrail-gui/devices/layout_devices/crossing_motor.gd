@@ -35,7 +35,7 @@ func _init(p_hub, p_port, p_controllername):
 	controllername = p_controllername
 	
 	store_value(STORAGE_PULSE_DC, 100)
-	store_value(STORAGE_PULSE_DURATION, 600)
+	store_value(STORAGE_PULSE_DURATION, 1200)
 	store_value(STORAGE_PULSE_POLARITY, 0)
 
 func store_value(i, value):
@@ -56,7 +56,7 @@ func set_hub(p_hub):
 func set_position(p_position):
 	if position == p_position:
 		return
-	hub.rpc("device_execute", [port, CROSSING_COMMAND_SET_POS, [position_to_enum[p_position]]])
+	hub.rpc("device_execute", [port, CROSSING_COMMAND_SET_POS, position_to_enum[p_position]])
 	position = p_position
 
 func _on_hub_runtime_data_received(_data):

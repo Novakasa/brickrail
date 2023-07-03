@@ -129,7 +129,7 @@ class Controller:
             if data[1] < 8:
                 self.assign_switch([data[0]])
             else:
-                self.assign_crossing([data[1]])
+                self.assign_crossing([data[0]])
         self.devices[data[0]].execute(data[1:])
 
 controller = Controller()
