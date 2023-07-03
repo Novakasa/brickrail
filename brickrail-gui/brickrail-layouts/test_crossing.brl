@@ -69,6 +69,17 @@
 					"W": [
 						"center"
 					]
+				},
+				"crossing": {
+					"motor1": {
+						"controller": "blue",
+						"port": 0,
+						"storage": {
+							"0": 50,
+							"1": 2000,
+							"2": 0
+						}
+					}
 				}
 			},
 			{

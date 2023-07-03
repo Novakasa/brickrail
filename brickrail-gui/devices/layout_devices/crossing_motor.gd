@@ -70,6 +70,16 @@ func serialize():
 	struct["type"] = device_type
 	return struct
 
+func serialize_reference():
+	var struct = {}
+	struct["controller"] = controllername
+	struct["port"] = port
+	var storage = {}
+	for i in range(len(max_limits)):
+		storage[i] = get_stored_value(i)
+	struct["storage"] = storage
+	return struct
+
 func remove():
 	set_hub(null)
 	emit_signal("removing", controllername, port)

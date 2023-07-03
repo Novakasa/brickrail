@@ -132,6 +132,9 @@ func serialize(reference=false):
 				sensor_speeds[slot] = directed_tracks[slot].sensor_speed
 			result["sensor"]["speeds"] = sensor_speeds
 		
+		if crossing != null:
+			result["crossing"] = crossing.serialize()
+		
 		result["facing_filter"] = {}
 		for slot in directed_tracks:
 			if directed_tracks[slot].prohibited:
@@ -193,7 +196,7 @@ func load_switches(struct):
 	for slot in struct:
 		assert(directed_tracks[slot].switch != null)
 		directed_tracks[slot].switch.load_struct(struct[slot])
-		
+
 func get_slot_cell(slot):
 	if slot=="N":
 		return LayoutInfo.get_cell(l_idx, x_idx, y_idx-1)

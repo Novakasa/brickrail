@@ -207,6 +207,9 @@ func load(struct):
 			if "speeds" in track.sensor:
 				for slot in track.sensor.speeds:
 					track_obj.directed_tracks[slot].sensor_speed = track.sensor.speeds[slot]
+		if "crossing" in track:
+			track_obj.add_crossing()
+			track_obj.crossing.load_struct(track.crossing)
 		if "prohibited_slot" in track:
 			track_obj.directed_tracks[track.prohibited_slot].get_opposite().set_one_way(true)
 		if "facing_filter" in track:

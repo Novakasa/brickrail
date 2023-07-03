@@ -34,6 +34,32 @@ func set_motor1(device):
 func set_motor2(device):
 	motor2 = device
 
+func serialize():
+	var struct = {}
+	if motor1 != null:
+		struct["motor1"] = motor1.serialize_reference()
+	if motor2 != null:
+		struct["motor2"] = motor2.serialize_reference()
+	return struct
+
+func load_struct(struct):
+	if "motor1" in struct:
+		var motorstruct = struct.motor1
+		var controller = Devices.layout_controllers[motorstruct.controller]
+		var motor = controller.devices[int(motorstruct.port)]
+		if "storage" in motorstruct:
+			for key in motorstruct.storage:
+				motor.store_value(int(key), motorstruct.storage[key])
+		set_motor1(motor)
+	if "motor2" in struct:
+		var motorstruct = struct.motor2
+		var controller = Devices.layout_controllers[motorstruct.controller]
+		var motor = controller.devices[int(motorstruct.port)]
+		if "storage" in motorstruct:
+			for key in motorstruct.storage:
+				motor.store_value(int(key), motorstruct.storage[key])
+		set_motor2(motor)
+
 func _draw():
 	var col = Settings.colors["white"]
 	var width = LayoutInfo.spacing*0.05
