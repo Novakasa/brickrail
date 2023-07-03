@@ -6,13 +6,24 @@ extends Node2D
 var motor1 = null
 var motor2 = null
 
-var pos = "down"
+var track
 
-func _init():
-	pass
+var pos = "up"
+
+func _init(p_track):
+	track = p_track
+	LayoutInfo.connect("blocked_tracks_changed", self, "_on_layout_blocked_tracks_changed")
 
 func remove():
 	queue_free()
+
+func _on_layout_blocked_tracks_changed(_train):
+	if len(track.get_locked()) > 0:
+		if pos != "down":
+			set_pos("down")
+	else:
+		if pos != "up":
+			set_pos("up")
 
 func toggle_pos():
 	if pos == "up":

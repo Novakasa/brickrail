@@ -93,6 +93,13 @@
 					"W": [
 						"center"
 					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -158,6 +165,13 @@
 					"W": [
 						"right"
 					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
 				}
 			},
 			{
@@ -345,10 +359,76 @@
 			{
 				"l_idx": 0,
 				"x_idx": 6,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 7,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 9,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 10,
 				"y_idx": 1,
 				"connections": {
 					"E": [
 
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 8,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
 					],
 					"W": [
 						"center"
@@ -357,10 +437,115 @@
 			}
 		],
 		"blocks": [
+			{
+				"name": "block1",
+				"block_name": "block1",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 3,
+							"y_idx": 6,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 2,
+							"y_idx": 6,
+							"next_slot": "W",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 1,
+							"y_idx": 6,
+							"next_slot": "W",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
 
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				}
+			},
+			{
+				"name": "block2",
+				"block_name": "block2",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 0,
+							"x_idx": 7,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 8,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 0,
+							"x_idx": 9,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				}
+			}
 		],
 		"trains": [
-
+			{
+				"train_name": "train1",
+				"name": "train1",
+				"facing": 1,
+				"reversing_behavior": "penalty",
+				"color": "ff000000",
+				"num_wagons": 4,
+				"random_targets": true,
+				"block_id": "block1",
+				"blockindex": 0
+			}
 		]
 	}
 }

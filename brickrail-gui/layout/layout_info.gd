@@ -438,8 +438,8 @@ func _unhandled_input(event):
 							next = dirtracks[0].get_opposite().get_next()
 						if next != null:
 							drag_selection = LayoutSection.new()
-							drag_selection.select()
 							drag_selection.add_track(next)
+							drag_selection.select()
 					for dirtrack in dirtracks:
 						if dirtrack.get_block() != null:
 							continue

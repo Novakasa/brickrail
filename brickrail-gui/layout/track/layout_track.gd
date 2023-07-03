@@ -405,7 +405,7 @@ func get_locked():
 
 func add_crossing():
 	assert(crossing==null)
-	crossing = LayoutCrossing.new()
+	crossing = LayoutCrossing.new(self)
 	crossing.position = get_center()*LayoutInfo.spacing
 	crossing.rotation = get_tangent().angle()
 	add_child(crossing)
