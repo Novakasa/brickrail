@@ -18,6 +18,7 @@ func remove():
 	queue_free()
 
 func _on_layout_blocked_tracks_changed(_train):
+	yield(get_tree(), "idle_frame")
 	if len(track.get_locked()) > 0:
 		if pos != "down":
 			set_pos("down")
