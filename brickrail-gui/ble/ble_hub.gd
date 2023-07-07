@@ -174,6 +174,9 @@ func _on_data_received(key, data):
 		battery_voltage = float(data.voltage)/1000.0
 		emit_signal("battery_changed")
 		return
+	if key == "info":
+		GuiApi.show_info(data[0], data[1])
+		return
 		
 	Logger.error("[%s] Unrecognized data key: %s data: %s" % [logging_module, key, data])
 

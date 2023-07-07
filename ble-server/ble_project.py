@@ -1,11 +1,12 @@
 import asyncio
+from pathlib import Path
+import sys
 
 from pybricksdev.ble import find_device
 
 from ble_hub import BLEHub
 from serial_data import SerialData
-
-import sys
+import config
 
 class BLEProject:
 
@@ -14,6 +15,8 @@ class BLEProject:
         self.out_queue = asyncio.Queue()
     
     def start_logfile(self, path):
+
+        config.user_path = Path(path).parent
 
         # https://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-both-file-and-console-with-scripting/14906787#14906787
 

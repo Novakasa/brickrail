@@ -1,5 +1,5 @@
 from micropython import const
-from ustruct import pack
+from ustruct import pack, pack_into
 
 from pybricks.pupdevices import ColorDistanceSensor, DCMotor
 from pybricks.parameters import Port
@@ -45,6 +45,8 @@ _CONFIG_MOTOR_SLOW_SPEED   = const(4)
 _CONFIG_MOTOR_CRUISE_SPEED = const(5)
 _CONFIG_MOTOR_INVERTED     = const(6)
 
+_DUMP_TYPE_COLORS = const(1)
+
 
 class TrainSensor:
 
@@ -59,6 +61,9 @@ class TrainSensor:
         self.valid_colors = []
         self.initial_hue = 0
         self.initial_chroma = 0
+
+        self.color_buf = bytearray(1002)
+        self.buf_index = 0
     
     def get_marker_color(self):
         h, s, v = self.last_hsv.h, self.last_hsv.s, self.last_hsv.v
@@ -81,6 +86,9 @@ class TrainSensor:
     def update(self, delta):
 
         self.last_hsv = self.sensor.hsv()
+
+        pack_into(">HBB", self.color_buf, self.buf_index, self.last_hsv.h, self.last_hsv.s, self.last_hsv.v)
+        self.buf_index = (self.buf_index + 4) % 1000
 
         marker_color = self.get_marker_color()
         if self.last_marker_color is not None:
@@ -285,6 +293,10 @@ class Train:
     
     def set_valid_colors(self, data):
         self.sensor.valid_colors = list(data)
+    
+    def dump_color_buffer(self):
+        pack_into(">H", self.sensor.color_buf, 1000, self.sensor.buf_index)
+        io_hub.dump_data(_DUMP_TYPE_COLORS, self.sensor.color_buf)
 
 assert VERSION != b"1.0.0"
 train = Train()

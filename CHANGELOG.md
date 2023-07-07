@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+- Added debug color buffer and plot written to file after unexpected Marker (https://github.com/Novakasa/brickrail/issues/144)
+
 ## [v1.0.0-alpha.4] - 2023-06-18
 
 ### Added

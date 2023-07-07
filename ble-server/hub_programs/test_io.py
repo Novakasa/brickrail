@@ -10,6 +10,12 @@ class TestDevice:
     
     def print_data(self, data):
         print("printing the data:", repr(data))
+    
+    def dump_buffer(self, args):
+        buf = bytearray(1000)
+        for i in range(1000):
+            buf[i] = i%256
+        io_hub.dump_data(0, buf)
 
 device = TestDevice()
 io_hub = IOHub(device)

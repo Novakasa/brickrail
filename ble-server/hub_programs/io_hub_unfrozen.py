@@ -1,6 +1,7 @@
 import micropython
 from micropython import const
 from usys import stdout, stdin
+from ustruct import pack
 import uselect
 import urandom
 
@@ -28,6 +29,7 @@ _OUT_ID_DATA    = const(17) #ASCII device control 1
 _OUT_ID_SYS     = const(18) #ASCII device control 2
 # _OUT_ID_ALIVE   = const(19) #ASCII device control 3
 _OUT_ID_MSG_ERR = const(21) #ASCII nak
+_OUT_ID_DUMP    = const(20)
 
 _SYS_CODE_STOP = const(0)
 _SYS_CODE_READY = const(1)
@@ -97,6 +99,12 @@ class IOHub:
     def emit_sys_code(self, code, data=bytes()):
         self.emit_msg(bytes([_OUT_ID_SYS, code]) + data)
     
+    def dump_data(self, dump_type, data):
+        length = pack(">H", len(data)+2)
+        stdout.buffer.write(bytes([length[0], _OUT_ID_DUMP, length[1], dump_type]))
+        stdout.buffer.write(data)
+        stdout.buffer.write(bytes([_OUT_ID_END]))
+            
     def send_alive_data(self):
         voltage = self.hub.battery.voltage()
         current = self.hub.battery.current()

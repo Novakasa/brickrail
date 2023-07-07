@@ -2,7 +2,9 @@
 import asyncio
 from random import randint
 import time
+from datetime import datetime
 from pathlib import Path
+from struct import pack, unpack
 
 from reactivex.subject import Subject
 
@@ -10,6 +12,8 @@ from pybricksdev.ble import find_device
 from pybricksdev.connections.pybricks import PybricksHub
 
 from serial_data import SerialData
+import config
+import utils
 
 _IN_ID_START   = 2  #ASCII start of text
 _IN_ID_END     = 10 #ASCII line feed
@@ -26,11 +30,15 @@ _OUT_ID_DATA    = 17 #ASCII device control 1
 _OUT_ID_SYS     = 18 #ASCII device control 2
 # _OUT_ID_ALIVE  = 19 #ASCII device control 3
 _OUT_ID_MSG_ERR = 21 #ASCII nak
+_OUT_ID_DUMP    = 20
 
 _SYS_CODE_STOP  = 0
 _SYS_CODE_READY = 1
 _SYS_CODE_ALIVE = 2
 _SYS_CODE_VERSION = 3
+
+_DUMP_TYPE_NONE   = 0
+_DUMP_TYPE_COLORS = 1
 
 _CHUNK_LENGTH = 80
 
@@ -69,6 +77,7 @@ class BLEHub:
         self.output_buffer = bytearray()
         self.output_lines = []
         self.msg_len = None
+        self.msg_dump = False
         self.output_byte_arrived = asyncio.Event()
         self.output_byte_time = time.time()
 
@@ -87,6 +96,16 @@ class BLEHub:
 
         if self.msg_len is None:
             self.msg_len = byte
+            self.msg_dump = False
+            return
+        
+        if self.output_buffer == bytearray([_OUT_ID_DUMP]) and not self.msg_dump:
+            print([self.msg_len, byte])
+            data = bytes([self.msg_len, byte])
+            print("bytes:", data)
+            self.msg_len = unpack(">H", data)[0]
+            print("len:", self.msg_len)
+            self.msg_dump = True
             return
         
         if byte == _OUT_ID_END:
@@ -132,6 +151,23 @@ class BLEHub:
             return
         if out_id == _OUT_ID_MSG_ERR:
             await self.msg_ack.put(False)
+            return
+
+        if out_id == _OUT_ID_DUMP:
+            dump_type = bytes[1]
+            buf = bytes[2:]
+            print(f"received data dump of len({len(buf)})")
+            print(list(buf))
+            now = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+            dump_path = config.user_path / f"hub_{self.name}_dump_{now}.txt"
+            print(dump_path)
+            buf_hex = ''.join(format(byte, '02x') for byte in buf)
+            with open(dump_path, "w") as dumpfil:
+                dumpfil.write(buf_hex)
+            if dump_type == _DUMP_TYPE_COLORS:
+                plot_path = config.user_path / f"hub_{self.name}_colors_{now}.png"
+                utils.plot_color_buffer(buf, plot_path)
+                self.to_out_queue("info", ["Sensor debug files written", f"Data written to {dump_path.name}\nPlot written to {plot_path.name}\nDirectory:\n{plot_path.parent}"])
             return
 
         checksum = bytes[-1]

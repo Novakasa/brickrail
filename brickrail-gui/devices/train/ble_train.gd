@@ -143,6 +143,7 @@ func _on_runtime_data_received(data):
 		more_info += "\nIs the train able to stop quickly enough? Try increasing the deceleration or decreasing the train speeds."
 		GuiApi.show_error(msg, more_info)
 		LayoutInfo.emergency_stop()
+		hub.rpc("dump_color_buffer", [])
 
 func _on_hub_name_changed(_p_old_name, p_new_name):
 	var old_name = name
