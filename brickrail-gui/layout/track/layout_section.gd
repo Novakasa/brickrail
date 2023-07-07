@@ -9,6 +9,7 @@ signal selected
 signal unselected
 signal track_added(track)
 signal sensor_changed()
+signal inspector_state_changed()
 
 var LayoutSectionInspector = preload("res://layout/track/layout_section_inspector.tscn")
 
@@ -107,6 +108,9 @@ func add_dirtrack(dirtrack):
 	
 	tracks.append(dirtrack)
 	
+	if not dirtrack.get_track().is_connected("inspector_state_changed", self, "_on_track_inspector_state_changed"):
+		dirtrack.get_track().connect("inspector_state_changed", self, "_on_track_inspector_state_changed")
+	
 	if not dirtrack.is_connected("sensor_changed", self, "_on_track_sensor_changed"):
 		dirtrack.connect("sensor_changed", self, "_on_track_sensor_changed")
 	
@@ -118,6 +122,9 @@ func add_dirtrack(dirtrack):
 
 func _on_track_sensor_changed(_slot):
 	emit_signal("sensor_changed")
+
+func _on_track_inspector_state_changed():
+	emit_signal("inspector_state_changed")
 
 func get_sensor_dirtracks():
 	var sensorlist = []

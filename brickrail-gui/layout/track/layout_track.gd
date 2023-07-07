@@ -41,6 +41,7 @@ signal connections_changed(orientation)
 signal states_changed(orientation)
 signal removing(orientation)
 signal sensor_changed(track)
+signal inspector_state_changed()
 
 func _init(p_slot0, p_slot1, l, i, j):
 	
@@ -408,12 +409,14 @@ func add_crossing():
 	crossing = LayoutCrossing.new(self)
 	crossing.position = get_center()*LayoutInfo.spacing
 	crossing.rotation = get_tangent().angle()
+	crossing.connect("removing", self, "_on_crossing_removing")
 	add_child(crossing)
+	emit_signal("inspector_state_changed")
 
-func remove_crossing():
-	assert(crossing!=null)
-	crossing.remove()
+func _on_crossing_removing():
+	crossing.disconnect("removing", self, "_on_crossing_removing")
 	crossing = null
+	emit_signal("inspector_state_changed")
 
 func add_sensor(p_sensor):
 	set_sensor(p_sensor)

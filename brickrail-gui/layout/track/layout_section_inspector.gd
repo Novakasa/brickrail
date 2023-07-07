@@ -14,6 +14,7 @@ func set_section(obj):
 	section = obj
 	section.connect("unselected", self, "_on_section_unselected")
 	section.connect("track_added", self, "_on_section_track_added")
+	section.connect("inspector_state_changed", self, "_on_section_track_added", [null])
 	_on_section_track_added(null)
 
 func _on_section_unselected():
@@ -154,4 +155,3 @@ func _on_FacingFilterSelector_meta_selected(meta):
 
 func _on_AddCrossing_pressed():
 	section.tracks[0].get_track().add_crossing()
-	_on_section_track_added(null)

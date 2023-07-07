@@ -11,3 +11,11 @@ script = ExtResource( 1 )
 margin_right = 1280.0
 margin_bottom = 14.0
 text = "Crossing"
+
+[node name="RemoveButton" type="Button" parent="."]
+margin_top = 18.0
+margin_right = 1280.0
+margin_bottom = 38.0
+text = "Remove"
+
+[connection signal="pressed" from="RemoveButton" to="." method="_on_RemoveButton_pressed"]

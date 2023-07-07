@@ -10,11 +10,14 @@ var track
 
 var pos = "up"
 
+signal removing()
+
 func _init(p_track):
 	track = p_track
 	LayoutInfo.connect("blocked_tracks_changed", self, "_on_layout_blocked_tracks_changed")
 
 func remove():
+	emit_signal("removing")
 	queue_free()
 
 func _on_layout_blocked_tracks_changed(_train):

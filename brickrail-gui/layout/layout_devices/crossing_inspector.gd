@@ -8,7 +8,18 @@ var inspector2
 var PortSelector = preload("res://layout/layout_devices/port_selector.tscn")
 
 func _init(p_crossing):
+	
+	add_child(HSeparator.new())
+	
 	crossing = p_crossing
+	var label = Label.new()
+	label.text="Crossing"
+	add_child(label)
+	
+	var remove_button = Button.new()
+	remove_button.text = "Remove"
+	remove_button.connect("pressed", self, "_on_RemoveButton_pressed")
+	add_child(remove_button)
 	
 	inspector1 = PortSelector.instance()
 	add_child(inspector1)
@@ -26,3 +37,7 @@ func _on_motor1_selected(device):
 
 func _on_motor2_selected(device):
 	crossing.set_motor2(device)
+
+func _on_RemoveButton_pressed():
+	crossing.remove()
+	queue_free()
