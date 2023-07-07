@@ -3,7 +3,7 @@
 [ext_resource path="res://tools/selector.gd" type="Script" id=1]
 [ext_resource path="res://layout/layout_devices/port_selector.gd" type="Script" id=2]
 
-[node name="SwitchInspectorMotorSettings" type="Panel"]
+[node name="PortSelector" type="VBoxContainer"]
 margin_top = 18.0
 margin_right = 1280.0
 margin_bottom = 720.0
@@ -12,17 +12,17 @@ size_flags_vertical = 3
 script = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_right = 40.0
-margin_bottom = 40.0
+margin_right = 1280.0
+margin_bottom = 94.0
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-margin_right = 118.0
+margin_right = 1280.0
 margin_bottom = 14.0
 text = "Switch motor:"
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
 margin_top = 18.0
-margin_right = 118.0
+margin_right = 1280.0
 margin_bottom = 90.0
 columns = 2
 __meta__ = {
@@ -78,7 +78,7 @@ text = "On"
 
 [node name="Storage" type="GridContainer" parent="VBoxContainer"]
 margin_top = 94.0
-margin_right = 118.0
+margin_right = 1280.0
 margin_bottom = 94.0
 
 [connection signal="meta_selected" from="VBoxContainer/GridContainer/ControllerOption" to="." method="_on_ControllerOption_meta_selected"]

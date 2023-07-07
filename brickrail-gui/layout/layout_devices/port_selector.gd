@@ -1,4 +1,4 @@
-extends Panel
+extends VBoxContainer
 
 signal invert_toggled(value)
 signal device_selected(device)

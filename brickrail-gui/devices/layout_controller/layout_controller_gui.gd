@@ -1,4 +1,4 @@
-extends Panel
+extends VBoxContainer
 
 var controller_name
 var controller

@@ -1,4 +1,4 @@
-extends Panel
+extends VBoxContainer
 
 var train_name
 export(NodePath) var train_label
