@@ -224,8 +224,10 @@ class IOHub:
                 self.msg_len = None
             if self.last_output is not None and self.output_watch.time() > 500:
                 self.retry_last_output()
-                if self.last_output[1:3] == alive_data:
-                    self.running = False
+                # disabled because of https://github.com/Novakasa/brickrail/issues/140
+                # if self.last_output[1:3] == alive_data:
+                    # print("alive data timeout! Stopping program!")
+                    # self.running = False
             if self.alive_watch.time() > 20000:
                 self.send_alive_data()
                 self.alive_watch.reset()

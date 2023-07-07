@@ -9,6 +9,8 @@ from pybricks.tools import wait, StopWatch
 
 from io_hub_unfrozen import IOHub
 
+# version 0
+
 _SWITCH_POS_LEFT  = const(0)
 _SWITCH_POS_RIGHT = const(1)
 _SWITCH_POS_NONE  = const(2)

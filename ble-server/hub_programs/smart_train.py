@@ -6,6 +6,8 @@ from pybricks.parameters import Port
 
 from io_hub_unfrozen import IOHub, VERSION
 
+# version 0
+
 _COLOR_YELLOW = const(0)
 _COLOR_BLUE   = const(1)
 _COLOR_GREEN  = const(2)
