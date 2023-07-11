@@ -1,4 +1,4 @@
-extends Reference
+extends RefCounted
 class_name LayoutSensor
 
 var marker_color
@@ -11,7 +11,7 @@ func _init(p_marker_color=null):
 
 func get_color():
 	if marker_color == null:
-		return Color.white
+		return Color.WHITE
 	return Devices.marker_colors[marker_color]
 
 func get_colorname():

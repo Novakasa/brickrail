@@ -58,19 +58,19 @@ func _init(p_slot0, p_slot1, l, i, j):
 	pos1 = LayoutInfo.slot_positions[slot1]
 
 	directed_tracks[slot0] = DirectedLayoutTrack.new(slot1, slot0, id, l_idx, x_idx, y_idx)
-	directed_tracks[slot0].connect("states_changed", self, "_on_dirtrack_states_changed")
-	directed_tracks[slot0].connect("connections_changed", self, "_on_dirtrack_connections_changed")
-	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
-	directed_tracks[slot0].connect("remove_sensor_requested", self, "remove_sensor")
-	directed_tracks[slot0].connect("remove_requested", self, "remove")
-	directed_tracks[slot0].connect("decorations_changed", self, "_on_dirtrack_decorations_changed")
+	directed_tracks[slot0].connect("states_changed", Callable(self, "_on_dirtrack_states_changed"))
+	directed_tracks[slot0].connect("connections_changed", Callable(self, "_on_dirtrack_connections_changed"))
+	directed_tracks[slot0].connect("add_sensor_requested", Callable(self, "add_sensor"))
+	directed_tracks[slot0].connect("remove_sensor_requested", Callable(self, "remove_sensor"))
+	directed_tracks[slot0].connect("remove_requested", Callable(self, "remove"))
+	directed_tracks[slot0].connect("decorations_changed", Callable(self, "_on_dirtrack_decorations_changed"))
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
-	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
-	directed_tracks[slot1].connect("connections_changed", self, "_on_dirtrack_connections_changed")
-	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
-	directed_tracks[slot1].connect("remove_sensor_requested", self, "remove_sensor")
-	directed_tracks[slot1].connect("remove_requested", self, "remove")
-	directed_tracks[slot1].connect("decorations_changed", self, "_on_dirtrack_decorations_changed")
+	directed_tracks[slot1].connect("states_changed", Callable(self, "_on_dirtrack_states_changed"))
+	directed_tracks[slot1].connect("connections_changed", Callable(self, "_on_dirtrack_connections_changed"))
+	directed_tracks[slot1].connect("add_sensor_requested", Callable(self, "add_sensor"))
+	directed_tracks[slot1].connect("remove_sensor_requested", Callable(self, "remove_sensor"))
+	directed_tracks[slot1].connect("remove_requested", Callable(self, "remove"))
+	directed_tracks[slot1].connect("decorations_changed", Callable(self, "_on_dirtrack_decorations_changed"))
 	
 	directed_tracks[slot0].set_opposite(directed_tracks[slot1])
 	directed_tracks[slot1].set_opposite(directed_tracks[slot0])
@@ -250,7 +250,7 @@ func get_direction():
 		return 3
 
 func distance_to(pos):
-	var point = Geometry.get_closest_point_to_segment_2d(pos, pos0, pos1)
+	var point = Geometry.get_closest_point_to_segment(pos, pos0, pos1)
 	return (point-pos).length()
 
 func is_connected_to_track(track):
@@ -414,12 +414,12 @@ func add_crossing():
 	crossing = LayoutCrossing.new(self)
 	crossing.position = get_center()*LayoutInfo.spacing
 	crossing.rotation = get_tangent().angle()
-	crossing.connect("removing", self, "_on_crossing_removing")
+	crossing.connect("removing", Callable(self, "_on_crossing_removing"))
 	add_child(crossing)
 	emit_signal("inspector_state_changed")
 
 func _on_crossing_removing():
-	crossing.disconnect("removing", self, "_on_crossing_removing")
+	crossing.disconnect("removing", Callable(self, "_on_crossing_removing"))
 	crossing = null
 	emit_signal("inspector_state_changed")
 
@@ -428,7 +428,7 @@ func add_sensor(p_sensor):
 
 func set_sensor(p_sensor):
 	if sensor != null:
-		sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		sensor.disconnect("marker_color_changed", Callable(self, "_on_sensor_marker_color_changed"))
 		LayoutInfo.sensors.erase(sensor)
 		LayoutInfo.emit_signal("sensors_changed")
 		
@@ -437,7 +437,7 @@ func set_sensor(p_sensor):
 		dirtrack.set_sensor(sensor)
 	
 	if sensor != null:
-		sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		sensor.connect("marker_color_changed", Callable(self, "_on_sensor_marker_color_changed"))
 		LayoutInfo.sensors.append(sensor)
 		LayoutInfo.emit_signal("sensors_changed")
 	
@@ -503,7 +503,7 @@ func process_mouse_button(event, pos):
 		if switch.process_mouse_button(event, pos):
 			return true
 
-	if event.button_index == BUTTON_LEFT and event.pressed:
+	if event.button_index == MOUSE_BUTTON_LEFT and event.pressed:
 		if LayoutInfo.layout_mode == "edit":
 			if (pos0-pos).length()<(pos1-pos).length():
 				LayoutInfo.init_drag_select(self, slot0)
@@ -526,7 +526,7 @@ func process_mouse_button(event, pos):
 				LayoutInfo.selection.add_prior_sensor_dirtrack(directed_tracks[slot1])
 			return true
 
-	if event.button_index == BUTTON_RIGHT and event.pressed:
+	if event.button_index == MOUSE_BUTTON_RIGHT and event.pressed:
 		
 		if LayoutInfo.layout_mode == "edit":
 			LayoutInfo.init_connected_draw_track(self)
@@ -555,8 +555,8 @@ func _draw():
 	for dirtrack in directed_tracks.values():
 		if dirtrack.facing_filter != null:
 			var color = Settings.colors["white"]
-			var tangent = get_tangent()
+			var orthogonal = get_tangent()
 			var spacing = LayoutInfo.spacing
-			draw_circle((get_center() - tangent*0.1)*spacing, 0.03*spacing, color)
+			draw_circle((get_center() - orthogonal*0.1)*spacing, 0.03*spacing, color)
 			draw_circle(get_center()*spacing, 0.03*spacing, color)
-			draw_circle((get_center() + tangent*0.1)*spacing, 0.03*spacing, color)
+			draw_circle((get_center() + orthogonal*0.1)*spacing, 0.03*spacing, color)

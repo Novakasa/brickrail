@@ -1,6 +1,6 @@
 class_name BLETrain
 
-extends Reference
+extends RefCounted
 
 var name
 var hub
@@ -46,10 +46,10 @@ var sensor_speed_to_enum = {"fast": 1, "slow": 2, "cruise": 3}
 func _init(p_name):
 	name = p_name
 	hub = BLEHub.new(p_name, "smart_train")
-	hub.connect("runtime_data_received", self, "_on_runtime_data_received")
-	hub.connect("program_started", self, "_on_hub_program_started")
-	hub.connect("name_changed", self, "_on_hub_name_changed")
-	var _err = LayoutInfo.connect("sensors_changed", self, "_on_sensors_changed")
+	hub.connect("runtime_data_received", Callable(self, "_on_runtime_data_received"))
+	hub.connect("program_started", Callable(self, "_on_hub_program_started"))
+	hub.connect("name_changed", Callable(self, "_on_hub_name_changed"))
+	var _err = LayoutInfo.connect("sensors_changed", Callable(self, "_on_sensors_changed"))
 	
 	hub.store_value(STORAGE_CHROMA_THRESHOLD, 3500)
 	hub.store_value(STORAGE_MOTOR_ACC, 40)
@@ -94,10 +94,10 @@ func _on_hub_program_started():
 
 func set_route(p_route):
 	if route != null:
-		route.disconnect("intention_changed", self, "_on_route_intention_changed")
+		route.disconnect("intention_changed", Callable(self, "_on_route_intention_changed"))
 	route = p_route
 	if route != null:
-		var _err = route.connect("intention_changed", self, "_on_route_intention_changed")
+		var _err = route.connect("intention_changed", Callable(self, "_on_route_intention_changed"))
 		download_route(route)
 
 func download_route(p_route):
@@ -170,6 +170,6 @@ func flip_heading():
 	heading *= -1
 
 func safe_remove_coroutine():
-	yield(hub.safe_remove_coroutine(), "completed")
+	await hub.safe_remove_coroutine().completed
 	LayoutInfo.set_layout_changed(true)
 	emit_signal("removing", name)

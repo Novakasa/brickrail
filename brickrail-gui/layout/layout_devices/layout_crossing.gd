@@ -14,14 +14,14 @@ signal removing()
 
 func _init(p_track):
 	track = p_track
-	LayoutInfo.connect("blocked_tracks_changed", self, "_on_layout_blocked_tracks_changed")
+	LayoutInfo.connect("blocked_tracks_changed", Callable(self, "_on_layout_blocked_tracks_changed"))
 
 func remove():
 	emit_signal("removing")
 	queue_free()
 
 func _on_layout_blocked_tracks_changed(_train):
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 	if len(track.get_locked()) > 0:
 		if pos != "down":
 			set_pos("down")

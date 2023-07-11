@@ -1,6 +1,6 @@
 extends VBoxContainer
 
-onready var container = $ScrollContainer/NotificationContainer
+@onready var container = $ScrollContainer/NotificationContainer
 
 func show_more_info(text):
 	$AcceptDialog.dialog_text = text
@@ -8,7 +8,7 @@ func show_more_info(text):
 
 func _ready():
 	GuiApi.notification_gui = self
-	var _err = $ClearButton.connect("pressed", self, "clear_notifications")
+	var _err = $ClearButton.connect("pressed", Callable(self, "clear_notifications"))
 	$ClearButton.disabled = true
 
 func clear_notifications():
@@ -25,17 +25,17 @@ func show_notification(text, more_info, type):
 	label.autowrap = true
 	label.text = text
 	if type == "error":
-		label.add_color_override("font_color", Color.red)
+		label.add_theme_color_override("font_color", Color.RED)
 	if type == "warning":
-		label.add_color_override("font_color", Color.yellow)
+		label.add_theme_color_override("font_color", Color.YELLOW)
 	notification.add_child(label)
 	if more_info != null:
 		var button = Button.new()
 		button.text = "..."
 		button.size_flags_vertical = SIZE_SHRINK_END
 		notification.add_child(button)
-		var _err = button.connect("pressed", self, "show_more_info", [more_info])
+		var _err = button.connect("pressed", Callable(self, "show_more_info").bind(more_info))
 	container.add_child(notification)
 	
-	yield(get_tree(), "idle_frame")
-	$ScrollContainer.scroll_vertical = $ScrollContainer.get_v_scrollbar().max_value
+	await get_tree().idle_frame
+	$ScrollContainer.scroll_vertical = $ScrollContainer.get_v_scroll_bar().max_value

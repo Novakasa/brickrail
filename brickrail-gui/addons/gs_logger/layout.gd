@@ -5,7 +5,7 @@
 #
 
 class_name Layout
-extends Reference
+extends RefCounted
 
 func get_header():
 	return ""

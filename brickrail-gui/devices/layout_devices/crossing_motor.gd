@@ -1,5 +1,5 @@
 class_name CrossingMotor
-extends Reference
+extends RefCounted
 
 var hub
 var port
@@ -46,12 +46,12 @@ func get_stored_value(i):
 
 func set_hub(p_hub):
 	if hub != null:
-		hub.disconnect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
-		hub.disconnect("runtime_data_received", self, "_on_hub_runtime_data_received")
+		hub.disconnect("responsiveness_changed", Callable(self, "_on_hub_responsiveness_changed"))
+		hub.disconnect("runtime_data_received", Callable(self, "_on_hub_runtime_data_received"))
 	hub = p_hub
 	if hub != null:
-		hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
-		hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
+		hub.connect("responsiveness_changed", Callable(self, "_on_hub_responsiveness_changed"))
+		hub.connect("runtime_data_received", Callable(self, "_on_hub_runtime_data_received"))
 
 func set_position(p_position):
 	if position == p_position:

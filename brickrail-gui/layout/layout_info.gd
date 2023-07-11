@@ -1,4 +1,4 @@
-tool
+@tool
 extends Node
 
 var grid = null
@@ -13,7 +13,7 @@ var sensors = Array()
 var nodes = {}
 
 var BlockScene = preload("res://layout/block/layout_block.tscn")
-onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
+@onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
 const CONTROL_OFF = 0
 const CONTROL_SWITCHES = 1
@@ -78,7 +78,7 @@ signal sensors_changed()
 
 func set_layout_changed(value):
 	pass
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 	layout_changed = value
 	# prints("layout changed", value)
 	GuiApi.status_gui.get_node("LayoutChangedLabel").visible=value
@@ -88,16 +88,16 @@ func get_cell(l, i, j):
 	if not i in cells[l]:
 		cells[l][i] = {}
 	if not j in cells[l][i]:
-		var cell = LayoutCell.instance()
+		var cell = LayoutCell.instantiate()
 		cells[l][i][j] = cell
 		cell.setup(l, i, j)
-		cell.connect("removing", self, "_on_cell_removing")
+		cell.connect("removing", Callable(self, "_on_cell_removing"))
 		emit_signal("cell_added", cell)
 
 	return cells[l][i][j]
 
 func _on_cell_removing(cell):
-	cell.disconnect("removing", self, "_on_cell_removing")
+	cell.disconnect("removing", Callable(self, "_on_cell_removing"))
 	cells[cell.l_idx][cell.x_idx].erase(cell.y_idx)
 
 func add_layer(l):
@@ -161,7 +161,7 @@ func serialize():
 	return result
 
 func clear():
-	unselect()
+	deselect()
 	for train in trains.values():
 		train.remove()
 	for block in blocks.values():
@@ -341,12 +341,12 @@ func get_dirtrack_from_struct(struct):
 
 func create_block(p_name, section):
 	assert(not p_name in blocks)
-	var block = BlockScene.instance()
+	var block = BlockScene.instantiate()
 	block.setup(p_name)
 	blocks[p_name] = block
 	block.set_section(section)
 	grid.get_layer(section.tracks[0].l_idx).add_child(block)
-	block.connect("removing", self, "_on_block_removing")
+	block.connect("removing", Callable(self, "_on_block_removing"))
 	
 	for logical_block in block.logical_blocks:
 		for node in logical_block.nodes.values():
@@ -359,7 +359,7 @@ func _on_block_removing(p_name):
 	for logical_block in blocks[p_name].logical_blocks:
 		for node in logical_block.nodes.values():
 			nodes.erase(node.id)
-	blocks[p_name].disconnect("removing", self, "_on_block_removing")
+	blocks[p_name].disconnect("removing", Callable(self, "_on_block_removing"))
 	blocks.erase(p_name)
 	set_layout_changed(true)
 
@@ -368,14 +368,14 @@ func create_train(p_name):
 	var train = LayoutTrain.new(p_name)
 	grid.add_child(train)
 	trains[p_name] = train
-	train.connect("removing", self, "_on_train_removing")
-	train.connect("route_changed", self, "_on_train_route_changed")
+	train.connect("removing", Callable(self, "_on_train_removing"))
+	train.connect("route_changed", Callable(self, "_on_train_route_changed"))
 	set_layout_changed(true)
 	return train
 
 func _on_train_removing(p_name):
-	trains[p_name].disconnect("removing", self, "_on_train_removing")
-	trains[p_name].disconnect("route_changed", self, "_on_train_route_changed")
+	trains[p_name].disconnect("removing", Callable(self, "_on_train_removing"))
+	trains[p_name].disconnect("route_changed", Callable(self, "_on_train_route_changed"))
 	set_layout_changed(true)
 	trains.erase(p_name)
 
@@ -390,7 +390,7 @@ func create_switch(directed_track):
 	var switch = LayoutSwitch.new(directed_track)
 	assert(not switch.id in switches)
 	switches[switch.id] = switch
-	switch.connect("removing", self, "_on_switch_removing")
+	switch.connect("removing", Callable(self, "_on_switch_removing"))
 	
 	for node in switch.nodes.values():
 		nodes[node.id] = node
@@ -401,7 +401,7 @@ func _on_switch_removing(id):
 	for node in switches[id].nodes.values():
 		nodes.erase(node.id)
 	
-	switches[id].disconnect("removing", self, "_on_switch_removing")
+	switches[id].disconnect("removing", Callable(self, "_on_switch_removing"))
 	switches.erase(id)
 
 func set_control_devices(p_control_devices):
@@ -423,15 +423,15 @@ func blocks_depend_on(dirtrack):
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
-			if event.scancode == KEY_Q:
+			if event.keycode == KEY_Q:
 				set_layout_mode("edit")
-			if event.scancode == KEY_W:
+			if event.keycode == KEY_W:
 				set_layout_mode("control")
 			
-			if event.scancode == KEY_DELETE and layout_mode == "edit":
+			if event.keycode == KEY_DELETE and layout_mode == "edit":
 				if selection is LayoutSection:
 					var dirtracks = Array(selection.tracks)
-					selection.unselect()
+					selection.deselect()
 					if len(dirtracks) == 1:
 						var next = dirtracks[0].get_next()
 						if next == null:
@@ -490,31 +490,31 @@ func set_layout_mode(mode):
 		set_random_targets(false)
 	emit_signal("layout_mode_changed", mode)
 
-func unselect():
+func deselect():
 	if selection != null:
-		selection.unselect()
+		selection.deselect()
 
 func select(obj):
 	Logger.info("[LayoutInfo] selecting: %s" % obj)
-	unselect()
+	deselect()
 	selection = obj
-	obj.connect("unselected", self, "_on_selection_unselected")
+	obj.connect("unselected", Callable(self, "_on_selection_unselected"))
 	emit_signal("selected", obj)
 
 func _on_selection_unselected():
-	selection.disconnect("unselected", self, "_on_selection_unselected")
+	selection.disconnect("unselected", Callable(self, "_on_selection_unselected"))
 	selection = null
 
 func _on_drawing_last_track_removing(_orientation):
-	drawing_last_track.disconnect("removing", self, "_on_drawing_last_track_removing")
+	drawing_last_track.disconnect("removing", Callable(self, "_on_drawing_last_track_removing"))
 	drawing_last_track = null
 
 func set_drawing_last_track(track):
 	if drawing_last_track != null:
 		drawing_last_track.set_drawing_highlight(false)
-		drawing_last_track.disconnect("removing", self, "_on_drawing_last_track_removing")
+		drawing_last_track.disconnect("removing", Callable(self, "_on_drawing_last_track_removing"))
 	if track != null:
-		track.connect("removing", self, "_on_drawing_last_track_removing")
+		track.connect("removing", Callable(self, "_on_drawing_last_track_removing"))
 		track.set_drawing_highlight(true)
 	drawing_last_track = track
 
@@ -523,7 +523,7 @@ func init_draw_track(cell):
 	drawing_last = cell
 	drawing_last2 = null
 	set_drawing_last_track(null)
-	unselect()
+	deselect()
 
 func stop_draw_track():
 	drawing_track = false

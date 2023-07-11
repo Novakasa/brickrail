@@ -1,25 +1,25 @@
 extends HSplitContainer
 
-export(NodePath) var inspector_container
-export(NodePath) var layer_container
-export(NodePath) var layer_index_edit
-export(NodePath) var edit_tab_path
-export(NodePath) var control_tab_path
+@export var inspector_container: NodePath
+@export var layer_container: NodePath
+@export var layer_index_edit: NodePath
+@export var edit_tab_path: NodePath
+@export var control_tab_path: NodePath
 
 var edit_tab
 var control_tab
 
 func _ready():
-	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
-	_err = LayoutInfo.connect("selected", self, "_on_selected")
-	_err = LayoutInfo.connect("layers_changed", self, "_on_layers_changed")
-	_err = LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
-	_err = LayoutInfo.connect("trains_running", self, "_on_layout_trains_running")
-	_err = LayoutInfo.connect("random_targets_set", self, "_on_layout_random_targets_set")
-	_err = LayoutInfo.connect("control_devices_changed", self, "_on_layout_control_devices_changed")
+	var _err = LayoutInfo.connect("layout_mode_changed", Callable(self, "_on_layout_mode_changed"))
+	_err = LayoutInfo.connect("selected", Callable(self, "_on_selected"))
+	_err = LayoutInfo.connect("layers_changed", Callable(self, "_on_layers_changed"))
+	_err = LayoutInfo.connect("active_layer_changed", Callable(self, "_on_active_layer_changed"))
+	_err = LayoutInfo.connect("trains_running", Callable(self, "_on_layout_trains_running"))
+	_err = LayoutInfo.connect("random_targets_set", Callable(self, "_on_layout_random_targets_set"))
+	_err = LayoutInfo.connect("control_devices_changed", Callable(self, "_on_layout_control_devices_changed"))
 	
-	_err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
-	_err = get_node(layer_container).connect("item_selected", self, "_on_layer_container_item_selected")
+	_err = Devices.get_ble_controller().connect("hubs_state_changed", Callable(self, "_on_hubs_state_changed"))
+	_err = get_node(layer_container).connect("item_selected", Callable(self, "_on_layer_container_item_selected"))
 	_on_layers_changed()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	$SaveLayoutDialog.current_path = Settings.layout_path
@@ -33,7 +33,7 @@ func _ready():
 	edit_tab = get_node(edit_tab_path)
 	control_tab = get_node(control_tab_path)
 	
-	OS.set_window_title("Brickrail - New layout")
+	get_window().set_title("Brickrail - New layout")
 
 func _on_hubs_state_changed():
 	var new_layout_disabled = not Devices.get_ble_controller().hub_control_enabled
@@ -42,7 +42,7 @@ func _on_hubs_state_changed():
 	control_tab.get_node("ControlDevicesSelector").disabled = new_layout_disabled
 
 func _on_layout_random_targets_set(set):
-	control_tab.get_node("AutoTarget").pressed = set
+	control_tab.get_node("AutoTarget").button_pressed = set
 
 func _on_layout_trains_running(running):
 	if running:
@@ -66,7 +66,7 @@ func _on_layers_changed():
 
 func _on_active_layer_changed(l):
 	if l==null:
-		get_node(layer_container).unselect_all()
+		get_node(layer_container).deselect_all()
 		return
 	var index = LayoutInfo.cells.keys().find(l)
 	get_node(layer_container).select(index)
@@ -90,38 +90,38 @@ func _on_selected(obj):
 func _notification(what):
 	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
 		Logger.info("[LayoutGUI] manual quit requested!")
-		yield(get_tree(), "idle_frame")
-		var saved = yield(check_save_changes_coroutine(), "completed")
-		if saved == "cancelled":
+		await get_tree().idle_frame
+		var saved = await check_save_changes_coroutine().completed
+		if saved == "canceled":
 			return
-		yield(Devices.get_ble_controller().clean_exit_coroutine(), "completed")
+		await Devices.get_ble_controller().clean_exit_coroutine().completed
 		LayoutInfo.store_train_positions()
 		Settings.save_configfile()
 		get_tree().quit()
 
 func check_save_changes_coroutine():
 	if not LayoutInfo.layout_changed:
-		yield(get_tree(), "idle_frame")
+		await get_tree().idle_frame
 		return
 	$SaveConfirm.popup_centered()
-	var action = yield($SaveConfirm.get_user_action_coroutine(), "completed")
+	var action = await $SaveConfirm.get_user_action_coroutine().completed
 	if action == "save" and LayoutInfo.layout_file == null:
 		action = "save as"
 	if action == "save as":
-		var result = yield($SaveLayoutDialog.get_file_action_coroutine(), "completed")
+		var result = await $SaveLayoutDialog.get_file_action_coroutine().completed
 		if result[0] == "file_selected":
 			save_layout(result[1])
 			return "saved"
-		return "cancelled"
+		return "canceled"
 	if action == "save":
 		save_layout(LayoutInfo.layout_file)
 		return "saved"
 	if action == "cancel":
-		return "cancelled"
+		return "canceled"
 	return "not saved"
 
 func _on_LayoutSave_pressed():
-	var result = yield($SaveLayoutDialog.get_file_action_coroutine(), "completed")
+	var result = await $SaveLayoutDialog.get_file_action_coroutine().completed
 	if result[0] == "file_selected":
 		save_layout(result[1])
 
@@ -129,8 +129,8 @@ func save_layout(path):
 	var struct = {}
 	struct["devices"] = Devices.serialize()
 	struct["layout"] = LayoutInfo.serialize()
-	var serial = JSON.print(struct, "\t")
-	var dir = Directory.new()
+	var serial = JSON.stringify(struct, "\t")
+	var dir = DirAccess.new()
 	if dir.file_exists(path):
 		dir.remove(path)
 	var file = File.new()
@@ -142,25 +142,27 @@ func save_layout(path):
 	$SaveLayoutDialog.current_path = path
 	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
-	OS.set_window_title("Brickrail - "+path)
+	get_window().set_title("Brickrail - "+path)
 
 func _on_LayoutOpen_pressed():
-	var saved = yield(check_save_changes_coroutine(), "completed")
-	if saved == "cancelled":
+	var saved = await check_save_changes_coroutine().completed
+	if saved == "canceled":
 		return
-	var result = yield($OpenLayoutDialog.get_file_action_coroutine(), "completed")
+	var result = await $OpenLayoutDialog.get_file_action_coroutine().completed
 	if result[0] == "file_selected":
 		open_layout(result[1])
 
 func open_layout(path):
 	LayoutInfo.store_train_positions()
-	yield(Devices.clear_coroutine(), "completed")
+	await Devices.clear_coroutine().completed
 	LayoutInfo.clear()
 	
 	var file = File.new()
 	file.open(path, 1)
 	var serial = file.get_as_text()
-	var struct = JSON.parse(serial).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(serial).result
+	var struct = test_json_conv.get_data()
 	if not "layout" in struct:
 		LayoutInfo.load(struct)
 		return
@@ -172,20 +174,20 @@ func open_layout(path):
 	$SaveLayoutDialog.current_path = path
 	$OpenLayoutDialog.current_path = path
 	LayoutInfo.set_layout_changed(false)
-	OS.set_window_title("Brickrail - "+path)
+	get_window().set_title("Brickrail - "+path)
 	LayoutInfo.restore_train_positions()
 
 
 func _on_LayoutNew_pressed():
-	var saved = yield(check_save_changes_coroutine(), "completed")
-	if saved == "cancelled":
+	var saved = await check_save_changes_coroutine().completed
+	if saved == "canceled":
 		return
 	LayoutInfo.store_train_positions()
-	yield(Devices.clear_coroutine(), "completed")
+	await Devices.clear_coroutine().completed
 	LayoutInfo.clear()
 	LayoutInfo.layout_file = null
 	LayoutInfo.set_layout_changed(false)
-	OS.set_window_title("Brickrail - New layout")
+	get_window().set_title("Brickrail - New layout")
 
 
 func _on_ControlDevicesSelector_item_selected(index):
@@ -203,7 +205,7 @@ func _on_ControlDevicesSelector_item_selected(index):
 		control_tab.get_node("ControlDevicesSelector").disabled = true
 		control_tab.get_node("AutoTarget").disabled = true
 		
-		var result = yield(Devices.get_ble_controller().connect_and_run_all_coroutine(), "completed")
+		var result = await Devices.get_ble_controller().connect_and_run_all_coroutine().completed
 		if Devices.get_ble_controller().are_hubs_ready() and result=="success":
 			LayoutInfo.set_control_devices(index)
 		else:

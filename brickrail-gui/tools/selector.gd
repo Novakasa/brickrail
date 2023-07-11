@@ -1,15 +1,15 @@
-tool
+@tool
 class_name Selector
 extends OptionButton
 
-export(bool) var has_none = true
-export(String) var none_label = "None"
-export(String) var none_meta = null
+@export var has_none: bool = true
+@export var none_label: String = "None"
+@export var none_meta: String = "None"
 
 signal meta_selected(meta)
 
 func _ready():
-	var _err = connect("item_selected", self, "_on_item_selected")
+	var _err = connect("item_selected", Callable(self, "_on_item_selected"))
 
 func _on_item_selected(idx):
 	emit_signal("meta_selected", get_item_metadata(idx))

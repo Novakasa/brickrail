@@ -48,8 +48,8 @@ const LOG_FORMAT_FULL = 99
 const LOG_FORMAT_NONE = -1
 
 
-var logger_level = LOG_LEVEL_ALL setget set_logger_level
-var logger_format = LOG_FORMAT_DEFAULT setget set_logger_format
+var logger_level = LOG_LEVEL_ALL: set = set_logger_level
+var logger_format = LOG_FORMAT_DEFAULT: set = set_logger_format
 var logger_line = 0
 var logger_appenders = []
 var refresh_appenders = false

@@ -1,6 +1,6 @@
 
 class_name LayoutRoute
-extends Reference
+extends RefCounted
 
 var edges = []
 var legs: Array = []
@@ -17,7 +17,7 @@ var logging_module
 
 signal completed()
 signal stopped()
-signal can_advance()
+signal can_advance_signal()
 signal target_entered(target_node)
 signal target_in(target_node)
 signal facing_flipped(facing)
@@ -57,7 +57,7 @@ func redirect_with_route(route):
 	unset_all_attributes()
 	for _i in range(len(legs)-leg_index-1):
 		prints(legs[-1].get_from().id, legs[-1].get_target().id)
-		legs.remove(len(legs)-1)
+		legs.pop_at(len(legs)-1)
 	for i in range(len(route.legs)-start):
 		legs.append(route.legs[i+start])
 	set_all_attributes()
@@ -84,7 +84,7 @@ func get_target_node():
 
 func set_train_id(p_train_id):
 	if train_id != null:
-		LayoutInfo.disconnect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+		LayoutInfo.disconnect("blocked_tracks_changed", Callable(self, "_on_LayoutInfo_blocked_tracks_changed"))
 		unset_all_attributes()
 		for leg in legs:
 			if leg.locked:
@@ -94,7 +94,7 @@ func set_train_id(p_train_id):
 	if train_id != null:
 		collect_sensors()
 		update_intentions()
-		var _err = LayoutInfo.connect("blocked_tracks_changed", self, "_on_LayoutInfo_blocked_tracks_changed")
+		var _err = LayoutInfo.connect("blocked_tracks_changed", Callable(self, "_on_LayoutInfo_blocked_tracks_changed"))
 		set_all_attributes()
 
 func _on_LayoutInfo_blocked_tracks_changed(p_train_id):

@@ -1,21 +1,21 @@
 extends VBoxContainer
 
-export(NodePath) var connect_button
-export(NodePath) var run_button
-export(NodePath) var scan_button
+@export var connect_button: NodePath
+@export var run_button: NodePath
+@export var scan_button: NodePath
 
 var hub
 
 func setup(p_hub):
 	hub = p_hub
-	var _err = Devices.get_ble_controller().connect("hubs_state_changed", self, "_on_hubs_state_changed")
+	var _err = Devices.get_ble_controller().connect("hubs_state_changed", Callable(self, "_on_hubs_state_changed"))
 	_on_hubs_state_changed()
-	_err = hub.connect("battery_changed", self, "_on_hub_battery_changed")
-	_err = hub.connect("skip_download_changed", self, "_on_hub_skip_download_changed")
-	$HBoxContainer/DownloadCheckbox.pressed = not hub.skip_download
+	_err = hub.connect("battery_changed", Callable(self, "_on_hub_battery_changed"))
+	_err = hub.connect("skip_download_changed", Callable(self, "_on_hub_skip_download_changed"))
+	$HBoxContainer/DownloadCheckbox.button_pressed = not hub.skip_download
 
 func _on_hub_skip_download_changed(value):
-	$HBoxContainer/DownloadCheckbox.pressed = not value
+	$HBoxContainer/DownloadCheckbox.button_pressed = not value
 
 func _on_hub_battery_changed():
 	$HBoxContainer2/BatteryLabel.text = ("Battery %.2f" % hub.battery_voltage) + "V"
@@ -57,7 +57,7 @@ func _on_connect_button_pressed():
 		hub.disconnect_coroutine()
 
 func _on_scan_button_pressed():
-	var new_name = yield(Devices.get_ble_controller().scan_for_hub_name_coroutine(), "completed")
+	var new_name = await Devices.get_ble_controller().scan_for_hub_name_coroutine().completed
 	if new_name == null:
 		push_error("scanned name is null!")
 		return

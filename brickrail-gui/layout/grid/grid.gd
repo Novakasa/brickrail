@@ -1,7 +1,7 @@
 extends Node2D
 
-export(Color) var grid_line_color
-export(float) var grid_line_width
+@export var grid_line_color: Color
+@export var grid_line_width: float
 
 var hover_obj = null
 
@@ -9,13 +9,13 @@ var dragging_view = false
 var dragging_view_reference = null
 var dragging_view_camera_reference = null
 
-onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
+@onready var LayoutCell = preload("res://layout/grid/layout_cell.tscn")
 
 func _on_layer_added(l):
 	var layer = GridLayer.new()
 	layer.name = "layer" + str(l)
 	add_child(layer)
-	var _err = layer.connect("size_changed", self, "_on_layer_size_changed", [layer])
+	var _err = layer.connect("size_changed", Callable(self, "_on_layer_size_changed").bind(layer))
 	set_layer_positions()
 
 func _on_layer_size_changed(layer):
@@ -26,7 +26,7 @@ func _on_layer_size_changed(layer):
 func _on_layer_removed(l):
 	var layer = get_layer(l)
 	remove_child(layer)
-	layer.disconnect("size_changed", self, "_on_layer_size_changed")
+	layer.disconnect("size_changed", Callable(self, "_on_layer_size_changed"))
 	layer.queue_free()
 	set_layer_positions()
 
@@ -57,11 +57,11 @@ func _on_cell_added(cell):
 
 func _ready():
 	
-	var _err = LayoutInfo.connect("cell_added", self, "_on_cell_added")
-	_err = LayoutInfo.connect("layer_removed", self, "_on_layer_removed")
-	_err = LayoutInfo.connect("layer_added", self, "_on_layer_added")
-	_err = LayoutInfo.connect("active_layer_changed", self, "_on_active_layer_changed")
-	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layers_unfolded_changed")
+	var _err = LayoutInfo.connect("cell_added", Callable(self, "_on_cell_added"))
+	_err = LayoutInfo.connect("layer_removed", Callable(self, "_on_layer_removed"))
+	_err = LayoutInfo.connect("layer_added", Callable(self, "_on_layer_added"))
+	_err = LayoutInfo.connect("active_layer_changed", Callable(self, "_on_active_layer_changed"))
+	_err = LayoutInfo.connect("layers_unfolded_changed", Callable(self, "_on_layers_unfolded_changed"))
 	LayoutInfo.grid = self
 	
 	LayoutInfo.add_layer(0)
@@ -156,12 +156,12 @@ func process_mouse_motion(event, l, i, j, mpos_cell, mpos, mouse_world):
 func set_hover_obj(obj):
 	if hover_obj != null:
 		# prints("disconnecting signal from hover_obj", hover_obj)
-		hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
+		hover_obj.disconnect("removing", Callable(self, "_on_hover_obj_removing"))
 		hover_obj.stop_hover()
 	hover_obj = obj
 	if hover_obj != null:
 		# prints("connecting signal to hover_obj", hover_obj)
-		hover_obj.connect("removing", self, "_on_hover_obj_removing")
+		hover_obj.connect("removing", Callable(self, "_on_hover_obj_removing"))
 
 func _on_hover_obj_removing(_obj):
 	# print("hover obj removing!")
@@ -180,17 +180,17 @@ func stop_drag_view():
 	dragging_view = false
 
 func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
-	if event.button_index == BUTTON_WHEEL_UP:
+	if event.button_index == MOUSE_BUTTON_WHEEL_UP:
 		$Camera2D.position += event.position*0.05*$Camera2D.zoom
 		$Camera2D.zoom*=0.95
 		return
 		
-	if event.button_index == BUTTON_WHEEL_DOWN:
+	if event.button_index == MOUSE_BUTTON_WHEEL_DOWN:
 		$Camera2D.zoom*=1.05
 		$Camera2D.position -= event.position*0.05*$Camera2D.zoom
 		return
 	
-	if event.button_index == BUTTON_MIDDLE:
+	if event.button_index == MOUSE_BUTTON_MIDDLE:
 		if event.pressed:
 			start_drag_view(event)
 			return
@@ -198,7 +198,7 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 			if dragging_view:
 				stop_drag_view()
 				return
-	if event.button_index == BUTTON_LEFT:
+	if event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			if LayoutInfo.drag_train:
 				LayoutInfo.flip_drag_train_facing()
@@ -214,18 +214,18 @@ func process_mouse_button(event, l, i, j, mpos_cell, _mpos, mouse_world):
 			return true
 
 	if not event.pressed:
-		if event.button_index == BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			if LayoutInfo.drag_select:
 				LayoutInfo.stop_drag_select()
 			if dragging_view:
 				stop_drag_view()
-		if event.button_index == BUTTON_RIGHT:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
 			if LayoutInfo.drawing_track:
 				LayoutInfo.stop_draw_track()
 			if LayoutInfo.drag_train:
 				LayoutInfo.stop_drag_train()
 	else:
-		if event.button_index == BUTTON_LEFT:
-			LayoutInfo.unselect()
+		if event.button_index == MOUSE_BUTTON_LEFT:
+			LayoutInfo.deselect()
 			start_drag_view(event)
 		

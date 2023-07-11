@@ -12,7 +12,7 @@ signal trains_changed()
 signal layout_controllers_changed()
 
 func _ready():
-	marker_colors = {"yellow": Color.yellow, "blue": Color.blue, "green": Color.green, "red": Color.red}
+	marker_colors = {"yellow": Color.YELLOW, "blue": Color.BLUE, "green": Color.GREEN, "red": Color.RED}
 
 func _on_data_received(key, data):
 	prints("[project] received data", key, data)
@@ -47,15 +47,15 @@ func load(struct):
 		var controller = add_layout_controller(controller_data.name)
 		if "devices" in controller_data:
 			for port in controller_data.devices:
-				controller.set_device(int(port), controller_data.devices[port])
+				controller.set_output_device(int(port), controller_data.devices[port])
 		# controller.load(controller_data)
 
 func add_train(p_name):
 	var train = BLETrain.new(p_name)
 	get_node("BLEController").add_hub(train.hub)
 	trains[p_name] = train
-	train.connect("name_changed", self, "_on_train_name_changed")
-	train.connect("removing", self, "_on_train_removing")
+	train.connect("name_changed", Callable(self, "_on_train_name_changed"))
+	train.connect("removing", Callable(self, "_on_train_removing"))
 	emit_signal("trains_changed")
 	emit_signal("train_added", p_name)
 	LayoutInfo.set_layout_changed(true)
@@ -77,8 +77,8 @@ func add_layout_controller(p_name):
 	var controller = LayoutController.new(p_name)
 	$BLEController.add_hub(controller.hub)
 	layout_controllers[p_name] = controller
-	controller.connect("name_changed", self, "_on_controller_name_changed")
-	controller.connect("removing", self, "_on_controller_removing")
+	controller.connect("name_changed", Callable(self, "_on_controller_name_changed"))
+	controller.connect("removing", Callable(self, "_on_controller_removing"))
 	emit_signal("layout_controllers_changed")
 	emit_signal("layout_controller_added", p_name)
 	LayoutInfo.set_layout_changed(true)
@@ -97,12 +97,12 @@ func _on_controller_removing(p_name):
 	emit_signal("layout_controllers_changed")
 
 func clear_coroutine():
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 	for train in trains.values():
-		yield(train.safe_remove_coroutine(), "completed")
+		await train.safe_remove_coroutine().completed
 	
 	for controller in layout_controllers.values():
-		yield(controller.safe_remove_coroutine(), "completed")
+		await controller.safe_remove_coroutine().completed
 
 func get_ble_controller() -> BLEController:
 	return $BLEController as BLEController

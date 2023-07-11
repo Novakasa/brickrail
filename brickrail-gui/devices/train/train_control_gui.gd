@@ -1,9 +1,9 @@
 extends VBoxContainer
 
 var train_name
-export(NodePath) var train_label
-export(NodePath) var control_container
-export(NodePath) var hub_controls
+@export var train_label: NodePath
+@export var control_container: NodePath
+@export var hub_controls: NodePath
 
 var markers = ["blue_marker", "red_marker"]
 var modes = ["block", "auto", "manual"]
@@ -11,11 +11,11 @@ var train: BLETrain
 
 func setup(p_train_name):
 	set_train_name(p_train_name)
-	var _err = get_train().connect("name_changed", self, "_on_train_name_changed")
-	_err = train.connect("removing", self, "_on_train_removing")
-	_err = train.hub.connect("responsiveness_changed", self, "update_controls_enabled")
-	_err = LayoutInfo.connect("control_devices_changed", self, "update_controls_enabled")
-	_err = Devices.get_ble_controller().connect("hubs_state_changed", self, "update_controls_enabled")
+	var _err = get_train().connect("name_changed", Callable(self, "_on_train_name_changed"))
+	_err = train.connect("removing", Callable(self, "_on_train_removing"))
+	_err = train.hub.connect("responsiveness_changed", Callable(self, "update_controls_enabled"))
+	_err = LayoutInfo.connect("control_devices_changed", Callable(self, "update_controls_enabled"))
+	_err = Devices.get_ble_controller().connect("hubs_state_changed", Callable(self, "update_controls_enabled"))
 	
 	set_controls_disabled(true)
 	
@@ -33,10 +33,10 @@ func _on_train_name_changed(_old_name, new_name):
 	set_train_name(new_name)
 
 func _on_train_removing(_p_name):
-	train.disconnect("removing", self, "_on_train_removing")
-	train.hub.disconnect("responsiveness_changed", self, "update_controls_enabled")
-	LayoutInfo.disconnect("control_devices_changed", self, "update_controls_enabled")
-	Devices.get_ble_controller().disconnect("hubs_state_changed", self, "update_controls_enabled")
+	train.disconnect("removing", Callable(self, "_on_train_removing"))
+	train.hub.disconnect("responsiveness_changed", Callable(self, "update_controls_enabled"))
+	LayoutInfo.disconnect("control_devices_changed", Callable(self, "update_controls_enabled"))
+	Devices.get_ble_controller().disconnect("hubs_state_changed", Callable(self, "update_controls_enabled"))
 	train = null
 	queue_free()
 
@@ -64,4 +64,4 @@ func _on_fast_button_pressed():
 	get_train().fast()
 
 func _on_RemoveButton_pressed():
-	yield(train.safe_remove_coroutine(), "completed")
+	await train.safe_remove_coroutine().completed

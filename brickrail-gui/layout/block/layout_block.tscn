@@ -1,16 +1,16 @@
 [gd_scene load_steps=6 format=2]
 
-[ext_resource path="res://font-roboto/Roboto-Bold.ttf" type="DynamicFontData" id=1]
-[ext_resource path="res://font-roboto/Roboto-Black.ttf" type="DynamicFontData" id=2]
+[ext_resource path="res://font-roboto/Roboto-Bold.ttf" type="FontFile" id=1]
+[ext_resource path="res://font-roboto/Roboto-Black.ttf" type="FontFile" id=2]
 [ext_resource path="res://layout/block/layout_block.gd" type="Script" id=3]
 
-[sub_resource type="DynamicFont" id=1]
+[sub_resource type="FontFile" id=1]
 size = 200
 use_mipmaps = true
 use_filter = true
 font_data = ExtResource( 1 )
 
-[sub_resource type="DynamicFont" id=2]
+[sub_resource type="FontFile" id=2]
 size = 320
 use_filter = true
 font_data = ExtResource( 2 )
@@ -28,11 +28,11 @@ anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-margin_left = -457.0
-margin_top = -105.5
-margin_right = 457.0
-margin_bottom = 105.5
-custom_fonts/font = SubResource( 2 )
+offset_left = -457.0
+offset_top = -105.5
+offset_right = 457.0
+offset_bottom = 105.5
+theme_override_fonts/font = SubResource( 2 )
 text = "block name"
 align = 1
 valign = 1
@@ -42,10 +42,10 @@ __meta__ = {
 
 [node name="RichTextLabel" type="RichTextLabel" parent="scaler"]
 visible = false
-margin_left = 1.11362
-margin_top = 220.497
-margin_right = 41.1136
-margin_bottom = 260.497
+offset_left = 1.11362
+offset_top = 220.497
+offset_right = 41.1136
+offset_bottom = 260.497
 text = "test"
 __meta__ = {
 "_edit_use_anchors_": false

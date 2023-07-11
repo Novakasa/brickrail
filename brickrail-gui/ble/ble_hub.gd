@@ -1,5 +1,5 @@
 class_name BLEHub
-extends Reference
+extends RefCounted
 
 var program
 var skip_download = false
@@ -20,8 +20,8 @@ var logging_module
 signal runtime_data_received(data)
 signal ble_command(hub, command, args, return_id)
 signal name_changed(p_name, p_new_name)
-signal connected()
-signal disconnected()
+signal connected_signal()
+signal disconnected_signal()
 signal connect_error()
 signal program_started()
 signal program_stopped()
@@ -41,8 +41,8 @@ func _init(p_name, p_program):
 	name = p_name
 	program = p_program
 	communicator = Devices.get_ble_controller().get_node("BLECommunicator")
-	var _err = communicator.connect("status_changed", self, "_on_ble_communicator_status_changed")
-	_err = connect("state_changed", self, "_on_state_changed")
+	var _err = communicator.connect("status_changed", Callable(self, "_on_ble_communicator_status_changed"))
+	_err = connect("state_changed", Callable(self, "_on_state_changed"))
 	logging_module = "hub-"+name
 	set_skip_download(true)
 	if name in Settings.hub_program_hashes:
@@ -180,7 +180,7 @@ func _on_data_received(key, data):
 		emit_signal("state_changed")
 		return
 	if key == "runtime_data":
-		emit_signal("runtime_data_received", PoolIntArray(data)) 
+		emit_signal("runtime_data_received", PackedInt32Array(data)) 
 		return
 	if key == "battery":
 		battery_current = float(data.current)/1000.0
@@ -247,31 +247,31 @@ func remove():
 
 func safe_remove_coroutine():
 	if not connected:
-		yield(Devices.get_tree(), "idle_frame")
+		await Devices.get_tree().idle_frame
 	if running:
-		yield(stop_program_coroutine(), "completed")
+		await stop_program_coroutine()
 	if connected:
-		yield(disconnect_coroutine(), "completed")
+		await disconnect_coroutine()
 	remove()
 
 func connect_coroutine():
 	connect_hub()
-	var first_signal = yield(Await.first_signal(self, ["connected", "connect_error"]), "completed")
+	var first_signal = await Await.first_signal(self, ["connected", "connect_error"])
 	if first_signal == "connect_error":
 		return "error"
 	return "success"
 
 func disconnect_coroutine():
 	disconnect_hub()
-	yield(self, "disconnected")
+	await self.disconnected
 
 func run_program_coroutine():
 	run_program()
-	var first_signal = yield(Await.first_signal(self, ["program_started", "program_start_error"]), "completed")
+	var first_signal = await Await.first_signal(self, ["program_started", "program_start_error"])
 	if first_signal == "program_start_error":
 		return "error"
 	return "success"
 
 func stop_program_coroutine():
 	stop_program()
-	yield(self, "program_stopped")
+	await self.program_stopped

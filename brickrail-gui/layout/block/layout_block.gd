@@ -1,4 +1,4 @@
-tool
+@tool
 
 class_name LayoutBlock
 extends Node2D
@@ -10,8 +10,8 @@ var block_name
 var hover = false
 var selected = false
 var logical_blocks = []
-export(Color) var color
-export(Font) var font
+@export var color: Color
+@export var font: Font
 var hover_block = null
 
 signal removing(p_block_id)
@@ -26,10 +26,10 @@ func setup(p_block_id):
 	add_child(logical_blocks[0])
 	add_child(logical_blocks[1])
 
-func get_name():
+func get_blockname():
 	return block_name
 
-func set_name(p_name):
+func set_blockname(p_name):
 	var old_name = block_name
 	block_name = p_name
 	if old_name != block_name:
@@ -61,20 +61,20 @@ func set_section(p_section):
 	#warning-ignore:integer_division
 	var index = len(p_section.tracks)/2
 	var track = p_section.tracks[index]
-	var tangent = track.get_tangent()
-	while tangent.angle()>PI/2:
-		tangent = tangent.rotated(-PI)
-	while tangent.angle()<-PI/2:
-		tangent = tangent.rotated(PI)
+	var orthogonal = track.get_tangent()
+	while orthogonal.angle()>PI/2:
+		orthogonal = orthogonal.rotated(-PI)
+	while orthogonal.angle()<-PI/2:
+		orthogonal = orthogonal.rotated(PI)
 	
 	$scaler/Label.set_text(block_id)
-	size = $scaler.scale*$scaler/Label.rect_size
+	size = $scaler.scale*$scaler/Label.size
 	
 	position = track.get_position() + LayoutInfo.spacing*track.get_center()
-	position -= 0.5*size.y*tangent.rotated(PI*0.5)
-	rotation = tangent.angle()
+	position -= 0.5*size.y*orthogonal.rotated(PI*0.5)
+	rotation = orthogonal.angle()
 
-	update()
+	queue_redraw()
 
 func depends_on(dirtrack):
 	if section.is_connected_to(dirtrack):
@@ -113,7 +113,7 @@ func serialize():
 func remove():
 	for logical_block in logical_blocks:
 		if logical_block.selected:
-			logical_block.unselect()
+			logical_block.deselect()
 	section.set_track_attributes("block", null)
 	emit_signal("removing", block_id)
 	for logical_block in logical_blocks:

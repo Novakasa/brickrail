@@ -1,5 +1,5 @@
 class_name DirectedLayoutTrack
-extends Reference
+extends RefCounted
 
 const STATE_SELECTED = 1
 const STATE_HOVER = 2
@@ -134,7 +134,7 @@ func connect_dirtrack(turn, dirtrack):
 	metadata[turn] = default_meta.duplicate()
 	interpolation_params[turn] = get_interpolation_parameters(turn)
 	
-	dirtrack.get_opposite().connect("switch_changed", self, "_on_connected_switch_changed")
+	dirtrack.get_opposite().connect("switch_changed", Callable(self, "_on_connected_switch_changed"))
 	
 	# prints("added connection, turning:", turn)
 	if len(connections)>1:
@@ -144,7 +144,7 @@ func connect_dirtrack(turn, dirtrack):
 
 func disconnect_turn(turn):
 	
-	connections[turn].get_opposite().disconnect("switch_changed", self, "_on_connected_switch_changed")
+	connections[turn].get_opposite().disconnect("switch_changed", Callable(self, "_on_connected_switch_changed"))
 	
 	connections.erase(turn)
 	interpolation_params.erase(turn)
@@ -188,12 +188,12 @@ func remove_sensor():
 
 func set_switch(p_switch):
 	if switch != null:
-		switch.disconnect("position_changed", self, "_on_switch_position_changed")
-		switch.disconnect("state_changed", self, "_on_switch_state_changed")
+		switch.disconnect("position_changed", Callable(self, "_on_switch_position_changed"))
+		switch.disconnect("state_changed", Callable(self, "_on_switch_state_changed"))
 	switch = p_switch
 	if switch != null:
-		switch.connect("position_changed", self, "_on_switch_position_changed")
-		switch.connect("state_changed", self, "_on_switch_state_changed")
+		switch.connect("position_changed", Callable(self, "_on_switch_position_changed"))
+		switch.connect("state_changed", Callable(self, "_on_switch_state_changed"))
 	emit_signal("switch_changed", switch)
 
 func _on_switch_state_changed():
@@ -332,8 +332,8 @@ func get_node_obj():
 
 func get_locked(turn=null):
 	if turn==null:
-		for turn in connections:
-			var locked = get_locked(turn)
+		for turn_iter in connections:
+			var locked = get_locked(turn_iter)
 			if locked != null:
 				return locked
 		return null
@@ -387,18 +387,18 @@ func get_interpolation_parameters(turn):
 	var neigbour_slot = Tools.get_opposite_slot(next_slot)
 
 	var aligned_vector = next_pos-Tools.get_slot_pos(neigbour_slot)
-	var tangent = get_tangent()
+	var orthogonal = get_tangent()
 	var arc_start
 	var straight_start
-	if tangent.dot(aligned_vector)>0.99:
+	if orthogonal.dot(aligned_vector)>0.99:
 		arc_start = next_pos-aligned_vector*(0.25*sqrt(2))
 		straight_start = 0.5*(next_pos+prev_pos)
 	else:
 		arc_start = 0.5*(next_pos+prev_pos)
 		straight_start = arc_start
 	var radius = get_turn_radius(angle)
-	var center = arc_start + tangent.rotated(0.5*PI*turn_sign)*radius
-	var start_angle = tangent.angle()-0.5*PI*turn_sign
+	var center = arc_start + orthogonal.rotated(0.5*PI*turn_sign)*radius
+	var start_angle = orthogonal.angle()-0.5*PI*turn_sign
 	var stop_angle = start_angle + 0.5*angle
 	var arc_length = abs(0.5*radius*angle)
 	if is_equal_approx(radius, 0.0):

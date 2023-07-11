@@ -3,7 +3,7 @@ extends VBoxContainer
 func _ready():
 	_on_settings_presets_changed()
 	$GridContainer/RenderModeOption.select(["dynamic", "cached"].find(Settings.render_mode))
-	var _err = Settings.connect("color_presets_changed", self, "_on_settings_presets_changed")
+	var _err = Settings.connect("color_presets_changed", Callable(self, "_on_settings_presets_changed"))
 	$PresetNameDialog.set_label("Preset name:")
 	$PresetNameDialog.add_text_edit()
 	$PresetNameDialog.add_action_button("cancel", "Cancel")
@@ -57,7 +57,7 @@ func _on_PresetSelector_meta_selected(meta):
 
 
 func _on_PresetAddButton_pressed():
-	var action = yield($PresetNameDialog.get_user_action_coroutine(), "completed")
+	var action = await $PresetNameDialog.get_user_action_coroutine().completed
 	if action == "cancel":
 		return
 	var presetname = $PresetNameDialog.line_edit.text

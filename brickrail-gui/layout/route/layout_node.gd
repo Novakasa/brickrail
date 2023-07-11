@@ -1,5 +1,5 @@
 class_name LayoutNode
-extends Reference
+extends RefCounted
 
 var obj
 var id

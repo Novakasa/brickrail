@@ -41,25 +41,25 @@ func _enter_tree():
 	$RenderDynamic.scale = Vector2(1,1)*LayoutInfo.spacing / 64
 	$RenderCacheViewport/Render.material = track_material.duplicate()
 	$RenderDynamic.material = $RenderCacheViewport/Render.material
-	set_shader_param("connections", transform_from_matrix(connection_matrix))
-	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
-	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
-	set_shader_param("state_right", transform_from_matrix(state_matrix_right))
-	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
-	set_shader_param("has_switch", false)
+	set_shader_parameter("connections", transform_from_matrix(connection_matrix))
+	set_shader_parameter("state_left", transform_from_matrix(state_matrix_left))
+	set_shader_parameter("state_center", transform_from_matrix(state_matrix_center))
+	set_shader_parameter("state_right", transform_from_matrix(state_matrix_right))
+	set_shader_parameter("state_none", transform_from_matrix(state_matrix_none))
+	set_shader_parameter("has_switch", false)
 	_on_settings_colors_changed()
-	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
-	_err = Settings.connect("render_mode_changed", self, "_on_settings_render_mode_changed")
-	_err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = Settings.connect("colors_changed", Callable(self, "_on_settings_colors_changed"))
+	_err = Settings.connect("render_mode_changed", Callable(self, "_on_settings_render_mode_changed"))
+	_err = LayoutInfo.connect("layout_mode_changed", Callable(self, "_on_layout_mode_changed"))
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 	_on_settings_render_mode_changed(Settings.render_mode)
-	_err = get_tree().connect("idle_frame", self, "_on_idle_frame")
+	_err = get_tree().connect("idle_frame", Callable(self, "_on_idle_frame"))
 
 func _on_idle_frame():
 	if _redraw:
 		_redraw=false
 		# prints("redrawing cell at", x_idx, y_idx)
-		$RenderCacheViewport.set_update_mode(Viewport.UPDATE_ONCE)
+		$RenderCacheViewport.set_update_mode(SubViewport.UPDATE_ONCE)
 
 func _on_settings_render_mode_changed(mode):
 	if mode == "dynamic":
@@ -74,24 +74,24 @@ func _on_settings_render_mode_changed(mode):
 func _on_layout_mode_changed(mode):
 	if mode == "edit":
 		# set_shader_param("grid_color", Settings.colors["surface"])
-		set_shader_param("background", Color(0.0, 0.0, 0.0, 0.0))
+		set_shader_parameter("background", Color(0.0, 0.0, 0.0, 0.0))
 	if mode == "control":
 		# set_shader_param("grid_color", Settings.colors["background"])
-		set_shader_param("background", Color(0.0, 0.0, 0.0, 0.0))
+		set_shader_parameter("background", Color(0.0, 0.0, 0.0, 0.0))
 
 func _on_settings_colors_changed():
 	# set_shader_param("background", Settings.colors["background"])
 	# set_shader_param("background", Color(0.0, 0.0, 0.0, 0.0))
-	set_shader_param("background_drawing_highlight", Settings.colors["tertiary"].linear_interpolate(Settings.colors["background"], 0.8))
-	set_shader_param("grid_color", Settings.colors["surface"])
-	set_shader_param("track_base", Settings.colors["white"])
-	set_shader_param("track_inner", Settings.colors["surface"])
-	set_shader_param("selected_color", Settings.colors["tertiary"])
-	set_shader_param("block_color", Settings.colors["primary"])
-	set_shader_param("switch_color", Settings.colors["primary"])
-	set_shader_param("occupied_color", Settings.colors["secondary"])
-	set_shader_param("arrow_color", Settings.colors["white"])
-	set_shader_param("mark_color", Settings.colors["primary"].darkened(0.5))
+	set_shader_parameter("background_drawing_highlight", Settings.colors["tertiary"].lerp(Settings.colors["background"], 0.8))
+	set_shader_parameter("grid_color", Settings.colors["surface"])
+	set_shader_parameter("track_base", Settings.colors["white"])
+	set_shader_parameter("track_inner", Settings.colors["surface"])
+	set_shader_parameter("selected_color", Settings.colors["tertiary"])
+	set_shader_parameter("block_color", Settings.colors["primary"])
+	set_shader_parameter("switch_color", Settings.colors["primary"])
+	set_shader_parameter("occupied_color", Settings.colors["secondary"])
+	set_shader_parameter("arrow_color", Settings.colors["white"])
+	set_shader_parameter("mark_color", Settings.colors["primary"].darkened(0.5))
 
 func hover_at(pos):
 	
@@ -126,10 +126,10 @@ func hover_at(pos):
 func set_hover_obj(obj):
 	if hover_obj != null:
 		if hover_obj.has_signal("removing"):
-			hover_obj.disconnect("removing", self, "_on_hover_obj_removing")
+			hover_obj.disconnect("removing", Callable(self, "_on_hover_obj_removing"))
 	if obj!=null:
 		if obj.has_signal("removing"):
-			obj.connect("removing", self, "_on_hover_obj_removing")
+			obj.connect("removing", Callable(self, "_on_hover_obj_removing"))
 	hover_obj = obj
 
 func _on_hover_obj_removing(_id):
@@ -167,7 +167,7 @@ func process_mouse_button(event, pos):
 	if obj != null:
 		if obj.process_mouse_button(event, normalized_pos):
 			return true
-	if event.button_index == BUTTON_RIGHT:
+	if event.button_index == MOUSE_BUTTON_RIGHT:
 		if event.pressed:
 			if LayoutInfo.layout_mode == "edit":
 				LayoutInfo.init_draw_track(self)
@@ -245,9 +245,9 @@ func add_track(track):
 		print("can't add track, same orientation already occupied!")
 		return tracks[track.get_orientation()]
 	tracks[track.get_orientation()] = track
-	track.connect("connections_changed", self, "_on_track_connections_changed")
-	track.connect("states_changed", self, "_on_track_states_changed")
-	track.connect("removing", self, "_on_track_removing")
+	track.connect("connections_changed", Callable(self, "_on_track_connections_changed"))
+	track.connect("states_changed", Callable(self, "_on_track_states_changed"))
+	track.connect("removing", Callable(self, "_on_track_removing"))
 	# update()
 	_on_track_connections_changed(track.get_orientation())
 	LayoutInfo.set_layout_changed(true)
@@ -256,9 +256,9 @@ func add_track(track):
 
 func _on_track_removing(orientation):
 	var track = tracks[orientation]
-	track.disconnect("connections_changed", self, "_on_track_connections_changed")
-	track.disconnect("states_changed", self, "_on_track_states_changed")
-	track.disconnect("removing", self, "_on_track_removing")
+	track.disconnect("connections_changed", Callable(self, "_on_track_connections_changed"))
+	track.disconnect("states_changed", Callable(self, "_on_track_states_changed"))
+	track.disconnect("removing", Callable(self, "_on_track_removing"))
 	tracks.erase(orientation)
 	if track == hover_obj:
 		set_hover_obj(null)
@@ -276,10 +276,10 @@ func _on_track_removing(orientation):
 		state_matrix_center[from_slot_id][to_slot_id] = 0
 		state_matrix_none[from_slot_id][to_slot_id] = 0
 		
-	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
-	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
-	set_shader_param("state_right", transform_from_matrix(state_matrix_right))
-	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+	set_shader_parameter("state_left", transform_from_matrix(state_matrix_left))
+	set_shader_parameter("state_center", transform_from_matrix(state_matrix_center))
+	set_shader_parameter("state_right", transform_from_matrix(state_matrix_right))
+	set_shader_parameter("state_none", transform_from_matrix(state_matrix_none))
 
 func _on_track_selected(track):
 	emit_signal("track_selected", self, track.get_orientation())
@@ -297,7 +297,7 @@ func clear():
 		track.remove()
 		
 func transform_from_matrix(matrix):
-	return Transform(matrix[0], matrix[1], matrix[2], matrix[3])
+	return Transform3D(matrix[0], matrix[1], matrix[2], matrix[3])
 
 func set_hover(p_hover):
 	hover = p_hover
@@ -310,15 +310,15 @@ func set_drawing_highlight(highlight):
 	check_remove()
 
 func update_state():
-	set_shader_param("cell_hover", hover)
-	set_shader_param("cell_drawing_highlight", drawing_highlight)
+	set_shader_parameter("cell_hover", hover)
+	set_shader_parameter("cell_drawing_highlight", drawing_highlight)
 
 func _on_track_connections_changed(orientation):
 	var has_switch = false
 	for track in tracks.values():
 		if track.has_switch() or track.borders_switch():
 			has_switch=true
-	set_shader_param("has_switch", has_switch)
+	set_shader_parameter("has_switch", has_switch)
 	_on_track_states_changed(orientation)
 	LayoutInfo.set_layout_changed(true)
 	# update() 
@@ -339,17 +339,17 @@ func _on_track_states_changed(orientation=null):
 		state_matrix_none[from_slot_id][to_slot_id] = states["none"]
 	
 			
-	set_shader_param("state_left", transform_from_matrix(state_matrix_left))
-	set_shader_param("state_center", transform_from_matrix(state_matrix_center))
-	set_shader_param("state_right", transform_from_matrix(state_matrix_right))
-	set_shader_param("state_none", transform_from_matrix(state_matrix_none))
+	set_shader_parameter("state_left", transform_from_matrix(state_matrix_left))
+	set_shader_parameter("state_center", transform_from_matrix(state_matrix_center))
+	set_shader_parameter("state_right", transform_from_matrix(state_matrix_right))
+	set_shader_parameter("state_none", transform_from_matrix(state_matrix_none))
 
-func set_shader_param(key, value):
+func set_shader_parameter(key, value):
 	if Settings.render_mode == "cached":
-		$RenderCacheViewport/Render.material.set_shader_param(key, value)
+		$RenderCacheViewport/Render.material.set_shader_parameter(key, value)
 		_redraw=true
 	if Settings.render_mode == "dynamic":
-		$RenderDynamic.material.set_shader_param(key, value)
+		$RenderDynamic.material.set_shader_parameter(key, value)
 	# $RenderCacheViewport.update_worlds()
 
 func _draw():

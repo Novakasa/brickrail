@@ -16,8 +16,8 @@ __meta__ = {
 }
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-margin_right = 1280.0
-margin_bottom = 14.0
+offset_right = 1280.0
+offset_bottom = 14.0
 text = "Switch"
 __meta__ = {
 "_edit_use_anchors_": false

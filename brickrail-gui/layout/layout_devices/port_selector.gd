@@ -11,12 +11,12 @@ func setup(p_device, p_device_type, label, inverted=null):
 	device_type = p_device_type
 	$VBoxContainer/Label.text = label
 	if inverted != null:
-		$VBoxContainer/GridContainer/InvertCheckBox.pressed = inverted
+		$VBoxContainer/GridContainer/InvertCheckBox.button_pressed = inverted
 	else:
 		$VBoxContainer/GridContainer/InvertCheckBox.visible = false
 		$VBoxContainer/GridContainer/InvertLabel.visible = false
 	select(p_device)
-	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
+	var _err = Devices.connect("layout_controllers_changed", Callable(self, "_on_devices_layout_controllers_changed"))
 	update_storage_controls()
 
 func update_storage_controls():
@@ -39,12 +39,12 @@ func update_storage_controls():
 		storage_node.add_child(label)
 		if max_limits[i] == -1:
 			var checkbox = CheckBox.new()
-			var _err = checkbox.connect("toggled", self, "_on_storage_val_edited", [i, "bool"])
-			checkbox.pressed = device.get_stored_value(i)
+			var _err = checkbox.connect("toggled", Callable(self, "_on_storage_val_edited").bind(i, "bool"))
+			checkbox.button_pressed = device.get_stored_value(i)
 			storage_node.add_child(checkbox)
 		else:
 			var edit = SpinBox.new()
-			var _err = edit.connect("value_changed", self, "_on_storage_val_edited", [i, "int"])
+			var _err = edit.connect("value_changed", Callable(self, "_on_storage_val_edited").bind(i, "int"))
 			edit.max_value = max_limits[i]
 			edit.value = device.get_stored_value(i)
 			storage_node.add_child(edit)
@@ -94,23 +94,23 @@ func setup_options():
 func _on_InvertCheckBox_toggled(button_pressed):
 	emit_signal("invert_toggled", button_pressed)
 
-func set_device():
+func set_output_device():
 	if port == null or controllername == null:
 		emit_signal("device_selected", null)
 		return
 	var controller: LayoutController = Devices.layout_controllers[controllername]
 	if controller.devices[port] == null:
-		controller.set_device(port, device_type)
+		controller.set_output_device(port, device_type)
 	var device = controller.devices[port]
 	update_storage_controls()
 	emit_signal("device_selected", device)
 
 func _on_PortOption_meta_selected(meta):
 	port = meta
-	set_device()
+	set_output_device()
 
 func _on_ControllerOption_meta_selected(meta):
 	controllername = meta
 	port = null
 	setup_options()
-	set_device()
+	set_output_device()

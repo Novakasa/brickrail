@@ -1,6 +1,6 @@
 
 class_name LayoutSwitch
-extends Reference
+extends RefCounted
 
 var position_index = 0
 var motor1 = null
@@ -72,14 +72,14 @@ func load_struct(struct):
 
 func remove():
 	if selected:
-		unselect()
+		deselect()
 	emit_signal("removing", id)
 
 func set_motor1(motor):
 	if motor1 != null:
-		motor1.disconnect("position_changed", self, "_on_motor1_position_changed")
-		motor1.disconnect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
-		motor1.disconnect("removing", self, "_on_motor1_removing")
+		motor1.disconnect("position_changed", Callable(self, "_on_motor1_position_changed"))
+		motor1.disconnect("responsiveness_changed", Callable(self, "_on_motor1_responsiveness_changed"))
+		motor1.disconnect("removing", Callable(self, "_on_motor1_removing"))
 	motor1 = motor
 	
 	
@@ -92,9 +92,9 @@ func set_motor1(motor):
 		position_index = switch_positions.find(pos)
 		emit_signal("position_changed", pos)
 	
-	motor1.connect("position_changed", self, "_on_motor1_position_changed")
-	motor1.connect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
-	motor1.connect("removing", self, "_on_motor1_removing")
+	motor1.connect("position_changed", Callable(self, "_on_motor1_position_changed"))
+	motor1.connect("responsiveness_changed", Callable(self, "_on_motor1_responsiveness_changed"))
+	motor1.connect("removing", Callable(self, "_on_motor1_removing"))
 	
 	emit_signal("motors_changed")
 
@@ -171,13 +171,13 @@ func get_position():
 
 func process_mouse_button(event, _pos):
 	if event is InputEventMouseButton and event.pressed:
-		if event.button_index == BUTTON_RIGHT:
+		if event.button_index == MOUSE_BUTTON_RIGHT:
 			if LayoutInfo.layout_mode == "control" and LayoutInfo.control_enabled:
 				if directed_track.get_locked() != null:
 					return false
 				toggle_switch()
 				return true
-		if event.button_index == BUTTON_LEFT:
+		if event.button_index == MOUSE_BUTTON_LEFT:
 			select()
 			return true
 	return false
@@ -188,13 +188,13 @@ func select():
 	emit_signal("selected")
 	emit_signal("state_changed")
 
-func unselect():
+func deselect():
 	selected=false
 	emit_signal("unselected")
 	emit_signal("state_changed")
 
 func get_inspector():
-	var inspector = SwitchInspector.instance()
+	var inspector = SwitchInspector.instantiate()
 	inspector.set_switch(self)
 	return inspector
 

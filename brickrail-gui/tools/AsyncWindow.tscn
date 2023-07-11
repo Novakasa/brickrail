@@ -3,23 +3,23 @@
 [ext_resource path="res://tools/async_window.gd" type="Script" id=1]
 
 [node name="AsyncWindow" type="PopupPanel"]
-margin_right = 8.0
-margin_bottom = 8.0
-popup_exclusive = true
+offset_right = 8.0
+offset_bottom = 8.0
+exclusive = true
 script = ExtResource( 1 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_left = 4.0
-margin_top = 4.0
-margin_right = 79.0
-margin_bottom = 22.0
+offset_left = 4.0
+offset_top = 4.0
+offset_right = 79.0
+offset_bottom = 22.0
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-margin_right = 279.0
-margin_bottom = 14.0
+offset_right = 279.0
+offset_bottom = 14.0
 text = "no label set"
 
 [node name="actions" type="HBoxContainer" parent="VBoxContainer"]
-margin_top = 18.0
-margin_right = 279.0
-margin_bottom = 18.0
+offset_top = 18.0
+offset_right = 279.0
+offset_bottom = 18.0

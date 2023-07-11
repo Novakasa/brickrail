@@ -2,8 +2,8 @@ class_name BLECommunicator
 extends Node
 
 
-export var websocket_url = "ws://localhost:64569"
-var _client = WebSocketClient.new()
+@export var websocket_url = "ws://localhost:64569"
+var _client = WebSocketPeer.new()
 var process
 var connected = false
 var status = "disconnected"
@@ -12,16 +12,16 @@ var expect_close = false
 var logging_module = "BLEProcess"
 
 signal message_received(message)
-signal connected()
+signal connected_signal()
 signal status_changed()
 
 func _ready():
-	_client.connect("connection_closed", self, "_closed")
-	_client.connect("connection_error", self, "_closed")
-	_client.connect("connection_established", self, "_connected")
-	_client.connect("data_received", self, "_on_data")
+	_client.connect("connection_closed", Callable(self, "_closed"))
+	_client.connect("connection_error", Callable(self, "_closed"))
+	_client.connect("connection_established", Callable(self, "_connected"))
+	_client.connect("data_received", Callable(self, "_on_data"))
 	
-	var _err = connect("status_changed", self, "_on_status_changed")
+	var _err = connect("status_changed", Callable(self, "_on_status_changed"))
 
 func _on_status_changed():
 	if busy:
@@ -35,7 +35,7 @@ func start_and_connect_to_process():
 	emit_signal("status_changed")
 	process = BLEProcess.new()
 	add_child(process)
-	yield(process.start_process(), "completed")
+	await process.start_process().completed
 	
 	status = "connecting"
 	emit_signal("status_changed")
@@ -47,7 +47,7 @@ func start_and_connect_to_process():
 		GuiApi.show_error("Unable to initialize connection to BLE Server python process!")
 	
 	var timer = get_tree().create_timer(5.0)
-	var result = yield(Await.first_signal_objs([timer, self], ["timeout", "connected"]), "completed")
+	var result = await Await.first_signal_objs([timer, self], ["timeout", "connected"])
 	if result == timer:
 		status = "Not connected to BLE Server"
 		var more_info = "Timeout trying to connect to BLE Server python process.\nThis could mean that the BLEServer executable is not accessible.\n\nDid you extract the Brickrail release properly?\nThe ble-server directory should be in the same folder as the Brickrail-gui executable."
@@ -62,9 +62,9 @@ func disconnect_and_kill_process():
 	emit_signal("status_changed")
 	_client.disconnect_from_host()
 	Logger.info("[%s] Waiting for connection to ble-server closed" % logging_module)
-	yield(_client, "connection_closed")
+	await _client.connection_closed
 	Logger.info("[%s] closed!" % logging_module)
-	yield(get_tree().create_timer(1.0), "timeout")
+	await get_tree().create_timer(1.0).timeout
 	process.kill()
 
 func _closed(was_clean = false):
@@ -90,10 +90,10 @@ func _connected(proto = ""):
 
 func send_message(message):
 	if not connected:
-		yield(_client, "connection_established")
-	yield(get_tree(), "idle_frame")
+		await _client.connection_established
+	await get_tree().idle_frame
 	Logger.info("[%s] sending to BLEServer: '%s'" % [logging_module, message])
-	_client.get_peer(1).put_packet(message.to_utf8())
+	_client.get_peer(1).put_packet(message.to_utf8_buffer())
 
 func _on_data():
 	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()
@@ -105,6 +105,6 @@ func _process(_delta):
 
 func clean_exit_coroutine():
 	if not connected:
-		yield(get_tree(), "idle_frame")
+		await get_tree().idle_frame
 		return
-	yield(disconnect_and_kill_process(), "completed")
+	await disconnect_and_kill_process()

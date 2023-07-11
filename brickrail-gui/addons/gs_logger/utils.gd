@@ -1,5 +1,5 @@
 class_name Utils
-extends Reference
+extends RefCounted
 
 const LOG_LEVEL_ALL = 999
 const LOG_LEVEL_FINE = 700

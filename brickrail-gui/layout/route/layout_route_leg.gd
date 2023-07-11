@@ -1,5 +1,5 @@
 class_name LayoutRouteLeg
-extends Reference
+extends RefCounted
 
 var edges = []
 var full_section = null

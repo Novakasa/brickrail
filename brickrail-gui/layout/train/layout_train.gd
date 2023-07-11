@@ -20,7 +20,7 @@ var random_targets = true
 var TrainInspector = preload("res://layout/train/layout_train_inspector.tscn")
 
 signal removing(p_train_id)
-signal selected()
+signal selected_signal()
 signal unselected()
 signal ble_train_changed()
 signal route_changed()
@@ -34,26 +34,26 @@ func _init(p_train_id):
 	virtual_train = VirtualTrain.new(train_id)
 	add_child(virtual_train)
 	virtual_train.visible=false
-	var _err = virtual_train.connect("switched_layers", self, "_on_virtual_train_switched_layer")
-	_err = LayoutInfo.connect("control_devices_changed", self, "_on_LayoutInfo_control_devices_changed")
-	_err = LayoutInfo.connect("random_targets_set", self, "_on_LayoutInfo_random_targets_set")
-	_err = LayoutInfo.connect("active_layer_changed",self, "_on_layer_info_changed")
-	_err = LayoutInfo.connect("layers_unfolded_changed", self, "_on_layer_info_changed")
+	var _err = virtual_train.connect("switched_layers", Callable(self, "_on_virtual_train_switched_layer"))
+	_err = LayoutInfo.connect("control_devices_changed", Callable(self, "_on_LayoutInfo_control_devices_changed"))
+	_err = LayoutInfo.connect("random_targets_set", Callable(self, "_on_LayoutInfo_random_targets_set"))
+	_err = LayoutInfo.connect("active_layer_changed", Callable(self, "_on_layer_info_changed"))
+	_err = LayoutInfo.connect("layers_unfolded_changed", Callable(self, "_on_layer_info_changed"))
 	blocked_by = null
 	update_layer_visibility()
 
-func set_name(p_name):
+func set_trainname(p_name):
 	var old_name = train_name
 	train_name = p_name
 	if p_name != old_name:
 		LayoutInfo.set_layout_changed(true)
 
-func get_name():
+func get_trainname():
 	return train_name
 
 func _enter_tree():
 	if LayoutInfo.random_targets and random_targets:
-		yield(get_tree().create_timer(block.wait_time/LayoutInfo.time_scale), "timeout")
+		await get_tree().create_timer(block.wait_time/LayoutInfo.time_scale).timeout
 		if LayoutInfo.random_targets and random_targets:
 			find_random_route(false)
 
@@ -73,22 +73,22 @@ func update_layer_visibility():
 	if l_idx != LayoutInfo.active_layer and not LayoutInfo.layers_unfolded:
 		modulate = Color(1.0, 1.0, 1.0, 0.3)
 	else:
-		modulate = Color.white
+		modulate = Color.WHITE
 
 func can_control_ble_train():
 	return LayoutInfo.control_devices==2 and ble_train != null and ble_train.hub.running
 
 func set_ble_train(p_train_id):
 	if ble_train != null:
-		ble_train.disconnect("sensor_advance", self, "_on_ble_train_sensor_advance")
-		ble_train.disconnect("removing", self, "_on_ble_train_removing")
+		ble_train.disconnect("sensor_advance", Callable(self, "_on_ble_train_sensor_advance"))
+		ble_train.disconnect("removing", Callable(self, "_on_ble_train_removing"))
 	if p_train_id == null:
 		ble_train = null
 		emit_signal("ble_train_changed")
 		return
 	ble_train = Devices.trains[p_train_id]
-	var _err = ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
-	_err = ble_train.connect("removing", self, "_on_ble_train_removing")
+	var _err = ble_train.connect("sensor_advance", Callable(self, "_on_ble_train_sensor_advance"))
+	_err = ble_train.connect("removing", Callable(self, "_on_ble_train_removing"))
 	LayoutInfo.set_layout_changed(true)
 	update_control_ble_train()
 	emit_signal("ble_train_changed")
@@ -169,7 +169,7 @@ func select():
 	if not LayoutInfo.layers_unfolded:
 		LayoutInfo.set_active_layer(virtual_train.l_idx)
 
-func unselect():
+func deselect():
 	selected=false
 	virtual_train.set_selected(false)
 	if route != null:
@@ -195,11 +195,11 @@ func stop_hover():
 func process_mouse_button(event, _mpos):
 	if not event.pressed:
 		return false
-	if event.button_index == BUTTON_LEFT:
+	if event.button_index == MOUSE_BUTTON_LEFT:
 		if not selected:
 			select()
 		return true
-	if event.button_index == BUTTON_RIGHT:
+	if event.button_index == MOUSE_BUTTON_RIGHT:
 		if LayoutInfo.layout_mode == "control" and not LayoutInfo.control_enabled:
 			return false
 		LayoutInfo.init_drag_train(self)
@@ -303,21 +303,21 @@ func escape_deadlock():
 
 func set_route(p_route):
 	if route != null:
-		route.disconnect("target_entered", self, "_on_target_entered")
-		route.disconnect("target_in", self, "_on_target_in")
-		route.disconnect("completed", self, "_on_route_completed")
-		route.disconnect("stopped", self, "_on_route_stopped")
-		route.disconnect("can_advance", self, "_on_route_can_advance")
-		route.disconnect("facing_flipped", self, "_on_route_facing_flipped")
+		route.disconnect("target_entered", Callable(self, "_on_target_entered"))
+		route.disconnect("target_in", Callable(self, "_on_target_in"))
+		route.disconnect("completed", Callable(self, "_on_route_completed"))
+		route.disconnect("stopped", Callable(self, "_on_route_stopped"))
+		route.disconnect("can_advance", Callable(self, "_on_route_can_advance"))
+		route.disconnect("facing_flipped", Callable(self, "_on_route_facing_flipped"))
 		route.set_train_id(null)
 	route = p_route
 	if route != null:
-		route.connect("target_entered", self, "_on_target_entered")
-		route.connect("target_in", self, "_on_target_in")
-		route.connect("completed", self, "_on_route_completed")
-		route.connect("stopped", self, "_on_route_stopped")
-		route.connect("can_advance", self, "_on_route_can_advance")
-		route.connect("facing_flipped", self, "_on_route_facing_flipped")
+		route.connect("target_entered", Callable(self, "_on_target_entered"))
+		route.connect("target_in", Callable(self, "_on_target_in"))
+		route.connect("completed", Callable(self, "_on_route_completed"))
+		route.connect("stopped", Callable(self, "_on_route_stopped"))
+		route.connect("can_advance", Callable(self, "_on_route_can_advance"))
+		route.connect("facing_flipped", Callable(self, "_on_route_facing_flipped"))
 		route.set_train_id(train_id)
 		if can_control_ble_train():
 			ble_train.set_route(route)
@@ -333,8 +333,8 @@ func cancel_route():
 		set_route(null)
 		return
 	route.set_passing(false)
-	yield(route, "stopped")
-	yield(get_tree(),"idle_frame") #wait for stopped signal to be handled
+	await route.stopped
+	await get_tree().idle_frame #wait for stopped signal to be handled
 	set_route(null)
 
 func _on_route_completed():
@@ -342,7 +342,7 @@ func _on_route_completed():
 	set_route(null)
 	if LayoutInfo.random_targets and random_targets:
 		Logger.info("[%s] Starting timer for next route" % [logging_module])
-		yield(get_tree().create_timer(block.wait_time/LayoutInfo.time_scale), "timeout")
+		await get_tree().create_timer(block.wait_time/LayoutInfo.time_scale).timeout
 		if LayoutInfo.random_targets and random_targets:
 			find_random_route(false)
 
@@ -351,7 +351,7 @@ func _on_route_stopped():
 	if not route.passing:
 		return
 	if LayoutInfo.random_targets and random_targets:
-		yield(get_tree(), "idle_frame")
+		await get_tree().idle_frame
 		if not escape_deadlock():
 			Logger.error("[%s] Couldn't escape deadlock!" % logging_module)
 			push_error("couldn't escape deadlock! " + train_id)
@@ -436,7 +436,7 @@ func set_reversing_behavior(p_behavior):
 		reversing_behavior = p_behavior
 
 func remove():
-	unselect()
+	deselect()
 	virtual_train.set_process(false)
 	virtual_train.remove()
 	set_route(null)
@@ -445,7 +445,7 @@ func remove():
 	queue_free()
 
 func get_inspector():
-	var inspector = TrainInspector.instance()
+	var inspector = TrainInspector.instantiate()
 	inspector.set_train(self)
 	return inspector
 
@@ -458,6 +458,6 @@ func set_random_targets(value):
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
-			if event.scancode == KEY_F3:
+			if event.keycode == KEY_F3:
 				if selected and route != null and virtual_train.state != "stopped":
 					virtual_train.manual_sensor_advance()

@@ -4,7 +4,7 @@ extends VBoxContainer
 var block
 
 func _enter_tree():
-	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = LayoutInfo.connect("layout_mode_changed", Callable(self, "_on_layout_mode_changed"))
 
 func _on_layout_mode_changed(mode):
 	var edit_exclusive_nodes = [$AddTrain, $AddPriorSensorButton, $CanStopCheckBox, $CanFlipCheckBox]
@@ -16,10 +16,10 @@ func set_block(p_block):
 	block = p_block
 	$EditableLabel.set_text(LayoutInfo.blocks[block.block_id].get_name())
 	$EditableLabel.set_display_text(block.get_name())
-	block.connect("unselected", self, "_on_block_unselected")
-	$CanStopCheckBox.pressed = block.can_stop
-	$CanFlipCheckBox.pressed = block.can_flip
-	$RandomTargetCheckBox.pressed = block.random_target
+	block.connect("unselected", Callable(self, "_on_block_unselected"))
+	$CanStopCheckBox.button_pressed = block.can_stop
+	$CanFlipCheckBox.button_pressed = block.can_flip
+	$RandomTargetCheckBox.button_pressed = block.random_target
 	$HBoxContainer/WaitTimeEdit.value = block.wait_time
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 

@@ -1,5 +1,5 @@
 class_name LayoutController
-extends Reference
+extends RefCounted
 
 var name
 var hub
@@ -16,10 +16,10 @@ func _init(p_name):
 		devices[port] = null
 		
 	hub = BLEHub.new(p_name, "layout_controller")
-	hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
-	hub.connect("program_started", self, "_on_hub_program_started")
-	hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
-	hub.connect("name_changed", self, "_on_hub_name_changed")
+	hub.connect("runtime_data_received", Callable(self, "_on_hub_runtime_data_received"))
+	hub.connect("program_started", Callable(self, "_on_hub_program_started"))
+	hub.connect("responsiveness_changed", Callable(self, "_on_hub_responsiveness_changed"))
+	hub.connect("name_changed", Callable(self, "_on_hub_name_changed"))
 
 func _on_hub_program_started():
 	pass
@@ -35,7 +35,7 @@ func serialize():
 		struct["devices"][port] = devices[port].device_type
 	return struct
 
-func set_device(port, type):
+func set_output_device(port, type):
 	if devices[port] != null:
 		devices[port].remove()
 	var device
@@ -50,12 +50,12 @@ func set_device(port, type):
 	else:
 		assert(false)
 	devices[port] = device
-	device.connect("removing", self, "_on_device_removing")
+	device.connect("removing", Callable(self, "_on_device_removing"))
 	emit_signal("devices_changed", name)
 	return device
 
 func _on_device_removing(_controllername, port):
-	devices[port].disconnect("removing", self, "_on_device_removing")
+	devices[port].disconnect("removing", Callable(self, "_on_device_removing"))
 	devices[port] = null
 	emit_signal("devices_changed", name)
 
@@ -81,6 +81,6 @@ func safe_remove_coroutine():
 		if device == null:
 			continue
 		device.remove()
-	yield(hub.safe_remove_coroutine(), "completed")
+	await hub.safe_remove_coroutine().completed
 	LayoutInfo.set_layout_changed(true)
 	emit_signal("removing", name)

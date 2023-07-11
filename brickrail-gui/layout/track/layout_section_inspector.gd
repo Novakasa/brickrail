@@ -4,17 +4,17 @@ var section = null
 var dirtrack = null
 
 func _enter_tree():
-	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = LayoutInfo.connect("layout_mode_changed", Callable(self, "_on_layout_mode_changed"))
 
 func _on_layout_mode_changed(mode):
 	if mode == "control":
-		section.unselect()
+		section.deselect()
 
 func set_section(obj):
 	section = obj
-	section.connect("unselected", self, "_on_section_unselected")
-	section.connect("track_added", self, "_on_section_track_added")
-	section.connect("inspector_state_changed", self, "_on_section_track_added", [null])
+	section.connect("unselected", Callable(self, "_on_section_unselected"))
+	section.connect("track_added", Callable(self, "_on_section_track_added"))
+	section.connect("inspector_state_changed", Callable(self, "_on_section_track_added").bind(null))
 	_on_section_track_added(null)
 
 func _on_section_unselected():
@@ -27,7 +27,7 @@ func _on_section_track_added(_track):
 		$Label.text = dirtrack.id
 		$CreateBlock.visible=false
 		$OneWayCheckbox.visible=true
-		$OneWayCheckbox.pressed = dirtrack.get_opposite().prohibited
+		$OneWayCheckbox.button_pressed = dirtrack.get_opposite().prohibited
 		if dirtrack.get_sensor() == null:
 			$AddSensor.visible=true
 			$SensorPanel.visible=false
@@ -57,11 +57,11 @@ func _on_section_track_added(_track):
 		$Label.text = section.tracks[0].id + "-" + section.tracks[-1].id
 		$CreateBlock.visible=true
 		$CreateBlock.disabled = false
-		$CreateBlock.hint_tooltip = "create block"
+		$CreateBlock.tooltip_text = "create block"
 		var reason = section.get_block_blocked_reason()
 		if reason != null:
 			$CreateBlock.disabled = true
-			$CreateBlock.hint_tooltip = reason
+			$CreateBlock.tooltip_text = reason
 		$AddSensor.visible=false
 		$SensorPanel.visible=false
 		$OneWayCheckbox.visible=false

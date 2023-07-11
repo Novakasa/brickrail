@@ -4,82 +4,82 @@
 [ext_resource path="res://layout/layout_devices/port_selector.gd" type="Script" id=2]
 
 [node name="PortSelector" type="VBoxContainer"]
-margin_top = 18.0
-margin_right = 1280.0
-margin_bottom = 720.0
+offset_top = 18.0
+offset_right = 1280.0
+offset_bottom = 720.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 script = ExtResource( 2 )
 
 [node name="VBoxContainer" type="VBoxContainer" parent="."]
-margin_right = 1280.0
-margin_bottom = 94.0
+offset_right = 1280.0
+offset_bottom = 94.0
 
 [node name="Label" type="Label" parent="VBoxContainer"]
-margin_right = 1280.0
-margin_bottom = 14.0
+offset_right = 1280.0
+offset_bottom = 14.0
 text = "Switch motor:"
 
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer"]
-margin_top = 18.0
-margin_right = 1280.0
-margin_bottom = 90.0
+offset_top = 18.0
+offset_right = 1280.0
+offset_bottom = 90.0
 columns = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="ControllerLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 3.0
-margin_right = 67.0
-margin_bottom = 17.0
+offset_top = 3.0
+offset_right = 67.0
+offset_bottom = 17.0
 text = "Controller:"
 
 [node name="ControllerOption" type="OptionButton" parent="VBoxContainer/GridContainer"]
-margin_left = 71.0
-margin_right = 118.0
-margin_bottom = 20.0
+offset_left = 71.0
+offset_right = 118.0
+offset_bottom = 20.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="PortLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 27.0
-margin_right = 67.0
-margin_bottom = 41.0
+offset_top = 27.0
+offset_right = 67.0
+offset_bottom = 41.0
 text = "Port:"
 
 [node name="PortOption" type="OptionButton" parent="VBoxContainer/GridContainer"]
-margin_left = 71.0
-margin_top = 24.0
-margin_right = 118.0
-margin_bottom = 44.0
+offset_left = 71.0
+offset_top = 24.0
+offset_right = 118.0
+offset_bottom = 44.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="InvertLabel" type="Label" parent="VBoxContainer/GridContainer"]
-margin_top = 53.0
-margin_right = 67.0
-margin_bottom = 67.0
+offset_top = 53.0
+offset_right = 67.0
+offset_bottom = 67.0
 text = "Invert:"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="InvertCheckBox" type="CheckBox" parent="VBoxContainer/GridContainer"]
-margin_left = 71.0
-margin_top = 48.0
-margin_right = 118.0
-margin_bottom = 72.0
+offset_left = 71.0
+offset_top = 48.0
+offset_right = 118.0
+offset_bottom = 72.0
 text = "On"
 
 [node name="Storage" type="GridContainer" parent="VBoxContainer"]
-margin_top = 94.0
-margin_right = 1280.0
-margin_bottom = 94.0
+offset_top = 94.0
+offset_right = 1280.0
+offset_bottom = 94.0
 
 [connection signal="meta_selected" from="VBoxContainer/GridContainer/ControllerOption" to="." method="_on_ControllerOption_meta_selected"]
 [connection signal="meta_selected" from="VBoxContainer/GridContainer/PortOption" to="." method="_on_PortOption_meta_selected"]

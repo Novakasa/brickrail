@@ -4,11 +4,11 @@
 #
 
 class_name Appender
-extends Reference
+extends RefCounted
 
 
 var layout: Layout = PatternLayout.new()
-var logger_level: int = 999 setget _set_logger_level
+var logger_level: int = 999: set = _set_logger_level
 var logger_format: int = 030
 
 var name = "appender"

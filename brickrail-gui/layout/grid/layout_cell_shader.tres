@@ -1,20 +1,20 @@
-[gd_resource type="ShaderMaterial" load_steps=2 format=2]
+[gd_resource type="ShaderMaterial" load_steps=2 format=3 uid="uid://cu1fb5ujklv08"]
 
-[sub_resource type="Shader" id=1]
+[sub_resource type="Shader" id="1"]
 code = "shader_type canvas_item;
 
-uniform vec4 background: hint_color;
-uniform vec4 background_hover: hint_color;
-uniform vec4 background_drawing_highlight: hint_color;
-uniform vec4 track_base: hint_color;
-uniform vec4 track_inner: hint_color;
-uniform vec4 arrow_color: hint_color;
-uniform vec4 occupied_color: hint_color;
-uniform vec4 mark_color: hint_color;
-uniform vec4 switch_color: hint_color;
-uniform vec4 grid_color: hint_color;
-uniform vec4 selected_color: hint_color;
-uniform vec4 block_color: hint_color;
+uniform vec4 background: source_color;
+uniform vec4 background_hover: source_color;
+uniform vec4 background_drawing_highlight: source_color;
+uniform vec4 track_base: source_color;
+uniform vec4 track_inner: source_color;
+uniform vec4 arrow_color: source_color;
+uniform vec4 occupied_color: source_color;
+uniform vec4 mark_color: source_color;
+uniform vec4 switch_color: source_color;
+uniform vec4 grid_color: source_color;
+uniform vec4 selected_color: source_color;
+uniform vec4 block_color: source_color;
 
 uniform bool cell_hover;
 uniform bool cell_drawing_highlight;
@@ -471,32 +471,4 @@ void fragment() {
 }"
 
 [resource]
-shader = SubResource( 1 )
-shader_param/background = Color( 0.105882, 0.109804, 0.121569, 1 )
-shader_param/background_hover = Color( 0.109804, 0.188235, 0.262745, 1 )
-shader_param/background_drawing_highlight = null
-shader_param/track_base = Color( 0.768627, 0.345098, 0.345098, 1 )
-shader_param/track_inner = Color( 0.313726, 1, 0, 1 )
-shader_param/arrow_color = Color( 0.0666667, 0.0588235, 0.164706, 1 )
-shader_param/occupied_color = Color( 0.945098, 0, 1, 1 )
-shader_param/mark_color = Color( 0.2, 0, 0.4, 1 )
-shader_param/switch_color = Color( 0.219608, 0.517647, 0.803922, 1 )
-shader_param/grid_color = Color( 0.0352941, 0.0352941, 0.0392157, 1 )
-shader_param/selected_color = Color( 0.458824, 0.180392, 0.556863, 1 )
-shader_param/block_color = Color( 0.788235, 0.976471, 0.00392157, 1 )
-shader_param/cell_hover = false
-shader_param/cell_drawing_highlight = null
-shader_param/grid_width = 0.097
-shader_param/track_width = 0.126
-shader_param/inner_track_width = 0.062
-shader_param/stopper_delta = 0.677
-shader_param/stopper_size = 0.563
-shader_param/stopper_width = 0.11
-shader_param/block_width = 0.239
-shader_param/contours = false
-shader_param/has_switch = true
-shader_param/has_block = true
-shader_param/state_left = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_right = Transform( 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_center = Transform( 0, 0, 0, 0, 5320, 0, 0, 0, 0, 0, 0, 0 )
-shader_param/state_none = Transform( 0, 0, 0, 0, 72, 0, 0, 0, 0, 0, 17536, 0 )
+shader = SubResource("1")

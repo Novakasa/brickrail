@@ -13,3 +13,4 @@ build/
 dist/
 brickrail-gui/dist/
 .VSCodeCounter/
+.godot/

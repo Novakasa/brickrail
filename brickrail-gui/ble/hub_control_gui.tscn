@@ -3,9 +3,9 @@
 [ext_resource path="res://ble/hub_controls.gd" type="Script" id=1]
 
 [node name="HubControl" type="VBoxContainer"]
-margin_top = 24.0
-margin_right = 237.0
-margin_bottom = 44.0
+offset_top = 24.0
+offset_right = 237.0
+offset_bottom = 44.0
 size_flags_horizontal = 3
 script = ExtResource( 1 )
 connect_button = NodePath("HBoxContainer/connect_button")
@@ -13,42 +13,42 @@ run_button = NodePath("HBoxContainer/run_button")
 scan_button = NodePath("HBoxContainer2/scan_button")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
-margin_right = 237.0
-margin_bottom = 20.0
+offset_right = 237.0
+offset_bottom = 20.0
 
 [node name="BatteryLabel" type="Label" parent="HBoxContainer2"]
-margin_top = 3.0
-margin_bottom = 17.0
+offset_top = 3.0
+offset_bottom = 17.0
 
 [node name="Control" type="Control" parent="HBoxContainer2"]
-margin_left = 4.0
-margin_right = 143.0
-margin_bottom = 20.0
+offset_left = 4.0
+offset_right = 143.0
+offset_bottom = 20.0
 size_flags_horizontal = 3
 
 [node name="scan_button" type="Button" parent="HBoxContainer2"]
-margin_left = 147.0
-margin_right = 237.0
-margin_bottom = 20.0
+offset_left = 147.0
+offset_right = 237.0
+offset_bottom = 20.0
 text = "Scan for hub"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_top = 24.0
-margin_right = 237.0
-margin_bottom = 48.0
+offset_top = 24.0
+offset_right = 237.0
+offset_bottom = 48.0
 
 [node name="connect_button" type="Button" parent="HBoxContainer"]
-margin_right = 64.0
-margin_bottom = 24.0
+offset_right = 64.0
+offset_bottom = 24.0
 text = "Connect"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="run_button" type="Button" parent="HBoxContainer"]
-margin_left = 68.0
-margin_right = 104.0
-margin_bottom = 24.0
+offset_left = 68.0
+offset_right = 104.0
+offset_bottom = 24.0
 disabled = true
 text = "Run"
 __meta__ = {
@@ -56,10 +56,10 @@ __meta__ = {
 }
 
 [node name="DownloadCheckbox" type="CheckBox" parent="HBoxContainer"]
-margin_left = 108.0
-margin_right = 199.0
-margin_bottom = 24.0
-hint_tooltip = "Disable this to skip downloading the program. A hub stores its program until the firmware is updated."
+offset_left = 108.0
+offset_right = 199.0
+offset_bottom = 24.0
+tooltip_text = "Disable this to skip downloading the program. A hub stores its program until the firmware is updated."
 text = "Download"
 
 [connection signal="pressed" from="HBoxContainer2/scan_button" to="." method="_on_scan_button_pressed"]

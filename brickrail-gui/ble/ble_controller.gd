@@ -9,17 +9,17 @@ signal hubs_state_changed()
 signal device_name_discovered(p_name)
 
 func _ready():
-	var _err = $BLECommunicator.connect("message_received", self, "_on_message_received")
-	_err = $BLECommunicator.connect("status_changed", self, "_on_hub_state_changed")
-	yield(get_tree(), "idle_frame")
+	var _err = $BLECommunicator.connect("message_received", Callable(self, "_on_message_received"))
+	_err = $BLECommunicator.connect("status_changed", Callable(self, "_on_hub_state_changed"))
+	await get_tree().idle_frame
 	emit_signal("hubs_state_changed") # make gui disable connect buttons etc
 	_on_hub_state_changed(null)
 	
-	yield(setup_process_and_sync_hubs(), "completed")
+	await setup_process_and_sync_hubs().completed
 
 func setup_process_and_sync_hubs():
 	
-	yield($BLECommunicator.start_and_connect_to_process(), "completed")
+	await $BLECommunicator.start_and_connect_to_process().completed
 	var logfile = ProjectSettings.globalize_path("user://logs/ble-server.log")
 	send_command(null, "start_logfile", [logfile], null)
 	for hubname in hubs:
@@ -30,10 +30,10 @@ func add_hub(hub):
 	if $BLECommunicator.connected:
 		send_command(null, "add_hub", [hub.name, hub.program], null)
 	hubs[hub.name] = hub
-	hub.connect("ble_command", self, "_on_hub_command")
-	hub.connect("name_changed", self, "_on_hub_name_changed")
-	hub.connect("removing", self, "_on_hub_removing")
-	hub.connect("state_changed", self, "_on_hub_state_changed", [hub])
+	hub.connect("ble_command", Callable(self, "_on_hub_command"))
+	hub.connect("name_changed", Callable(self, "_on_hub_name_changed"))
+	hub.connect("removing", Callable(self, "_on_hub_removing"))
+	hub.connect("state_changed", Callable(self, "_on_hub_state_changed").bind(hub))
 
 func _on_hub_name_changed(hubname, new_hubname):
 	rename_hub(hubname, new_hubname)
@@ -89,7 +89,9 @@ func rename_hub(p_name, p_new_name):
 		send_command(null, "rename_hub", [p_name, p_new_name], null)
 
 func _on_message_received(message):
-	var obj = JSON.parse(message).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(message).result
+	var obj = test_json_conv.get_data()
 	var key = obj.key
 	var hubname = obj.hub
 	if hubname != null:
@@ -103,7 +105,7 @@ func _on_message_received(message):
 func send_command(hub, funcname, args, return_key):
 	assert($BLECommunicator.connected)
 	var command = BLECommand.new(hub, funcname, args, return_key)
-	$BLECommunicator.send_message(command.to_json())
+	$BLECommunicator.send_message(command.JSON.new().stringify())
 
 func _on_hub_command(hub, command, args, return_key):
 	assert($BLECommunicator.connected)
@@ -111,33 +113,33 @@ func _on_hub_command(hub, command, args, return_key):
 
 func clean_exit_coroutine():
 	if not $BLECommunicator.connected:
-		yield(Devices.get_tree(), "idle_frame")
+		await Devices.get_tree().idle_frame
 		return
-	yield(disconnect_all_coroutine(), "completed")
-	yield($BLECommunicator.clean_exit_coroutine(), "completed")
+	await disconnect_all_coroutine().completed
+	await $BLECommunicator.clean_exit_coroutine().completed
 
 func connect_and_run_all_coroutine():
-	yield(Devices.get_tree(), "idle_frame")
+	await Devices.get_tree().idle_frame
 	for hub in hubs.values():
 		if not hub.connected:
-			var result = yield(hub.connect_coroutine(), "completed")
+			var result = await hub.connect_coroutine().completed
 			if result == "error":
 				return "error"
 		if not hub.running:
-			var result = yield(hub.run_program_coroutine(), "completed")
+			var result = await hub.run_program_coroutine().completed
 			if result == "error":
 				return "error"
 	return "success"
 
 func disconnect_all_coroutine():
-	yield(Devices.get_tree(), "idle_frame")
+	await Devices.get_tree().idle_frame
 	for hub in hubs.values():
 		if hub.running:
-			yield(hub.stop_program_coroutine(), "completed")
+			await hub.stop_program_coroutine().completed
 		if hub.connected:
-			yield(hub.disconnect_coroutine(), "completed")
+			await hub.disconnect_coroutine().completed
 
 func scan_for_hub_name_coroutine():
 	send_command(null, "find_device", [], "return_key")
-	var new_name = yield(self, "device_name_discovered")
+	var new_name = await self.device_name_discovered
 	return new_name

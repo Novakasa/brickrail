@@ -1,11 +1,11 @@
 class_name LayoutSection
-extends Reference
+extends RefCounted
 
 var tracks = []
 var selected = false
 var hover = false
 
-signal selected
+signal selected_signal
 signal unselected
 signal track_added(track)
 signal sensor_changed()
@@ -108,11 +108,11 @@ func add_dirtrack(dirtrack):
 	
 	tracks.append(dirtrack)
 	
-	if not dirtrack.get_track().is_connected("inspector_state_changed", self, "_on_track_inspector_state_changed"):
-		dirtrack.get_track().connect("inspector_state_changed", self, "_on_track_inspector_state_changed")
+	if not dirtrack.get_track().is_connected("inspector_state_changed", Callable(self, "_on_track_inspector_state_changed")):
+		dirtrack.get_track().connect("inspector_state_changed", Callable(self, "_on_track_inspector_state_changed"))
 	
-	if not dirtrack.is_connected("sensor_changed", self, "_on_track_sensor_changed"):
-		dirtrack.connect("sensor_changed", self, "_on_track_sensor_changed")
+	if not dirtrack.is_connected("sensor_changed", Callable(self, "_on_track_sensor_changed")):
+		dirtrack.connect("sensor_changed", Callable(self, "_on_track_sensor_changed"))
 	
 	if selected:
 		set_track_attributes("selected", true)
@@ -185,14 +185,14 @@ func set_track_attributes(key, value, direction="<>", operation="set"):
 	if ">" in direction:
 		tracks[-1].set_connection_attribute("none", key, value, operation)
 	
-func unselect():
+func deselect():
 	selected = false
 	set_track_attributes("selected", false)
 	set_track_attributes("arrow", -1, ">", "increment")
 	emit_signal("unselected")
 
 func get_inspector():
-	var inspector = LayoutSectionInspector.instance()
+	var inspector = LayoutSectionInspector.instantiate()
 	inspector.set_section(self)
 	return inspector
 

@@ -1,8 +1,8 @@
-tool
+@tool
 extends Node
 
 var render_mode = "dynamic"
-onready var layout_path = ProjectSettings.globalize_path("user://")
+@onready var layout_path = ProjectSettings.globalize_path("user://")
 
 var classic_colors = {
 	"background": Color("161614"),
@@ -42,11 +42,11 @@ func _ready():
 	presets["custom"] = bubblegum_colors.duplicate()
 	default_presets = presets.keys()
 	read_configfile()
-	var _err = connect("colors_changed", self, "update_clear_color")
+	var _err = connect("colors_changed", Callable(self, "update_clear_color"))
 	update_clear_color()
 	
 func update_clear_color():
-	VisualServer.set_default_clear_color(colors["background"])
+	RenderingServer.set_default_clear_color(colors["background"])
 
 func set_color(cname, color):
 	if color_preset != "custom":
@@ -96,14 +96,14 @@ func save_configfile():
 	data["hub_program_hashes"] = hub_program_hashes
 	data["hub_io_hub_hashes"] = hub_io_hub_hashes
 	data["layout_train_positions"] = layout_train_positions
-	var jsonstr = JSON.print(data, "\t")
+	var jsonstr = JSON.stringify(data, "\t")
 	var configfil = File.new()
 	configfil.open("user://config.json", File.WRITE)
 	configfil.store_string(jsonstr)
 	configfil.close()
 
 func read_configfile():
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	var _err = dir.open("user://")
 	var exists = dir.file_exists("config.json")
 	if not exists:
@@ -115,7 +115,9 @@ func read_configfile():
 	var jsonstr = configfil.get_as_text()
 	configfil.close()
 	
-	var data = JSON.parse(jsonstr).result
+	var test_json_conv = JSON.new()
+	test_json_conv.parse(jsonstr).result
+	var data = test_json_conv.get_data()
 	
 	for colorname in data.colors:
 		colors[colorname] = Color(data.colors[colorname])

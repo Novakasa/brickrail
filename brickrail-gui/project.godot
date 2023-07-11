@@ -6,262 +6,13 @@
 ;   [section] ; section goes between []
 ;   param=value ; assign values to parameters
 
-config_version=4
-
-_global_script_classes=[ {
-"base": "Reference",
-"class": "Appender",
-"language": "GDScript",
-"path": "res://addons/gs_logger/appender.gd"
-}, {
-"base": "FileDialog",
-"class": "AsyncFileDialog",
-"language": "GDScript",
-"path": "res://tools/async_file_dalog.gd"
-}, {
-"base": "PopupPanel",
-"class": "AsyncWindow",
-"language": "GDScript",
-"path": "res://tools/async_window.gd"
-}, {
-"base": "Reference",
-"class": "BLECommand",
-"language": "GDScript",
-"path": "res://ble/ble_command.gd"
-}, {
-"base": "Node",
-"class": "BLECommunicator",
-"language": "GDScript",
-"path": "res://ble/ble_communicator.gd"
-}, {
-"base": "Node",
-"class": "BLEController",
-"language": "GDScript",
-"path": "res://ble/ble_controller.gd"
-}, {
-"base": "Reference",
-"class": "BLEHub",
-"language": "GDScript",
-"path": "res://ble/ble_hub.gd"
-}, {
-"base": "Node",
-"class": "BLEProcess",
-"language": "GDScript",
-"path": "res://ble/ble_process.gd"
-}, {
-"base": "Reference",
-"class": "BLETrain",
-"language": "GDScript",
-"path": "res://devices/train/ble_train.gd"
-}, {
-"base": "Appender",
-"class": "ConsoleAppender",
-"language": "GDScript",
-"path": "res://addons/gs_logger/appenders/console_appender.gd"
-}, {
-"base": "VBoxContainer",
-"class": "CrossingInspector",
-"language": "GDScript",
-"path": "res://layout/layout_devices/crossing_inspector.gd"
-}, {
-"base": "Reference",
-"class": "CrossingMotor",
-"language": "GDScript",
-"path": "res://devices/layout_devices/crossing_motor.gd"
-}, {
-"base": "Reference",
-"class": "DirectedLayoutTrack",
-"language": "GDScript",
-"path": "res://layout/track/directed_layout_track.gd"
-}, {
-"base": "VBoxContainer",
-"class": "EditableLabel",
-"language": "GDScript",
-"path": "res://tools/editable_label.gd"
-}, {
-"base": "Appender",
-"class": "FileAppender",
-"language": "GDScript",
-"path": "res://addons/gs_logger/appenders/file_appender.gd"
-}, {
-"base": "Node2D",
-"class": "GridLayer",
-"language": "GDScript",
-"path": "res://layout/grid/grid_layer.gd"
-}, {
-"base": "Layout",
-"class": "HtmlLayout",
-"language": "GDScript",
-"path": "res://addons/gs_logger/layouts/html_layout.gd"
-}, {
-"base": "Reference",
-"class": "Layout",
-"language": "GDScript",
-"path": "res://addons/gs_logger/layout.gd"
-}, {
-"base": "Node2D",
-"class": "LayoutBlock",
-"language": "GDScript",
-"path": "res://layout/block/layout_block.gd"
-}, {
-"base": "Node2D",
-"class": "LayoutCell",
-"language": "GDScript",
-"path": "res://layout/grid/layout_cell.gd"
-}, {
-"base": "Reference",
-"class": "LayoutController",
-"language": "GDScript",
-"path": "res://devices/layout_controller/layout_controller.gd"
-}, {
-"base": "Node2D",
-"class": "LayoutCrossing",
-"language": "GDScript",
-"path": "res://layout/layout_devices/layout_crossing.gd"
-}, {
-"base": "Reference",
-"class": "LayoutEdge",
-"language": "GDScript",
-"path": "res://layout/route/layout_edge.gd"
-}, {
-"base": "Node",
-"class": "LayoutLogicalBlock",
-"language": "GDScript",
-"path": "res://layout/block/layout_logical_block.gd"
-}, {
-"base": "Reference",
-"class": "LayoutNode",
-"language": "GDScript",
-"path": "res://layout/route/layout_node.gd"
-}, {
-"base": "Reference",
-"class": "LayoutNodeSensors",
-"language": "GDScript",
-"path": "res://layout/route/layout_node_sensors.gd"
-}, {
-"base": "Reference",
-"class": "LayoutPortal",
-"language": "GDScript",
-"path": "res://layout/track/layout_portal.gd"
-}, {
-"base": "Reference",
-"class": "LayoutRoute",
-"language": "GDScript",
-"path": "res://layout/route/layout_route.gd"
-}, {
-"base": "Reference",
-"class": "LayoutRouteLeg",
-"language": "GDScript",
-"path": "res://layout/route/layout_route_leg.gd"
-}, {
-"base": "Reference",
-"class": "LayoutSection",
-"language": "GDScript",
-"path": "res://layout/track/layout_section.gd"
-}, {
-"base": "Reference",
-"class": "LayoutSensor",
-"language": "GDScript",
-"path": "res://layout/track/layout_sensor.gd"
-}, {
-"base": "Reference",
-"class": "LayoutSwitch",
-"language": "GDScript",
-"path": "res://layout/switch/layout_switch.gd"
-}, {
-"base": "Node2D",
-"class": "LayoutTrack",
-"language": "GDScript",
-"path": "res://layout/track/layout_track.gd"
-}, {
-"base": "Node2D",
-"class": "LayoutTrain",
-"language": "GDScript",
-"path": "res://layout/train/layout_train.gd"
-}, {
-"base": "Reference",
-"class": "Message",
-"language": "GDScript",
-"path": "res://addons/gs_logger/message.gd"
-}, {
-"base": "Layout",
-"class": "PatternLayout",
-"language": "GDScript",
-"path": "res://addons/gs_logger/layouts/pattern_layout.gd"
-}, {
-"base": "OptionButton",
-"class": "Selector",
-"language": "GDScript",
-"path": "res://tools/selector.gd"
-}, {
-"base": "Reference",
-"class": "SwitchMotor",
-"language": "GDScript",
-"path": "res://devices/layout_devices/switch_motor.gd"
-}, {
-"base": "Reference",
-"class": "Utils",
-"language": "GDScript",
-"path": "res://addons/gs_logger/utils.gd"
-}, {
-"base": "Node2D",
-"class": "VirtualTrain",
-"language": "GDScript",
-"path": "res://layout/train/virtual_train.gd"
-}, {
-"base": "Node2D",
-"class": "VirtualTrainWagon",
-"language": "GDScript",
-"path": "res://layout/train/virtual_train_wagon.gd"
-} ]
-_global_script_class_icons={
-"Appender": "",
-"AsyncFileDialog": "",
-"AsyncWindow": "",
-"BLECommand": "",
-"BLECommunicator": "",
-"BLEController": "",
-"BLEHub": "",
-"BLEProcess": "",
-"BLETrain": "",
-"ConsoleAppender": "",
-"CrossingInspector": "",
-"CrossingMotor": "",
-"DirectedLayoutTrack": "",
-"EditableLabel": "",
-"FileAppender": "",
-"GridLayer": "",
-"HtmlLayout": "",
-"Layout": "",
-"LayoutBlock": "",
-"LayoutCell": "",
-"LayoutController": "",
-"LayoutCrossing": "",
-"LayoutEdge": "",
-"LayoutLogicalBlock": "",
-"LayoutNode": "",
-"LayoutNodeSensors": "",
-"LayoutPortal": "",
-"LayoutRoute": "",
-"LayoutRouteLeg": "",
-"LayoutSection": "",
-"LayoutSensor": "",
-"LayoutSwitch": "",
-"LayoutTrack": "",
-"LayoutTrain": "",
-"Message": "",
-"PatternLayout": "",
-"Selector": "",
-"SwitchMotor": "",
-"Utils": "",
-"VirtualTrain": "",
-"VirtualTrainWagon": ""
-}
+config_version=5
 
 [application]
 
 config/name="brickrail-gui"
 run/main_scene="res://gui/main.tscn"
+config/features=PackedStringArray("4.1")
 config/icon="res://icon1.png"
 
 [autoload]
@@ -277,17 +28,17 @@ HubPrograms="*res://tools/hub_programs.gd"
 
 [display]
 
-window/size/width=1280
-window/size/height=720
+window/size/viewport_width=1280
+window/size/viewport_height=720
 window/energy_saving/keep_screen_on=false
 
 [editor_plugins]
 
-enabled=PoolStringArray( "res://addons/gs_logger/plugin.cfg" )
+enabled=PackedStringArray("res://addons/gs_logger/plugin.cfg")
 
 [gdnative]
 
-singletons=[  ]
+singletons=[]
 
 [global]
 
@@ -300,7 +51,7 @@ file_logging/log_path="user://logs/brickrail.log"
 
 [network]
 
-limits/debugger_stdout/max_warnings_per_second=200
+limits/debugger/max_warnings_per_second=200
 
 [physics]
 
@@ -308,6 +59,6 @@ common/enable_pause_aware_picking=true
 
 [rendering]
 
-environment/default_clear_color=Color( 0.270588, 0.305882, 0.333333, 1 )
+environment/defaults/default_clear_color=Color(0.270588, 0.305882, 0.333333, 1)
+environment/defaults/default_environment="res://default_env.tres"
 quality/depth/hdr=false
-environment/default_environment="res://default_env.tres"

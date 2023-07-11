@@ -4,7 +4,7 @@ var track
 
 func set_track(p_track):
 	track = p_track
-	track.connect("unselected", self, "_on_track_unselected")
+	track.connect("unselected", Callable(self, "_on_track_unselected"))
 
 func _on_track_unselected():
 	queue_free()

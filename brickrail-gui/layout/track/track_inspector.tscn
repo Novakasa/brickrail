@@ -3,43 +3,43 @@
 [ext_resource path="res://layout/track/track_inspector.gd" type="Script" id=1]
 
 [node name="TrackInspector" type="VBoxContainer"]
-margin_right = 40.0
-margin_bottom = 40.0
+offset_right = 40.0
+offset_bottom = 40.0
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="Label" type="Label" parent="."]
-margin_right = 84.0
-margin_bottom = 14.0
+offset_right = 84.0
+offset_bottom = 14.0
 text = "Track"
 
 [node name="RemoveButton" type="Button" parent="."]
-margin_top = 18.0
-margin_right = 84.0
-margin_bottom = 38.0
+offset_top = 18.0
+offset_right = 84.0
+offset_bottom = 38.0
 text = "remove"
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="MarkerButton" type="Button" parent="."]
-margin_top = 42.0
-margin_right = 84.0
-margin_bottom = 62.0
+offset_top = 42.0
+offset_right = 84.0
+offset_bottom = 62.0
 text = "add marker"
 
 [node name="SignalButton" type="Button" parent="."]
-margin_top = 66.0
-margin_right = 84.0
-margin_bottom = 86.0
+offset_top = 66.0
+offset_right = 84.0
+offset_bottom = 86.0
 text = "add signal"
 
 [node name="BlockButton" type="Button" parent="."]
-margin_top = 90.0
-margin_right = 84.0
-margin_bottom = 110.0
+offset_top = 90.0
+offset_right = 84.0
+offset_bottom = 110.0
 text = "add block"
 
 [connection signal="pressed" from="RemoveButton" to="." method="_on_RemoveButton_pressed"]

@@ -9,9 +9,9 @@ signal size_changed()
 func _ready():
 	bounds = null
 	var _err
-	_err = connect("size_changed", self, "update")
-	_err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
-	_err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	_err = connect("size_changed", Callable(self, "update"))
+	_err = LayoutInfo.connect("layout_mode_changed", Callable(self, "_on_layout_mode_changed"))
+	_err = Settings.connect("colors_changed", Callable(self, "_on_settings_colors_changed"))
 
 func _on_settings_colors_changed():
 	update()
@@ -21,7 +21,7 @@ func _on_layout_mode_changed(_mode):
 
 func add_cell(cell: LayoutCell):
 	add_child(cell)
-	var _err = cell.connect("tracks_changed", self, "_on_cell_tracks_changed", [cell])
+	var _err = cell.connect("tracks_changed", Callable(self, "_on_cell_tracks_changed").bind(cell))
 
 func _on_cell_tracks_changed(cell):
 	if len(cell.tracks)>0:
@@ -66,10 +66,10 @@ func _draw():
 	
 	var x = pos.x
 	while x < end.x + spacing*0.5:
-		draw_line(Vector2(x, pos.y), Vector2(x, end.y), Settings.colors["surface"], 0.1*spacing, true)
+		draw_line(Vector2(x, pos.y), Vector2(x, end.y), Settings.colors["surface"], 0.1*spacing)
 		x += spacing
 	
 	var y = pos.y
 	while y < end.y + spacing*0.5:
-		draw_line(Vector2(pos.x, y), Vector2(end.x, y), Settings.colors["surface"], 0.1*spacing, true)
+		draw_line(Vector2(pos.x, y), Vector2(end.x, y), Settings.colors["surface"], 0.1*spacing)
 		y += spacing

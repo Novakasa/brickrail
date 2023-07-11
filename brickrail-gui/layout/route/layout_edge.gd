@@ -1,5 +1,5 @@
 class_name LayoutEdge
-extends Reference
+extends RefCounted
 
 var section
 var from_node

@@ -5,9 +5,9 @@ var process_pid
 var logging_module = "BLEProcess"
 
 func start_process():
-	yield(get_tree(), "idle_frame")
+	await get_tree().idle_frame
 	Logger.info("[%s] Starting BLEServer process" % [logging_module])
-	var dir = Directory.new()
+	var dir = DirAccess.new()
 	var _err = dir.open(".")
 	
 	if OS.get_name() == "Windows":
@@ -32,7 +32,7 @@ func start_process():
 			process_command = "../.env/bin/python ../ble-server/ble_server.py"
 		process_pid = OS.execute("gnome-terminal", ["--", "bash", "-c", process_command], false)
 
-	yield(get_tree().create_timer(1.5), "timeout")
+	await get_tree().create_timer(1.5).timeout
 
 	Logger.info("[%s] Process started with pid: %s" % [logging_module, process_pid])
 

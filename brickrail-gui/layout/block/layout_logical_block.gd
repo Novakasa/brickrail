@@ -19,7 +19,7 @@ var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.ts
 
 #warning-ignore:unused_signal
 signal removing(block_id)
-signal selected()
+signal selected_signal()
 signal unselected()
 
 func _init(p_name, p_index):
@@ -39,9 +39,9 @@ func set_name(p_name):
 
 func set_section(p_section):
 	if section != null:
-		section.disconnect("sensor_changed", self, "_on_section_sensor_changed")
+		section.disconnect("sensor_changed", Callable(self, "_on_section_sensor_changed"))
 	section = p_section
-	section.connect("sensor_changed", self, "_on_section_sensor_changed")
+	section.connect("sensor_changed", Callable(self, "_on_section_sensor_changed"))
 	find_sensors()
 
 func set_random_target(value):
@@ -140,17 +140,17 @@ func get_locked():
 	return locked_train.train_id
 
 func get_inspector():
-	var inspector = LayoutBlockInspector.instance()
+	var inspector = LayoutBlockInspector.instantiate()
 	inspector.set_block(self)
 	return inspector
 
 func process_mouse_button(event, _pos):
-	if event.button_index == BUTTON_LEFT:
+	if event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			if not selected:
 				select()
 				return true
-	if event.button_index == BUTTON_RIGHT:
+	if event.button_index == MOUSE_BUTTON_RIGHT:
 		if not event.pressed:
 			if LayoutInfo.drag_train:
 				var train_obj = LayoutInfo.dragged_train
@@ -202,7 +202,7 @@ func select():
 	section.set_track_attributes("block", block_id)
 	emit_signal("selected")
 
-func unselect():
+func deselect():
 	selected=false
 	section.set_track_attributes("block", block_id)
 	emit_signal("unselected")

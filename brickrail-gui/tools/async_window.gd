@@ -16,16 +16,16 @@ func _on_action_button_pressed(action):
 
 func add_text_edit():
 	line_edit = LineEdit.new()
-	$VBoxContainer.add_child_below_node($VBoxContainer.get_children()[0], line_edit)
+	$VBoxContainer.add_sibling($VBoxContainer.get_children()[0], line_edit)
 
 func add_action_button(action, label):
 	var button = Button.new()
 	button.text = label
-	button.connect("pressed", self, "_on_action_button_pressed", [action])
+	button.connect("pressed", Callable(self, "_on_action_button_pressed").bind(action))
 	$VBoxContainer/actions.add_child(button)
 
 func get_user_action_coroutine():
 	popup_centered()
-	var action = yield(self, "action_button_pressed")
+	var action = await self.action_button_pressed
 	hide()
 	return action

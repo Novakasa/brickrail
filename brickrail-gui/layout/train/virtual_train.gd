@@ -41,11 +41,11 @@ var state = "stopped"
 var wagons = []
 var opposite_turn_history = []
 
-export(Color) var color
-export(Color) var body_color
-export(Color) var accent_color
-export(Color) var hover_color
-export(Color) var selected_color = Color.black
+@export var color: Color
+@export var body_color: Color
+@export var accent_color: Color
+@export var hover_color: Color
+@export var selected_color: Color = Color.BLACK
 
 signal switched_layers(new_l_idx)
 
@@ -77,11 +77,11 @@ func cleanup_seek():
 func _init(p_name):
 	train_id = p_name
 	logging_module = "virtual-" + train_id
-	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
+	var _err = Settings.connect("colors_changed", Callable(self, "_on_settings_colors_changed"))
 	
 	add_wagons(4)
 	
-	_err = connect("visibility_changed", self, "_on_visibility_changed")
+	_err = connect("visibility_changed", Callable(self, "_on_visibility_changed"))
 
 func _ready():
 	_on_settings_colors_changed()
@@ -138,10 +138,10 @@ func set_facing(p_facing):
 
 func set_route(p_route):
 	if route != null:
-		route.disconnect("execute_behavior", self, "execute_behavior")
+		route.disconnect("execute_behavior", Callable(self, "execute_behavior"))
 	route = p_route
 	if route != null:
-		var _err = route.connect("execute_behavior", self, "execute_behavior")
+		var _err = route.connect("execute_behavior", Callable(self, "execute_behavior"))
 
 func advance_route():
 	if seek_forward_timer >= 0.0:

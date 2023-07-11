@@ -3,7 +3,7 @@ extends VBoxContainer
 var train = null
 
 func _enter_tree():
-	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
+	var _err = LayoutInfo.connect("layout_mode_changed", Callable(self, "_on_layout_mode_changed"))
 
 func _on_layout_mode_changed(mode):
 	var edit_exclusive_nodes = [$BLETrainContainer, $ColorLabel, $WagonLabel, $WagonEdit, $ColorButton]
@@ -14,12 +14,12 @@ func _on_layout_mode_changed(mode):
 func set_train(obj):
 	train = obj
 	$EditableLabel.set_text(train.get_name())
-	train.connect("unselected", self, "_on_train_unselected")
-	train.connect("ble_train_changed", self, "_on_train_ble_train_changed")
-	$SensorAdvanceCheckbox.pressed = not train.virtual_train.allow_sensor_advance
+	train.connect("unselected", Callable(self, "_on_train_unselected"))
+	train.connect("ble_train_changed", Callable(self, "_on_train_ble_train_changed"))
+	$SensorAdvanceCheckbox.button_pressed = not train.virtual_train.allow_sensor_advance
 	$ColorButton.color = train.virtual_train.color
 	$WagonEdit.value = len(train.virtual_train.wagons)
-	var _err = Devices.connect("trains_changed", self, "_on_devices_trains_changed")
+	var _err = Devices.connect("trains_changed", Callable(self, "_on_devices_trains_changed"))
 	update_ble_train_selector()
 	select_ble_train(train.ble_train)
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
@@ -29,7 +29,7 @@ func set_train(obj):
 		["off", "penalty", "on"])
 	$ReversingBehaviorSelector.select_meta(train.reversing_behavior)
 	
-	$RandomTargetsCheckBox.pressed = train.random_targets
+	$RandomTargetsCheckBox.button_pressed = train.random_targets
 	
 	update_storage_controls()
 
@@ -48,12 +48,12 @@ func update_storage_controls():
 		$Storage.add_child(label)
 		if max_limits[i] == -1:
 			var checkbox = CheckBox.new()
-			var _err = checkbox.connect("toggled", self, "_on_storage_val_edited", [i, "bool"])
-			checkbox.pressed = train.ble_train.hub.storage[i] == 1
+			var _err = checkbox.connect("toggled", Callable(self, "_on_storage_val_edited").bind(i, "bool"))
+			checkbox.button_pressed = train.ble_train.hub.storage[i] == 1
 			$Storage.add_child(checkbox)
 		else:
 			var edit = SpinBox.new()
-			var _err = edit.connect("value_changed", self, "_on_storage_val_edited", [i, "int"])
+			var _err = edit.connect("value_changed", Callable(self, "_on_storage_val_edited").bind(i, "int"))
 			edit.max_value = max_limits[i]
 			edit.value = train.ble_train.hub.storage[i]
 			$Storage.add_child(edit)

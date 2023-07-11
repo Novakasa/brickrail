@@ -6,16 +6,16 @@ func _init():
 	material = load("res://layout/train/wagon_shader.tres").duplicate()
 
 func set_body_color(color):
-	material.set_shader_param("body_color", color)
+	material.set_shader_parameter("body_color", color)
 
 func set_color(color):
-	material.set_shader_param("id_color", color)
+	material.set_shader_parameter("id_color", color)
 
 func set_heading(heading):
-	material.set_shader_param("heading", heading)
+	material.set_shader_parameter("heading", heading)
 
 func set_facing(facing):
-	material.set_shader_param("facing", facing)
+	material.set_shader_parameter("facing", facing)
 
 func has_point(pos):
 	pos = to_local(pos)
@@ -29,5 +29,5 @@ func _draw():
 	
 	var size = Vector2(0.7,0.7)
 	var wsize = size*LayoutInfo.spacing
-	var col = Color.black
+	var col = Color.BLACK
 	draw_rect(Rect2(-wsize*0.5, wsize), col)
