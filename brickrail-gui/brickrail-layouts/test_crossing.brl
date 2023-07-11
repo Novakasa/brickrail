@@ -354,6 +354,9 @@
 					"W": [
 						"right"
 					]
+				},
+				"facing_filter": {
+					"S": 1
 				}
 			},
 			{

@@ -63,12 +63,14 @@ func _init(p_slot0, p_slot1, l, i, j):
 	directed_tracks[slot0].connect("add_sensor_requested", self, "add_sensor")
 	directed_tracks[slot0].connect("remove_sensor_requested", self, "remove_sensor")
 	directed_tracks[slot0].connect("remove_requested", self, "remove")
+	directed_tracks[slot0].connect("decorations_changed", self, "_on_dirtrack_decorations_changed")
 	directed_tracks[slot1] = DirectedLayoutTrack.new(slot0, slot1, id, l_idx, x_idx, y_idx)
 	directed_tracks[slot1].connect("states_changed", self, "_on_dirtrack_states_changed")
 	directed_tracks[slot1].connect("connections_changed", self, "_on_dirtrack_connections_changed")
 	directed_tracks[slot1].connect("add_sensor_requested", self, "add_sensor")
 	directed_tracks[slot1].connect("remove_sensor_requested", self, "remove_sensor")
 	directed_tracks[slot1].connect("remove_requested", self, "remove")
+	directed_tracks[slot1].connect("decorations_changed", self, "_on_dirtrack_decorations_changed")
 	
 	directed_tracks[slot0].set_opposite(directed_tracks[slot1])
 	directed_tracks[slot1].set_opposite(directed_tracks[slot0])
@@ -79,6 +81,9 @@ func _init(p_slot0, p_slot1, l, i, j):
 func _on_dirtrack_states_changed(_slot):
 	states_changed_emitted = false
 	call_deferred("emit_states_changed_once")
+
+func _on_dirtrack_decorations_changed():
+	update()
 
 func emit_states_changed_once():
 	if states_changed_emitted:
@@ -547,3 +552,11 @@ func _draw():
 	if sensor != null:
 		var color = sensor.get_color()
 		draw_circle(get_center()*LayoutInfo.spacing, 0.05*LayoutInfo.spacing, color)
+	for dirtrack in directed_tracks.values():
+		if dirtrack.facing_filter != null:
+			var color = Settings.colors["white"]
+			var tangent = get_tangent()
+			var spacing = LayoutInfo.spacing
+			draw_circle((get_center() - tangent*0.1)*spacing, 0.03*spacing, color)
+			draw_circle(get_center()*spacing, 0.03*spacing, color)
+			draw_circle((get_center() + tangent*0.1)*spacing, 0.03*spacing, color)

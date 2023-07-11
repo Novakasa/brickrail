@@ -150,8 +150,7 @@ func _on_AddPortal_pressed():
 	LayoutInfo.set_layout_mode("portal")
 
 func _on_FacingFilterSelector_meta_selected(meta):
-	LayoutInfo.set_layout_changed(true)
-	section.tracks[0].facing_filter = meta
+	section.tracks[0].set_facing_filter(meta)
 
 func _on_AddCrossing_pressed():
 	section.tracks[0].get_track().add_crossing()

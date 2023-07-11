@@ -60,6 +60,7 @@ signal connections_changed(next_slot)
 signal add_sensor_requested(p_sensor)
 signal remove_sensor_requested()
 signal remove_requested()
+signal decorations_changed()
 
 func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	x_idx = p_x
@@ -75,6 +76,13 @@ func _init(p_prev_slot, p_next_slot, id_base, p_l, p_x, p_y):
 	sensor=null
 	
 	metadata = {"none": default_meta.duplicate()}
+
+func set_facing_filter(p_filter):
+	var old_filter = facing_filter
+	facing_filter = p_filter
+	if old_filter != facing_filter:
+		LayoutInfo.set_layout_changed(true)
+		emit_signal("decorations_changed")
 
 func serialize(_reference=false):
 	var result = {}
