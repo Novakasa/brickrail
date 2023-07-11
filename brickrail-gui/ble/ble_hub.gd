@@ -44,16 +44,28 @@ func _init(p_name, p_program):
 	var _err = communicator.connect("status_changed", self, "_on_ble_communicator_status_changed")
 	_err = connect("state_changed", self, "_on_state_changed")
 	logging_module = "hub-"+name
-	
+	set_skip_download(true)
 	if name in Settings.hub_program_hashes:
 		Logger.info("[%s] hash found in settings" % logging_module)
 		if Settings.hub_program_hashes[name] == HubPrograms.hashes[program]:
 			Logger.info("[%s] hash is the same, setting skip download" % logging_module)
-			set_skip_download(true)
 		else:
 			GuiApi.show_info("[%s] Program outdated, program will be redownloaded" % name)
+			set_skip_download(false)
 	else:
 		GuiApi.show_info("[%s] New hub, program will be downloaded" % name)
+		set_skip_download(false)
+	
+	if name in Settings.hub_io_hub_hashes:
+		Logger.info("[%s] io_hub hash found in settings" % logging_module)
+		if Settings.hub_io_hub_hashes[name] == HubPrograms.hashes["io_hub"]:
+			Logger.info("[%s] io_hub hash is the same, setting skip download" % logging_module)
+		else:
+			GuiApi.show_info("[%s] io_hub outdated, program will be redownloaded" % name)
+			set_skip_download(false)
+	else:
+		GuiApi.show_info("[%s] New hub, program will be downloaded" % name)
+		set_skip_download(false)
 
 func _on_state_changed():
 	if busy:
@@ -115,6 +127,7 @@ func _on_data_received(key, data):
 		
 		if not skip_download:
 			Settings.hub_program_hashes[name] = HubPrograms.hashes[program]
+			Settings.hub_io_hub_hashes[name] = HubPrograms.hashes["io_hub"]
 			set_skip_download(true)
 		
 		running=true

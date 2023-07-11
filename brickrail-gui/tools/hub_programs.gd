@@ -28,3 +28,5 @@ func _ready():
 	Logger.info("[HubPrograms] Program smart_train hash: %s" % [hashes["smart_train"]])
 	hashes["layout_controller"] = hash_file(program_path + "layout_controller.py")
 	Logger.info("[HubPrograms] Program layout_controller hash: %s" % [hashes["layout_controller"]])
+	hashes["io_hub"] = hash_file(program_path + "io_hub_unfrozen.py")
+	Logger.info("[HubPrograms] Program io_hub hash: %s" % [hashes["io_hub"]])

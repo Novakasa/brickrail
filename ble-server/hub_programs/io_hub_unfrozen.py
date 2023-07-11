@@ -10,6 +10,8 @@ from pybricks.hubs import ThisHub
 from pybricks.tools import wait, StopWatch
 from pybricks.parameters import Color
 
+# version 0
+
 # disable keyboard interrupt character
 micropython.kbd_intr(-1)
 
