@@ -15,11 +15,11 @@ func _ready():
 	emit_signal("hubs_state_changed") # make gui disable connect buttons etc
 	_on_hub_state_changed(null)
 	
-	await setup_process_and_sync_hubs().completed
+	await setup_process_and_sync_hubs()
 
 func setup_process_and_sync_hubs():
 	
-	await $BLECommunicator.start_and_connect_to_process().completed
+	await $BLECommunicator.start_and_connect_to_process()
 	var logfile = ProjectSettings.globalize_path("user://logs/ble-server.log")
 	send_command(null, "start_logfile", [logfile], null)
 	for hubname in hubs:
@@ -90,8 +90,8 @@ func rename_hub(p_name, p_new_name):
 
 func _on_message_received(message):
 	var test_json_conv = JSON.new()
-	test_json_conv.parse(message).result
-	var obj = test_json_conv.get_data()
+	var _err = test_json_conv.parse(message)
+	var obj = test_json_conv.data
 	var key = obj.key
 	var hubname = obj.hub
 	if hubname != null:
@@ -105,7 +105,7 @@ func _on_message_received(message):
 func send_command(hub, funcname, args, return_key):
 	assert($BLECommunicator.connected)
 	var command = BLECommand.new(hub, funcname, args, return_key)
-	$BLECommunicator.send_message(command.JSON.new().stringify())
+	$BLECommunicator.send_message(command.as_string())
 
 func _on_hub_command(hub, command, args, return_key):
 	assert($BLECommunicator.connected)
@@ -115,18 +115,18 @@ func clean_exit_coroutine():
 	if not $BLECommunicator.connected:
 		await Devices.get_tree().idle_frame
 		return
-	await disconnect_all_coroutine().completed
-	await $BLECommunicator.clean_exit_coroutine().completed
+	await disconnect_all_coroutine()
+	await $BLECommunicator.clean_exit_coroutine()
 
 func connect_and_run_all_coroutine():
 	await Devices.get_tree().idle_frame
 	for hub in hubs.values():
 		if not hub.connected:
-			var result = await hub.connect_coroutine().completed
+			var result = await hub.connect_coroutine()
 			if result == "error":
 				return "error"
 		if not hub.running:
-			var result = await hub.run_program_coroutine().completed
+			var result = await hub.run_program_coroutine()
 			if result == "error":
 				return "error"
 	return "success"
@@ -135,9 +135,9 @@ func disconnect_all_coroutine():
 	await Devices.get_tree().idle_frame
 	for hub in hubs.values():
 		if hub.running:
-			await hub.stop_program_coroutine().completed
+			await hub.stop_program_coroutine()
 		if hub.connected:
-			await hub.disconnect_coroutine().completed
+			await hub.disconnect_coroutine()
 
 func scan_for_hub_name_coroutine():
 	send_command(null, "find_device", [], "return_key")

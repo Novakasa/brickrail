@@ -57,4 +57,4 @@ func wait(time):
 	return "timeout"
 
 func with_timeout(coroutine, timeout):
-	return await any([coroutine, wait(timeout)]).completed
+	return await any([coroutine, await wait(timeout)])

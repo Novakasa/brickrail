@@ -51,10 +51,10 @@ func _on_AddLayoutControllerButton_pressed():
 	Devices.add_layout_controller(controllername)
 
 func _on_ConnectAllButton_pressed():
-	await Devices.get_ble_controller().connect_and_run_all_coroutine().completed
+	await Devices.get_ble_controller().connect_and_run_all_coroutine()
 
 func _on_DisconnectAllButton_pressed():
-	await Devices.get_ble_controller().disconnect_all_coroutine().completed
+	await Devices.get_ble_controller().disconnect_all_coroutine()
 
 func _on_ConnectBLEServerButton_pressed():
-	await Devices.get_ble_controller().setup_process_and_sync_hubs().completed
+	await Devices.get_ble_controller().setup_process_and_sync_hubs()

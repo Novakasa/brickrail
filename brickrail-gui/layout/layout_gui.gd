@@ -88,13 +88,13 @@ func _on_selected(obj):
 	get_node(inspector_container).add_child(obj.get_inspector())
 
 func _notification(what):
-	if what == MainLoop.NOTIFICATION_WM_QUIT_REQUEST:
+	if what == NOTIFICATION_WM_CLOSE_REQUEST:
 		Logger.info("[LayoutGUI] manual quit requested!")
 		await get_tree().idle_frame
-		var saved = await check_save_changes_coroutine().completed
+		var saved = await check_save_changes_coroutine()
 		if saved == "canceled":
 			return
-		await Devices.get_ble_controller().clean_exit_coroutine().completed
+		await Devices.get_ble_controller().clean_exit_coroutine()
 		LayoutInfo.store_train_positions()
 		Settings.save_configfile()
 		get_tree().quit()
@@ -104,7 +104,7 @@ func check_save_changes_coroutine():
 		await get_tree().idle_frame
 		return
 	$SaveConfirm.popup_centered()
-	var action = await $SaveConfirm.get_user_action_coroutine().completed
+	var action = await $SaveConfirm.get_user_action_coroutine()
 	if action == "save" and LayoutInfo.layout_file == null:
 		action = "save as"
 	if action == "save as":
@@ -130,9 +130,8 @@ func save_layout(path):
 	struct["devices"] = Devices.serialize()
 	struct["layout"] = LayoutInfo.serialize()
 	var serial = JSON.stringify(struct, "\t")
-	var dir = DirAccess.new()
-	if dir.file_exists(path):
-		dir.remove(path)
+	if DirAccess.file_exists(path):
+		DirAccess.remove(path)
 	var file = File.new()
 	file.open(path, 2)
 	file.store_string(serial)

@@ -14,10 +14,10 @@ func _ready():
 	_err = Settings.connect("colors_changed", Callable(self, "_on_settings_colors_changed"))
 
 func _on_settings_colors_changed():
-	update()
+	queue_redraw()
 
 func _on_layout_mode_changed(_mode):
-	update()
+	queue_redraw()
 
 func add_cell(cell: LayoutCell):
 	add_child(cell)
@@ -32,14 +32,14 @@ func _on_cell_tracks_changed(cell):
 		bounds = bounds.expand(cell.position)
 	else:
 		bounds = null
-		for cell in get_children():
-			if not cell is LayoutCell:
+		for _cell in get_children():
+			if not _cell is LayoutCell:
 				continue
-			if len(cell.tracks)>0:
+			if len(_cell.tracks)>0:
 				if bounds == null:
-					bounds = Rect2(cell.position, Vector2() + Vector2(1.0, 1.0)*LayoutInfo.spacing)
-				bounds = bounds.expand(cell.position)
-				bounds = bounds.expand(cell.position + Vector2(1.0, 1.0)*LayoutInfo.spacing)
+					bounds = Rect2(_cell.position, Vector2() + Vector2(1.0, 1.0)*LayoutInfo.spacing)
+				bounds = bounds.expand(_cell.position)
+				bounds = bounds.expand(_cell.position + Vector2(1.0, 1.0)*LayoutInfo.spacing)
 	emit_signal("size_changed")
 
 func get_size():

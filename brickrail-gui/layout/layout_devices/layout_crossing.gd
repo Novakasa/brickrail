@@ -41,7 +41,7 @@ func set_pos(p_pos):
 	if motor2 != null and LayoutInfo.control_devices != LayoutInfo.CONTROL_OFF:
 		motor2.set_position(p_pos)
 	pos = p_pos
-	update()
+	queue_redraw()
 
 func set_motor1(device):
 	motor1 = device

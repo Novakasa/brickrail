@@ -12,7 +12,7 @@ func _init(p_hub, p_funcname, p_args, p_return_id):
 	args = p_args
 	return_id = p_return_id
 
-func JSON.new().stringify():
+func as_string():
 	var data = {}
 	data["hub"] = hub
 	data["func"] = funcname

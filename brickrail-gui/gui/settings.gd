@@ -97,27 +97,24 @@ func save_configfile():
 	data["hub_io_hub_hashes"] = hub_io_hub_hashes
 	data["layout_train_positions"] = layout_train_positions
 	var jsonstr = JSON.stringify(data, "\t")
-	var configfil = File.new()
-	configfil.open("user://config.json", File.WRITE)
+	var configfil = FileAccess.open("user://config.json", FileAccess.WRITE)
 	configfil.store_string(jsonstr)
 	configfil.close()
 
 func read_configfile():
-	var dir = DirAccess.new()
-	var _err = dir.open("user://")
+	var dir = DirAccess.open("user://")
 	var exists = dir.file_exists("config.json")
 	if not exists:
 		emit_signal("render_mode_changed")
 		emit_signal("colors_changed")
 		return
-	var configfil = File.new()
-	configfil.open("user://config.json", File.READ)
+	var configfil = FileAccess.open("user://config.json", FileAccess.READ)
 	var jsonstr = configfil.get_as_text()
 	configfil.close()
 	
 	var test_json_conv = JSON.new()
-	test_json_conv.parse(jsonstr).result
-	var data = test_json_conv.get_data()
+	var _err = test_json_conv.parse(jsonstr)
+	var data = test_json_conv.data
 	
 	for colorname in data.colors:
 		colors[colorname] = Color(data.colors[colorname])

@@ -83,7 +83,7 @@ func _on_dirtrack_states_changed(_slot):
 	call_deferred("emit_states_changed_once")
 
 func _on_dirtrack_decorations_changed():
-	update()
+	queue_redraw()
 
 func emit_states_changed_once():
 	if states_changed_emitted:
@@ -250,7 +250,7 @@ func get_direction():
 		return 3
 
 func distance_to(pos):
-	var point = Geometry.get_closest_point_to_segment(pos, pos0, pos1)
+	var point = Geometry2D.get_closest_point_to_segment(pos, pos0, pos1)
 	return (point-pos).length()
 
 func is_connected_to_track(track):
@@ -444,14 +444,14 @@ func set_sensor(p_sensor):
 	LayoutInfo.set_layout_changed(true)
 	emit_signal("states_changed", get_orientation())
 	emit_signal("sensor_changed", self)
-	update()
+	queue_redraw()
 
 func load_sensor(struct):
 	add_sensor(LayoutSensor.new())
 	sensor.load(struct)
 
 func _on_sensor_marker_color_changed():
-	update()
+	queue_redraw()
 	emit_signal("states_changed", get_orientation())
 
 func remove_sensor():

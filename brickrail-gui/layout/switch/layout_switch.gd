@@ -22,8 +22,8 @@ var SwitchInspector = preload("res://layout/switch/switch_inspector.tscn")
 
 signal position_changed(pos)
 signal state_changed()
-signal selected
-signal unselected
+signal selected_signal()
+signal unselected_signal()
 signal removing(id)
 signal motors_changed()
 

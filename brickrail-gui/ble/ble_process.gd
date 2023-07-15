@@ -7,8 +7,7 @@ var logging_module = "BLEProcess"
 func start_process():
 	await get_tree().idle_frame
 	Logger.info("[%s] Starting BLEServer process" % [logging_module])
-	var dir = DirAccess.new()
-	var _err = dir.open(".")
+	var dir = DirAccess.open(".")
 	
 	if OS.get_name() == "Windows":
 		var process_command
@@ -20,7 +19,7 @@ func start_process():
 			Logger.info("[%s] starting windows ble_server.py" % [logging_module])
 			process_command = "..\\.env\\python.exe ../ble-server/ble_server.py"
 		
-		process_pid = OS.execute("CMD.exe", ["/K", process_command], false, [], false, true)
+		process_pid = OS.create_process("CMD.exe", ["/K", process_command], true)
 	else:
 		var process_command
 		if OS.has_feature("standalone"):
@@ -30,7 +29,7 @@ func start_process():
 			# .env is a conda environment
 			Logger.info("[%s] starting linux ble_server.py" % [logging_module])
 			process_command = "../.env/bin/python ../ble-server/ble_server.py"
-		process_pid = OS.execute("gnome-terminal", ["--", "bash", "-c", process_command], false)
+		process_pid = OS.create_process("gnome-terminal", ["--", "bash", "-c", process_command], false)
 
 	await get_tree().create_timer(1.5).timeout
 

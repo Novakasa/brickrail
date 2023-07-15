@@ -6,11 +6,10 @@ var hashes = {}
 const CHUNK_SIZE = 1024
 
 func hash_file(path):
-	var file = File.new()
-	if not file.file_exists(path):
+	if not FileAccess.file_exists(path):
 		Logger.error("file to hash not found!!")
 		return null
-	return file.get_sha256(path)
+	return FileAccess.get_sha256(path)
 
 func _ready():
 	
