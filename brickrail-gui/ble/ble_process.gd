@@ -32,7 +32,7 @@ func start_process():
 			process_command = "../.env/bin/python ../ble-server/ble_server.py"
 		process_pid = OS.execute("gnome-terminal", ["--", "bash", "-c", process_command], false)
 
-	yield(get_tree().create_timer(1.5), "timeout")
+	yield(get_tree().create_timer(0.1), "timeout")
 
 	Logger.info("[%s] Process started with pid: %s" % [logging_module, process_pid])
 

@@ -11,20 +11,25 @@ signal device_name_discovered(p_name)
 func _ready():
 	var _err = $BLECommunicator.connect("message_received", self, "_on_message_received")
 	_err = $BLECommunicator.connect("status_changed", self, "_on_hub_state_changed")
+	_err = $BLECommunicator.connect("connected", self, "_on_BLEServer_connnected")
 	yield(get_tree(), "idle_frame")
 	emit_signal("hubs_state_changed") # make gui disable connect buttons etc
 	_on_hub_state_changed(null)
 	
 	yield(setup_process_and_sync_hubs(), "completed")
-
-func setup_process_and_sync_hubs():
 	
-	yield($BLECommunicator.start_and_connect_to_process(), "completed")
+func _on_BLEServer_connnected():
 	var logfile = ProjectSettings.globalize_path("user://logs/ble-server.log")
 	send_command(null, "start_logfile", [logfile], null)
 	for hubname in hubs:
 		var hub = hubs[hubname]
 		send_command(null, "add_hub", [hubname, hub.program], null)
+	return "Ok"
+
+func setup_process_and_sync_hubs():
+	var result = yield($BLECommunicator.start_and_connect_to_process(), "completed")
+	if result == "Err":
+		return "Err"
 
 func add_hub(hub):
 	if $BLECommunicator.connected:

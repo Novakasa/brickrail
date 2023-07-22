@@ -46,7 +46,7 @@ func start_and_connect_to_process():
 		set_process(false)
 		GuiApi.show_error("Unable to initialize connection to BLE Server python process!")
 	
-	var timer = get_tree().create_timer(5.0)
+	var timer = get_tree().create_timer(15.0)
 	var result = yield(Await.first_signal_objs([timer, self], ["timeout", "connected"]), "completed")
 	if result == timer:
 		status = "Not connected to BLE Server"
@@ -54,6 +54,8 @@ func start_and_connect_to_process():
 		GuiApi.show_error("Timeout trying to connect to BLE Server python process!", more_info)
 		busy = false
 		emit_signal("status_changed")
+		return "Err"
+	return "OK"
 
 func disconnect_and_kill_process():
 	status = "disconnecting"
