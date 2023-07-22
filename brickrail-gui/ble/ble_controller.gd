@@ -11,7 +11,7 @@ signal device_name_discovered(p_name)
 func _ready():
 	var _err = $BLECommunicator.connect("message_received", Callable(self, "_on_message_received"))
 	_err = $BLECommunicator.connect("status_changed", Callable(self, "_on_hub_state_changed"))
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	emit_signal("hubs_state_changed") # make gui disable connect buttons etc
 	_on_hub_state_changed(null)
 	

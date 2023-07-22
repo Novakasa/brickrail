@@ -57,7 +57,7 @@ func _on_connect_button_pressed():
 		hub.disconnect_coroutine()
 
 func _on_scan_button_pressed():
-	var new_name = await Devices.get_ble_controller().scan_for_hub_name_coroutine().completed
+	var new_name = await Devices.get_ble_controller().scan_for_hub_name_coroutine()
 	if new_name == null:
 		push_error("scanned name is null!")
 		return

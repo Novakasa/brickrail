@@ -77,8 +77,7 @@ signal trains_running(running)
 signal sensors_changed()
 
 func set_layout_changed(value):
-	pass
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	layout_changed = value
 	# prints("layout changed", value)
 	GuiApi.status_gui.get_node("LayoutChangedLabel").visible=value

@@ -3,7 +3,7 @@ extends Node
 
 
 @export var websocket_url = "ws://localhost:64569"
-var _client = WebSocketPeer.new()
+var socket = WebSocketPeer.new()
 var process
 var connected = false
 var status = "disconnected"
@@ -16,12 +16,8 @@ signal connected_signal()
 signal status_changed()
 
 func _ready():
-	_client.connect("connection_closed", Callable(self, "_closed"))
-	_client.connect("connection_error", Callable(self, "_closed"))
-	_client.connect("connection_established", Callable(self, "_connected"))
-	_client.connect("data_received", Callable(self, "_on_data"))
 	
-	var _err = connect("status_changed", Callable(self, "_on_status_changed"))
+	status_changed.connect(_on_status_changed())
 
 func _on_status_changed():
 	if busy:
@@ -35,12 +31,12 @@ func start_and_connect_to_process():
 	emit_signal("status_changed")
 	process = BLEProcess.new()
 	add_child(process)
-	await process.start_process().completed
+	await process.start_process()
 	
 	status = "connecting"
 	emit_signal("status_changed")
 
-	var err = _client.connect_to_url(websocket_url)
+	var err = socket.connect_to_url(websocket_url)
 	if err != OK:
 		Logger.error("[%s] Connect error: '%s'" % [logging_module])
 		set_process(false)
@@ -60,9 +56,9 @@ func disconnect_and_kill_process():
 	busy = true
 	expect_close = true
 	emit_signal("status_changed")
-	_client.disconnect_from_host()
+	socket.disconnect_from_host()
 	Logger.info("[%s] Waiting for connection to ble-server closed" % logging_module)
-	await _client.connection_closed
+	await socket.connection_closed
 	Logger.info("[%s] closed!" % logging_module)
 	await get_tree().create_timer(1.0).timeout
 	process.kill()
@@ -90,18 +86,18 @@ func _connected(proto = ""):
 
 func send_message(message):
 	if not connected:
-		await _client.connection_established
+		await socket.connection_established
 	await get_tree().idle_frame
 	Logger.info("[%s] sending to BLEServer: '%s'" % [logging_module, message])
-	_client.get_peer(1).put_packet(message.to_utf8_buffer())
+	socket.get_peer(1).put_packet(message.to_utf8_buffer())
 
 func _on_data():
-	var msg = _client.get_peer(1).get_packet().get_string_from_utf8()
+	var msg = socket.get_peer(1).get_packet().get_string_from_utf8()
 	Logger.info("[%s] reseived from BLEServer: '%s'" % [logging_module, msg])
 	emit_signal("message_received", msg)
 
 func _process(_delta):
-	_client.poll()
+	socket.poll()
 
 func clean_exit_coroutine():
 	if not connected:

@@ -22,7 +22,7 @@ func show_notification(text, more_info, type):
 	notification.size_flags_horizontal = SIZE_EXPAND_FILL
 	var label = Label.new()
 	label.size_flags_horizontal = SIZE_EXPAND_FILL
-	label.autowrap = true
+	label.autowrap_mode = 3
 	label.text = text
 	if type == "error":
 		label.add_theme_color_override("font_color", Color.RED)
@@ -37,5 +37,5 @@ func show_notification(text, more_info, type):
 		var _err = button.connect("pressed", Callable(self, "show_more_info").bind(more_info))
 	container.add_child(notification)
 	
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	$ScrollContainer.scroll_vertical = $ScrollContainer.get_v_scroll_bar().max_value

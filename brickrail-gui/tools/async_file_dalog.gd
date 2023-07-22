@@ -7,7 +7,7 @@ signal user_action(action, path)
 func _ready():
 	var _err
 	_err = get_cancel_button().connect("pressed", Callable(self, "_on_action").bind("canceled"))
-	_err = get_close_button().connect("pressed", Callable(self, "_on_action").bind("closed"))
+	_err = get_cancel_button().connect("pressed", Callable(self, "_on_action").bind("closed"))
 	_err = connect("file_selected", Callable(self, "_on_file_selected"))
 	_err = connect("modal_closed", Callable(self, "_on_modal_closed"))
 

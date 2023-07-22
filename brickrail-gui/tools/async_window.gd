@@ -16,7 +16,7 @@ func _on_action_button_pressed(action):
 
 func add_text_edit():
 	line_edit = LineEdit.new()
-	$VBoxContainer.add_sibling($VBoxContainer.get_children()[0], line_edit)
+	$VBoxContainer.get_children()[0].add_sibling(line_edit)
 
 func add_action_button(action, label):
 	var button = Button.new()

@@ -130,10 +130,10 @@ func save_layout(path):
 	struct["devices"] = Devices.serialize()
 	struct["layout"] = LayoutInfo.serialize()
 	var serial = JSON.stringify(struct, "\t")
-	if DirAccess.file_exists(path):
-		DirAccess.remove(path)
-	var file = File.new()
-	file.open(path, 2)
+	if FileAccess.file_exists(path):
+		var parent = DirAccess.open(path)
+		parent.remove(path)
+	var file = FileAccess.open(path, FileAccess.WRITE)
 	file.store_string(serial)
 	file.close()
 	LayoutInfo.layout_file = path
@@ -144,7 +144,7 @@ func save_layout(path):
 	get_window().set_title("Brickrail - "+path)
 
 func _on_LayoutOpen_pressed():
-	var saved = await check_save_changes_coroutine().completed
+	var saved = await check_save_changes_coroutine()
 	if saved == "canceled":
 		return
 	var result = await $OpenLayoutDialog.get_file_action_coroutine().completed
@@ -153,15 +153,14 @@ func _on_LayoutOpen_pressed():
 
 func open_layout(path):
 	LayoutInfo.store_train_positions()
-	await Devices.clear_coroutine().completed
+	await Devices.clear_coroutine()
 	LayoutInfo.clear()
 	
-	var file = File.new()
-	file.open(path, 1)
+	var file = FileAccess.open(path, 1)
 	var serial = file.get_as_text()
 	var test_json_conv = JSON.new()
-	test_json_conv.parse(serial).result
-	var struct = test_json_conv.get_data()
+	var _err = test_json_conv.parse(serial)
+	var struct = test_json_conv.data
 	if not "layout" in struct:
 		LayoutInfo.load(struct)
 		return
@@ -178,11 +177,11 @@ func open_layout(path):
 
 
 func _on_LayoutNew_pressed():
-	var saved = await check_save_changes_coroutine().completed
+	var saved = await check_save_changes_coroutine()
 	if saved == "canceled":
 		return
 	LayoutInfo.store_train_positions()
-	await Devices.clear_coroutine().completed
+	await Devices.clear_coroutine()
 	LayoutInfo.clear()
 	LayoutInfo.layout_file = null
 	LayoutInfo.set_layout_changed(false)
@@ -204,7 +203,7 @@ func _on_ControlDevicesSelector_item_selected(index):
 		control_tab.get_node("ControlDevicesSelector").disabled = true
 		control_tab.get_node("AutoTarget").disabled = true
 		
-		var result = await Devices.get_ble_controller().connect_and_run_all_coroutine().completed
+		var result = await Devices.get_ble_controller().connect_and_run_all_coroutine()
 		if Devices.get_ble_controller().are_hubs_ready() and result=="success":
 			LayoutInfo.set_control_devices(index)
 		else:

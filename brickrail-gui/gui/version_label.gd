@@ -12,8 +12,7 @@ func _ready():
 		root_path = ProjectSettings.globalize_path("res://") + "../"
 	
 	
-	var vfile = File.new()
-	vfile.open(root_path + "/version.txt", File.READ)
+	var vfile = FileAccess.open(root_path + "/version.txt", FileAccess.READ)
 	var content = vfile.get_line()
 	vfile.close()
 	text = content

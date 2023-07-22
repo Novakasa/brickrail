@@ -5,9 +5,8 @@ var process_pid
 var logging_module = "BLEProcess"
 
 func start_process():
-	await get_tree().idle_frame
+	await get_tree().process_frame
 	Logger.info("[%s] Starting BLEServer process" % [logging_module])
-	var dir = DirAccess.open(".")
 	
 	if OS.get_name() == "Windows":
 		var process_command
