@@ -1,6 +1,7 @@
 import asyncio
 from pathlib import Path
 import sys
+from datetime import datetime
 
 from pybricksdev.ble import find_device
 
@@ -20,14 +21,17 @@ class BLEProject:
 
         # https://stackoverflow.com/questions/14906764/how-to-redirect-stdout-to-both-file-and-console-with-scripting/14906787#14906787
 
+        now = datetime.now().strftime("%Y-%m-%d_%H.%M.%S")
+        logpath = config.user_path / f"ble-server_{now}.log"
+
         class Logger(object):
             def __init__(self):
                 self.terminal = sys.stdout
-                with open(path, "w"):
+                with open(logpath, "w"):
                     pass
 
             def write(self, message):
-                with open (path, "a", encoding = 'utf-8') as self.log:
+                with open (logpath, "a", encoding = 'utf-8') as self.log:
                     self.log.write(message)
                 self.terminal.write(message)
 

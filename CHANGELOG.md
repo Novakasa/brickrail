@@ -5,10 +5,18 @@
 
 ## [Unreleased]
 
+### Added
+
 - Added automatic level crossings. Add a crossing in the track inspector, assign motors to layout controller ports and have them automatically run based on train routes (https://github.com/Novakasa/brickrail/issues/146).
 - Added debug color buffer and plot written to file after unexpected Marker (https://github.com/Novakasa/brickrail/issues/144)
+
+### Fixed
+
 - Fixed program redownload not triggered when the common module "io_hub" has changed after an update (https://github.com/Novakasa/brickrail/issues/147)
 - Fixed issue where BLEServer connect timeout would lead to log and dump files not saved to the correct directory (https://github.com/Novakasa/brickrail/issues/152)
+
+### Changed
+- ble-server log files will not be overwritten anymore (https://github.com/Novakasa/brickrail/issues/151)
 
 ## [v1.0.0-alpha.4] - 2023-06-18
 
