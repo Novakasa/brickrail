@@ -100,6 +100,8 @@ class TrainSensor:
             else:
                 self.marker_samples += 1
                 if marker_color != self.last_marker_color:
+                    pack_into(">HBB", self.color_buf, self.buf_index, 361, 1 , self.last_marker_color + (marker_color << 4))
+                    self.buf_index = (self.buf_index + 4) % 1000
                     print("marker color inconsistent:", marker_color, self.last_marker_color)
                 
 
@@ -187,9 +189,13 @@ class Route:
             # print(next_color, color, train.sensor.initial_chroma, train.sensor.initial_hue, train.sensor.marker_samples)
             data = pack(">BBBHHH", _DATA_UNEXPECTED_MARKER, next_color, color, train.sensor.initial_chroma, train.sensor.initial_hue, train.sensor.marker_samples)
             io_hub.emit_data(bytes(data))
+            pack_into(">HBB", train.sensor.color_buf, train.sensor.buf_index, 361, 1 , next_color + (color << 4))
+            train.sensor.buf_index = (train.sensor.buf_index + 4) % 1000
             return 0
         self.last_key = self.get_current_leg().get_next_key()
         self.last_speed = self.get_current_leg().get_next_speed()
+        pack_into(">HBB", train.sensor.color_buf, train.sensor.buf_index, 361, 0 , color)
+        train.sensor.buf_index = (train.sensor.buf_index + 4) % 1000
 
         behavior = self.get_last_behavior()
 
