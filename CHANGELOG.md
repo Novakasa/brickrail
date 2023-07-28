@@ -7,6 +7,7 @@
 
 ### Added
 
+- Spacebar now triggers emergency stop. For the extra urgent emergencies.
 - Added automatic level crossings. Add a crossing in the track inspector, assign motors to layout controller ports and have them automatically run based on train routes (https://github.com/Novakasa/brickrail/issues/146).
 - Added debug color buffer and plot written to file after unexpected Marker (https://github.com/Novakasa/brickrail/issues/144)
 

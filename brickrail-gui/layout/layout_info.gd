@@ -423,6 +423,8 @@ func blocks_depend_on(dirtrack):
 func _unhandled_input(event):
 	if event is InputEventKey:
 		if event.pressed:
+			if event.scancode == KEY_SPACE:
+				emergency_stop()
 			if event.scancode == KEY_Q:
 				set_layout_mode("edit")
 			if event.scancode == KEY_W:

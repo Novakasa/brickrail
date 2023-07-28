@@ -371,6 +371,8 @@ has_none = false
 margin_left = 398.0
 margin_right = 560.0
 margin_bottom = 27.0
+focus_mode = 0
+enabled_focus_mode = 0
 text = "Random targets"
 
 [node name="VSeparator4" type="VSeparator" parent="VBoxContainer2/HSplitContainer/LayoutGui/LayoutSplit/LayoutModeTabs/Run trains"]
