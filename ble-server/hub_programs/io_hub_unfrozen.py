@@ -64,6 +64,7 @@ class IOHub:
         self.device = device
         self.device_attrs = {}
         self.last_output = None
+        self.output_retries = 0
         self.output_queue = []
         self.hub = ThisHub()
         self.storage = {}
@@ -86,6 +87,7 @@ class IOHub:
             return
         self.last_output = data
         self.output_watch.reset()
+        self.output_retries = 0
 
         # if urandom.randint(0, 10)>17: # randomly corrupt data
             # data = bytearray(data)
@@ -125,6 +127,7 @@ class IOHub:
         data = self.last_output
         stdout.buffer.write(data)
         self.output_watch.reset()
+        self.output_retries += 1
 
     def handle_input(self):
         # print("handling input", self.input_buffer)
@@ -137,6 +140,7 @@ class IOHub:
                 data = self.output_queue.pop(0)
                 stdout.buffer.write(data)
                 self.last_output = data
+                self.output_retries = 0
             return
         
         if in_id == _IN_ID_MSG_ERR and self.last_output is not None:
@@ -229,10 +233,9 @@ class IOHub:
                 self.msg_len = None
             if self.last_output is not None and self.output_watch.time() > 500:
                 self.retry_last_output()
-                # disabled because of https://github.com/Novakasa/brickrail/issues/140
-                # if self.last_output[1:3] == alive_data:
-                    # print("alive data timeout! Stopping program!")
-                    # self.running = False
+                if self.last_output[1:3] == alive_data:
+                    if self.output_retries > 5:
+                        raise Exception("alive data timeout! Stopping program!")
             if self.alive_watch.time() > 20000:
                 self.send_alive_data()
                 self.alive_watch.reset()

@@ -26,8 +26,10 @@ async def io_test():
     await test_hub.connect(device)
     try:
         await test_hub.run("test_io", wait=False)
-        await asyncio.sleep(10.0)
-        await asyncio.sleep(1)
+        await asyncio.sleep(3.0)
+        print("disabling response...")
+        test_hub.disable_response = True
+        await asyncio.sleep(30.0)
     finally:
         await test_hub.disconnect()
     

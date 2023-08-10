@@ -80,6 +80,7 @@ class BLEHub:
         self.msg_dump = False
         self.output_byte_arrived = asyncio.Event()
         self.output_byte_time = time.time()
+        self.disable_response = False
 
     def to_out_queue(self, key, data):
         if self.out_queue is None:
@@ -176,7 +177,10 @@ class BLEHub:
             print(f"received {bytes[:-1]}, checksum mismatch! {checksum} != {output_checksum}", self.output_buffer)
             await self.send_ack(False)
             return
-        await self.send_ack(True)
+        if not self.disable_response:
+            await self.send_ack(True)
+        else:
+            print("response supressed!!")
         data = bytes[1:-1] #strip out_id and checksum
 
         if out_id == _OUT_ID_SYS:
