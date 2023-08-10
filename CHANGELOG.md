@@ -7,6 +7,7 @@
 
 ### Added
 
+- Renamed "Sensor" to "Marker" and "Prior sensor" to "Reverse entry marker" in all user-facing contexts (https://github.com/Novakasa/brickrail/issues/135).
 - Reimplement connection watchdog, now with 5 retries (https://github.com/Novakasa/brickrail/issues/140).
 - Spacebar now triggers emergency stop. For the extra urgent emergencies.
 - Added automatic level crossings. Add a crossing in the track inspector, assign motors to layout controller ports and have them automatically run based on train routes (https://github.com/Novakasa/brickrail/issues/146).

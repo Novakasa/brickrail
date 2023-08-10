@@ -23,7 +23,7 @@ text = "Create block"
 margin_top = 42.0
 margin_right = 156.0
 margin_bottom = 62.0
-text = "Add sensor"
+text = "Add marker"
 
 [node name="AddPortal" type="Button" parent="."]
 margin_top = 66.0
@@ -82,7 +82,7 @@ __meta__ = {
 [node name="Label" type="Label" parent="SensorPanel/SensorInspector"]
 margin_right = 142.0
 margin_bottom = 14.0
-text = "Sensor"
+text = "Marker"
 
 [node name="RemoveSensor" type="Button" parent="SensorPanel/SensorInspector"]
 margin_top = 18.0
