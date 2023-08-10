@@ -9,7 +9,7 @@ def plot_color_buffer(buf, path):
     COLOR_HUES = (51, 219, 133, 359)
     
     bsize = len(buf)
-    roll_index = unpack(">H", buf[bsize-2:])[0]
+    (chroma_threshold, roll_index) = unpack(">HH", buf[bsize-4:])
     print(roll_index/4)
     # roll_index = 0
 
@@ -55,7 +55,7 @@ def plot_color_buffer(buf, path):
     ax2.plot(hsv[:,2]*100, label="val")
     ax2.legend()
     ax3.plot(hsv[:,2]*hsv[:,1]*10000, label="chroma")
-    ax3.axhline(3500, color="0.5", label="3500")
+    ax3.axhline(chroma_threshold, color="0.5", label="threshold")
     
     for i, colh, err in detections:
         ls = "-"

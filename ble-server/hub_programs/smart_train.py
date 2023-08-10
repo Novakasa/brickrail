@@ -64,7 +64,7 @@ class TrainSensor:
         self.initial_hue = 0
         self.initial_chroma = 0
 
-        self.color_buf = bytearray(1002)
+        self.color_buf = bytearray(1004)
         self.buf_index = 0
     
     def get_marker_color(self):
@@ -303,7 +303,8 @@ class Train:
         self.sensor.valid_colors = list(data)
     
     def dump_color_buffer(self):
-        pack_into(">H", self.sensor.color_buf, 1000, self.sensor.buf_index)
+        chroma_threshold = io_hub.storage[_CONFIG_CHROMA_THRESHOLD]
+        pack_into(">HH", self.sensor.color_buf, 1000, chroma_threshold, self.sensor.buf_index)
         io_hub.dump_data(_DUMP_TYPE_COLORS, self.sensor.color_buf)
 
 assert VERSION != b"1.0.0"
