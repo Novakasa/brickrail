@@ -102,7 +102,7 @@ jobs:
           cp LICENSE build/linux/LICENSE
       - name: Append commit sha to version file
         if: ${{ !startsWith(github.ref, 'refs/tags/') }}
-        run: echo $(echo ${{ github.sha }} | cut -c1-8) >> version.txt
+        run: echo -$(echo ${{ github.sha }} | cut -c1-8) >> version.txt
       - name: Add version file
         run: |
           cp version.txt build/linux/
