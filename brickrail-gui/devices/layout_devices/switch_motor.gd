@@ -16,14 +16,16 @@ const SWITCH_COMMAND_SWITCH = 0
 
 const STORAGE_PULSE_DC = 0
 const STORAGE_PULSE_DURATION = 1
+const STORAGE_PULSE_POLARITY = 2
 
 var storage_labels = [
 	"Motor pulse speed [DC]",
-	"Motor pulse duration [ms]"]
+	"Motor pulse duration [ms]",
+	"Invert direction"]
 
 # -1 for boolean config
-var max_limits = [100, 10000]
-var storage_gui_order = [1, 0]
+var max_limits = [100, 10000, -1]
+var storage_gui_order = [2, 1, 0]
 
 signal position_changed(position)
 signal responsiveness_changed(value)
@@ -38,6 +40,7 @@ func _init(p_hub, p_port, p_controllername):
 	
 	store_value(STORAGE_PULSE_DC, 100)
 	store_value(STORAGE_PULSE_DURATION, 600)
+	store_value(STORAGE_PULSE_POLARITY, 0)
 
 func store_value(i, value):
 	hub.store_value(8 + port*16 + i, value)

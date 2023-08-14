@@ -23,14 +23,12 @@ func set_switch(p_switch):
 	inspector1 = PortSelector.instance()
 	$VBoxContainer.add_child(inspector1)
 	inspector1.connect("device_selected", self, "_on_motor1_selected")
-	inspector1.setup(switch.motor1, "switch_motor", "Switch motor", switch.motor1_inverted)
-	inspector1.connect("invert_toggled", self, "_on_motor1_invert_toggled")
+	inspector1.setup(switch.motor1, "switch_motor", "Switch motor")
 	if len(switch.switch_positions) > 2:
 		inspector2 = PortSelector.instance()
 		$VBoxContainer.add_child(inspector2)
 		inspector2.connect("device_selected", self, "_on_motor2_selected")
-		inspector2.connect("invert_toggled", self, "_on_motor2_invert_toggled")
-		inspector2.setup(switch.motor2, "switch_motor", "Switch motor", switch.motor2_inverted)
+		inspector2.setup(switch.motor2, "switch_motor", "Switch motor")
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
 
 func _on_switch_motors_changed():
@@ -50,14 +48,6 @@ func _on_motor2_selected(motor):
 	if switch.motor2 == motor:
 		return
 	switch.set_motor2(motor)
-
-func _on_motor1_invert_toggled(inverted):
-	switch.motor1_inverted = inverted
-	LayoutInfo.set_layout_changed(true)
-
-func _on_motor2_invert_toggled(inverted):
-	switch.motor2_inverted = inverted
-	LayoutInfo.set_layout_changed(true)
 
 func _on_switch_unselected():
 	queue_free()

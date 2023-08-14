@@ -5,8 +5,6 @@ extends Reference
 var position_index = 0
 var motor1 = null
 var motor2 = null
-var motor1_inverted = false
-var motor2_inverted = false
 var slot
 var switch_positions
 var button
@@ -44,8 +42,6 @@ func serialize():
 		struct["motor1"] = motor1.serialize_reference()
 	if motor2 != null:
 		struct["motor2"] = motor2.serialize_reference()
-	struct["motor1_inverted"] = motor1_inverted
-	struct["motor2_inverted"] = motor2_inverted
 	return struct
 
 func load_struct(struct):
@@ -65,10 +61,6 @@ func load_struct(struct):
 			for key in motorstruct.storage:
 				motor.store_value(int(key), motorstruct.storage[key])
 		set_motor2(motor)
-	if "motor1_inverted" in struct:
-		motor1_inverted = struct.motor1_inverted
-	if "motor2_inverted" in struct:
-		motor2_inverted = struct.motor2_inverted
 
 func remove():
 	if selected:
@@ -132,21 +124,10 @@ func pos_to_dev1(pos):
 			dev1_pos = "right"
 		else:
 			dev1_pos = "left"
-	
-	if motor1_inverted:
-		if dev1_pos == "left":
-			dev1_pos = "right"
-		else:
-			dev1_pos = "left"
 		
 	return dev1_pos
 
 func dev1_to_pos(ble_pos):
-	if motor1_inverted:
-		if ble_pos == "left":
-			ble_pos = "right"
-		else:
-			ble_pos = "left"
 	if ble_pos in switch_positions:
 		return ble_pos
 	return "center"

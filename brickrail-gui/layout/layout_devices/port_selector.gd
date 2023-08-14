@@ -1,20 +1,14 @@
 extends VBoxContainer
 
-signal invert_toggled(value)
 signal device_selected(device)
 
 var controllername
 var port
 var device_type
 
-func setup(p_device, p_device_type, label, inverted=null):
+func setup(p_device, p_device_type, label):
 	device_type = p_device_type
 	$VBoxContainer/Label.text = label
-	if inverted != null:
-		$VBoxContainer/GridContainer/InvertCheckBox.pressed = inverted
-	else:
-		$VBoxContainer/GridContainer/InvertCheckBox.visible = false
-		$VBoxContainer/GridContainer/InvertLabel.visible = false
 	select(p_device)
 	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
 	update_storage_controls()
@@ -90,9 +84,6 @@ func setup_options():
 	var portindices = range(num_ports)
 	port_option.set_items(portlabels, portindices)
 	port_option.select_meta(port)
-
-func _on_InvertCheckBox_toggled(button_pressed):
-	emit_signal("invert_toggled", button_pressed)
 
 func set_device():
 	if port == null or controllername == null:

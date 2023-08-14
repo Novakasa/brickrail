@@ -88,6 +88,8 @@ class Switch:
         sdir = -1
         if position == _SWITCH_POS_RIGHT:
             sdir = 1
+        if self.get_storage_val(_STORAGE_PULSE_POLARITY) == 1:
+            sdir *= -1
         self.motor.dc(self.get_storage_val(_STORAGE_PULSE_DC)*sdir)
         self.switch_stopwatch.reset()
         self.switch_stopwatch.resume()
