@@ -13,6 +13,7 @@
 
 ### Fixed
 
+- Prevent scanning the same hub (or same name) twice (https://github.com/Novakasa/brickrail/issues/109).
 - Fix issues when trying to assign already used port with a device of different type. User now is warned and asked whether to override or cancel (https://github.com/Novakasa/brickrail/issues/148).
 - Fix crash when trying to switch a switch back to it's original position while already switching. We now allow for switching anytime.
 - Add retries to watchdog message to fix hub programs randomly stopping (https://github.com/Novakasa/brickrail/issues/140).

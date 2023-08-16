@@ -61,6 +61,9 @@ func _on_scan_button_pressed():
 	if new_name == null:
 		push_error("scanned name is null!")
 		return
+	if new_name in Devices.get_ble_controller().hubs:
+		GuiApi.show_warning("Hub '"+new_name+"' already exists.", "Hub '"+new_name+"' already exists.\nNames must be unique throughout all hubs (trains & controllers)!\nTo prevent scanning an already added hub,\nturn all other hubs off except for the one you want to add.")
+		return
 	hub.set_name(new_name)
 
 
