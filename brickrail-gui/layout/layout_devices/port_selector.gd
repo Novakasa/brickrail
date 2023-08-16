@@ -12,7 +12,7 @@ func setup(p_device, p_device_type, label):
 	select(p_device)
 	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
 	update_storage_controls()
-	$ConfirmOverride.set_label("Device already used somewhere else. Override? This will remove the device previously used on this port!")
+	$ConfirmOverride.set_label("[unspecified]")
 	$ConfirmOverride.add_action_button("cancel", "Cancel")
 	$ConfirmOverride.add_action_button("override", "Override")
 
@@ -101,6 +101,10 @@ func set_device(prev_port):
 	if device.device_type != device_type:
 		var action = "override"
 		if device.ref_count > 0:
+			var portname = ["A", "B", "C", "D", "E", "F"][port]
+			var label = "Port "+portname+" on controller '"+controllername+"' already assigned to "+str(device.ref_count)+" other device(s)! Override?\n"
+			label += "WARNING: This will remove the port from its previously assigned device(s)!"
+			$ConfirmOverride.set_label(label)
 			action = yield($ConfirmOverride.get_user_action_coroutine(), "completed")
 		if action == "cancel":
 			port = prev_port
