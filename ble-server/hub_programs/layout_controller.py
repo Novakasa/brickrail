@@ -84,7 +84,6 @@ class Switch:
         return io_hub.storage[8+self.port*16 + i]
     
     def switch(self, position):
-        assert not self.switching
         sdir = -1
         if position == _SWITCH_POS_RIGHT:
             sdir = 1

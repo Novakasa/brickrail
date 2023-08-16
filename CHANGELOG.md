@@ -13,6 +13,7 @@
 
 ### Fixed
 
+- Fix crash when trying to switch a switch back to it's original position while already switching. We now allow for switching anytime.
 - Add retries to watchdog message to fix hub programs randomly stopping (https://github.com/Novakasa/brickrail/issues/140).
 - Fixed program redownload not triggered when the common module "io_hub" has changed after an update (https://github.com/Novakasa/brickrail/issues/147)
 - Fixed issue where BLEServer connect timeout would lead to log and dump files not saved to the correct directory (https://github.com/Novakasa/brickrail/issues/152)

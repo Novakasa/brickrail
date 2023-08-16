@@ -135,11 +135,8 @@ func dev1_to_pos(ble_pos):
 func switch(pos):
 	Logger.info("[%s] switch to: %s" % [logging_module, pos])
 	if motor1 != null and LayoutInfo.control_devices != LayoutInfo.CONTROL_OFF:
-		if dev1_to_pos(motor1.position) == pos and motor1.position != "unknown":
-			#check only here in case ble switch position is unknown
-			pass
 		var motor_pos = pos_to_dev1(pos)
-		if motor_pos != motor1.position:
+		if motor_pos != motor1.position || motor1.switching:
 			Logger.info("[%s] switch motor1 to: %s" % [logging_module, motor_pos])
 			motor1.switch(motor_pos)
 		position_index = switch_positions.find(pos)
