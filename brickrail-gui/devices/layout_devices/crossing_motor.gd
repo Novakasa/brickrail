@@ -7,6 +7,7 @@ var position
 var responsiveness
 var controllername
 var device_type = "crossing_motor"
+var ref_count = 0
 
 const CROSSING_COMMAND_SET_POS = 8
 

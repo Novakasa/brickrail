@@ -8,6 +8,7 @@ var responsiveness
 var controllername
 var device_type = "switch_motor"
 var switching = false
+var ref_count = 0
 
 var position_to_enum = {"left": 0, "right": 1}
 

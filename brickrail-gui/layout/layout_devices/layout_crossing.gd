@@ -44,10 +44,28 @@ func set_pos(p_pos):
 	update()
 
 func set_motor1(device):
+	if motor1 != null:
+		motor1.ref_count -= 1
+		motor1.disconnect("removing", self, "_on_motor1_removing")
 	motor1 = device
+	if motor1 != null:
+		motor1.ref_count += 1
+		motor1.connect("removing", self, "_on_motor1_removing")
 
 func set_motor2(device):
+	if motor2 != null:
+		motor2.ref_count -= 1
+		motor2.disconnect("removing", self, "_on_motor2_removing")
 	motor2 = device
+	if motor2 != null:
+		motor2.ref_count += 1
+		motor2.connect("removing", self, "_on_motor2_removing")
+
+func _on_motor1_removing(_controllername, _port):
+	set_motor1(null)
+
+func _on_motor2_removing(_controllername, _port):
+	set_motor2(null)
 
 func serialize():
 	var struct = {}

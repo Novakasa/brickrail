@@ -126,11 +126,10 @@ class Controller:
             device.update(delta)
     
     def device_execute(self, data):
-        if not data[0] in self.devices:
-            if data[1] < 8:
-                self.assign_switch([data[0]])
-            else:
-                self.assign_crossing([data[0]])
+        if data[1] < 8:
+            self.assign_switch([data[0]])
+        else:
+            self.assign_crossing([data[0]])
         self.devices[data[0]].execute(data[1:])
 
 controller = Controller()

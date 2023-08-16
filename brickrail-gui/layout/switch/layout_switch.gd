@@ -72,6 +72,7 @@ func set_motor1(motor):
 		motor1.disconnect("position_changed", self, "_on_motor1_position_changed")
 		motor1.disconnect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
 		motor1.disconnect("removing", self, "_on_motor1_removing")
+		motor1.ref_count -= 1
 	motor1 = motor
 	
 	
@@ -87,6 +88,7 @@ func set_motor1(motor):
 	motor1.connect("position_changed", self, "_on_motor1_position_changed")
 	motor1.connect("responsiveness_changed", self, "_on_motor1_responsiveness_changed")
 	motor1.connect("removing", self, "_on_motor1_removing")
+	motor1.ref_count += 1
 	
 	emit_signal("motors_changed")
 

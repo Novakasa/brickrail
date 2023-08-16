@@ -12,6 +12,9 @@ func setup(p_device, p_device_type, label):
 	select(p_device)
 	var _err = Devices.connect("layout_controllers_changed", self, "_on_devices_layout_controllers_changed")
 	update_storage_controls()
+	$ConfirmOverride.set_label("Device already used somewhere else. Override? This will remove the device previously used on this port!")
+	$ConfirmOverride.add_action_button("cancel", "Cancel")
+	$ConfirmOverride.add_action_button("override", "Override")
 
 func update_storage_controls():
 	var storage_node = $VBoxContainer/Storage
@@ -19,6 +22,8 @@ func update_storage_controls():
 		storage_node.remove_child(child)
 		child.queue_free()
 	if controllername == null:
+		return
+	if port == null:
 		return
 	var controller: LayoutController = Devices.layout_controllers[controllername]
 	if controller.devices[port] == null:
@@ -85,7 +90,7 @@ func setup_options():
 	port_option.set_items(portlabels, portindices)
 	port_option.select_meta(port)
 
-func set_device():
+func set_device(prev_port):
 	if port == null or controllername == null:
 		emit_signal("device_selected", null)
 		return
@@ -93,15 +98,28 @@ func set_device():
 	if controller.devices[port] == null:
 		controller.set_device(port, device_type)
 	var device = controller.devices[port]
+	if device.device_type != device_type:
+		var action = "override"
+		if device.ref_count > 0:
+			action = yield($ConfirmOverride.get_user_action_coroutine(), "completed")
+		if action == "cancel":
+			port = prev_port
+			setup_options()
+			update_storage_controls()
+			return
+		else:
+			controller.set_device(port, device_type)
+			device = controller.devices[port]
 	update_storage_controls()
 	emit_signal("device_selected", device)
 
 func _on_PortOption_meta_selected(meta):
+	var prev_port = port
 	port = meta
-	set_device()
+	set_device(prev_port)
 
 func _on_ControllerOption_meta_selected(meta):
 	controllername = meta
 	port = null
 	setup_options()
-	set_device()
+	set_device(null)
