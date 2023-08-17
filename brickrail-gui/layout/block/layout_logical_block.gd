@@ -65,6 +65,12 @@ func add_prior_sensor_dirtrack(dirtrack):
 		dirtrack.get_sensor().increment_highlight(1)
 	LayoutInfo.set_layout_changed(true)
 
+func disconnect_prior_sensor_dirtrack():
+	assert(get_prior_sensor_dirtrack() != null)
+	if selected:
+		nodes[-1].sensors.sensor_dirtracks["enter"].get_sensor().increment_highlight(-1)
+	nodes[-1].sensors.set_sensor_dirtrack("enter", null)
+
 func get_prior_sensor_dirtrack():
 	return nodes[-1].sensors.sensor_dirtracks["enter"]
 
