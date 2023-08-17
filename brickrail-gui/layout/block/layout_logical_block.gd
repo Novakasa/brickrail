@@ -61,6 +61,8 @@ func add_prior_sensor_dirtrack(dirtrack):
 	if dirtrack.get_sensor() == null:
 		dirtrack.add_sensor(LayoutSensor.new())
 	nodes[-1].sensors.set_sensor_dirtrack("enter", dirtrack)
+	if selected:
+		dirtrack.get_sensor().increment_highlight(1)
 	LayoutInfo.set_layout_changed(true)
 
 func get_prior_sensor_dirtrack():
@@ -200,9 +202,21 @@ func select():
 	selected=true
 	LayoutInfo.select(self)
 	section.set_track_attributes("block", block_id)
+	for facing in [1, -1]:
+		var sensors = nodes[facing].get_sensors().sensor_dirtracks
+		for key in sensors:
+			if sensors[key] == null:
+				continue
+			sensors[key].get_sensor().increment_highlight(1)
 	emit_signal("selected")
 
 func unselect():
 	selected=false
 	section.set_track_attributes("block", block_id)
+	for facing in [1, -1]:
+		var sensors = nodes[facing].get_sensors().sensor_dirtracks
+		for key in sensors:
+			if sensors[key] == null:
+				continue
+			sensors[key].get_sensor().increment_highlight(-1)
 	emit_signal("unselected")

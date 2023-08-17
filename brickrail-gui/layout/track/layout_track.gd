@@ -429,6 +429,7 @@ func add_sensor(p_sensor):
 func set_sensor(p_sensor):
 	if sensor != null:
 		sensor.disconnect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		sensor.disconnect("highlight_changed", self, "_on_sensor_highlight_changed")
 		LayoutInfo.sensors.erase(sensor)
 		LayoutInfo.emit_signal("sensors_changed")
 		
@@ -438,6 +439,7 @@ func set_sensor(p_sensor):
 	
 	if sensor != null:
 		sensor.connect("marker_color_changed", self, "_on_sensor_marker_color_changed")
+		sensor.connect("highlight_changed", self, "_on_sensor_highlight_changed")
 		LayoutInfo.sensors.append(sensor)
 		LayoutInfo.emit_signal("sensors_changed")
 	
@@ -453,6 +455,9 @@ func load_sensor(struct):
 func _on_sensor_marker_color_changed():
 	update()
 	emit_signal("states_changed", get_orientation())
+
+func _on_sensor_highlight_changed():
+	update()
 
 func remove_sensor():
 	set_sensor(null)
@@ -550,8 +555,11 @@ func get_shader_states(slot):
 
 func _draw():
 	if sensor != null:
+		if sensor.highlight > 0:
+			draw_circle(get_center()*LayoutInfo.spacing, 0.15*LayoutInfo.spacing, Settings.colors["tertiary"])
 		var color = sensor.get_color()
 		draw_circle(get_center()*LayoutInfo.spacing, 0.05*LayoutInfo.spacing, color)
+		
 	for dirtrack in directed_tracks.values():
 		if dirtrack.facing_filter != null:
 			var color = Settings.colors["white"]

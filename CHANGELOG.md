@@ -7,6 +7,7 @@
 
 ### Added
 
+- Sensors associated with a selected logical block are now highlighted.
 - Trains and Blocks can now be renamed by clicking their names in the inspector (https://github.com/Novakasa/brickrail/issues/122).
 - Added debug color buffer and plot written to file after unexpected Marker (https://github.com/Novakasa/brickrail/issues/144)
 - Spacebar now triggers emergency stop. For the extra urgent emergencies.
