@@ -130,11 +130,6 @@ class Controller:
             new_device = Crossing(port)
         self.devices[port] = new_device
         return new_device
-    
-    def ensure_crossing(self, data):
-        port = data[0]
-        crossing = Crossing(port)
-        self.devices[port] = crossing
         
     def update(self, delta):
         for device in self.devices.values():
