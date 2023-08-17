@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
 	"devices": {
 		"trains": [
 			{
@@ -148,8 +149,7 @@
 				},
 				"switches": {
 					"E": {
-						"motor1_inverted": false,
-						"motor2_inverted": false
+
 					}
 				}
 			},
@@ -488,11 +488,10 @@
 							"port": 0,
 							"storage": {
 								"0": 100,
-								"1": 1000
+								"1": 1000,
+								"2": 0
 							}
-						},
-						"motor1_inverted": false,
-						"motor2_inverted": false
+						}
 					}
 				}
 			},
@@ -617,7 +616,7 @@
 		],
 		"blocks": [
 			{
-				"name": "block0",
+				"block_name": "block0",
 				"section": {
 					"tracks": [
 						{
@@ -653,10 +652,18 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
-				"name": "block1",
+				"block_name": "block1",
 				"section": {
 					"tracks": [
 						{
@@ -692,10 +699,18 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
-				"name": "block2",
+				"block_name": "block2",
 				"section": {
 					"tracks": [
 						{
@@ -731,10 +746,18 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
-				"name": "block3",
+				"block_name": "block3",
 				"section": {
 					"tracks": [
 						{
@@ -770,10 +793,18 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			},
 			{
-				"name": "block4",
+				"block_name": "block4",
 				"section": {
 					"tracks": [
 						{
@@ -809,17 +840,26 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
 				}
 			}
 		],
 		"trains": [
 			{
-				"name": "train0",
+				"train_name": "train0",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ff000000",
 				"num_wagons": 4,
-				"blockname": "block2",
+				"random_targets": true,
+				"block_id": "block2",
 				"blockindex": 0,
 				"ble_train": "city-blue"
 			}

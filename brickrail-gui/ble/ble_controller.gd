@@ -50,7 +50,7 @@ func _on_hub_removing(hubname):
 
 func _on_hub_state_changed(_hub=null):
 	if $BLECommunicator.connected:
-		if not are_hubs_ready() and LayoutInfo.control_devices==LayoutInfo.CONTROL_ALL:
+		if not are_hubs_ready() and LayoutInfo.control_devices!=LayoutInfo.CONTROL_OFF:
 			LayoutInfo.emergency_stop()
 		var status = get_hub_status()
 		if len(status)>0:

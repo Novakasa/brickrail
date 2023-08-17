@@ -7,13 +7,14 @@
 
 ### Added
 
+- Trains and Blocks can now be renamed by clicking their names in the inspector (https://github.com/Novakasa/brickrail/issues/122).
+- Added debug color buffer and plot written to file after unexpected Marker (https://github.com/Novakasa/brickrail/issues/144)
 - Spacebar now triggers emergency stop. For the extra urgent emergencies.
 - Added automatic level crossings. Add a crossing in the track inspector, assign motors to layout controller ports and have them automatically run based on train routes (https://github.com/Novakasa/brickrail/issues/146).
-- Added debug color buffer and plot written to file after unexpected Marker (https://github.com/Novakasa/brickrail/issues/144)
-- Trains and Blocks can now be renamed by clicking their names in the inspector (https://github.com/Novakasa/brickrail/issues/122).
 
 ### Fixed
 
+- Fix emergency stop not triggered due to hub state when control devices is set to "switches" (https://github.com/Novakasa/brickrail/issues/156).
 - Prevent scanning the same hub (or same name) twice (https://github.com/Novakasa/brickrail/issues/109).
 - Fix issues when trying to assign already used port with a device of different type. User now is warned and asked whether to override or cancel (https://github.com/Novakasa/brickrail/issues/148).
 - Fix crash when trying to switch a switch back to it's original position while already switching. We now allow for switching anytime.
