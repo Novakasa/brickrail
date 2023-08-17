@@ -8,6 +8,9 @@ func _init():
 func set_body_color(color):
 	material.set_shader_param("body_color", color)
 
+func set_border_color(color):
+	material.set_shader_param("border_color", color)
+
 func set_color(color):
 	material.set_shader_param("id_color", color)
 

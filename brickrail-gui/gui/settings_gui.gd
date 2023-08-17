@@ -8,6 +8,7 @@ func _ready():
 	$PresetNameDialog.add_text_edit()
 	$PresetNameDialog.add_action_button("cancel", "Cancel")
 	$PresetNameDialog.add_action_button("OK", "OK")
+	$AltTrainColorCheckbox.pressed = Settings.alt_train_color
 
 func _on_settings_presets_changed():
 	$BackgroundColor.color = Settings.colors["background"]
@@ -65,3 +66,7 @@ func _on_PresetAddButton_pressed():
 
 func _on_PresetRemoveButton_pressed():
 	Settings.remove_color_preset(Settings.color_preset)
+
+
+func _on_AltTrainColorCheckbox_toggled(button_pressed):
+	Settings.set_alt_train_color(button_pressed)

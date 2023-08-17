@@ -79,6 +79,9 @@ func _init(p_name):
 	logging_module = "virtual-" + train_id
 	var _err = Settings.connect("colors_changed", self, "_on_settings_colors_changed")
 	
+	color = Settings.colors["tertiary"]*0.8
+	color.a = 1.0
+	
 	add_wagons(4)
 	
 	_err = connect("visibility_changed", self, "_on_visibility_changed")
@@ -109,6 +112,7 @@ func set_color(p_color):
 	color = p_color
 	for wagon in wagons:
 		wagon.set_color(color)
+	update_wagon_visuals()
 	if train_id != "drag-train":
 		LayoutInfo.set_layout_changed(true)
 
@@ -343,15 +347,22 @@ func set_hover(p_hover):
 	update_wagon_visuals()
 
 func update_wagon_visuals():
-	var wagon_color
+	var wagon_color = body_color
+	var border_color = body_color
 	if selected:
+		border_color = selected_color
 		wagon_color = selected_color
-	else:
-		wagon_color = body_color
+	if Settings.alt_train_color:
+		wagon_color = color
+		border_color = color
+		if selected:
+			border_color = Settings.colors["white"]
 	if hover:
 		wagon_color = wagon_color*1.7
+		border_color = border_color * 1.7
 	for wagon in wagons:
 		wagon.set_body_color(wagon_color)
+		wagon.set_border_color(border_color)
 		wagon.set_facing(0)
 		wagon.set_heading(0)
 		wagon.set_color(color)

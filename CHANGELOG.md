@@ -7,6 +7,7 @@
 
 ### Added
 
+- Added alternative train colors setting that makes each train color much more obvious at the cost of a unified color scheme.
 - Improved reverse entry marker UX. User can remove the marker and cancel adding one (https://github.com/Novakasa/brickrail/issues/133).
 - Markers associated with a selected logical block are now highlighted.
 - Trains and Blocks can now be renamed by clicking their names in the inspector (https://github.com/Novakasa/brickrail/issues/122).

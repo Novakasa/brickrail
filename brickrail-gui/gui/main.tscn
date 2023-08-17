@@ -57,7 +57,7 @@ split_offset = 123
 
 [node name="VBoxContainer" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer"]
 margin_right = 224.0
-margin_bottom = 499.0
+margin_bottom = 530.0
 
 [node name="HBoxContainer" type="HBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer"]
 margin_right = 224.0
@@ -79,13 +79,14 @@ text = "Disconnect hubs"
 [node name="TabContainer" type="TabContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer"]
 margin_top = 31.0
 margin_right = 224.0
-margin_bottom = 468.0
+margin_bottom = 499.0
 mouse_filter = 1
 size_flags_vertical = 3
 tab_align = 0
 use_hidden_tabs_for_min_size = true
 
 [node name="Trains" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer"]
+visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -126,19 +127,18 @@ margin_bottom = 31.0
 size_flags_horizontal = 3
 
 [node name="AddLayoutControllerButton" type="Button" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Controllers/VBoxContainer"]
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 27.0
 text = "Add layout controller hub"
 
 [node name="controllers" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Controllers/VBoxContainer"]
 margin_top = 31.0
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 31.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
 [node name="Settings" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer"]
-visible = false
 anchor_right = 1.0
 anchor_bottom = 1.0
 margin_left = 5.0
@@ -147,9 +147,15 @@ margin_right = -5.0
 margin_bottom = -5.0
 script = ExtResource( 4 )
 
+[node name="AltTrainColorCheckbox" type="CheckBox" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
+margin_right = 214.0
+margin_bottom = 27.0
+text = "Alternative train color"
+
 [node name="GridContainer" type="GridContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
-margin_right = 230.0
-margin_bottom = 89.0
+margin_top = 31.0
+margin_right = 214.0
+margin_bottom = 120.0
 columns = 2
 
 [node name="RenderModeLabel" type="Label" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer"]
@@ -196,46 +202,46 @@ margin_bottom = 89.0
 text = "Remove preset"
 
 [node name="BackgroundColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
-margin_top = 93.0
-margin_right = 230.0
-margin_bottom = 120.0
+margin_top = 124.0
+margin_right = 214.0
+margin_bottom = 151.0
 size_flags_horizontal = 3
 
 [node name="SurfaceColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
-margin_top = 124.0
-margin_right = 230.0
-margin_bottom = 151.0
-
-[node name="PrimaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 155.0
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 182.0
 
-[node name="SecondaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
+[node name="PrimaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 186.0
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 213.0
 
-[node name="TertiaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
+[node name="SecondaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 217.0
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 244.0
 
-[node name="WhiteColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
+[node name="TertiaryColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
 margin_top = 248.0
-margin_right = 230.0
+margin_right = 214.0
 margin_bottom = 275.0
+
+[node name="WhiteColor" type="ColorPickerButton" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings"]
+margin_top = 279.0
+margin_right = 214.0
+margin_bottom = 306.0
 
 [node name="PresetNameDialog" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings" instance=ExtResource( 8 )]
 
 [node name="ConnectBLEServerButton" type="Button" parent="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer"]
-margin_top = 472.0
+margin_top = 503.0
 margin_right = 224.0
-margin_bottom = 499.0
+margin_bottom = 530.0
 text = "Connect BLE Server"
 
 [node name="Notifications" type="VBoxContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer"]
-margin_top = 507.0
+margin_top = 538.0
 margin_right = 224.0
 margin_bottom = 689.0
 size_flags_horizontal = 3
@@ -249,7 +255,7 @@ window_title = "Info"
 
 [node name="ScrollContainer" type="ScrollContainer" parent="VBoxContainer2/HSplitContainer/VSplitContainer/Notifications"]
 margin_right = 224.0
-margin_bottom = 151.0
+margin_bottom = 120.0
 size_flags_horizontal = 3
 size_flags_vertical = 3
 
@@ -258,9 +264,9 @@ margin_right = 224.0
 size_flags_horizontal = 3
 
 [node name="ClearButton" type="Button" parent="VBoxContainer2/HSplitContainer/VSplitContainer/Notifications"]
-margin_top = 155.0
+margin_top = 124.0
 margin_right = 224.0
-margin_bottom = 182.0
+margin_bottom = 151.0
 text = "Clear"
 
 [node name="LayoutGui" type="HSplitContainer" parent="VBoxContainer2/HSplitContainer"]
@@ -548,6 +554,7 @@ script = ExtResource( 11 )
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/HBoxContainer/DisconnectAllButton" to="." method="_on_DisconnectAllButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Trains/VBoxContainer/AddTrainButton" to="." method="_on_AddTrainButton_pressed"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Controllers/VBoxContainer/AddLayoutControllerButton" to="." method="_on_AddLayoutControllerButton_pressed"]
+[connection signal="toggled" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings/AltTrainColorCheckbox" to="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_AltTrainColorCheckbox_toggled"]
 [connection signal="item_selected" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/RenderModeOption" to="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_RenderModeOption_item_selected"]
 [connection signal="meta_selected" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/PresetSelector" to="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PresetSelector_meta_selected"]
 [connection signal="pressed" from="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings/GridContainer/PresetAddButton" to="VBoxContainer2/HSplitContainer/VSplitContainer/VBoxContainer/TabContainer/Settings" method="_on_PresetAddButton_pressed"]

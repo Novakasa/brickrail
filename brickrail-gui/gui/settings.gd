@@ -26,6 +26,8 @@ var default_presets = []
 var color_preset = "custom"
 var colors = {}
 
+var alt_train_color = false
+
 var hub_program_hashes = {}
 var hub_io_hub_hashes = {}
 
@@ -47,6 +49,10 @@ func _ready():
 	
 func update_clear_color():
 	VisualServer.set_default_clear_color(colors["background"])
+
+func set_alt_train_color(val):
+	alt_train_color = val
+	emit_signal("colors_changed")
 
 func set_color(cname, color):
 	if color_preset != "custom":
@@ -96,6 +102,7 @@ func save_configfile():
 	data["hub_program_hashes"] = hub_program_hashes
 	data["hub_io_hub_hashes"] = hub_io_hub_hashes
 	data["layout_train_positions"] = layout_train_positions
+	data["alt_train_color"] = alt_train_color
 	var jsonstr = JSON.print(data, "\t")
 	var configfil = File.new()
 	configfil.open("user://config.json", File.WRITE)
@@ -139,6 +146,9 @@ func read_configfile():
 	
 	if "layout_train_positions" in data:
 		layout_train_positions = data.layout_train_positions.duplicate()
+	
+	if "alt_train_color" in data:
+		alt_train_color = data.alt_train_color
 	
 	emit_signal("render_mode_changed")
 	emit_signal("colors_changed")

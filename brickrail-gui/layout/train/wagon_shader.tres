@@ -7,6 +7,14 @@ uniform int facing = 1;
 uniform int heading = 1;
 uniform vec4 body_color: hint_color = vec4(1.0);
 uniform vec4 id_color: hint_color = vec4(0.0, 0.0, 0.0, 1.0);
+uniform vec4 border_color: hint_color = vec4(1.0);
+
+float sd_line_segment(in vec2 p, in vec2 a, in vec2 b) {
+	vec2 ba = b - a;
+	vec2 pa = p - a;
+	float h = clamp(dot(pa, ba) / dot(ba, ba), 0., 1.);
+	return length(pa - h * ba);
+}
 
 float sd_circle(vec2 pos, vec2 center, float radius) {
 	return length(pos-center)-radius;
@@ -57,9 +65,8 @@ void fragment() {
 	float main_body;
 	vec2 position = UV;
 	vec2 rect_size = vec2(0.4, 0.3);
-	main_body = sd_rect(position, vec2(0.5, 0.5), rect_size);
-	main_body = sd_merge(main_body, sd_circle(position, vec2(0.5, 0.5)-vec2(rect_size.x*0.5, 0.0), rect_size.y*0.5));
-	main_body = sd_merge(main_body, sd_circle(position, vec2(0.5, 0.5)+vec2(rect_size.x*0.5, 0.0), rect_size.y*0.5));
+	
+	main_body = sd_line_segment(position, vec2(0.5, 0.5)-vec2(rect_size.x*0.5, 0.0), vec2(0.5, 0.5)+vec2(rect_size.x*0.5, 0.0)) - rect_size.y*0.5;
 	
 	float s = sign(float(heading));
 	float heading_arrow = sd_triangle( position, 
@@ -69,9 +76,11 @@ void fragment() {
 	
 	float facing_window = sd_circle(position, vec2(0.5, 0.5)+vec2(rect_size.x*0.5*sign(float(facing)), 0.0), rect_size.y*0.35);
 	
-	COLOR = body_color;
+	COLOR = border_color;
 	COLOR.a = 0.0;
-	mix_sdf(main_body, COLOR, body_color);
+	float border = max(main_body - 0.00, -main_body - 0.06);
+	mix_sdf(main_body + 0.03, COLOR, body_color);
+	mix_sdf(border, COLOR, border_color);
 	if (heading != 0) mix_sdf(heading_arrow, COLOR, body_color);
 	if (facing != 0) mix_sdf(facing_window, COLOR, vec4(vec3(0.0), 1.0));
 	if (facing != 0) mix_sdf(facing_window+0.05, COLOR, id_color);
@@ -83,3 +92,4 @@ shader_param/facing = 1
 shader_param/heading = 1
 shader_param/body_color = Color( 0.65098, 0.52549, 0.14902, 1 )
 shader_param/id_color = Color( 0.12549, 0.764706, 0.780392, 1 )
+shader_param/border_color = Color( 1, 1, 1, 1 )
