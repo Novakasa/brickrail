@@ -72,13 +72,8 @@ func _on_section_track_added(_track):
 func _on_CreateBlock_pressed():
 	if section.get_block_blocked_reason() != null:
 		return
-	var index = 1
-	var new_name = "block" + str(index)
-	while new_name in LayoutInfo.blocks:
-		index += 1
-		new_name = "block" + str(index)
 	
-	LayoutInfo.create_block(new_name, section)
+	LayoutInfo.create_block(section)
 	_on_section_track_added(null)
 
 	# $CreateBlockPopup/VBoxContainer/NameEdit.text = new_name
@@ -93,8 +88,7 @@ func _on_AddSensor_pressed():
 	update_speed_select()
 
 func _on_BlockOKButton_pressed():
-	var block_name = $CreateBlockPopup/VBoxContainer/NameEdit.text
-	LayoutInfo.create_block(block_name, section)
+	LayoutInfo.create_block(section)
 	_on_section_track_added(null)
 	$CreateBlockPopup.hide()
 

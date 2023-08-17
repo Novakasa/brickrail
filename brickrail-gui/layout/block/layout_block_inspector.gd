@@ -27,20 +27,14 @@ func _on_block_unselected():
 	queue_free()
 
 func _on_AddTrain_pressed():
-	var index = 1
-	var new_name = "train" + str(index)
-	while new_name in LayoutInfo.trains:
-		index += 1
-		new_name = "train" + str(index)
-	var train: LayoutTrain = LayoutInfo.create_train(new_name)
+	var train: LayoutTrain = LayoutInfo.create_train()
 	train.set_current_block(block)
 	
 	# $AddTrainDialog.popup_centered()
 	# $AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.text = new_name
 
 func _on_AddTrainDialog_confirmed():
-	var train_id = $AddTrainDialog/VBoxContainer/GridContainer/train_idEdit.get_text()
-	var train: LayoutTrain = LayoutInfo.create_train(train_id)
+	var train: LayoutTrain = LayoutInfo.create_train()
 	train.set_current_block(block)
 
 func _on_AddPriorSensorButton_pressed():

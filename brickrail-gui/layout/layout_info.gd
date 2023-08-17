@@ -220,7 +220,7 @@ func load(struct):
 		for block_data in struct.blocks:
 			var section = LayoutSection.new()
 			section.load(block_data.section)
-			var block = create_block(block_data.name, section)
+			var block = create_block(section)
 			if "block_name" in block_data:
 				block.set_name(block_data.block_name)
 			if "prior_sensors" in block_data:
@@ -242,7 +242,7 @@ func load(struct):
 	
 	if "trains" in struct:
 		for train_data in struct.trains:
-			var train = create_train(train_data.name)
+			var train = create_train()
 			if "train_name" in train_data:
 				train.set_name(train_data.train_name)
 			if "fixed_facing" in train_data:
@@ -259,6 +259,9 @@ func load(struct):
 				train_data["block_id"] = train_data["blockname"]
 
 			var home_pos_dict = {}
+			if not train_data.block_id in blocks:
+				GuiApi.show_warning("Train '" + train.train_name + "' position moved due to change in layout format!")
+				train_data.block_id = get_unoccupied_block_id()
 			home_pos_dict["block_id"] = train_data.block_id
 			home_pos_dict["index"] = train_data.blockindex
 			home_pos_dict["facing"] = int(train_data.facing)
@@ -271,6 +274,13 @@ func load(struct):
 				train.virtual_train.set_color(Color(train_data.color))
 			if "num_wagons" in train_data:
 				train.virtual_train.set_num_wagons(int(train_data.num_wagons))
+
+func get_unoccupied_block_id():
+	for block_id in blocks:
+		if not blocks[block_id].get_occupied():
+			return block_id
+	GuiApi.show_error("Couldn't get unoccupied block_id!")
+	assert(false)
 
 func store_train_positions():
 	Logger.info("[LayoutInfo] storing train positions for file %s..." % layout_file)
@@ -339,11 +349,12 @@ func get_dirtrack_from_struct(struct):
 	var track = get_track_from_struct(struct)
 	return track.get_directed_to(struct.next_slot)
 
-func create_block(p_name, section):
-	assert(not p_name in blocks)
+func create_block(section):
+	var block_id = "block" + str(len(blocks))
+	assert(not block_id in blocks)
 	var block = BlockScene.instance()
-	block.setup(p_name)
-	blocks[p_name] = block
+	block.setup(block_id)
+	blocks[block_id] = block
 	block.set_section(section)
 	grid.get_layer(section.tracks[0].l_idx).add_child(block)
 	block.connect("removing", self, "_on_block_removing")
@@ -363,11 +374,12 @@ func _on_block_removing(p_name):
 	blocks.erase(p_name)
 	set_layout_changed(true)
 
-func create_train(p_name):
-	assert(not p_name in trains)
-	var train = LayoutTrain.new(p_name)
+func create_train():
+	var train_id = "train"+str(len(trains))
+	assert(not train_id in trains)
+	var train = LayoutTrain.new(train_id)
 	grid.add_child(train)
-	trains[p_name] = train
+	trains[train_id] = train
 	train.connect("removing", self, "_on_train_removing")
 	train.connect("route_changed", self, "_on_train_route_changed")
 	set_layout_changed(true)

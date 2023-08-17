@@ -145,7 +145,6 @@ func update_control_ble_train():
 func serialize():
 	var struct = {}
 	struct["train_name"] = train_name
-	struct["name"] = train_id
 	struct["facing"] = home_position.facing
 	struct["reversing_behavior"] = reversing_behavior
 	struct["color"] = virtual_train.color.to_html()
@@ -388,6 +387,9 @@ func reset_to_home_position():
 	reset_to_position(home_position)
 	
 func reset_to_position(pos_dict):
+	if not pos_dict.block_id in LayoutInfo.blocks:
+		GuiApi.show_error("Couldn't restore position for train '"+train_name+"'!", "Probably because layout file format changed after brickrail update.")
+		return
 	var logical_block = LayoutInfo.blocks[pos_dict.block_id].logical_blocks[pos_dict.index]
 	set_facing(pos_dict.facing)
 	set_current_block(logical_block, true)

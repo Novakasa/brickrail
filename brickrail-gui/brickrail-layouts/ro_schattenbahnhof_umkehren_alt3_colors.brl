@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
 	"devices": {
 		"trains": [
 			{
@@ -1631,7 +1632,6 @@
 		],
 		"blocks": [
 			{
-				"name": "block0",
 				"block_name": "block0",
 				"section": {
 					"tracks": [
@@ -1686,7 +1686,6 @@
 				}
 			},
 			{
-				"name": "block6_",
 				"block_name": "block6_",
 				"section": {
 					"tracks": [
@@ -1741,8 +1740,7 @@
 				}
 			},
 			{
-				"name": "block7_",
-				"block_name": "block7_",
+				"block_name": "block_upper_south",
 				"section": {
 					"tracks": [
 						{
@@ -1796,7 +1794,6 @@
 				}
 			},
 			{
-				"name": "block6",
 				"block_name": "block6",
 				"section": {
 					"tracks": [
@@ -1851,7 +1848,6 @@
 				}
 			},
 			{
-				"name": "block7",
 				"block_name": "block7",
 				"section": {
 					"tracks": [
@@ -1906,7 +1902,6 @@
 				}
 			},
 			{
-				"name": "block5",
 				"block_name": "block5",
 				"section": {
 					"tracks": [
@@ -1954,7 +1949,6 @@
 				}
 			},
 			{
-				"name": "block6__",
 				"block_name": "block6__",
 				"section": {
 					"tracks": [
@@ -2002,7 +1996,6 @@
 				}
 			},
 			{
-				"name": "block7__",
 				"block_name": "block7__",
 				"section": {
 					"tracks": [
@@ -2053,19 +2046,17 @@
 		"trains": [
 			{
 				"train_name": "train1",
-				"name": "train1",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ff00b007",
 				"num_wagons": 4,
 				"random_targets": true,
-				"block_id": "block6__",
+				"block_id": "block0",
 				"blockindex": 0,
 				"ble_train": "city-green"
 			},
 			{
 				"train_name": "train-red",
-				"name": "train-red",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ffff0000",
@@ -2077,13 +2068,12 @@
 			},
 			{
 				"train_name": "train2",
-				"name": "train2",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ffff9500",
 				"num_wagons": 5,
 				"random_targets": true,
-				"block_id": "block7__",
+				"block_id": "block1",
 				"blockindex": 0,
 				"ble_train": "city-orange"
 			}

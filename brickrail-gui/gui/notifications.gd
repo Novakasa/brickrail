@@ -16,7 +16,7 @@ func clear_notifications():
 		child.queue_free()
 	$ClearButton.disabled=true
 
-func show_notification(text, more_info, type):
+func show_notification(text, more_info, type, show_more_immediately=false):
 	$ClearButton.disabled=false
 	var notification = HBoxContainer.new()
 	notification.size_flags_horizontal = SIZE_EXPAND_FILL
@@ -36,6 +36,8 @@ func show_notification(text, more_info, type):
 		notification.add_child(button)
 		var _err = button.connect("pressed", self, "show_more_info", [more_info])
 	container.add_child(notification)
+	if show_more_immediately:
+		show_more_info(more_info)
 	
 	yield(get_tree(), "idle_frame")
 	$ScrollContainer.scroll_vertical = $ScrollContainer.get_v_scrollbar().max_value

@@ -127,6 +127,7 @@ func _on_LayoutSave_pressed():
 
 func save_layout(path):
 	var struct = {}
+	struct["version"] = "1.0.0"
 	struct["devices"] = Devices.serialize()
 	struct["layout"] = LayoutInfo.serialize()
 	var serial = JSON.print(struct, "\t")
@@ -161,6 +162,8 @@ func open_layout(path):
 	file.open(path, 1)
 	var serial = file.get_as_text()
 	var struct = JSON.parse(serial).result
+	if not "version" in struct:
+		GuiApi.show_warning("Old layout file version, trying to convert...", "Attempting to load an old layout file version.\nPlease backup the layout before overwriting it!", true)
 	if not "layout" in struct:
 		LayoutInfo.load(struct)
 		return

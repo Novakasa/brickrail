@@ -85,7 +85,6 @@ func depends_on(dirtrack):
 
 func serialize():
 	var result = {}
-	result["name"] = block_id
 	result["block_name"] = block_name
 	if section != null:
 		result["section"] = section.serialize()
