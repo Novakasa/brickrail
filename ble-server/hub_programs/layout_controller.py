@@ -27,6 +27,14 @@ _STORAGE_PULSE_DC = const(0)
 _STORAGE_PULSE_DURATION = const(1)
 _STORAGE_PULSE_POLARITY = const(2)
 
+_DEVICE_SWITCH = const(0)
+_DEVICE_CROSSING = const(1)
+
+def get_device_from_command(command):
+    if command < _CROSSING_COMMAND_SET_POS:
+        return _DEVICE_SWITCH
+    return _DEVICE_CROSSING
+
 def get_port(index):
     try: # Primehub
         return [Port.A, Port.B, Port.C, Port.D, Port.E, Port.F][index]
@@ -47,6 +55,7 @@ class Crossing:
         self.position = _CROSSING_POS_UP
         self.port = port
         self.stopwatch = StopWatch()
+        self.device_type = _DEVICE_CROSSING
     
     def get_storage_val(self, i):
         return io_hub.storage[8+self.port*16 + i]
@@ -79,6 +88,7 @@ class Switch:
         self.pulse_duration = pulse_duration
         self.switch_stopwatch = StopWatch()
         self.switching = False
+        self.device_type = _DEVICE_SWITCH
     
     def get_storage_val(self, i):
         return io_hub.storage[8+self.port*16 + i]
@@ -111,12 +121,17 @@ class Controller:
     def __init__(self):
         self.devices = {}
     
-    def assign_switch(self, data):
-        port = data[0]
-        switch = Switch(port)
-        self.devices[port] = switch
+    def ensure_device(self, port, device_type):
+        if port in self.devices and self.devices[port].device_type == device_type:
+            return self.devices[port]
+        if device_type == _DEVICE_SWITCH:
+            new_device = Switch(port)
+        else:
+            new_device = Crossing(port)
+        self.devices[port] = new_device
+        return new_device
     
-    def assign_crossing(self, data):
+    def ensure_crossing(self, data):
         port = data[0]
         crossing = Crossing(port)
         self.devices[port] = crossing
@@ -126,11 +141,9 @@ class Controller:
             device.update(delta)
     
     def device_execute(self, data):
-        if data[1] < 8:
-            self.assign_switch([data[0]])
-        else:
-            self.assign_crossing([data[0]])
-        self.devices[data[0]].execute(data[1:])
+        port = data[0]
+        device_type = get_device_from_command(data[1])
+        self.ensure_device(port, device_type).execute(data[1:])
 
 controller = Controller()
 io_hub = IOHub(controller)
