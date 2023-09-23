@@ -45,7 +45,7 @@
 				"devices": {
 					"0": "switch_motor",
 					"1": "switch_motor",
-					"2": null,
+					"2": "crossing_motor",
 					"3": null
 				}
 			},
@@ -1601,6 +1601,17 @@
 					"S": [
 						"center"
 					]
+				},
+				"crossing": {
+					"motor1": {
+						"controller": "city-lime",
+						"port": 2,
+						"storage": {
+							"0": 100,
+							"1": 2200,
+							"2": 0
+						}
+					}
 				}
 			},
 			{
@@ -1686,7 +1697,7 @@
 				}
 			},
 			{
-				"block_name": "block6_",
+				"block_name": "block1",
 				"section": {
 					"tracks": [
 						{
@@ -1740,7 +1751,7 @@
 				}
 			},
 			{
-				"block_name": "block_upper_south",
+				"block_name": "block2",
 				"section": {
 					"tracks": [
 						{
@@ -1794,7 +1805,7 @@
 				}
 			},
 			{
-				"block_name": "block6",
+				"block_name": "block3",
 				"section": {
 					"tracks": [
 						{
@@ -1848,7 +1859,7 @@
 				}
 			},
 			{
-				"block_name": "block7",
+				"block_name": "block4",
 				"section": {
 					"tracks": [
 						{
@@ -1949,7 +1960,7 @@
 				}
 			},
 			{
-				"block_name": "block6__",
+				"block_name": "block6",
 				"section": {
 					"tracks": [
 						{
@@ -1996,7 +2007,7 @@
 				}
 			},
 			{
-				"block_name": "block7__",
+				"block_name": "block7",
 				"section": {
 					"tracks": [
 						{
@@ -2045,24 +2056,24 @@
 		],
 		"trains": [
 			{
-				"train_name": "train1",
+				"train_name": "train0",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ff00b007",
 				"num_wagons": 4,
 				"random_targets": true,
-				"block_id": "block0",
+				"block_id": "block2",
 				"blockindex": 0,
 				"ble_train": "city-green"
 			},
 			{
-				"train_name": "train-red",
+				"train_name": "train1",
 				"facing": 1,
 				"reversing_behavior": "off",
 				"color": "ffff0000",
 				"num_wagons": 5,
 				"random_targets": true,
-				"block_id": "block5",
+				"block_id": "block1",
 				"blockindex": 0,
 				"ble_train": "city-red"
 			},
@@ -2073,8 +2084,8 @@
 				"color": "ffff9500",
 				"num_wagons": 5,
 				"random_targets": true,
-				"block_id": "block1",
-				"blockindex": 0,
+				"block_id": "block7",
+				"blockindex": 1,
 				"ble_train": "city-orange"
 			}
 		]
