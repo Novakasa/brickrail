@@ -25,7 +25,7 @@ func start_process():
 		var process_command
 		if OS.has_feature("standalone"):
 			Logger.info("[%s] starting linux ble_server binary" % [logging_module])
-			process_command = "chmod +x ./ble-server-linux/_internal/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-linux/ble_server && ./ble-server-linux/ble_server"
+			process_command = "chmod +x ./ble-server-linux/mpy_cross_v6/mpy-cross && chmod +x ./ble-server-linux/ble_server && ./ble-server-linux/ble_server"
 		else:
 			# .env is a conda environment
 			Logger.info("[%s] starting linux ble_server.py" % [logging_module])
