@@ -40,7 +40,9 @@ class BLEProject:
                 #this handles the flush command by doing nothing.
                 #you might want to specify some extra behavior here.
                 pass
-        sys.stdout = Logger() 
+        logger = Logger()
+        sys.stdout = logger 
+        sys.stderr = logger
     
     def add_hub(self, name, program_name):
         self.hubs[name] = BLEHub(name, program_name, self.out_queue)

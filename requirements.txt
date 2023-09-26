@@ -1,5 +1,5 @@
 pybricksdev == 1.0.0a46
 websockets
-pyinstaller == 5.13.2
+pyinstaller == 5.13.0
 numpy
 matplotlib
