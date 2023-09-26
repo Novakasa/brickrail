@@ -40,11 +40,7 @@ func start_and_connect_to_process():
 	status = "connecting"
 	emit_signal("status_changed")
 
-	var err = _client.connect_to_url(websocket_url)
-	if err != OK:
-		Logger.error("[%s] Connect error: '%s'" % [logging_module])
-		set_process(false)
-		GuiApi.show_error("Unable to initialize connection to BLE Server python process!")
+	connect_client()
 	
 	var timer = get_tree().create_timer(15.0)
 	var result = yield(Await.first_signal_objs([timer, self], ["timeout", "connected"]), "completed")
@@ -55,7 +51,15 @@ func start_and_connect_to_process():
 		busy = false
 		emit_signal("status_changed")
 		return "Err"
+	print("connected to ble server")
 	return "OK"
+
+func connect_client():
+	var err = _client.connect_to_url(websocket_url)
+	if err != OK:
+		Logger.error("[%s] Connect error: '%s'" % [logging_module])
+		set_process(false)
+		GuiApi.show_error("Unable to initialize connection to BLE Server python process!")
 
 func disconnect_and_kill_process():
 	status = "disconnecting"
@@ -72,8 +76,12 @@ func disconnect_and_kill_process():
 func _closed(was_clean = false):
 	Logger.info("[%s] Closed, clean: %s" % [logging_module, was_clean])
 	if not expect_close:
+		if busy and not connected:
+			connect_client()
+			return
 		var more_info = "BLE Server was disconnected for some reason.\nIt could have crashed, or the terminal window was closed.\n\nYou can try restarting the BLE Server by pressing 'Connect BLE Server'\nin the hub panel."
 		GuiApi.show_error("Disconnected from BLE Server python process unexpectedly!", more_info)
+		
 	expect_close = false
 	connected=false
 	busy = false

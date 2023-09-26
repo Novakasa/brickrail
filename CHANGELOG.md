@@ -17,6 +17,7 @@
 
 ### Fixed
 
+- Fix BLEServer connection unsuccessful on ubuntu (https://github.com/Novakasa/brickrail/issues/162)
 - Fix emergency stop not triggered due to hub state when control devices is set to "switches" (https://github.com/Novakasa/brickrail/issues/156).
 - Prevent scanning the same hub (or same name) twice (https://github.com/Novakasa/brickrail/issues/109).
 - Fix issues when trying to assign already used port with a device of different type. User now is warned and asked whether to override or cancel (https://github.com/Novakasa/brickrail/issues/148).

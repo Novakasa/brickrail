@@ -1169,7 +1169,7 @@
 							"controller": "technic-yellow",
 							"port": 1,
 							"storage": {
-								"0": 100,
+								"0": 50,
 								"1": 600,
 								"2": 0
 							}
