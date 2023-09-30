@@ -49,10 +49,12 @@ func set_hub(p_hub):
 	if hub != null:
 		hub.disconnect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 		hub.disconnect("runtime_data_received", self, "_on_hub_runtime_data_received")
+		hub.disconnect("name_changed", self, "_on_hub_name_changed")
 	hub = p_hub
 	if hub != null:
 		hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 		hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
+		hub.connect("name_changed", self, "_on_hub_name_changed")
 
 func set_position(p_position):
 	if position == p_position:
@@ -65,6 +67,10 @@ func _on_hub_runtime_data_received(_data):
 
 func _on_hub_responsiveness_changed(_responsiveness):
 	pass
+
+func _on_hub_name_changed(old_name, new_name):
+	assert(old_name == controllername)
+	controllername = new_name
 
 func serialize():
 	var struct = {}

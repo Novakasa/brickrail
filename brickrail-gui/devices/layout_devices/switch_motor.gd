@@ -54,10 +54,12 @@ func set_hub(p_hub):
 	if hub != null:
 		hub.disconnect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 		hub.disconnect("runtime_data_received", self, "_on_hub_runtime_data_received")
+		hub.disconnect("name_changed", self, "_on_hub_name_changed")
 	hub = p_hub
 	if hub != null:
 		hub.connect("responsiveness_changed", self, "_on_hub_responsiveness_changed")
 		hub.connect("runtime_data_received", self, "_on_hub_runtime_data_received")
+		hub.connect("name_changed", self, "_on_hub_name_changed")
 
 func _on_hub_runtime_data_received(data):
 	if data[0] == DATA_SWITCH_CONFIRM:
@@ -91,6 +93,10 @@ func _on_hub_responsiveness_changed(value):
 		emit_signal("position_changed", position)
 	else:
 		set_unresponsive()
+
+func _on_hub_name_changed(old_name, new_name):
+	assert(old_name == controllername)
+	controllername = new_name
 
 func setup_on_hub():
 	# hub.rpc("add_switch", [port])

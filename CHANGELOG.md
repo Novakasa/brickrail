@@ -5,6 +5,14 @@
 
 ## [Unreleased]
 
+### Added
+
+### Fixed
+
+- fixed Switches and Crossing motors invalidated port when renaming a hub (https://github.com/Novakasa/brickrail/issues/163)
+
+### Changed
+
 ## [v1.0.0-alpha.5]
 
 ### Added

@@ -1,0 +1,121 @@
+{
+	"version": "1.0.0",
+	"devices": {
+		"trains": [
+
+		],
+		"controllers": [
+			{
+				"name": "city-blue",
+				"devices": {
+					"0": "switch_motor",
+					"1": null,
+					"2": null,
+					"3": null
+				}
+			}
+		]
+	},
+	"layout": {
+		"tracks": [
+			{
+				"l_idx": 0,
+				"x_idx": 3,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center",
+						"right"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"switches": {
+					"E": {
+						"motor1": {
+							"controller": "city-blue",
+							"port": 0,
+							"storage": {
+								"0": 100,
+								"1": 600,
+								"2": 0
+							}
+						}
+					}
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 2,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 5,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 2,
+				"connections": {
+					"S": [
+						"left"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 0,
+				"x_idx": 4,
+				"y_idx": 3,
+				"connections": {
+					"N": [
+						"left"
+					],
+					"E": [
+
+					]
+				}
+			}
+		],
+		"blocks": [
+
+		],
+		"trains": [
+
+		]
+	}
+}
