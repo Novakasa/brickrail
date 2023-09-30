@@ -5,6 +5,8 @@
 
 ## [Unreleased]
 
+## [v1.0.0-alpha.5]
+
 ### Added
 
 - Added alternative train colors setting that makes each train color much more obvious at the cost of a unified color scheme.
@@ -101,7 +103,8 @@ Brickrail now does not rely on specific pybricks firmware anymore and aims to be
 ## [v1.0.0-alpha.1] - 2023-04-15
 
 <!-- diff links for headers -->
-[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.4...HEAD
+[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.5...HEAD
+[v1.0.0-alpha.5]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.4...v1.0.0-alpha.5
 [v1.0.0-alpha.4]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.3...v1.0.0-alpha.4
 [v1.0.0-alpha.3]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.2...v1.0.0-alpha.3
 [v1.0.0-alpha.2]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.1...v1.0.0-alpha.2
