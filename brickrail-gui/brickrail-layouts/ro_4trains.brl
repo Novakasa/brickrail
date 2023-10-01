@@ -1644,6 +1644,243 @@
 						"center"
 					]
 				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 5,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 5,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 5,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 4,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 4,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 4,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 3,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 3,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 3,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 2,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 2,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 2,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+						"center"
+					]
+				},
+				"sensor": {
+					"markername": null,
+					"speeds": {
+						"E": "cruise",
+						"W": "cruise"
+					}
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 1,
+				"y_idx": 1,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 1,
+				"y_idx": 2,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				}
+			},
+			{
+				"l_idx": 2,
+				"x_idx": 1,
+				"y_idx": 3,
+				"connections": {
+					"E": [
+						"center"
+					],
+					"W": [
+
+					]
+				}
 			}
 		],
 		"blocks": [
@@ -1699,6 +1936,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1753,6 +1994,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1807,6 +2052,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1861,6 +2110,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1915,6 +2168,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -1962,6 +2219,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -2009,6 +2270,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -2056,6 +2321,163 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
+				}
+			},
+			{
+				"block_name": "shed1",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 2,
+							"x_idx": 2,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 2,
+							"x_idx": 3,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 2,
+							"x_idx": 4,
+							"y_idx": 1,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"block_name": "shed2",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 2,
+							"x_idx": 2,
+							"y_idx": 2,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 2,
+							"x_idx": 3,
+							"y_idx": 2,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 2,
+							"x_idx": 4,
+							"y_idx": 2,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": true,
+					"1": true
+				}
+			},
+			{
+				"block_name": "shed3",
+				"section": {
+					"tracks": [
+						{
+							"l_idx": 2,
+							"x_idx": 2,
+							"y_idx": 3,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 2,
+							"x_idx": 3,
+							"y_idx": 3,
+							"next_slot": "E",
+							"orientation": "EW"
+						},
+						{
+							"l_idx": 2,
+							"x_idx": 4,
+							"y_idx": 3,
+							"next_slot": "E",
+							"orientation": "EW"
+						}
+					]
+				},
+				"prior_sensors": {
+
+				},
+				"can_stop": {
+					"0": true,
+					"1": true
+				},
+				"can_flip": {
+					"0": true,
+					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": true,
+					"1": true
 				}
 			}
 		],

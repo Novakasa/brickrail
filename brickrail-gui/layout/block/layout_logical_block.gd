@@ -14,6 +14,7 @@ var can_stop = true
 var can_flip = true
 var random_target = true
 var wait_time = 4.0
+var disable_train = false
 
 var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.tscn")
 
@@ -44,6 +45,11 @@ func set_section(p_section):
 	section = p_section
 	section.connect("sensor_changed", self, "_on_section_sensor_changed")
 	find_sensors()
+
+func set_disable_train(p_disable_train):
+	if p_disable_train != disable_train:
+		LayoutInfo.set_layout_changed(true)
+	disable_train = p_disable_train
 
 func set_random_target(value):
 	if value != random_target:

@@ -7,7 +7,7 @@ func _enter_tree():
 	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
-	var edit_exclusive_nodes = [$AddTrain, $PriorPanel, $PriorLabel, $CanStopCheckBox, $CanFlipCheckBox]
+	var edit_exclusive_nodes = [$AddTrain, $PriorPanel, $PriorLabel, $CanStopCheckBox, $CanFlipCheckBox, $DisableTrainCheckbox]
 	
 	for node in edit_exclusive_nodes:
 		node.visible = (mode != "control")
@@ -23,6 +23,7 @@ func set_block(p_block):
 	$CanStopCheckBox.pressed = block.can_stop
 	$CanFlipCheckBox.pressed = block.can_flip
 	$RandomTargetCheckBox.pressed = block.random_target
+	$DisableTrainCheckbox.pressed = block.disable_train
 	$HBoxContainer/WaitTimeEdit.value = block.wait_time
 	update_prior_panel()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
@@ -47,7 +48,7 @@ func _on_block_unselected():
 	queue_free()
 
 func _on_block_locked_changed(trainname):
-	prints("locked changed", trainname)
+	# prints("locked changed", trainname)
 	$AddTrain.disabled = (trainname != null)
 
 func _on_AddTrain_pressed():
@@ -92,3 +93,7 @@ func _on_RemovePriorButton_pressed():
 func _on_CancelPriorButton_pressed():
 	LayoutInfo.set_layout_mode("edit")
 	update_prior_panel()
+
+func _on_DisableTrainCheckbox_toggled(button_pressed):
+	block.set_disable_train(button_pressed)
+	block.get_opposite_block().set_disable_train(button_pressed)

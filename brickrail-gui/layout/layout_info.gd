@@ -239,6 +239,9 @@ func load(struct):
 			if "wait_time" in block_data:
 				for index in block_data.wait_time:
 					block.logical_blocks[int(index)].set_wait_time(block_data.wait_time[index])
+			if "disable_train" in block_data:
+				for index in block_data.disable_train:
+					block.logical_blocks[int(index)].set_disable_train(block_data.disable_train[index])
 	
 	if "trains" in struct:
 		for train_data in struct.trains:

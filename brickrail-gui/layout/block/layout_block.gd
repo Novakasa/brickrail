@@ -93,6 +93,7 @@ func serialize():
 	var can_flip = {}
 	var random_target = {}
 	var wait_time = {}
+	var disable_train = {}
 	for block_index in [0,1]:
 		var prior_dirtrack = logical_blocks[block_index].get_prior_sensor_dirtrack()
 		if prior_dirtrack != null:
@@ -101,12 +102,14 @@ func serialize():
 		can_flip[block_index] = logical_blocks[block_index].can_flip
 		random_target[block_index] = logical_blocks[block_index].random_target
 		wait_time[block_index] = logical_blocks[block_index].wait_time
+		disable_train[block_index] = logical_blocks[block_index].disable_train
 		
 	result["prior_sensors"] = sensors
 	result["can_stop"] = can_stop
 	result["can_flip"] = can_flip
 	result["random_target"] = random_target
 	result["wait_time"] = wait_time
+	result["disable_train"] = disable_train
 	return result
 
 func remove():

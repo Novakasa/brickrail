@@ -12,6 +12,7 @@ var busy = false
 var status = "disconnected"
 var battery_voltage = -1.0
 var battery_current = -1.0
+var active = false
 
 var storage = {}
 
@@ -32,6 +33,7 @@ signal removing(name)
 signal state_changed()
 signal battery_changed()
 signal skip_download_changed(value)
+signal active_changed(p_active)
 
 func set_skip_download(value):
 	skip_download = value
@@ -88,6 +90,10 @@ func _on_ble_communicator_status_changed():
 func set_responsiveness(val):
 	responsiveness = val
 	emit_signal("responsiveness_changed", val)
+
+func set_active(p_active):
+	active = p_active
+	emit_signal("active_changed", p_active)
 	
 func set_name(p_new_name):
 	var old_name = name

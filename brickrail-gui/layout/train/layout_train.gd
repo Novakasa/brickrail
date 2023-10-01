@@ -89,6 +89,8 @@ func set_ble_train(p_train_id):
 	ble_train = Devices.trains[p_train_id]
 	var _err = ble_train.connect("sensor_advance", self, "_on_ble_train_sensor_advance")
 	_err = ble_train.connect("removing", self, "_on_ble_train_removing")
+	if block != null:
+		ble_train.hub.set_active(not block.disable_train)
 	LayoutInfo.set_layout_changed(true)
 	update_control_ble_train()
 	emit_signal("ble_train_changed")
@@ -414,6 +416,8 @@ func set_current_block(p_block, teleport=true):
 			set_as_home()
 		if teleport:
 			virtual_train.set_dirtrack(block.get_train_spawn_dirtrack(facing), true)
+		if ble_train != null:
+			ble_train.hub.set_active(not block.disable_train)
 	else:
 		virtual_train.visible=false
 

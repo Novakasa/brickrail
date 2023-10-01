@@ -51,12 +51,18 @@ func set_device(port, type):
 		assert(false)
 	devices[port] = device
 	device.connect("removing", self, "_on_device_removing")
+	hub.set_active(true)
 	emit_signal("devices_changed", name)
 	return device
 
 func _on_device_removing(_controllername, port):
 	devices[port].disconnect("removing", self, "_on_device_removing")
 	devices[port] = null
+	var active=false
+	for port in devices:
+		if devices[port] != null:
+			active=true
+	hub.set_active(active)
 	emit_signal("devices_changed", name)
 
 func _on_hub_runtime_data_received(_data):

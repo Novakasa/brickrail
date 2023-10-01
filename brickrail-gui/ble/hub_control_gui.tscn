@@ -14,28 +14,38 @@ scan_button = NodePath("HBoxContainer2/scan_button")
 
 [node name="HBoxContainer2" type="HBoxContainer" parent="."]
 margin_right = 237.0
-margin_bottom = 20.0
+margin_bottom = 40.0
+
+[node name="ActiveButton" type="CheckButton" parent="HBoxContainer2"]
+margin_right = 76.0
+margin_bottom = 40.0
+hint_tooltip = "Indicates whether hub will be connected via bluetooth when \"control devices\" is turned on.
+This is set automatically when the hub is assigned to a train and the train is not in a \"disable train\" block.
+Is also set automatically when a switch or crossing motor is assigned to a port of this hub."
+button_mask = 0
 
 [node name="BatteryLabel" type="Label" parent="HBoxContainer2"]
-margin_top = 3.0
-margin_bottom = 17.0
+margin_left = 80.0
+margin_top = 13.0
+margin_right = 80.0
+margin_bottom = 27.0
 
 [node name="Control" type="Control" parent="HBoxContainer2"]
-margin_left = 4.0
+margin_left = 84.0
 margin_right = 143.0
-margin_bottom = 20.0
+margin_bottom = 40.0
 size_flags_horizontal = 3
 
 [node name="scan_button" type="Button" parent="HBoxContainer2"]
 margin_left = 147.0
 margin_right = 237.0
-margin_bottom = 20.0
+margin_bottom = 40.0
 text = "Scan for hub"
 
 [node name="HBoxContainer" type="HBoxContainer" parent="."]
-margin_top = 24.0
+margin_top = 44.0
 margin_right = 237.0
-margin_bottom = 48.0
+margin_bottom = 68.0
 
 [node name="connect_button" type="Button" parent="HBoxContainer"]
 margin_right = 64.0

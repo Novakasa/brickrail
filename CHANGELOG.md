@@ -7,6 +7,8 @@
 
 ### Added
 
+- Added "disable train" setting for blocks. Any train in a block with this setting enabled will not be connected via bluetooth. Layout Controllers will only need to connect when a device is assigned to one of it's ports. (https://github.com/Novakasa/brickrail/issues/161)
+
 ### Fixed
 
 - Don't allow adding train to occupied block. This previously created invalid state.

@@ -75,6 +75,8 @@ func are_hubs_ready():
 	if not $BLECommunicator.connected:
 		return false
 	for hub in hubs.values():
+		if not hub.active:
+			continue
 		if not hub.running:
 			return false
 	return true
@@ -82,6 +84,8 @@ func are_hubs_ready():
 func get_hub_status():
 	var status = {}
 	for hub in hubs.values():
+		if not hub.active:
+			continue
 		if hub.busy:
 			status[hub.name] = hub.status
 	return status
@@ -124,6 +128,8 @@ func clean_exit_coroutine():
 func connect_and_run_all_coroutine():
 	yield(Devices.get_tree(), "idle_frame")
 	for hub in hubs.values():
+		if not hub.active:
+			continue
 		if not hub.connected:
 			var result = yield(hub.connect_coroutine(), "completed")
 			if result == "error":

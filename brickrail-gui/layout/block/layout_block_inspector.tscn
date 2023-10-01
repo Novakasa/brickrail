@@ -55,30 +55,39 @@ margin_right = 183.0
 margin_bottom = 84.0
 text = "Train control"
 
-[node name="CanStopCheckBox" type="CheckBox" parent="."]
+[node name="DisableTrainCheckbox" type="CheckBox" parent="."]
 margin_top = 88.0
 margin_right = 183.0
 margin_bottom = 112.0
-pressed = true
-text = "Can stop"
+hint_tooltip = "Enabling this setting effectively disables any train occupying this block.
+Will apply for the opposite direction as well. Use this setting to store unused trains.
+Disabled trains will not be connected via bluetooth when \"control devices\" is turned on."
+text = "Disable train"
 
-[node name="CanFlipCheckBox" type="CheckBox" parent="."]
+[node name="CanStopCheckBox" type="CheckBox" parent="."]
 margin_top = 116.0
 margin_right = 183.0
 margin_bottom = 140.0
 pressed = true
-text = "Can reverse"
+text = "Can stop"
 
-[node name="RandomTargetCheckBox" type="CheckBox" parent="."]
+[node name="CanFlipCheckBox" type="CheckBox" parent="."]
 margin_top = 144.0
 margin_right = 183.0
 margin_bottom = 168.0
-text = "Random target"
+pressed = true
+text = "Can reverse"
 
-[node name="HBoxContainer" type="HBoxContainer" parent="."]
+[node name="RandomTargetCheckBox" type="CheckBox" parent="."]
 margin_top = 172.0
 margin_right = 183.0
 margin_bottom = 196.0
+text = "Random target"
+
+[node name="HBoxContainer" type="HBoxContainer" parent="."]
+margin_top = 200.0
+margin_right = 183.0
+margin_bottom = 224.0
 
 [node name="Label" type="Label" parent="HBoxContainer"]
 margin_top = 5.0
@@ -135,6 +144,7 @@ __meta__ = {
 [connection signal="pressed" from="PriorPanel/AddPriorButton" to="." method="_on_AddPriorSensorButton_pressed"]
 [connection signal="pressed" from="PriorPanel/RemovePriorButton" to="." method="_on_RemovePriorButton_pressed"]
 [connection signal="pressed" from="PriorPanel/CancelPriorButton" to="." method="_on_CancelPriorButton_pressed"]
+[connection signal="toggled" from="DisableTrainCheckbox" to="." method="_on_DisableTrainCheckbox_toggled"]
 [connection signal="toggled" from="CanStopCheckBox" to="." method="_on_CanStopCheckBox_toggled"]
 [connection signal="toggled" from="CanFlipCheckBox" to="." method="_on_CanFlipCheckBox_toggled"]
 [connection signal="toggled" from="RandomTargetCheckBox" to="." method="_on_RandomTargetCheckBox_toggled"]
