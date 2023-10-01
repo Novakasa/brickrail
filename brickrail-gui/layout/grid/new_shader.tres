@@ -408,7 +408,7 @@ vec4 cell_composite(vec2 position) {
 
 				float num = 3.0;
 				float pointiness = 1.0;
-				float thickness = 0.3;
+				float thickness = 0.8;
 				float segment = 1.0/num;
 				float tscale_p = 0.0;
 				float tscale_n = 0.0;

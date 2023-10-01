@@ -1,4 +1,5 @@
 {
+	"version": "1.0.0",
 	"devices": {
 		"trains": [
 			{
@@ -148,8 +149,7 @@
 				},
 				"switches": {
 					"E": {
-						"motor1_inverted": false,
-						"motor2_inverted": false
+
 					}
 				}
 			},
@@ -485,10 +485,13 @@
 					"W": {
 						"motor1": {
 							"controller": "blue",
-							"port": 0
-						},
-						"motor1_inverted": false,
-						"motor2_inverted": false
+							"port": 0,
+							"storage": {
+								"0": 100,
+								"1": 600,
+								"2": 0
+							}
+						}
 					}
 				}
 			},
@@ -613,7 +616,7 @@
 		],
 		"blocks": [
 			{
-				"name": "block0",
+				"block_name": "block0",
 				"section": {
 					"tracks": [
 						{
@@ -649,10 +652,22 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
-				"name": "block1",
+				"block_name": "block1",
 				"section": {
 					"tracks": [
 						{
@@ -688,10 +703,22 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
-				"name": "block2",
+				"block_name": "block2",
 				"section": {
 					"tracks": [
 						{
@@ -727,10 +754,22 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
-				"name": "block3",
+				"block_name": "block3",
 				"section": {
 					"tracks": [
 						{
@@ -766,10 +805,22 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
-				"name": "block4",
+				"block_name": "block4",
 				"section": {
 					"tracks": [
 						{
@@ -805,17 +856,30 @@
 				"can_flip": {
 					"0": true,
 					"1": true
+				},
+				"random_target": {
+					"0": true,
+					"1": true
+				},
+				"wait_time": {
+					"0": 4,
+					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			}
 		],
 		"trains": [
 			{
-				"name": "train0",
+				"train_name": "train0",
 				"facing": 1,
-				"fixed_facing": true,
-				"color": "ff000000",
+				"reversing_behavior": "off",
+				"color": "ffc7ff00",
 				"num_wagons": 4,
-				"blockname": "block2",
+				"random_targets": true,
+				"block_id": "block2",
 				"blockindex": 0,
 				"ble_train": "city-blue"
 			}

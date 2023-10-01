@@ -27,8 +27,12 @@ func update_controls_enabled(_dummy=null):
 func set_controls_disabled(mode):
 	for child in get_node(control_container).get_children():
 		child.disabled=mode
-	$VBoxContainer/change_heading_button.disabled=mode
-
+	if not mode:
+		get_node(control_container).get_node("stop_button").pressed=true
+		get_node(control_container).get_node("slow_button").pressed=false
+		get_node(control_container).get_node("start_button").pressed=false
+		get_node(control_container).get_node("fast_button").pressed=false
+	
 func _on_train_name_changed(_old_name, new_name):
 	set_train_name(new_name)
 
@@ -49,18 +53,30 @@ func get_train():
 	return Devices.trains[train_name]
 
 func _on_start_button_pressed():
+	get_node(control_container).get_node("slow_button").pressed=false
+	get_node(control_container).get_node("stop_button").pressed=false
+	get_node(control_container).get_node("fast_button").pressed=false
 	get_train().start()
 	
 func _on_stop_button_pressed():
+	get_node(control_container).get_node("slow_button").pressed=false
+	get_node(control_container).get_node("start_button").pressed=false
+	get_node(control_container).get_node("fast_button").pressed=false
 	get_train().stop()
 
 func _on_slow_button_pressed():
+	get_node(control_container).get_node("stop_button").pressed=false
+	get_node(control_container).get_node("start_button").pressed=false
+	get_node(control_container).get_node("fast_button").pressed=false
 	get_train().slow()
 
 func _on_change_heading_button_pressed():
 	get_train().flip_heading()
 
 func _on_fast_button_pressed():
+	get_node(control_container).get_node("slow_button").pressed=false
+	get_node(control_container).get_node("start_button").pressed=false
+	get_node(control_container).get_node("stop_button").pressed=false
 	get_train().fast()
 
 func _on_RemoveButton_pressed():
