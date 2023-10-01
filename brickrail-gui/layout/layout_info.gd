@@ -595,7 +595,11 @@ func stop_drag_select():
 func draw_track_hover_cell(cell):
 	if not cell == drawing_last:
 		var line = bresenham_line(drawing_last.x_idx, drawing_last.y_idx, cell.x_idx, cell.y_idx)
+		var counter = 0
 		for p in line:
+			if counter > 4:
+				return
+			counter += 1
 			var iter_cell = get_cell(cell.l_idx, p[0], p[1])
 			draw_track_add_cell(iter_cell)
 	
