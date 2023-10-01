@@ -21,6 +21,7 @@ var LayoutBlockInspector = preload("res://layout/block/layout_block_inspector.ts
 signal removing(block_id)
 signal selected()
 signal unselected()
+signal locked_changed(locked)
 
 func _init(p_name, p_index):
 	block_id = p_name
@@ -96,15 +97,18 @@ func get_train_spawn_dirtrack(facing):
 
 func set_occupied(p_occupied, p_train=null):
 	occupied = p_occupied
-	train = p_train
 	if occupied:
-		section.set_track_attributes("locked", train.train_id, "<>", "append")
+		section.set_track_attributes("locked", p_train.train_id, "<>", "append")
 		section.set_track_attributes("locked+", 1, ">", "increment")
 		section.set_track_attributes("locked-", 1, "<", "increment")
+		train = p_train
 	else:
 		section.set_track_attributes("locked", train.train_id, "<>", "erase")
 		section.set_track_attributes("locked+", -1, ">", "increment")
 		section.set_track_attributes("locked-", -1, "<", "increment")
+		train = null
+	emit_signal("locked_changed", train)
+	get_opposite_block().emit_signal("locked_changed", train)
 
 func get_all_routes(from_facing, reversing_behavior, train_id):
 	return nodes[from_facing].calculate_routes(reversing_behavior, train_id)

@@ -16,6 +16,7 @@ func _on_layout_mode_changed(mode):
 
 func set_block(p_block):
 	block = p_block
+	block.connect("locked_changed", self, "_on_block_locked_changed")
 	$EditableLabel.set_text(LayoutInfo.blocks[block.block_id].get_name())
 	$EditableLabel.set_display_text(block.get_name())
 	block.connect("unselected", self, "_on_block_unselected")
@@ -25,6 +26,7 @@ func set_block(p_block):
 	$HBoxContainer/WaitTimeEdit.value = block.wait_time
 	update_prior_panel()
 	_on_layout_mode_changed(LayoutInfo.layout_mode)
+	$AddTrain.disabled = (block.get_locked() != null)
 
 func update_prior_panel():
 	if block.get_prior_sensor_dirtrack() == null:
@@ -43,6 +45,10 @@ func update_prior_panel():
 
 func _on_block_unselected():
 	queue_free()
+
+func _on_block_locked_changed(trainname):
+	prints("locked changed", trainname)
+	$AddTrain.disabled = (trainname != null)
 
 func _on_AddTrain_pressed():
 	var train: LayoutTrain = LayoutInfo.create_train()

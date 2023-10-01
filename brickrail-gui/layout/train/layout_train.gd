@@ -404,7 +404,7 @@ func set_current_block(p_block, teleport=true):
 	if p_block != null:
 		Logger.info("[%s] set_current_block(%s)" % [train_id, p_block.id])
 	if block != null:
-		block.set_occupied(false, self)
+		block.set_occupied(false, null)
 	block = p_block
 	if block != null:
 		assert(not block.occupied)
