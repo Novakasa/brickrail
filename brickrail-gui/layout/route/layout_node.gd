@@ -63,6 +63,10 @@ func calculate_routes(reversing_behavior, train_id=null):
 		current_node.collect_edges()
 		for neighbour_id in current_node.edges:
 			var edge = current_node.edges[neighbour_id]
+			
+			if LayoutInfo.nodes[neighbour_id].type=="block":
+				if LayoutInfo.nodes[neighbour_id].obj.disable_train:
+					continue
 
 			if train_id != null:
 				var edge_locked = edge.get_locked()

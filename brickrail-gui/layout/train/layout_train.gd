@@ -129,7 +129,7 @@ func is_end_of_leg():
 	return route.get_current_leg().is_complete()
 
 func _on_LayoutInfo_random_targets_set(_random_targets):
-	if LayoutInfo.random_targets and route==null and random_targets:
+	if LayoutInfo.random_targets and route==null and random_targets and not block.disable_train:
 		find_random_route(false)
 
 func update_control_ble_train():
@@ -226,6 +226,8 @@ func get_all_valid_routes(no_locked=true, target_facing=null):
 		if LayoutInfo.nodes[node_id].obj.block_id==block.block_id:
 			continue
 		if not LayoutInfo.nodes[node_id].obj.can_stop:
+			continue
+		if LayoutInfo.nodes[node_id].obj.disable_train:
 			continue
 		if target_facing != null and target_facing != LayoutInfo.nodes[node_id].facing:
 			continue
