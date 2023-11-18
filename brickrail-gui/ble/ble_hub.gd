@@ -94,6 +94,13 @@ func set_responsiveness(val):
 func set_active(p_active):
 	active = p_active
 	emit_signal("active_changed", p_active)
+	emit_signal("state_changed")
+	
+	if not active:
+		if running:
+			yield(stop_program_coroutine(), "completed")
+		if connected:
+			yield(disconnect_coroutine(), "completed")
 	
 func set_name(p_new_name):
 	var old_name = name
