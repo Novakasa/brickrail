@@ -3,7 +3,7 @@ from micropython import const
 from uselect import poll
 from usys import stdin
 
-from pybricks.pupdevices import DCMotor
+from pybricks.pupdevices import DCMotor, Motor
 from pybricks.parameters import Port
 from pybricks.tools import wait, StopWatch
 
@@ -51,7 +51,10 @@ def get_port(index):
 
 class Crossing:
     def __init__(self, port):
-        self. motor = DCMotor(get_port(port))
+        try:
+            self.motor = DCMotor(get_port(port))
+        except OSError:
+            self.motor = Motor(get_port(port))
         self.position = _CROSSING_POS_UP
         self.port = port
         self.stopwatch = StopWatch()
@@ -82,7 +85,10 @@ class Crossing:
 
 class Switch:
     def __init__(self, port, pulse_duration = 600):
-        self.motor = DCMotor(get_port(port))
+        try:
+            self.motor = DCMotor(get_port(port))
+        except OSError:
+            self.motor = Motor(get_port(port))
         self.position = _SWITCH_POS_NONE
         self.port = port
         self.pulse_duration = pulse_duration

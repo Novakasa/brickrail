@@ -3,7 +3,7 @@
 	"devices": {
 		"trains": [
 			{
-				"name": "city-blue",
+				"name": "city_hub",
 				"storage": {
 					"0": 3500,
 					"1": 40,
@@ -881,7 +881,7 @@
 				"random_targets": true,
 				"block_id": "block2",
 				"blockindex": 0,
-				"ble_train": "city-blue"
+				"ble_train": "city_hub"
 			}
 		]
 	}

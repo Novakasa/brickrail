@@ -11,6 +11,7 @@
 
 ### Fixed
 
+- Fix pybricks error with motors with rotation encoders in pybricks 3.3-stable (https://github.com/Novakasa/brickrail/issues/174).
 - Don't allow adding train to occupied block. This previously created invalid state.
 - Fixed Switches and Crossing motors invalidated port when renaming a hub (https://github.com/Novakasa/brickrail/issues/163)
 

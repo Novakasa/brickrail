@@ -1,7 +1,7 @@
 from micropython import const
 from ustruct import pack, pack_into
 
-from pybricks.pupdevices import ColorDistanceSensor, DCMotor
+from pybricks.pupdevices import ColorDistanceSensor, DCMotor, Motor
 from pybricks.parameters import Port
 
 from io_hub_unfrozen import IOHub, VERSION
@@ -112,7 +112,10 @@ class TrainMotor:
     def __init__(self):
         self.speed = 0
         self.target_speed = 0
-        self.motor = DCMotor(Port.A)
+        try:
+            self.motor = DCMotor(Port.A)
+        except OSError:
+            self.motor = Motor(Port.A)
         self.direction = 1
     
     def flip_direction(self):
