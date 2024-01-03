@@ -325,9 +325,15 @@ class BLEHub:
                 program = str(Path(__file__).parent / "hub_programs" / f"{program}.py")
 
         async def run_coroutine():
-            await self.hub._wait_for_user_program_stop()
-            self.program_stopped.set()
-            self.to_out_queue("program_stopped", None)
+            try:
+                await self.hub._wait_for_user_program_stop()
+            except Exception as err:
+                self.to_out_queue("program_error", repr(err))
+            finally:
+                self.program_stopped.set()
+                self.to_out_queue("program_stopped", None)
+                if not self.hub.client.is_connected:
+                    self.to_out_queue("disconnected", None)
         
         async def output_loop():
             while True:
