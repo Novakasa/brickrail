@@ -519,6 +519,13 @@ func has_portal():
 		if not is_continuous_to(connections[turn], turn):
 			return true
 	return false
+
+func remove_portal(first_call=true):
+	for turn in connections:
+		if not is_continuous_to(connections[turn], turn):
+			if first_call:
+				connections[turn].get_opposite().remove_portal(false)
+			disconnect_turn(turn)
 	
 func get_shader_state(turn):
 	var state = 0

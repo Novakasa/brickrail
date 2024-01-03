@@ -8,6 +8,7 @@
 ### Added
 
 - Added "disable train" setting for blocks. Any train in a block with this setting enabled will not be connected via bluetooth. Layout Controllers will only need to connect when a device is assigned to one of it's ports. (https://github.com/Novakasa/brickrail/issues/161)
+- Improved Portal UX. Made add portal process cancellable, added option to remove the Portal again (https://github.com/Novakasa/brickrail/issues/94).
 
 ### Fixed
 

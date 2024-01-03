@@ -7,6 +7,9 @@ func _enter_tree():
 	var _err = LayoutInfo.connect("layout_mode_changed", self, "_on_layout_mode_changed")
 
 func _on_layout_mode_changed(mode):
+	if mode == "edit":
+		# if portal is added
+		_on_section_track_added(null)
 	if mode == "control":
 		section.unselect()
 
@@ -38,6 +41,10 @@ func _on_section_track_added(_track):
 			update_speed_select()
 		if dirtrack.get_next() == null:
 			$AddPortal.visible=true
+			$AddPortal.text = "Add portal"
+		elif dirtrack.has_portal():
+			$AddPortal.visible=true
+			$AddPortal.text = "Remove portal"
 		else:
 			$AddPortal.visible=false
 		$FacingFilterSelector.visible=true
@@ -140,8 +147,16 @@ func _on_OneWayCheckbox_toggled(button_pressed):
 	section.tracks[0].set_one_way(button_pressed)
 
 func _on_AddPortal_pressed():
-	LayoutInfo.set_portal_dirtrack(dirtrack)
-	LayoutInfo.set_layout_mode("portal")
+	if section.tracks[0].has_portal():
+		section.tracks[0].remove_portal()
+		_on_section_track_added(null)
+	elif LayoutInfo.layout_mode != "portal":
+		LayoutInfo.set_portal_dirtrack(dirtrack)
+		LayoutInfo.set_layout_mode("portal")
+		$AddPortal.text = "Cancel portal"
+	else:
+		LayoutInfo.set_layout_mode("edit")
+		$AddPortal.text = "Add portal"
 
 func _on_FacingFilterSelector_meta_selected(meta):
 	section.tracks[0].set_facing_filter(meta)
