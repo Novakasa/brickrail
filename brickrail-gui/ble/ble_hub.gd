@@ -10,6 +10,7 @@ var communicator: BLECommunicator
 var responsiveness = false
 var busy = false
 var status = "disconnected"
+var prev_state = "disconnected"
 var battery_voltage = -1.0
 var battery_current = -1.0
 var active = false
@@ -66,14 +67,17 @@ func _init(p_name, p_program):
 			GuiApi.show_info("[%s] io_hub outdated, program will be redownloaded" % name)
 			set_skip_download(false)
 	else:
-		GuiApi.show_info("[%s] New hub, program will be downloaded" % name)
+		# GuiApi.show_info("[%s] New hub, program will be downloaded" % name)
 		set_skip_download(false)
 
 func _on_state_changed():
+	if status == prev_state:
+		return
 	if busy:
 		GuiApi.show_info("[%s] %s..." % [name, status])
 	else:
 		GuiApi.show_info("[%s] %s" % [name, status])
+	prev_state = status
 
 func _on_ble_communicator_status_changed():
 	if not communicator.connected:
@@ -181,7 +185,19 @@ func _on_data_received(key, data):
 			if data == "program_start_timeout":
 				return
 			elif "ENODEV" in data:
-				GuiApi.show_error("Hub '"+name+"' missing motor or sensor!")
+				var msg = "Hub '"+name+"' missing motor or sensor!"
+				var more_info = msg
+				more_info += "\n\nFor trains:"
+				more_info += "\nThe motor needs to be plugged into Port A"
+				more_info += "\nThe Color and Distance sensor needs to be plugged into Port B"
+				more_info += "\n\nFor Layout controllers:"
+				more_info += "\nmake sure each switch is configured correctly!"
+				GuiApi.show_error(msg, more_info)
+			elif "disconnected during operation" in data:
+				var msg = "Hub '"+name+"' disconnected unexpectedly!"
+				var more_info = msg
+				more_info += "\n\nThis could be caused by:\n- low battery\n- bluetooth interference\n- unreliable bluetooth adapter"
+				GuiApi.show_error(msg, more_info)
 			else:
 				GuiApi.show_error("Hub '"+name+"' Program Error: " + data)
 			emit_signal("program_error", data)

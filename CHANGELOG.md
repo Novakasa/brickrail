@@ -11,6 +11,7 @@
 
 ### Fixed
 
+- Fix duplicate status messages for hubs in log messages panel (https://github.com/Novakasa/brickrail/issues/172).
 - Fix invalid ble-server state when hub disconnects during program running (e.g. when battery is removed) (https://github.com/Novakasa/brickrail/issues/160).
 - Fix pybricks error with motors with rotation encoders in pybricks 3.3-stable (https://github.com/Novakasa/brickrail/issues/174).
 - Don't allow adding train to occupied block. This previously created invalid state.
