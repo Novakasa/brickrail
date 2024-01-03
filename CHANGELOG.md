@@ -7,6 +7,14 @@
 
 ### Added
 
+### Fixed
+
+### Changed
+
+## [v1.0.0]
+
+### Added
+
 - Added "disable train" setting for blocks. Any train in a block with this setting enabled will not be connected via bluetooth. Layout Controllers will only need to connect when a device is assigned to one of it's ports. (https://github.com/Novakasa/brickrail/issues/161)
 - Improved Portal UX. Made add portal process cancellable, added option to remove the Portal again (https://github.com/Novakasa/brickrail/issues/94).
 
@@ -118,7 +126,8 @@ Brickrail now does not rely on specific pybricks firmware anymore and aims to be
 ## [v1.0.0-alpha.1] - 2023-04-15
 
 <!-- diff links for headers -->
-[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.5...HEAD
+[Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0...HEAD
+[v1.0.0-alpha.5]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.5...v1.0.0
 [v1.0.0-alpha.5]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.4...v1.0.0-alpha.5
 [v1.0.0-alpha.4]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.3...v1.0.0-alpha.4
 [v1.0.0-alpha.3]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.2...v1.0.0-alpha.3
