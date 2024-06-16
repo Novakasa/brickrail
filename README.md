@@ -18,7 +18,7 @@ Head to the [Wiki](https://github.com/Novakasa/brickrail/wiki) to learn more!
 
 ## LEGO Hub compatibility
 
-The most well-tested hubs currently are the LEGO City hub and the LEGO Technic hub. The Mindstorms (Spike Prime) hub should also work by default, but is not tested as regularly. Unfortunately, the move hub (from LEGO Boost) is currently incompatible because of it's low memory.
+The most well-tested hubs currently are the LEGO City hub (That usually come with LEGO City train sets) and the LEGO Technic (Control+) hub. The Mindstorms (Spike Prime) hub should also work by default, but is not tested as regularly. Unfortunately, the move hub (from LEGO Boost) is currently incompatible because of it's low memory.
 
 ## Current state
 
