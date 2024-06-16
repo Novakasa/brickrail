@@ -16,6 +16,10 @@ Head to the [Wiki](https://github.com/Novakasa/brickrail/wiki) to learn more!
 
 ![GUI screenshot](images/screenshot3.PNG)
 
+## LEGO Hub compatibility
+
+The most well-tested hubs currently are the LEGO City hub and the LEGO Technic hub. The Mindstorms (Spike Prime) hub should also work by default, but is not tested as regularly. Unfortunately, the move hub (from LEGO Boost) is currently incompatible because of it's low memory.
+
 ## Current state
 
 Users have reported succesfully automating their layouts, but each setup is a bit different. If you are willing to give Brickrail a go, feel free to share your issues over in [discussions](https://github.com/Novakasa/brickrail/discussions). Reports of success are also greatly appreciated, as well as any usability/quality-of-life improvement requests.
