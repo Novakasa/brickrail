@@ -20,6 +20,10 @@ Head to the [Wiki](https://github.com/Novakasa/brickrail/wiki) to learn more!
 
 The most well-tested hubs currently are the LEGO City hub (That usually come with LEGO City train sets) and the LEGO Technic (Control+) hub. The Mindstorms (Spike Prime) hub should also work by default, but is not tested as regularly. Unfortunately, the move hub (from LEGO Boost) is currently incompatible because of it's low memory.
 
+## Limitations
+
+Since the project relies only on Bluetooth for communication between PC and all hubs, there is a practical limitation to how many hubs can be connected simultaneously. This limit seems to be around 7-8 simultaneous connections for a Windows PC, but your mileage may vary depending on the OS and the bluetooth adapter used. Keep that in mind when planning your layout!
+
 ## Current state
 
 Users have reported succesfully automating their layouts, but each setup is a bit different. If you are willing to give Brickrail a go, feel free to share your issues over in [discussions](https://github.com/Novakasa/brickrail/discussions). Reports of success are also greatly appreciated, as well as any usability/quality-of-life improvement requests.
