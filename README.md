@@ -22,7 +22,7 @@ The most well-tested hubs currently are the LEGO City hub (That usually come wit
 
 ## Limitations
 
-Since the project relies only on Bluetooth for communication between PC and all hubs, there is a practical limitation to how many hubs can be connected simultaneously. This limit seems to be around 7-8 simultaneous connections for a Windows PC, but your mileage may vary depending on the OS and the bluetooth adapter used. Keep that in mind when planning your layout!
+Since the project relies on Bluetooth for communication between PC and all hubs, there is a practical limitation to how many hubs can be connected simultaneously. This limit seems to be around 7-8 simultaneous connections for a Windows PC, but your mileage may vary depending on the OS and the bluetooth adapter used. Keep that in mind when planning your layout!
 
 ## Current state
 
