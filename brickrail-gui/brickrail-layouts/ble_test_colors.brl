@@ -3,7 +3,7 @@
 	"devices": {
 		"trains": [
 			{
-				"name": "city-blue",
+				"name": "city_hub",
 				"storage": {
 					"0": 3500,
 					"1": 40,
@@ -17,7 +17,7 @@
 		],
 		"controllers": [
 			{
-				"name": "blue",
+				"name": "technic-blue",
 				"devices": {
 					"0": "switch_motor",
 					"1": null,
@@ -484,11 +484,11 @@
 				"switches": {
 					"W": {
 						"motor1": {
-							"controller": "blue",
+							"controller": "technic-blue",
 							"port": 0,
 							"storage": {
 								"0": 100,
-								"1": 1000,
+								"1": 600,
 								"2": 0
 							}
 						}
@@ -660,6 +660,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -707,6 +711,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -754,6 +762,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -801,6 +813,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			},
 			{
@@ -848,6 +864,10 @@
 				"wait_time": {
 					"0": 4,
 					"1": 4
+				},
+				"disable_train": {
+					"0": false,
+					"1": false
 				}
 			}
 		],
@@ -856,12 +876,12 @@
 				"train_name": "train0",
 				"facing": 1,
 				"reversing_behavior": "off",
-				"color": "ff000000",
+				"color": "ffffb300",
 				"num_wagons": 4,
 				"random_targets": true,
 				"block_id": "block2",
 				"blockindex": 0,
-				"ble_train": "city-blue"
+				"ble_train": "city_hub"
 			}
 		]
 	}

@@ -3,9 +3,11 @@
 
 # Changelog
 
-## [Unreleased]
+## [unreleased]
 
 ### Added
+
+- Added support for Spike color sensor (https://github.com/Novakasa/brickrail/issues/180)
 
 ### Fixed
 
