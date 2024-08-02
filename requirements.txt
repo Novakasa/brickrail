@@ -1,5 +1,5 @@
 pybricksdev == 1.0.0a50
-bleak == 0.20.2
+bleak == 0.22.0
 mpy-cross-v6 == 1.0.1
 websockets == 11.0.3
 pyinstaller == 5.13.2
