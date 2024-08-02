@@ -127,7 +127,7 @@ Brickrail now does not rely on specific pybricks firmware anymore and aims to be
 
 <!-- diff links for headers -->
 [Unreleased]: https://github.com/Novakasa/brickrail/compare/v1.0.0...HEAD
-[v1.0.0-alpha.5]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.5...v1.0.0
+[v1.0.0]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.5...v1.0.0
 [v1.0.0-alpha.5]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.4...v1.0.0-alpha.5
 [v1.0.0-alpha.4]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.3...v1.0.0-alpha.4
 [v1.0.0-alpha.3]: https://github.com/Novakasa/brickrail/compare/v1.0.0-alpha.2...v1.0.0-alpha.3
