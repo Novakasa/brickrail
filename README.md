@@ -26,9 +26,11 @@ Since the project relies on Bluetooth for communication between PC and all hubs,
 
 ## Current state
 
-Users have reported succesfully automating their layouts, but each setup is a bit different. If you are willing to give Brickrail a go, feel free to share your issues over in [discussions](https://github.com/Novakasa/brickrail/discussions). Reports of success are also greatly appreciated, as well as any usability/quality-of-life improvement requests.
+Users have reported succesfully automating their layouts, but each setup is a bit different. If you are willing to give Brickrail a go, feel free to share your issues over in [discussions](https://github.com/Novakasa/brickrail/discussions) or in the [discord server](https://discord.gg/MUBGCz3W56). Reports of success are also greatly appreciated, as well as any usability/quality-of-life improvement requests.
 
 ## Links
+
+[Discord server](https://discord.gg/MUBGCz3W56)
 
 [Here](https://www.youtube.com/watch?v=cBF-G4d4vw8)'s a video of Brickrail in action with a multi-layered layout.
 
