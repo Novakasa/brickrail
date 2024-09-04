@@ -14,9 +14,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python 3.10}
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
           cache: 'pip'
@@ -28,7 +28,7 @@ jobs:
         run: |
           pyinstaller ble_server-linux.spec
       - name: upload dist
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ble-server-linux
           path: dist/ble-server-linux
@@ -39,9 +39,9 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
       - name: Set up Python 3.10
-        uses: actions/setup-python@v4
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
           cache: 'pip'
@@ -53,7 +53,7 @@ jobs:
         run: |
           pyinstaller ble_server-windows.spec
       - name: upload dist
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ble-server-windows
           path: dist/ble-server-windows
@@ -67,7 +67,7 @@ jobs:
       image: barichello/godot-ci:3.5
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
       - name: Setup
         run: |
           mkdir -v -p ~/.local/share/godot/templates
@@ -83,12 +83,12 @@ jobs:
           cd $PROJECT_PATH
           godot -v --export-debug "Linux/X11" ../build/linux/$EXPORT_NAME.x86_64
       - name: Download windows ble-server artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ble-server-windows
           path: build/windows/ble-server-windows
       - name: Download linux ble-server artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: ble-server-linux
           path: build/linux/ble-server-linux
@@ -108,12 +108,12 @@ jobs:
           cp version.txt build/linux/
           cp version.txt build/windows/
       - name: Upload windows Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: brickrail-windows
           path: build/windows
       - name: Upload linux Artifact
-        uses: actions/upload-artifact@v1
+        uses: actions/upload-artifact@v4
         with:
           name: brickrail-linux
           path: build/linux
@@ -126,12 +126,12 @@ jobs:
 
     steps:
       - name: Download windows build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: brickrail-windows
           path: brickrail-windows
       - name: Download linux build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: brickrail-linux
           path: brickrail-linux
@@ -144,7 +144,7 @@ jobs:
           zip -r brickrail-windows-${{ env.GITHUB_TAG }}.zip brickrail-windows
           zip -r brickrail-linux-${{ env.GITHUB_TAG }}.zip brickrail-linux
       - name: Release
-        uses: softprops/action-gh-release@v1
+        uses: softprops/action-gh-release@v2
         with:
           files: |
             brickrail-windows-${{ env.GITHUB_TAG }}.zip
