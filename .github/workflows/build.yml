@@ -83,12 +83,12 @@ jobs:
           cd $PROJECT_PATH
           godot -v --export-debug "Linux/X11" ../build/linux/$EXPORT_NAME.x86_64
       - name: Download windows ble-server artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ble-server-windows
           path: build/windows/ble-server-windows
       - name: Download linux ble-server artifact
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: ble-server-linux
           path: build/linux/ble-server-linux
@@ -126,12 +126,12 @@ jobs:
 
     steps:
       - name: Download windows build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: brickrail-windows
           path: brickrail-windows
       - name: Download linux build
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4.1.7
         with:
           name: brickrail-linux
           path: brickrail-linux
